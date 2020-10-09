@@ -62,9 +62,113 @@ class DonationIpWhitelistMiddlewareTest extends TestCase
     }
 
     /**
-     * @testdox Test IP whitelisted - PASS
+     * @testdox Test IP whitelist disabled
+     */
+    public function testWhitelistDisabled()
+    {
+        $request = new Request();
+        $request->server->add(['REMOTE_ADDR' => '192.168.1.10']);
+        $myIpAddress = $request->ip();
+
+        $this->tenantActivatedSettingRepository
+            ->shouldReceive('checkTenantSettingStatus')
+            ->with(
+                'donation_ip_whitelist',
+                $request
+            )
+            ->andReturn(false);
+
+        $this->whitelistService
+            ->shouldReceive('getList')
+            ->never();
+
+        $this->donationIpWhitelistMiddleware->handle($request, function (){});
+    }
+
+    /**
+     * @testdox Test IP whitelist without patterns saved
+     */
+    public function testWhitelistEnabledWithoutPatterns()
+    {
+        $request = new Request();
+        $request->server->add(['REMOTE_ADDR' => '192.168.1.10']);
+        $myIpAddress = $request->ip();
+
+        $this->tenantActivatedSettingRepository
+            ->shouldReceive('checkTenantSettingStatus')
+            ->with(
+                'donation_ip_whitelist',
+                $request
+            )
+            ->andReturn(true);
+
+        $whitelistedIps = new Collection();
+        $this->whitelistService
+            ->shouldReceive('getList')
+            ->with(
+                ['perPage' => null],
+                ['search' => null, 'order' => null]
+            )
+            ->andReturn($whitelistedIps);
+
+        $this->responseHelper
+            ->shouldReceive('error')
+            ->with(
+                Response::HTTP_FORBIDDEN,
+                Response::$statusTexts[Response::HTTP_FORBIDDEN],
+                config('constants.error_codes.ERROR_IP_ADDRESS_NOT_ALLOWED'),
+                trans('messages.custom_error_message.ERROR_IP_ADDRESS_NOT_ALLOWED')
+            );
+
+        $this->donationIpWhitelistMiddleware->handle($request, function (){});
+    }
+
+    /**
+     * @testdox Test IP whitelisted - Pass
      */
     public function testWhitelistedIpAddress()
+    {
+        $request = new Request();
+        $request->server->add(['REMOTE_ADDR' => '192.168.1.10']);
+        $myIpAddress = $request->ip();
+
+        $this->tenantActivatedSettingRepository
+            ->shouldReceive('checkTenantSettingStatus')
+            ->with(
+                'donation_ip_whitelist',
+                $request
+            )
+            ->andReturn(true);
+
+        $whitelistedIps = $this->whitelistedIps($myIpAddress);
+        $this->whitelistService
+            ->shouldReceive('getList')
+            ->with(
+                ['perPage' => null],
+                ['search' => null, 'order' => null]
+            )
+            ->andReturn($whitelistedIps);
+
+        $whitelists = array_column($whitelistedIps->toArray(), 'pattern');
+        $this->ipValidationHelper
+            ->shouldReceive('verify')
+            ->with(
+                $myIpAddress,
+                $whitelists
+            )
+            ->andReturn(true);
+
+        $this->responseHelper
+            ->shouldReceive('error')
+            ->never();
+
+        $this->donationIpWhitelistMiddleware->handle($request, function (){});
+    }
+
+    /**
+     * @testdox Test Non whitelisted IP - Error
+     */
+    public function testNonWhitelistedIp()
     {
         $request = new Request();
         $request->server->add(['REMOTE_ADDR' => '192.168.1.10']);
@@ -93,11 +197,16 @@ class DonationIpWhitelistMiddlewareTest extends TestCase
                 $request->ip(),
                 $whitelists
             )
-            ->andReturn(true);
+            ->andReturn(false);
 
         $this->responseHelper
             ->shouldReceive('error')
-            ->never();
+            ->with(
+                Response::HTTP_FORBIDDEN,
+                Response::$statusTexts[Response::HTTP_FORBIDDEN],
+                config('constants.error_codes.ERROR_IP_ADDRESS_NOT_ALLOWED'),
+                trans('messages.custom_error_message.ERROR_IP_ADDRESS_NOT_ALLOWED')
+            );
 
         $this->donationIpWhitelistMiddleware->handle($request, function (){});
     }
@@ -105,14 +214,25 @@ class DonationIpWhitelistMiddlewareTest extends TestCase
     /**
      * Returns Collection of DonationIpWhitelist
      *
-     * @return array
+     * @return Collection
      */
-    private function whitelistedIps()
+    private function whitelistedIps($customIp = null)
     {
-        return new Collection([
+        $collection = new Collection([
             factory(DonationIpWhitelist::class)->make(),
             factory(DonationIpWhitelist::class)->make()
         ]);
+
+        if ($customIp) {
+            $customIp = (new DonationIpWhitelist())
+                ->setAttribute('id', 'sample-pattern-id')
+                ->setAttribute('pattern', $customIp)
+                ->setAttribute('description', 'My IP');
+
+            $collection->add($customIp);
+        }
+
+        return $collection;
     }
 
     /**

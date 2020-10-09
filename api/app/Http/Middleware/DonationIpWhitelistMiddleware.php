@@ -79,21 +79,25 @@ class DonationIpWhitelistMiddleware
         if ($settingActivated) {
             $paginate = ['perPage' => null];
             $filters = ['search' => null, 'order' => null];
+
             $whitelistedIps = $this->whitelistService->getList(
                 $paginate,
                 $filters
             )->toArray();
 
-            if (!empty($whitelistedIps)) {
-                $whitelists = array_column($whitelistedIps, 'pattern');
-                if (!$this->ipValidationHelper->verify($request->ip(), $whitelists)) {
-                    return $this->responseHelper->error(
-                        Response::HTTP_FORBIDDEN,
-                        Response::$statusTexts[Response::HTTP_FORBIDDEN],
-                        config('constants.error_codes.ERROR_IP_ADDRESS_NOT_ALLOWED'),
-                        trans('messages.custom_error_message.ERROR_IP_ADDRESS_NOT_ALLOWED')
-                    );
-                }
+            if (empty($whitelistedIps)) {
+                return $this->forbidden(
+                    config('constants.error_codes.ERROR_IP_ADDRESS_NOT_ALLOWED'),
+                    trans('messages.custom_error_message.ERROR_IP_ADDRESS_NOT_ALLOWED')
+                );
+            }
+
+            $whitelists = array_column($whitelistedIps, 'pattern');
+            if (!$this->ipValidationHelper->verify($request->ip(), $whitelists)) {
+                return $this->forbidden(
+                    config('constants.error_codes.ERROR_IP_ADDRESS_NOT_ALLOWED'),
+                    trans('messages.custom_error_message.ERROR_IP_ADDRESS_NOT_ALLOWED')
+                );
             }
         }
 
