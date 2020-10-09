@@ -15,32 +15,41 @@ $tenantSetting = $pdo->query("
 try {
 	$connection->beginTransaction();
 
-	$tenantHasSetting = $pdo->prepare("
-		UPDATE tenant_has_setting SET deleted_at = ? WHERE `tenant_setting_id` = ?
+	$tenantHasSettingStatement = $pdo->prepare("
+		SELECT * FROM tenant_has_setting WHERE `tenant_setting_id` = :tenant_setting_id
 	");
-	$updateTenantHasSetting = $tenantHasSetting->execute([
-		null,
-		$tenantSetting['tenant_setting_id']
-	]);
-	
-	if ($updateTenantHasSetting === true) {
-		echo "Done reverting the update in the tenant_has_setting table... \n";
-		echo "Will revert the update in tenant_setting table now... \n";
+	$tenantHasSettingStatement->bindParam(':tenant_setting_id', $tenantSetting['tenant_setting_id'], PDO::PARAM_STR);
+	$tenantHasSettingStatement->execute();
 
-		$updateTenantSetting = $pdo->prepare("
-			UPDATE tenant_setting SET deleted_at = ? WHERE `tenant_setting_id` = ? AND `key` = 'time_credit_mission'
+	if (!empty($tenantHasSettingStatement->fetchAll())) {
+		echo "The table `tenant_has_setting` is not empty, we will now revert the update on it... \n";
+
+		$tenantHasSetting = $pdo->prepare("
+			UPDATE tenant_has_setting SET deleted_at = ? WHERE `tenant_setting_id` = ?
 		");
-		$updated = $updateTenantSetting->execute([
+		$tenantHasSetting = $tenantHasSetting->execute([
 			null,
 			$tenantSetting['tenant_setting_id']
 		]);
-
-		if ($updated === true) {
-			echo "Done reverting the update in the tenant_setting table now! \n";
+		if ($tenantHasSetting === true) {
+			echo "Done reverting the update on the `tenant_has_setting` table! \n";
 		}
 	}
+
+	echo "We will revert the update on the `tenant_setting` table now... \n";
+
+	$updateTenantSetting = $pdo->prepare("
+		UPDATE tenant_setting SET deleted_at = ? WHERE `tenant_setting_id` = ? AND `key` = 'time_credit_mission'
+	");
+	$updateTenantSetting = $updateTenantSetting->execute([
+		null,
+		$tenantSetting['tenant_setting_id']
+	]);
+	if ($updateTenantSetting === true) {
+		echo "Done reverting the update on the `tenant_setting` table! \n";
+	}
+
 	$connection->commit();
-	
 } catch (Exception $exception) {
 	$connection->rollback();
 	echo 'Failed: ' . $exception->getMessage() . "... \n";
