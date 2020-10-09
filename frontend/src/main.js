@@ -1,3 +1,6 @@
+import "core-js/shim";
+import "regenerator-runtime/runtime";
+
 import Vue from "vue";
 import VueScrollTo from "vue-scrollto";
 import BootstrapVue from "bootstrap-vue";
