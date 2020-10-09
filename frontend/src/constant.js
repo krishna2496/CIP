@@ -24,7 +24,6 @@ export default Object.freeze({
     QUICK_ACCESS_FILTERS: "quick_access_filters",
     TOTAL_HOURS_VOLUNTEERED: "total_hours_volunteered_in_platform",
     Total_MISSIONS_IN_PLATEFORM: "total_missions_in_platform",
-    TIME_CREDIT_MISSION: "time_credit_mission",
     USER_CAN_SUBMIT_MISSION: "user_can_submit_mission",
     SHARE_MISSION_FACEBOOK: "share_mission_facebook",
     SHARE_MISSION_TWITTER: "share_mission_twitter",
