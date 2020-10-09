@@ -83,7 +83,6 @@ class MissionRepository implements MissionInterface
      */
     private $missionTabRepository;
 
-
     /**
      * Create a new Mission repository instance.
      *
@@ -97,7 +96,6 @@ class MissionRepository implements MissionInterface
      * @param  App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository $tenantActivatedSettingRepository
      * @param  App\Repositories\UnitedNationSDG\UnitedNationSDGRepository $unitedNationSDGRepository
      * @param  App\Repositories\MissionMedia\MissionTabRepository $missionTabRepository
-     * @param App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository $tenantActivatedSettingRepository
      * @return void
      */
     public function __construct(
@@ -241,15 +239,17 @@ class MissionRepository implements MissionInterface
             }
         }
 
+        $activatedTenantSettings = $this->tenantActivatedSettingRepository
+            ->getAllTenantActivatedSetting($request);
+
         // check if donation mission setting enable or not for donation mission
-        $isDonationMissionEnable = $this->tenantActivatedSettingRepository->checkTenantSettingStatus(
+        $isDonationSettingEnabled = in_array(
             config('constants.tenant_settings.DONATION_MISSION'),
-            $request
+            $activatedTenantSettings
         );
 
-        //Add donation attribute
-        
-        if ($request->donation_attribute && $isDonationMissionEnable) {
+        // Add donation attribute
+        if ($request->donation_attribute && $isDonationSettingEnabled) {
             $donationData = array(
                 'mission_id' => $mission->mission_id,
                 'goal_amount_currency' => $request->donation_attribute['goal_amount_currency'] ?? null,
@@ -264,7 +264,7 @@ class MissionRepository implements MissionInterface
             );
             $this->modelsService->donationAttribute->create($donationData);
         }
-        
+
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
 
         // Add mission media images
@@ -306,9 +306,9 @@ class MissionRepository implements MissionInterface
         
         // Add mission impact
         if (isset($request->impact) && count($request->impact) > 0) {
-            $missionImpactSettingActivated = $this->tenantActivatedSettingRepository->checkTenantSettingStatus(
+            $missionImpactSettingActivated = in_array(
                 config('constants.tenant_settings.MISSION_IMPACT'),
-                $request
+                $activatedTenantSettings
             );
             if ($missionImpactSettingActivated) {
                 foreach ($request->impact as $impactValue) {
@@ -389,12 +389,12 @@ class MissionRepository implements MissionInterface
         }
 
         $mission = $this->modelsService->mission->findOrFail($id);
-        if ($request->mission_type === config('constants.mission_type.GOAL') || $request->mission_type === config('constants.mission_type.TIME') && $volunteeringAttributeArray) {    
+        if ($request->mission_type === config('constants.mission_type.GOAL') || $request->mission_type === config('constants.mission_type.TIME') && $volunteeringAttributeArray) {
             $mission->volunteeringAttribute()->update($volunteeringAttributeArray);
         }
-        
+
         $missionData = $request->toArray();
-        if ($request->mission_type === config('constants.mission_type.GOAL') || $request->mission_type === config('constants.mission_type.TIME')) {    
+        if ($request->mission_type === config('constants.mission_type.GOAL') || $request->mission_type === config('constants.mission_type.TIME')) {
             if (array_key_exists('total_seats', $volunteeringAttributeArray)) {
                 $missionData['total_seats'] = $volunteeringAttributeArray['total_seats'];
             }
@@ -416,14 +416,16 @@ class MissionRepository implements MissionInterface
             $mission->goalMission()->update($goalMissionArray);
         }
 
-        // check if donation mission setting enable or not for donation mission
-        $isDonationMissionEnable = $this->tenantActivatedSettingRepository->checkTenantSettingStatus(
+        $activatedTenantSettings = $this->tenantActivatedSettingRepository
+            ->getAllTenantActivatedSetting($request);
+        
+        $isDonationSettingEnabled = in_array(
             config('constants.tenant_settings.DONATION_MISSION'),
-            $request
+            $activatedTenantSettings
         );
-        $isDonationMissionEnable = true;
+
         //Add donation attribute         
-        if (isset($request->donation_attribute) && !empty($request->donation_attribute) && $isDonationMissionEnable) {
+        if (isset($request->donation_attribute) && !empty($request->donation_attribute) && $isDonationSettingEnabled) {
             $donationAttributes = [];
             if ($request->donation_attribute['goal_amount_currency']) {
                 $donationAttributes['goal_amount_currency'] =
@@ -593,9 +595,9 @@ class MissionRepository implements MissionInterface
 
         // Add/update impact mission
         if (isset($request->impact) && count($request->impact)) {
-            $missionImpactSettingActivated = $this->tenantActivatedSettingRepository->checkTenantSettingStatus(
+            $missionImpactSettingActivated = in_array(
                 config('constants.tenant_settings.MISSION_IMPACT'),
-                $request
+                $activatedTenantSettings
             );
             if ($missionImpactSettingActivated) {
                 foreach ($request->impact as $impactValue) {
@@ -903,13 +905,13 @@ class MissionRepository implements MissionInterface
                 $missionQuery->where('mission.organization_id', $request->input('explore_mission_params'));
             }
         }
-        //donation attribute
+        // donation attribute
         if ($request->with_donation_attributes && $request->with_donation_attributes !== ''
             && $request->with_donation_attributes !== 0) {
             $missionQuery->with(['donationAttribute']);
         }
 
-        //Explore mission by theme
+        // Explore mission by theme
         if ($userFilterData['search'] && $userFilterData['search'] !== '') {
             $missionQuery->where(function ($query) use ($userFilterData) {
                 $query->wherehas('missionLanguage', function ($missionLanguageQuery) use ($userFilterData) {
@@ -973,7 +975,7 @@ class MissionRepository implements MissionInterface
             }
         }
 
-        //Explore mission by top favourite
+        // Explore mission by top favourite
         if ($request->has('explore_mission_type') &&
         ($request->input('explore_mission_type') === config('constants.TOP_FAVOURITE'))) {
             $missionQuery->withCount(['favouriteMission as favourite_mission_counts']);
@@ -981,7 +983,7 @@ class MissionRepository implements MissionInterface
             $missionQuery->orderBY('favourite_mission_counts', 'desc');
         }
 
-        //Explore mission by most ranked
+        // Explore mission by most ranked
         if ($request->has('explore_mission_type') &&
         ($request->input('explore_mission_type') === config('constants.MOST_RANKED'))) {
             $missionQuery->withCount(['missionRating as average_rating' => function ($query) use ($request) {
@@ -991,7 +993,7 @@ class MissionRepository implements MissionInterface
             $missionQuery->orderBY('mission_rating_count', 'desc');
         }
 
-        //Explore mission by random
+        // Explore mission by random
         if ($request->has('explore_mission_type') &&
         ($request->input('explore_mission_type') === config('constants.RANDOM'))) {
             $missionQuery->inRandomOrder();
@@ -1591,7 +1593,7 @@ class MissionRepository implements MissionInterface
             }, 'missionTabs.getMissionTabDetail' => function ($query) {
             }]);
 
-        //donation attribute
+        // donation attribute
         if ($request->with_donation_attributes && $request->with_donation_attributes !== ''
             && $request->with_donation_attributes !== 0) {
             $missionQuery->with(['donationAttribute']);
@@ -2078,7 +2080,10 @@ class MissionRepository implements MissionInterface
 
         $missionTypeSettingsMap = [
             config('constants.mission_type.GOAL') => config('constants.tenant_settings.VOLUNTEERING_GOAL_MISSION'),
-            config('constants.mission_type.TIME') => config('constants.tenant_settings.VOLUNTEERING_TIME_MISSION')
+            config('constants.mission_type.TIME') => config('constants.tenant_settings.VOLUNTEERING_TIME_MISSION'),
+            config('constants.mission_type.DONATION') => config('constants.tenant_settings.DONATION_MISSION'),
+            config('constants.mission_type.EAF') => config('constants.tenant_settings.EAF'),
+            config('constants.mission_type.DISASTER_RELIEF') => config('constants.tenant_settings.DISASTER_RELIEF'),
         ];
 
         $missionTypes = [];
