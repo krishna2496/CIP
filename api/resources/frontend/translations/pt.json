@@ -386,7 +386,10 @@
 		"max_image_upload": "Podem ser incluídas no máximo 20 imagens",
 		"max_video_upload": "Podem ser incluídos no máximo 20 vídeos",
 		"duplicate_video_url": "Não é permitido URL de vídeo duplicada",
-		"invalid_saml_setting": "Os seguintes mapeamentos são necessários:"
+		"invalid_saml_setting": "Os seguintes mapeamentos são necessários:",
+		"password_should_contain_uppercase": "Pelo menos uma letra maiúscula",
+		"password_should_contain_lowercase": "Pelo menos uma letra minúscula",
+		"password_should_contain_numbers": "Pelo menos 1 dígito"
 	},
 	"export_timesheet_file_names": {
 		"PENDING_TIME_MISSION_ENTRIES_XLSX": "Pending_Time_Mission_Entries.xls",

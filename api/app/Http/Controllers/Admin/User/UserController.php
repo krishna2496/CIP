@@ -9,6 +9,7 @@ use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
 use App\Repositories\Notification\NotificationRepository;
 use App\Repositories\User\UserRepository;
+use App\Repositories\Timezone\TimezoneRepository;
 use App\Services\TimesheetService;
 use App\Services\UserService;
 use App\Traits\RestExceptionHandlerTrait;
@@ -70,6 +71,11 @@ class UserController extends Controller
     private $notificationRepository;
 
     /**
+     * @var App\Repositories\Timezone\TimezoneRepository
+     */
+    private $timezoneRepository;
+
+    /**
      * Create a new controller instance.
      *
      * @param App\Repositories\User\UserRepository $userRepository
@@ -89,7 +95,8 @@ class UserController extends Controller
         TimesheetService $timesheetService,
         Helpers $helpers,
         Request $request,
-        NotificationRepository $notificationRepository
+        NotificationRepository $notificationRepository,
+        TimezoneRepository $timezoneRepository
     ) {
         $this->userRepository = $userRepository;
         $this->responseHelper = $responseHelper;
@@ -99,6 +106,7 @@ class UserController extends Controller
         $this->helpers = $helpers;
         $this->userApiKey = $request->header('php-auth-user');
         $this->notificationRepository = $notificationRepository;
+        $this->timezoneRepository = $timezoneRepository;
     }
 
     /**
@@ -245,7 +253,13 @@ class UserController extends Controller
             "first_name" => "sometimes|required|max:60",
             "last_name" => "sometimes|required|max:60",
             "email" => "required|email|unique:user,email,NULL,user_id,deleted_at,NULL",
-            "password" => "required|min:8",
+            "password" => [
+                'required',
+                'min:8',
+                'regex:/[0-9]/',
+                'regex:/[a-z]/',
+                'regex:/[A-Z]/'
+            ],
             "availability_id" => "sometimes|required|integer|exists:availability,availability_id,deleted_at,NULL",
             "timezone_id" => "sometimes|required|integer|exists:timezone,timezone_id,deleted_at,NULL",
             "language_id" => "sometimes|required|int",
@@ -273,7 +287,8 @@ class UserController extends Controller
         // Server side validataions
         $validator = Validator::make(
             $request->all(),
-            $fieldsToValidate
+            $fieldsToValidate,
+            ['password.regex' => trans('messages.custom_error_message.ERROR_PASSWORD_VALIDATION_MESSAGE')]
         );
         // If request parameter have any error
         if ($validator->fails()) {
@@ -295,6 +310,12 @@ class UserController extends Controller
                     trans('messages.custom_error_message.ERROR_USER_INVALID_LANGUAGE')
                 );
             }
+        }
+
+        if (!isset($request->timezone_id)) {
+            $defaultTimezone = env('DEFAULT_TIMEZONE', 'Europe/Paris');
+            $timezone = $this->timezoneRepository->getTenantTimezoneByCode($defaultTimezone);
+            $request->merge(['timezone_id' => $timezone->timezone_id]);
         }
 
         $request->expiry = (isset($request->expiry) && $request->expiry)
@@ -384,7 +405,8 @@ class UserController extends Controller
             // Server side validataions
             $validator = Validator::make(
                 $request->all(),
-                $fieldsToValidate
+                $fieldsToValidate,
+                ['password.regex' => trans('messages.custom_error_message.ERROR_PASSWORD_VALIDATION_MESSAGE')]
             );
 
             // If request parameter have any error
@@ -501,7 +523,14 @@ class UserController extends Controller
                 "email",
                 Rule::unique('user')->ignore($id, 'user_id,deleted_at,NULL')
             ],
-            "password" => "sometimes|required|min:8",
+            "password" => [
+                'sometimes',
+                'required',
+                'min:8',
+                'regex:/[0-9]/',
+                'regex:/[a-z]/',
+                'regex:/[A-Z]/'
+            ],
             "employee_id" => [
                 "sometimes",
                 "required",
@@ -551,7 +580,6 @@ class UserController extends Controller
             'department',
             'linked_in_url',
             'why_i_volunteer',
-            'timezone_id',
             'availability_id',
             'city_id',
             'country_id',

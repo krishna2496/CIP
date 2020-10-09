@@ -159,7 +159,7 @@
         customFeildData: {}
       };
 
-      _.each(this.CustomFieldList, wrr => {
+      this.CustomFieldList.forEach(wrr => {
         if (wrr.is_mandatory == 1) {
           validations.customFeildData[wrr.field_id] = {
             required
@@ -299,19 +299,19 @@
       getSelectedItems(){
         let options = [];
         let selectedItems = [];
-        _.map(this.optionList, (item) => {
+        this.optionList.forEach((item) => {
           if(item.type == 'multiselect') {
             let arr = [];
-            _.map(item.translations.values, (a) => {
-              _.each(Object.keys(a), function(k){
+            item.translations.values.forEach((a) => {
+              Object.keys(a).forEach(function(k){
                 arr[k] = a[k];
               })
-            })
+            });
             options[item.field_id] = arr;
 
             if(item.user_custom_field_value != ''){
               let obj = [];
-              _.each(item.user_custom_field_value.split(","), function(val){
+              item.user_custom_field_value.split(",").forEach(function(val){
                 if (options[item.field_id][val]) {
                   obj.push({
                     text: options[item.field_id][val],

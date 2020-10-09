@@ -15,6 +15,7 @@ use App\Repositories\Slider\SliderRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Traits\RestExceptionHandlerTrait;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use InvalidArgumentException;
 use Illuminate\Http\JsonResponse;
 use Validator;
@@ -177,6 +178,55 @@ class TenantOptionController extends Controller
         $apiStatus = Response::HTTP_OK;
 
         return $this->responseHelper->success($apiStatus, '', $apiData);
+    }
+
+    /**
+     * Get tenant custom favicon from table `tenant_options`
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function getCustomFavicon(Request $request): JsonResponse
+    {
+        $isCustomFaviconEnabled = false;
+        $tenantCustomFaviconUrl = '';
+
+        // Check presence of custom favicon option
+        try {
+            $tenantOption = $this->tenantOptionRepository->getOptionWithCondition(['option_name' => 'custom_favicon']);
+            $isCustomFaviconEnabled = $tenantOption !== null && $tenantOption->option_value === 1;
+        } catch (\Exception $e) {
+            /*
+             * If there was some trouble when retrieving this option
+             * we have nothing to do as the default is to consider
+             * the custom favicon option turned off
+             */
+        }
+
+        if ($isCustomFaviconEnabled) {
+            $tenantName = $this->helpers->getSubDomainFromRequest($request);
+            $assetsFolder = env('AWS_S3_ASSETS_FOLDER_NAME');
+            $customFaviconName = config('constants.AWS_S3_CUSTOM_FAVICON_NAME');
+
+            $customFaviconS3Path = $tenantName . '/'
+                . $assetsFolder
+                . '/images/favicon/'
+                . $customFaviconName;
+
+            if (Storage::disk('s3')->exists($customFaviconS3Path)) {
+                $tenantCustomFaviconUrl = Storage::disk('s3')->url($customFaviconS3Path);
+            }
+        }
+
+        $apiData = [
+            'custom_favicon' => $tenantCustomFaviconUrl,
+        ];
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage = $tenantCustomFaviconUrl !== '' ? trans('messages.success.MESSAGE_FAVICON_UPLOADED') :
+            trans('messages.custom_error_message.ERROR_NO_DATA_FOUND');
+
+        return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 
     /**

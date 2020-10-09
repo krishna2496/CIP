@@ -2,33 +2,29 @@
 
 namespace App\Http\Controllers\App\Auth;
 
-use Validator;
+use App\Events\User\UserActivityLogEvent;
+use App\Factories\JWTCookieFactory;
+use App\Helpers\Helpers;
+use App\Helpers\LanguageHelper;
+use App\Helpers\ResponseHelper;
+use App\Http\Controllers\Config;
+use App\Http\Controllers\Controller;
+use App\Models\PasswordReset;
+use App\Models\TenantOption;
+use App\Repositories\TenantOption\TenantOptionRepository;
+use App\Repositories\User\UserRepository;
+use App\Traits\RestExceptionHandlerTrait;
+use App\User;
+use Carbon\Carbon;
 use DateTime;
 use DB;
-use App\User;
-use App\Models\TenantOption;
-use Firebase\JWT\JWT;
+use Illuminate\Auth\Passwords\PasswordBrokerManager;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Http\JsonResponse;
-use App\Http\Controllers\Controller;
-use Firebase\JWT\ExpiredException;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Auth\Passwords\PasswordBrokerManager;
-use Illuminate\Support\Facades\Password;
-use App\Http\Controllers\Config;
-use App\Helpers\Helpers;
-use App\Helpers\ResponseHelper;
-use App\Models\PasswordReset;
-use Carbon\Carbon;
-use App\Repositories\TenantOption\TenantOptionRepository;
-use App\Traits\RestExceptionHandlerTrait;
-use InvalidArgumentException;
-use App\Helpers\LanguageHelper;
-use App\Exceptions\TenantDomainNotFoundException;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use App\Repositories\User\UserRepository;
-use App\Events\User\UserActivityLogEvent;
+use Symfony\Component\HttpFoundation\Cookie;
+use Validator;
 
 //!  Auth controller
 /*!
@@ -37,6 +33,7 @@ This controller is responsible for handling authenticate, change password and re
 class AuthController extends Controller
 {
     use RestExceptionHandlerTrait;
+
     /**
      * The request instance.
      *
@@ -189,6 +186,10 @@ class AuthController extends Controller
             }
         }
 
+        if ($userDetail->timezone_id === 0) {
+            $userDetail->is_profile_complete = '';
+        }
+
         // Generate JWT token
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
 
@@ -210,6 +211,7 @@ class AuthController extends Controller
             (isset($userDetail->receive_email_notification)) && $userDetail->receive_email_notification !=""
         ) ?
         $userDetail->receive_email_notification : '0';
+        $data['isSuccessfulLogin'] = true;
 
         $apiData = $data;
         $apiStatus = Response::HTTP_OK;
@@ -225,8 +227,17 @@ class AuthController extends Controller
             null,
             $userDetail->user_id
         ));
-        header('Token: '.$this->helpers->getJwtToken($userDetail->user_id, $tenantName));
-        return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+
+        // As we don't use HTTPS on the local stack, it's not possible to use secured cookies on this environment
+        $isSecuredCookie = config('app.env') !== 'local';
+
+        // Create the cookie holding the token
+        $jwtToken = $this->helpers->getJwtToken($userDetail->user_id, $tenantName);
+        $cookie = JWTCookieFactory::make($jwtToken, config('app.url'), $isSecuredCookie);
+
+        return $this->responseHelper
+            ->success($apiStatus, $apiMessage, $apiData)
+            ->withCookie($cookie);
     }
 
     /**
@@ -341,9 +352,17 @@ class AuthController extends Controller
         $validator = Validator::make($request->toArray(), [
                 'email' => 'required|email',
                 'token' => 'required',
-                'password' => 'required|min:8',
-                'password_confirmation' => 'required|min:8|same:password',
-        ]);
+                'password' => [
+                    'required',
+                    'min:8',
+                    'regex:/[0-9]/',
+                    'regex:/[a-z]/',
+                    'regex:/[A-Z]/'
+                ],
+                'password_confirmation' => 'required|min:8|same:password'
+            ],
+            ['password.regex' => trans('messages.custom_error_message.ERROR_PASSWORD_VALIDATION_MESSAGE')]
+        );
 
         if ($validator->fails()) {
             return $this->responseHelper->error(
@@ -442,10 +461,18 @@ class AuthController extends Controller
     public function changePassword(Request $request): JsonResponse
     {
         $validator = Validator::make($request->toArray(), [
-            'old_password' => 'required',
-            'password' => 'required|min:8',
-            'confirm_password' => 'required|min:8|same:password',
-        ]);
+                'old_password' => 'required',
+                'password' => [
+                    'required',
+                    'min:8',
+                    'regex:/[0-9]/',
+                    'regex:/[a-z]/',
+                    'regex:/[A-Z]/'
+                ],
+                'confirm_password' => 'required|min:8|same:password',
+            ],
+            ['password.regex' => trans('messages.custom_error_message.ERROR_PASSWORD_VALIDATION_MESSAGE')]
+        );
 
         if ($validator->fails()) {
             return $this->responseHelper->error(
@@ -473,9 +500,15 @@ class AuthController extends Controller
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
         $newToken = ($passwordChange) ? $this->helpers->getJwtToken($request->auth->user_id, $tenantName) : '';
 
+        // As we don't use HTTPS on the local stack, it's not possible to use secured cookies on this environment
+        $isSecuredCookie = config('app.env') !== 'local';
+
+        // Create the cookie holding the token
+        $cookie = JWTCookieFactory::make($newToken, config('app.url'), $isSecuredCookie);
+
         // Send response
         $apiStatus = Response::HTTP_OK;
-        $apiData = array('token' => $newToken);
+        $apiData = [];
         $apiMessage = trans('messages.success.MESSAGE_PASSWORD_CHANGE_SUCCESS');
 
         // Make activity log
@@ -489,6 +522,39 @@ class AuthController extends Controller
             $request->auth->user_id
         ));
 
-        return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+        return $this->responseHelper
+            ->success($apiStatus, $apiMessage, $apiData)
+            ->withCookie($cookie);
+    }
+
+    public function transmute(Request $request)
+    {
+        $isSecuredCookie = config('app.env') !== 'local';
+        $credentials = $this->helpers->decodeJwtToken($request->token);
+
+        $newToken = $this->helpers->getJwtToken(
+            $credentials->sub,
+            $this->helpers->getSubDomainFromRequest($request)
+        );
+
+        $cookie = JWTCookieFactory::make($newToken, config('app.url'), $isSecuredCookie);
+
+        return $this->responseHelper
+            ->success(
+                Response::HTTP_OK,
+                trans('messages.success.MESSAGE_USER_LOGGED_IN')
+            )
+            ->withCookie($cookie);
+    }
+
+    public function logout()
+    {
+        return $this->responseHelper
+            ->success(
+                Response::HTTP_OK,
+                'You were successfully logged out',
+                []
+            )
+            ->withCookie(JWTCookieFactory::makeExpired());
     }
 }

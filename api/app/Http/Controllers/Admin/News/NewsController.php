@@ -183,10 +183,10 @@ class NewsController extends Controller
                 $validator->errors()->first()
             );
         }
-        
+
         // Create a new record
         $news = $this->newsRepository->store($request);
-        
+
         // Set response data
         $apiStatus = Response::HTTP_CREATED;
         $apiMessage = trans('messages.success.MESSAGE_NEWS_CREATED');
@@ -203,7 +203,7 @@ class NewsController extends Controller
             null,
             $news->news_id
         ));
-        
+
         // Send notification to user
         $notificationType = config('constants.notification_type_keys.NEW_NEWS');
         $entityId = $news->news_id;
@@ -271,7 +271,7 @@ class NewsController extends Controller
                 $news->news_id
             ));
 
-            
+
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
@@ -311,10 +311,10 @@ class NewsController extends Controller
                 $languageCode,
                 $defaultTenantLanguageCode
             );
-            
+
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_NEWS_FOUND');
-            
+
             return $this->responseHelper->success($apiStatus, $apiMessage, $newsTransform);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
@@ -333,9 +333,9 @@ class NewsController extends Controller
     public function destroy(int $newsId): JsonResponse
     {
         try {
-            $news = $this->newsRepository->delete($newsId);
+            $this->newsRepository->delete($newsId);
             $this->notificationRepository->deleteNewsNotifications($newsId);
-            
+
             // Set response data
             $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_NEWS_DELETED');
