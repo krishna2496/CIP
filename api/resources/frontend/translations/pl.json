@@ -36,7 +36,6 @@
 		"all_rights_reserved": "Wszelkie prawa zastrzeżone",
 		"add": "Dodaj",
 		"already_volunteered": "Już zgłoszony na ochotnika",
-		"on_going_opportunities": "Bieżące możliwości",
 		"view_detail": "Zobacz szczegóły",
 		"no_record_found": "Nie znaleziono żadnych danych",
 		"oldest": "Najstarszy",
@@ -297,7 +296,14 @@
 		"virtual_missions" : "Wirtualny wolontariat",
 		"home" : "Dom",
 		"login_with_sso": "Entrar com SSO",
-		"site_title" : "Strona główna"
+		"site_title": "Strona główna",
+		"ongoing": "W trakcie realizacji",
+		"more": "więcej",
+		"and": "oraz",
+		"for": "Dla",
+		"on": "Na stronie",
+		"sort_deadline": "Sortowanie według terminów",
+		"no_image_available": "Brak obrazu"
 	},
 	"placeholder": {
 		"email_address": "Wprowadź adres e-mail",
