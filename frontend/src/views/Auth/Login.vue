@@ -1,9 +1,14 @@
 <template>
 <div class="signin-page-wrapper" v-if="isPageShown">
     <TheSlider v-if="isShowComponent" />
-    <div class="signin-form-wrapper" v-bind:class="{ 'custom-text-wrap' : customText !== ''}">
+    <div class="signin-form-wrapper"
+      :class="{ 'custom-text-wrap' : customText !== ''}">
         <div class="lang-drodown-wrap">
-            <AppCustomDropdown :optionList="langList" :defaultText="defautLang" translationEnable="false" @updateCall="setLanguage" v-if="isShowComponent" />
+            <AppCustomDropdown :optionList="langList"
+              :defaultText="defautLang"
+              translationEnable="false"
+              @updateCall="setLanguage"
+              v-if="isShowComponent" />
         </div>
         <div class="signin-form-block">
             <div v-if="customText != '' && customTextPosition == 'before_logo'"
@@ -28,7 +33,17 @@
                 <b-form class="signin-form">
                     <b-form-group>
                         <label for="">{{ languageData.label.email_address }}</label>
-                        <b-form-input id="" type="email" v-model="login.email" v-bind:placeholder='languageData.placeholder.email_address' :class="{ 'is-invalid': $v.login.email.$error }" ref='email' autofocus maxlength="120" @keypress.enter.prevent="handleSubmit" @keydown.space.prevent></b-form-input>
+                        <b-form-input id=""
+                            type="email"
+                            v-model="login.email"
+                            v-bind:placeholder='languageData.placeholder.email_address'
+                            :class="{ 'is-invalid': $v.login.email.$error }"
+                            ref="email"
+                            autofocus
+                            maxlength="120"
+                            @keypress.enter.prevent="handleSubmit"
+                            @keydown.space.prevent>
+                        </b-form-input>
                         <div v-if="submitted && !$v.login.email.required" class="invalid-feedback">
                             {{ languageData.errors.email_required }}</div>
                         <div v-if="submitted && !$v.login.email.email" class="invalid-feedback">
@@ -36,11 +51,23 @@
                     </b-form-group>
                     <b-form-group>
                         <label for="">{{ languageData.label.password }}</label>
-                        <b-form-input id="" type="password" v-model="login.password" required v-bind:placeholder='languageData.placeholder.password' :class="{ 'is-invalid': $v.login.password.$error }" maxlength="120" @keypress.enter.prevent="handleSubmit" @keydown.space.prevent autocomplete="password"></b-form-input>
+                        <b-form-input id=""
+                            type="password"
+                            v-model="login.password"
+                            required
+                            :placeholder="languageData.placeholder.password"
+                            :class="{ 'is-invalid': $v.login.password.$error }"
+                            maxlength="120"
+                            @keypress.enter.prevent="handleSubmit"
+                            @keydown.space.prevent autocomplete="password">
+                        </b-form-input>
                         <div v-if="submitted && !$v.login.password.required" class="invalid-feedback">
                             {{ languageData.errors.password_required }}</div>
                     </b-form-group>
-                    <b-button type="button" @click="handleSubmit" class=" btn-bordersecondary">
+                    <b-button
+                        type="button"
+                        @click="handleSubmit"
+                        class=" btn-bordersecondary">
                         {{ languageData.label.login }}
                     </b-button>
                 </b-form>
@@ -50,7 +77,11 @@
                 </div>
             </div>
 
-            <b-button type="button" v-if="hasSSO" @click="handleSSO" class=" btn-borderprimary mt-3">
+            <b-button
+                type="button"
+                v-if="hasSSO"
+                @click="handleSSO"
+                class=" btn-borderprimary mt-3">
                 {{ languageData.label.login_with_sso || 'Login with SSO' }}
             </b-button>
 
@@ -66,182 +97,173 @@
 </template>
 
 <script>
-import TheSlider from '../../components/TheSlider';
-import ThePrimaryFooter from "../../components/Layouts/ThePrimaryFooter";
-import AppCustomDropdown from '../../components/AppCustomDropdown';
-import {
+  import TheSlider from '../../components/TheSlider';
+  import ThePrimaryFooter from '../../components/Layouts/ThePrimaryFooter';
+  import AppCustomDropdown from '../../components/AppCustomDropdown';
+  import {
     required,
     email
-} from 'vuelidate/lib/validators';
-import store from '../../store';
-import {
+  } from 'vuelidate/lib/validators';
+  import store from '../../store';
+  import {
     loadLocaleMessages,
     login,
     databaseConnection,
     tenantSetting,
     policy
-} from '../../services/service';
-import {
+  } from '../../services/service';
+  import {
     setSiteTitle,
     cleanHtml
-} from '../../utils';
+  } from '../../utils';
 
-export default {
+  export default {
     components: {
-        ThePrimaryFooter,
-        AppCustomDropdown,
-        TheSlider,
+      ThePrimaryFooter,
+      AppCustomDropdown,
+      TheSlider,
     },
 
     data() {
-        return {
-            flag: false,
-            myValue: '',
-            defautLang: '',
-            langList: [],
-            login: {
-                email: '',
-                password: '',
-            },
-            submitted: false,
-            classVariant: 'danger',
-            message: null,
-            showDismissibleAlert: false,
-            isShowComponent: false,
-            languageData: [],
-            isPageShown: false,
-            componentKey: 0,
-            customText: '',
-            customTextPosition: 'before_logo'
-        };
+      return {
+        flag: false,
+        myValue: '',
+        defautLang: '',
+        langList: [],
+        login: {
+            email: '',
+            password: '',
+        },
+        submitted: false,
+        classVariant: 'danger',
+        message: null,
+        showDismissibleAlert: false,
+        isShowComponent: false,
+        languageData: [],
+        isPageShown: false,
+        componentKey: 0,
+        customText: '',
+        customTextPosition: 'before_logo'
+      };
     },
 
     validations: {
-        login: {
-            email: {
-                required,
-                email
-            },
-            password: {
-                required
-            }
+      login: {
+        email: {
+          required,
+          email
+        },
+        password: {
+          required
         }
+      }
     },
+
     methods: {
-        async createConnection() {
-            await databaseConnection(this.langList).then(() => {
-                this.isShowComponent = true
-                // Get langauage list from Local Storage
-                this.langList = JSON.parse(store.state.listOfLanguage)
-                const defaultLanguage = store.state.defaultLanguage;
-                this.defautLang = defaultLanguage.toUpperCase();
-                this.hasSSO = Boolean(store.state.samlSettings);
-                this.setCustomText();
+      async createConnection() {
+        await databaseConnection(this.langList).then(() => {
+          this.isShowComponent = true
+          // Get langauage list from Local Storage
+          this.langList = JSON.parse(store.state.listOfLanguage)
+          const defaultLanguage = store.state.defaultLanguage;
+          this.defautLang = defaultLanguage.toUpperCase();
+          this.hasSSO = Boolean(store.state.samlSettings);
+          this.setCustomText();
 
-                // Get tenant setting
-                tenantSetting();
-                loadLocaleMessages(store.state.defaultLanguage).then(() => {
-                    this.languageData = JSON.parse(store.state.languageLabel);
-                    setSiteTitle();
-                    this.isPageShown = true
-                    setTimeout(() => {
-                        if (this.$refs.email) {
-                            this.$refs.email.focus();
-                        }
-                    }, 500)
-                });
-            })
-        },
-
-        async setLanguage(language) {
-            this.defautLang = language.selectedVal;
-            store.commit('setDefaultLanguage', language);
-            this.$i18n.locale = language.selectedVal.toLowerCase()
-            await loadLocaleMessages(this.$i18n.locale);
+          // Get tenant setting
+          tenantSetting();
+          loadLocaleMessages(store.state.defaultLanguage).then(() => {
             this.languageData = JSON.parse(store.state.languageLabel);
-            this.setCustomText();
-            this.$forceUpdate();
-            this.$refs.ThePrimaryFooter.$forceUpdate()
-            this.componentKey += 1;
             setSiteTitle();
-        },
+            this.isPageShown = true
+            setTimeout(() => {
+              if (this.$refs.email) {
+                this.$refs.email.focus();
+              }
+            }, 500)
+          });
+        })
+      },
 
-        setCustomText() {
-            const customTextArray = JSON.parse(store.state.customLoginText)
-            if (customTextArray.position !== '' && customTextArray.position != null) {
-                this.customTextPosition = customTextArray.position;
-            }
-            const translations = customTextArray.translations;
-            if (!translations || !Array.isArray(translations)) {
-                return;
-            }
+      async setLanguage(language){
+        this.defautLang = language.selectedVal;
+        store.commit('setDefaultLanguage',language);
+        this.$i18n.locale = language.selectedVal.toLowerCase()
+        await loadLocaleMessages(this.$i18n.locale);
+        this.languageData = JSON.parse(store.state.languageLabel);
+        this.$forceUpdate();
+        this.$refs.ThePrimaryFooter.$forceUpdate()
+        this.componentKey += 1;
+        setSiteTitle();
+      },
 
-            const translatedCustomText = translations.find((item) => {
-                return item.lang.toLowerCase() === store.state.defaultLanguage.toLowerCase();
-            });
-            if (translatedCustomText && translatedCustomText.message) {
-                this.customText = cleanHtml(translatedCustomText.message);
-                return;
-            }
-
-            // get custom text for default language if no translation is found
-            const customTextInDefaultLang = translations.find((item) => {
-                return item.lang.toLowerCase() === store.state.defaultTenantLanguage.toLowerCase();
-            });
-            if (customTextInDefaultLang && customTextInDefaultLang.message) {
-                this.customText = cleanHtml(customTextInDefaultLang.message);
-            }
-        },
-
-        handleSubmit() {
-            this.submitted = true;
-            this.$v.$touch();
-            // stop here if form is invalid
-            if (this.$v.$invalid) {
-                return;
-            }
-            // Call to login service with params email address and password
-            login(this.login).then(response => {
-                if (response.error === true) {
-                    this.message = null;
-                    this.showDismissibleAlert = true
-                    this.classVariant = 'danger'
-                    //set error msg
-                    this.message = response.message
-                } else {
-                    //redirect to landing page
-                    policy().then(response => {
-                        if (response.error == false) {
-                            if (response.data.length > 0) {
-                                store.commit('policyPage', response.data)
-                            } else {
-                                store.commit('policyPage', null)
-                            }
-                        } else {
-                            store.commit('policyPage', null)
-                        }
-                    });
-                    if (this.$route.query.returnUrl) {
-                        this.$router.back();
-                        return;
-                    }
-                    this.$router.replace({
-                        name: "home"
-                    });
-                }
-            });
-        },
-
-        handleSSO() {
-            window.location = store.state.samlSettings.sso_url;
+      handleSubmit() {
+        this.submitted = true;
+        this.$v.$touch();
+        // stop here if form is invalid
+        if (this.$v.$invalid) {
+          return;
         }
+        // Call to login service with params email address and password
+        login(this.login).then( response => {
+          if (response.error === true) {
+            this.message = null;
+            this.showDismissibleAlert = true
+            this.classVariant = 'danger'
+            //set error msg
+            this.message = response.message
+          } else {
+            // redirect to landing page
+            if (this.$route.query.returnUrl) {
+              this.$router.back();
+              return;
+            }
+            this.$router.replace({
+              name: 'home'
+            });
+          }
+        });
+      },
+
+      handleSSO() {
+        window.location = store.state.samlSettings.sso_url;
+      },
+
+      setCustomText() {
+        const customTextArray = JSON.parse(store.state.customLoginText)
+        if (customTextArray.position !== '' && customTextArray.position != null) {
+          this.customTextPosition = customTextArray.position;
+        }
+        const translations = customTextArray.translations;
+        if (!translations || !Array.isArray(translations)) {
+          return;
+        }
+
+        const translatedCustomText = translations.find((item) => {
+          return item.lang.toLowerCase() === store.state.defaultLanguage.toLowerCase();
+        });
+        if (translatedCustomText && translatedCustomText.message) {
+          this.customText = cleanHtml(translatedCustomText.message);
+          return;
+        }
+
+        // get custom text for default language if no translation is found
+        const customTextInDefaultLang = translations.find((item) => {
+          return item.lang.toLowerCase() === store.state.defaultTenantLanguage.toLowerCase();
+        });
+        if (customTextInDefaultLang && customTextInDefaultLang.message) {
+          this.customText = cleanHtml(customTextInDefaultLang.message);
+        }
+      }
     },
+
     created() {
-        // Database connection and fetching tenant options api
-        this.createConnection();
+      // Database connection and fetching tenant options api
+      this.createConnection();
     },
+
     beforeCreate() {
-        document.body.classList.remove("loader-enable");
+      document.body.classList.remove('loader-enable');
     }
-};
+  };
 </script>

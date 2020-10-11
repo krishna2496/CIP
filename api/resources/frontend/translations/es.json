@@ -36,7 +36,6 @@
 		"all_rights_reserved": "Todos los derechos reservados",
 		"add": "Añadir",
 		"already_volunteered": "Ya prestó voluntariado",
-		"on_going_opportunities": "Oportunidades en curso",
 		"view_detail": "Ver detalles",
 		"no_record_found": "No se encontraron registros",
 		"oldest": "Más antiguo",
@@ -297,7 +296,14 @@
 		"virtual_missions" : "Voluntariado virtual",
 		"home" : "Hogar",
 		"login_with_sso": "Iniciar sesión con SSO",
-		"site_title" : "Inicio"
+		"site_title": "Inicio",
+		"ongoing": "En curso",
+		"more": "más",
+		"and": "y",
+		"for": "Para",
+		"on": "En",
+		"sort_deadline": "Ordenar por fecha límite",
+		"no_image_available": "No hay imagen disponible"
 	},
 	"placeholder": {
 		"email_address": "Introduzca la dirección de correo electrónico",

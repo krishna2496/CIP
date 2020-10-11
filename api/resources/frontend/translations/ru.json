@@ -36,7 +36,6 @@
 		"all_rights_reserved": "Все права защищены",
 		"add": "Добавить",
 		"already_volunteered": "Отработано волонтёром",
-		"on_going_opportunities": "Текущие возможности",
 		"view_detail": "Просмотреть детали",
 		"no_record_found": "Записей не найдено",
 		"oldest": "Самые старые",
@@ -297,7 +296,14 @@
 		"virtual_missions" : "Виртуальное волонтерство",
 		"home" : "дом",
 		"login_with_sso": "Войти с помощью SSO",
-		"site_title" : "Главная"
+		"site_title": "Главная",
+		"ongoing": "Постоянно",
+		"more": "Больше",
+		"and": "а также",
+		"for": "За",
+		"on": "Ha",
+		"sort_deadline": "Сортировать по сроку",
+		"no_image_available": "Изображение отсутствует"
 	},
 	"placeholder": {
 		"email_address": "Введите e-mail",
