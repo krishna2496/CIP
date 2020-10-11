@@ -112,10 +112,7 @@
     tenantSetting,
     policy
   } from '../../services/service';
-  import {
-    setSiteTitle,
-    cleanHtml
-  } from '../../utils';
+  import { setSiteTitle } from '../../utils';
 
   export default {
     components: {
@@ -243,7 +240,7 @@
           return item.lang.toLowerCase() === store.state.defaultLanguage.toLowerCase();
         });
         if (translatedCustomText && translatedCustomText.message) {
-          this.customText = cleanHtml(translatedCustomText.message);
+          this.customText = this.$sanitize(translatedCustomText.message);
           return;
         }
 
@@ -252,7 +249,7 @@
           return item.lang.toLowerCase() === store.state.defaultTenantLanguage.toLowerCase();
         });
         if (customTextInDefaultLang && customTextInDefaultLang.message) {
-          this.customText = cleanHtml(customTextInDefaultLang.message);
+          this.customText = this.$sanitize(customTextInDefaultLang.message);
         }
       }
     },
