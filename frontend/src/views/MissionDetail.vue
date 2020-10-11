@@ -117,7 +117,7 @@
                                                     {{ missionDetail.end_date | formatDate }}
                                                 </template>
                                                 <template v-else>
-                                                    {{ languageData.label.on_going_opportunities }}
+                                                    {{ languageData.label.ongoing }}
                                                 </template>
                                             </template>
                                             <!-- Mission type goal -->
@@ -260,7 +260,7 @@
                                                 <p class="text-wrap">{{missionDetail.start_date | formatDate}}</p>
                                             </template>
                                             <template v-else>
-                                                <p class="text-wrap">{{ languageData.label.on_going_opportunities }}</p>
+                                                <p class="text-wrap">{{ languageData.label.ongoing }}</p>
                                             </template>
 
                                         </div>

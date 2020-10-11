@@ -36,7 +36,6 @@
 		"all_rights_reserved": "Alle Rechte vorbehalten",
 		"add": "Hinzufügen",
 		"already_volunteered": "Bereits freiwillig gemeldet",
-		"on_going_opportunities": "Vorhandene Möglichkeiten",
 		"view_detail": "Einzelheiten anzeigen",
 		"no_record_found": "Keine Aufzeichnungen gefunden",
 		"oldest": "Älteste",
@@ -297,7 +296,14 @@
 		"virtual_missions" : "Virtuelle Freiwilligenarbeit",
 		"home" : "Zuhause",
 		"login_with_sso": "Anmeldung mit SSO",
-		"site_title" : "Startseite"
+		"site_title": "Startseite",
+		"ongoing": "Laufend",
+		"more": "mehr",
+		"and": "und",
+		"for": "Für",
+		"on": "Auf",
+		"sort_deadline": "Nach Frist sortieren",
+		"no_image_available": "Kein Bild verfügbar"
 	},
 	"placeholder": {
 		"email_address": "E-Mail-Adresse eingeben",

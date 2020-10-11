@@ -36,7 +36,6 @@
 		"all_rights_reserved": "Kaikki oikeudet pidätetään",
 		"add": "Lisää",
 		"already_volunteered": "Tarjouduttu jo vapaaehtoiseksi",
-		"on_going_opportunities": "Tämänhetkiset mahdollisuudet",
 		"view_detail": "Katso tiedot",
 		"no_record_found": "Tietoja ei löytynyt",
 		"oldest": "Vanhin",
@@ -297,7 +296,14 @@
 		"virtual_missions" : "Virtuaalinen vapaaehtoistyö",
 		"home" : "Koti",
 		"login_with_sso": "Kirjaudu sisään SSO: lla",
-		"site_title" : "Koti"
+		"site_title": "Koti",
+		"ongoing": "Jatkuva",
+		"more": "lisää",
+		"and": "ja",
+		"for": "Sillä",
+		"on": "Päällä",
+		"sort_deadline": "Lajittele määräajan mukaan",
+		"no_image_available": "Ei kuvaa saatavilla"
 	},
 	"placeholder": {
 		"email_address": "Anna sähköpostiosoite",
