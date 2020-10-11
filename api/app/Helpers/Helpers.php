@@ -546,10 +546,10 @@ class Helpers
      * Check for valid currency from `ci_admin` table.
      *
      * @param \Illuminate\Http\Request $request
-     * @param String
-     * @return mix
+     * @param string $currencyCode
+     * @return bool
      */
-    public function isValidTenantCurrency(Request $request, $currencyCode)
+    public function isValidTenantCurrency(Request $request, string $currencyCode)
     {
         $tenant = $this->getTenantDetail($request);
         // Connect master database to get currency details

@@ -166,7 +166,7 @@ class MissionRepository implements MissionInterface
             'organisation_detail' => $organizationDetail,
             'mission_type' => $request->mission_type
         ];
-       
+
         // Create new record
         $mission = $this->modelsService->mission->create($missionData);
         if ($request->mission_type === config('constants.mission_type.GOAL') || $request->mission_type === config('constants.mission_type.TIME')) {
@@ -180,7 +180,7 @@ class MissionRepository implements MissionInterface
             );
             $mission->goalMission()->create($goalMissionArray);
         }
-        
+
         // Entry into time_mission table
         if ($request->mission_type == 'TIME') {
             $timeMissionArray = array(
@@ -303,7 +303,7 @@ class MissionRepository implements MissionInterface
                 }
             }
         }
-        
+
         // Add mission impact
         if (isset($request->impact) && count($request->impact) > 0) {
             $missionImpactSettingActivated = in_array(
@@ -321,7 +321,7 @@ class MissionRepository implements MissionInterface
                 }
             }
         }
-        
+
         // Add UN SDG for mission
         if (isset($request->un_sdg) && count($request->un_sdg) > 0) {
             $this->missionUnitedNationSDGRepository->addUnSdg($mission->mission_id, $request->toArray());
@@ -368,63 +368,78 @@ class MissionRepository implements MissionInterface
             $request->request->add(['organization_id' => $organization->organization_id]);
         }
 
-        // update volunteering attribute
-        $volunteeringAttributeArray = [];
-        if (isset($request->volunteering_attribute['total_seats'])) {
-            $totalSeats = (isset($request->volunteering_attribute['total_seats']) && (trim($request->volunteering_attribute['total_seats']) !== '')) ?
-            $request->volunteering_attribute['total_seats'] : null;
-            $totalSeats = ($totalSeats !== null) ? abs($totalSeats) : $totalSeats;
-            $volunteeringAttributeArray['total_seats'] = $totalSeats;
-        }
-
-        if (isset($request->volunteering_attribute['total_seats']) && ($request->volunteering_attribute['total_seats'] === '')) {
-            $volunteeringAttributeArray['total_seats'] = null;
-        }
-        if (isset($request->volunteering_attribute['availability_id'])) {
-            $volunteeringAttributeArray['availability_id'] = $request->volunteering_attribute['availability_id'];
-        }
-
-        if (isset($request->volunteering_attribute['is_virtual'])) {
-            $volunteeringAttributeArray['is_virtual'] = $request->volunteering_attribute['is_virtual'];
-        }
-
         $mission = $this->modelsService->mission->findOrFail($id);
-        if ($request->mission_type === config('constants.mission_type.GOAL') || $request->mission_type === config('constants.mission_type.TIME') && $volunteeringAttributeArray) {
-            $mission->volunteeringAttribute()->update($volunteeringAttributeArray);
-        }
+        $mission->update($request->toArray());
 
-        $missionData = $request->toArray();
-        if ($request->mission_type === config('constants.mission_type.GOAL') || $request->mission_type === config('constants.mission_type.TIME')) {
-            if (array_key_exists('total_seats', $volunteeringAttributeArray)) {
-                $missionData['total_seats'] = $volunteeringAttributeArray['total_seats'];
-            }
-            if (array_key_exists('availability_id', $volunteeringAttributeArray)) {
-                $missionData['availability_id'] = $volunteeringAttributeArray['availability_id'];
-            }
-            if (array_key_exists('is_virtual', $volunteeringAttributeArray)) {
-                $missionData['is_virtual'] = $volunteeringAttributeArray['is_virtual'] ? '1' : '0';
-            }
-        }
+        $missionType = $request->mission_type ?? $mission->mission_type;
+        // Volunteering mission
+        if ($missionType === config('constants.mission_type.GOAL') || $missionType === config('constants.mission_type.TIME')) {
 
-        $mission->update($missionData);
+            // update volunteering attribute
+            $volunteeringAttributeArray = [];
+            if (isset($request->volunteering_attribute['total_seats'])) {
+                $totalSeats = (isset($request->volunteering_attribute['total_seats']) && (trim($request->volunteering_attribute['total_seats']) !== '')) ?
+                $request->volunteering_attribute['total_seats'] : null;
+                $totalSeats = ($totalSeats !== null) ? abs($totalSeats) : $totalSeats;
+                $volunteeringAttributeArray['total_seats'] = $totalSeats;
+            }
+            if (isset($request->volunteering_attribute['total_seats']) && ($request->volunteering_attribute['total_seats'] === '')) {
+                $volunteeringAttributeArray['total_seats'] = null;
+            }
+            if (isset($request->volunteering_attribute['availability_id'])) {
+                $volunteeringAttributeArray['availability_id'] = $request->volunteering_attribute['availability_id'];
+            }
+            if (isset($request->volunteering_attribute['is_virtual'])) {
+                $volunteeringAttributeArray['is_virtual'] = $request->volunteering_attribute['is_virtual'];
+            }
+            if (!empty($volunteeringAttributeArray)) {
+                $mission->volunteeringAttribute()->update($volunteeringAttributeArray);
+            }
 
-        // update goal_mission details
-        if ($mission->mission_type === config('constants.mission_type.GOAL') && (isset($request->goal_objective))) {
-            $goalMissionArray = array(
-                'goal_objective' => $request->goal_objective,
-            );
-            $mission->goalMission()->update($goalMissionArray);
+            if ($missionType === config('constants.mission_type.TIME')) {
+                // update time_mission details
+                $missionDetail = $mission->timeMission()->first();
+                if (!is_null($missionDetail)) {
+                    if ((isset($request->application_deadline))) {
+                        $missionDetail->application_deadline = ($request->application_deadline !== '') ?
+                        $request->application_deadline : null;
+                    }
+                    if ((isset($request->application_start_date))) {
+                        $missionDetail->application_start_date = ($request->application_start_date !== '')
+                        ? $request->application_start_date : null;
+                    }
+                    if ((isset($request->application_end_date))) {
+                        $missionDetail->application_end_date = ($request->application_end_date !== '')
+                        ? $request->application_end_date : null;
+                    }
+                    if ((isset($request->application_start_time))) {
+                        $missionDetail->application_start_time = ($request->application_start_time !== '')
+                        ? $request->application_start_time : null;
+                    }
+                    if ((isset($request->application_end_time))) {
+                        $missionDetail->application_end_time = ($request->application_end_time !== '')
+                        ? $request->application_end_time : null;
+                    }
+                    $missionDetail->save();
+                }
+            } else if (isset($request->goal_objective)) {
+                // update goal_mission details
+                $goalMissionArray = [
+                    'goal_objective' => $request->goal_objective,
+                ];
+                $mission->goalMission()->update($goalMissionArray);
+            }
         }
 
         $activatedTenantSettings = $this->tenantActivatedSettingRepository
             ->getAllTenantActivatedSetting($request);
-        
+
         $isDonationSettingEnabled = in_array(
             config('constants.tenant_settings.DONATION_MISSION'),
             $activatedTenantSettings
         );
 
-        //Add donation attribute         
+        // Add/update donation attribute
         if (isset($request->donation_attribute) && !empty($request->donation_attribute) && $isDonationSettingEnabled) {
             $donationAttributes = [];
             if ($request->donation_attribute['goal_amount_currency']) {
@@ -465,34 +480,6 @@ class MissionRepository implements MissionInterface
                 ['mission_id' => $mission->mission_id],
                 $donationAttributes
             );
-        }
-
-        // update into time_mission details
-        if ($mission->mission_type === config('constants.mission_type.TIME')) {
-            $missionDetail = $mission->timeMission()->first();
-            if (!is_null($missionDetail)) {
-                if ((isset($request->application_deadline))) {
-                    $missionDetail->application_deadline = ($request->application_deadline !== '') ?
-                    $request->application_deadline : null;
-                }
-                if ((isset($request->application_start_date))) {
-                    $missionDetail->application_start_date = ($request->application_start_date !== '')
-                    ? $request->application_start_date : null;
-                }
-                if ((isset($request->application_end_date))) {
-                    $missionDetail->application_end_date = ($request->application_end_date !== '')
-                    ? $request->application_end_date : null;
-                }
-                if ((isset($request->application_start_time))) {
-                    $missionDetail->application_start_time = ($request->application_start_time !== '')
-                    ? $request->application_start_time : null;
-                }
-                if ((isset($request->application_end_time))) {
-                    $missionDetail->application_end_time = ($request->application_end_time !== '')
-                    ? $request->application_end_time : null;
-                }
-                $missionDetail->save();
-            }
         }
 
         // Add/Update mission title
