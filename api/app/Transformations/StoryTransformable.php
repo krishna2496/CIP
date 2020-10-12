@@ -68,6 +68,7 @@ trait StoryTransformable
         $draftStories = $publishedStories = $pendingStories = $declinedStories = 0;
 
         foreach ($stories as $story) {
+            $statusFlag = strtolower($story->status);
             $transformedUserStories['story_data'][] = [
                 'story_id' => (int) $story->story_id,
                 'mission_id' => $story->mission_id,
@@ -76,6 +77,7 @@ trait StoryTransformable
                 'status' => trans('general.status.' . $story->status),
                 'storyMedia' => $story->storyMedia->first(),
                 'created' => Carbon::parse($story->created_at)->format('d/m/Y'),
+                'status_flag' => ucfirst($statusFlag)
             ];
         }
         if (count($stories) > 0) {
