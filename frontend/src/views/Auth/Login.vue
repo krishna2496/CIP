@@ -192,6 +192,7 @@
         this.$refs.ThePrimaryFooter.$forceUpdate()
         this.componentKey += 1;
         setSiteTitle();
+        this.setCustomText();
       },
 
       handleSubmit() {
