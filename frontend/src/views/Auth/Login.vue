@@ -165,17 +165,7 @@
             this.message = response.message
           } else {
             //redirect to landing page
-            policy().then(response => {
-              if (response.error == false) {
-                if(response.data.length > 0) {
-                  store.commit('policyPage',response.data)
-                } else {
-                  store.commit('policyPage',null)
-                }
-              } else {
-                store.commit('policyPage',null)
-              }
-            });
+           
             if (this.$route.query.returnUrl) {
               this.$router.back();
               return;
