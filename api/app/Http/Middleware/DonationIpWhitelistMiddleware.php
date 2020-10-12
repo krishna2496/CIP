@@ -4,15 +4,11 @@ namespace App\Http\Middleware;
 
 use App\Helpers\IPValidationHelper;
 use App\Helpers\ResponseHelper;
-use App\Models\DonationIpWhitelist;
 use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
 use App\Services\DonationIp\WhitelistService;
 use App\Traits\RestExceptionHandlerTrait;
 use Closure;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 
 class DonationIpWhitelistMiddleware
 {
