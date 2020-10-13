@@ -99,17 +99,17 @@
                                                 <b-link class="btn-action" v-b-tooltip.hover
                                                         :title="languageData.label.redirect" target="_blank"
                                                         :to="'/story-detail/' + data.story_id"
-                                                        v-if="getRedirectAction(data.status)">
+                                                        v-if="getRedirectAction(data.status_flag)">
                                                     <img :src="$store.state.imagePath+'/assets/images/external-link.svg'"
                                                          alt="Redirect" />
                                                 </b-link>
                                                 <b-button class="btn-action" v-b-tooltip.hover
-                                                          :title="languageData.label.copy" v-if="getCopyAction(data.status)"
+                                                          :title="languageData.label.copy" v-if="getCopyAction(data.status_flag)"
                                                           @click="copyStory(data.story_id)">
                                                     <img :src="$store.state.imagePath+'/assets/images/copy.svg'"
                                                          alt="Copy" />
                                                 </b-button>
-                                                <b-link class="btn-action" v-if="getEditAction(data.status)"
+                                                <b-link class="btn-action" v-if="getEditAction(data.status_flag)"
                                                         :to="'/edit-story/' + data.story_id" v-b-tooltip.hover
                                                         :title="languageData.label.edit">
                                                     <img :src="$store.state.imagePath+'/assets/images/edit-ic.svg'"
