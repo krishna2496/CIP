@@ -1858,18 +1858,6 @@ class MissionRepository implements MissionInterface
     }
     
     /**
-     * Get mission tab details
-     *
-     * @param int $missionId
-     * @param string $missionTabId
-     * @return App\Repositories\Mission\MissionTab
-     */
-    public function isMissionTabLinkedToMission(int $missionId, string $missionTabId)
-    {
-        return $this->modelsService->missionTab->where([['mission_id', '=', $missionId], ['mission_tab_id', '=', $missionTabId]])->firstOrFail();
-    }
-    
-    /**
      * Check impact mission is available for mission
      *
      * @param int $missionId
