@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Exceptions\InvalidCurrencyArgumentException;
 
 class Currency extends Model
 {
@@ -39,17 +38,11 @@ class Currency extends Model
      * Set currency code and check validation for currency code
      *
      * @param string $code
-     * @return string|App\Exceptions\InvalidCurrencyArgumentException
+     * @return string
      */
     private function setCode(string $code)
     {
-        $pattern = '/^[A-Z]{3}$/m';
-        $result = preg_match_all($pattern, $code, $matches);
-        if (!empty($matches[0])) {
-            return $this->code = $code;
-        } else {
-            throw new InvalidCurrencyArgumentException("Currency code {$code} is invalid.");
-        }
+        return $this->code = $code;
     }
 
     /**

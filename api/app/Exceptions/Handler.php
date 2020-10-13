@@ -15,7 +15,6 @@ use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use App\Exceptions\SamlException;
 use Throwable;
 use InvalidArgumentException;
-use App\Exceptions\InvalidCurrencyArgumentException;
 
 class Handler extends ExceptionHandler
 {
@@ -75,9 +74,6 @@ class Handler extends ExceptionHandler
         }
         if ($exception instanceof InvalidArgumentException) {
             return $this->invalidArgument($exception->getCode(), $exception->getMessage());
-        }
-        if ($exception instanceof InvalidCurrencyArgumentException) {
-            return $this->invalidArgument('', $exception->getMessage());
         }
 
         return $this->internalServerError(trans('messages.custom_error_message.ERROR_INTERNAL_SERVER_ERROR'));
