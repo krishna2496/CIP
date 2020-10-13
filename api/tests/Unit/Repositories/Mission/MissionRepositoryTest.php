@@ -645,6 +645,8 @@ class MissionRepositoryTest extends TestCase
         $missionImpactRepository = $this->mock(MissionImpactRepository::class);
         $missionImpact = $this->mock(MissionImpact::class);
         $donationAttribute = $this->mock(DonationAttribute::class);
+        $missionImpactDonation = $this->mock(MissionImpactDonation::class);
+        $impactDonationMissionRepository = $this->mock(ImpactDonationMissionRepository::class);
 
         $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
         $tenantActivatedSettingRepository->shouldReceive('getAllTenantActivatedSetting')
@@ -662,6 +664,7 @@ class MissionRepositoryTest extends TestCase
             $missionRating,
             $missionApplication,
             $city,
+            $missionImpactDonation,
             $missionImpact,
             $organization,
             $missionTab,
@@ -676,6 +679,7 @@ class MissionRepositoryTest extends TestCase
             $countryRepository,
             $missionMediaRepository,
             $modelService,
+            $impactDonationMissionRepository,
             $missionImpactRepository,
             $tenantActivatedSettingRepository,
             $missionUnitedNationSDGRepository,
@@ -714,6 +718,13 @@ class MissionRepositoryTest extends TestCase
                 'code' => 'en'
             ]
         ]);
+
+        $defaultLanguage = (object)[
+            'language_id' => 1,
+            'code' => 'en',
+            'name' => 'English',
+            'default' => '1'
+        ];
 
         $languageHelper = $this->mock(LanguageHelper::class);
         $languageHelper->shouldReceive('getLanguages')
@@ -790,6 +801,8 @@ class MissionRepositoryTest extends TestCase
         $missionImpactRepository = $this->mock(MissionImpactRepository::class);
         $missionImpact = $this->mock(MissionImpact::class);
         $donationAttribute = $this->mock(DonationAttribute::class);
+        $missionImpactDonation = $this->mock(MissionImpactDonation::class);
+        $impactDonationMissionRepository = $this->mock(ImpactDonationMissionRepository::class);
 
         $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
         $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
@@ -808,6 +821,7 @@ class MissionRepositoryTest extends TestCase
             $missionRating,
             $missionApplication,
             $city,
+            $missionImpactDonation,
             $missionImpact,
             $organization,
             $missionTab,
@@ -822,6 +836,7 @@ class MissionRepositoryTest extends TestCase
             $countryRepository,
             $missionMediaRepository,
             $modelService,
+            $impactDonationMissionRepository,
             $missionImpactRepository,
             $tenantActivatedSettingRepository,
             $missionUnitedNationSDGRepository,
@@ -901,6 +916,7 @@ class MissionRepositoryTest extends TestCase
      * @param  App\Models\MissionImpactDonation $missionImpactDonation
      * @param  App\Models\MissionImpact $missionImpact
      * @param  App\Models\Organization $organization
+     * @param  App\Models\MissionImpactDonation $missionImpactDonation
      * @param  App\Models\MissionTab $missionTab
      * @param  App\Models\MissionTabLanguage $missionTabLanguage
      * @param  App\Models\DonationAttribute $donationAttribute

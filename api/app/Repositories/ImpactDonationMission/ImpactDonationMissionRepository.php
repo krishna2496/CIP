@@ -93,7 +93,7 @@ class ImpactDonationMissionRepository
             $impactDonationLanguage = $this->missionImpactDonationLanguage->create($impactDonationLanguageArray);
             unset($impactDonationLanguageArray);
         }
-        unset($impactDonationArray);        
+        unset($impactDonationArray);
     }
 
     /**

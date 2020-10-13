@@ -218,9 +218,9 @@ class MissionController extends Controller
                 "impact_donation" => "sometimes|required|array",
                 "impact_donation.*.amount" => 'required|integer|min:1',
                 "impact_donation.*.translations" => 'required',
-                "impact_donation.*.translations.*.language_code" => 
+                "impact_donation.*.translations.*.language_code" =>
                 'required_with:impact_donation.*.translations|max:2',
-                "impact_donation.*.translations.*.content" => 
+                "impact_donation.*.translations.*.content" =>
                 'required_with:impact_donation.*.translations|max:160',
                 "impact" => "sometimes|required|array",
                 "impact.*.icon_path" => 'valid_icon_path',
