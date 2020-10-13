@@ -226,10 +226,16 @@
           ]
         },
         errorInGetStoryDetail: false,
-        unprocessableEntityStatus: 422
-
+        unprocessableEntityStatus: 422,
+        fileIdsForStory: []
       }
     },
+    // First, create a variable that will have the same value of the files after it was saved
+    // Second, if user will update, compare if the two variables still have the same value
+    // If yes, do not add the files to the request
+    // If no, add the files to the request
+    // Once update is done, update the value of the new variable
+    // Do the same for update method
     validations: {
       story: {
         title: {
@@ -455,7 +461,14 @@
               this.message = response.message
             } else {
               this.formChange = 0;
-              this.storyId = response.data
+              this.storyId = response.data;
+
+              if (file) {
+                file.filter((fileItem, fileIndex) => {
+                  this.fileIdsForStory.push(fileItem.id);
+                });
+              }
+
               if (params == "preview" && this.storyId != '') {
                 let routeData = this.$router.resolve({
                   path: "/story-preview" + '/' + this.storyId
@@ -486,6 +499,20 @@
           if (this.story.videoUrl == '') {
             formData.append('story_videos', '');
           }
+
+          if (file) {
+            formData.append('story_images[]', '');
+            file.filter((fileItem, fileIndex) => {
+              /**
+              * For the update method, add the files in the request if 
+              * the file ID does not exists in this.fileIdsForStory variable
+              */
+              if (this.fileIdsForStory.indexOf(fileItem.id) === -1) {
+                formData.append('story_images[]', fileItem.file);
+              }
+            });
+          }
+
           formData.append('_method', 'PATCH');
           updateStory(formData, this.storyId).then(response => {
             this.showDismissibleAlert = true
@@ -495,6 +522,14 @@
               this.message = response.message
             } else {
               this.formChange = 0;
+
+              if (file) {
+                // Update the variable once the update method is successful
+                this.fileIdsForStory = [];
+                file.filter((fileItem, fileIndex) => {
+                  this.fileIdsForStory.push(fileItem.id);
+                });
+              }
 
               if (params == "preview" && this.storyId != '') {
                 let routeData = this.$router.resolve({
