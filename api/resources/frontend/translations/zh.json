@@ -36,7 +36,6 @@
 		"all_rights_reserved": "保留所有权利",
 		"add": "添加",
 		"already_volunteered": "已提供志愿服务",
-		"on_going_opportunities": "持续机会",
 		"view_detail": "查看详情",
 		"no_record_found": "未找到记录",
 		"oldest": "最老",
@@ -297,7 +296,14 @@
 		"virtual_missions" : "虚拟志愿服务",
 		"home" : "家",
 		"login_with_sso": "用SSO登录",
-		"site_title" : "首页"
+		"site_title": "首页",
+		"ongoing": "正在进行中",
+		"more": "更多",
+		"and": "和",
+		"for": "对于",
+		"on": "关于",
+		"sort_deadline": "按截止日期排序",
+		"no_image_available": "没有图像"
 	},
 	"placeholder": {
 		"email_address": "输入电子邮件地址",
@@ -386,7 +392,10 @@
 		"max_image_upload": "最多可添加 20 张图像",
 		"max_video_upload": "最多可添加 20 个视频",
 		"duplicate_video_url": "视频 URL 不允许重复存在",
-		"invalid_saml_setting": "需要以下映射："
+		"invalid_saml_setting": "需要以下映射：",
+		"password_should_contain_uppercase": "至少 1 个大写字母",
+		"password_should_contain_lowercase": "至少 1 个小写字母",
+		"password_should_contain_numbers": "至少 1 个数字"
 	},
 	"export_timesheet_file_names": {
 		"PENDING_TIME_MISSION_ENTRIES_XLSX": "Pending_Time_Mission_Entries.xls",

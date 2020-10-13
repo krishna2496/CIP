@@ -2,15 +2,16 @@
 
 namespace App\Helpers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Config;
-use Firebase\JWT\JWT;
-use App\Traits\RestExceptionHandlerTrait;
-use Throwable;
 use App\Exceptions\TenantDomainNotFoundException;
-use Carbon\Carbon;
-use stdClass;
+use App\Traits\RestExceptionHandlerTrait;
 use Bschmitt\Amqp\Amqp;
+use Carbon\Carbon;
+use Firebase\JWT\JWT;
+use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Config;
+use stdClass;
+use Throwable;
 
 class Helpers
 {
@@ -539,5 +540,54 @@ class Helpers
             'profile_text',
             'why_i_volunteer'
         ];
+    }
+
+    /**
+     * Check for valid currency from `ci_admin` table.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param string $currencyCode
+     * @return bool
+     */
+    public function isValidTenantCurrency(Request $request, string $currencyCode)
+    {
+        $tenant = $this->getTenantDetail($request);
+        // Connect master database to get currency details
+        $this->switchDatabaseConnection('mysql');
+
+        $tenantCurrency = $this->db->table('tenant_currency')
+            ->where('tenant_id', $tenant->tenant_id)
+            ->where('code', $currencyCode)
+            ->where('is_active', '1');
+
+        // Connect tenant databases
+        $this->switchDatabaseConnection('tenant');
+
+        return ($tenantCurrency->count() > 0) ? true : false;
+    }
+
+    /**
+     * Get tenant activated currencies
+     *
+     * @param Request $request
+     *
+     * @return Illuminate\Support\Collection
+     */
+    public function getTenantActivatedCurrencies(Request $request): Collection
+    {
+        $tenant = $this->getTenantDetail($request);
+        $this->switchDatabaseConnection('mysql');
+
+        $currencies = $this->db->table('tenant_currency')
+            ->select('code', 'default')
+            ->where('tenant_id', $tenant->tenant_id)
+            ->where('is_active', 1)
+            ->orderBy('default', 'DESC')
+            ->orderBy('code', 'ASC')
+            ->get();
+
+        $this->switchDatabaseConnection('tenant');
+
+        return $currencies;
     }
 }

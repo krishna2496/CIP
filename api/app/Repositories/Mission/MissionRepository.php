@@ -172,14 +172,16 @@ class MissionRepository implements MissionInterface
             'start_date' => (isset($request->start_date)) ? $request->start_date : null,
             'end_date' => (isset($request->end_date)) ? $request->end_date : null,
             'publication_status' => $request->publication_status,
-            'organization_id' => $organization->organization_id,
+            'organization_id' => (isset($organization)) ? $organization->organization_id : null,
             'organisation_detail' => $organizationDetail,
             'mission_type' => $request->mission_type
         ];
 
         // Create new record
         $mission = $this->modelsService->mission->create($missionData);
-        $mission->volunteeringAttribute()->create($volunteeringAttributeArray);
+        if ($request->mission_type === config('constants.mission_type.GOAL') || $request->mission_type === config('constants.mission_type.TIME')) {
+            $mission->volunteeringAttribute()->create($volunteeringAttributeArray);
+        }
 
         // Entry into goal_mission table
         if ($request->mission_type === config('constants.mission_type.GOAL') && isset($request->goal_objective)) {
@@ -247,6 +249,32 @@ class MissionRepository implements MissionInterface
             }
         }
 
+        $activatedTenantSettings = $this->tenantActivatedSettingRepository
+            ->getAllTenantActivatedSetting($request);
+
+        // check if donation mission setting enable or not for donation mission
+        $isDonationSettingEnabled = in_array(
+            config('constants.tenant_settings.DONATION_MISSION'),
+            $activatedTenantSettings
+        );
+
+        // Add donation attribute
+        if ($request->donation_attribute && $isDonationSettingEnabled) {
+            $donationData = array(
+                'mission_id' => $mission->mission_id,
+                'goal_amount_currency' => $request->donation_attribute['goal_amount_currency'] ?? null,
+                'goal_amount' => $request->donation_attribute['goal_amount'] ?? null,
+                'show_goal_amount' => $request->donation_attribute['show_goal_amount'] ?? '0',
+                'show_donation_percentage' => $request->donation_attribute['show_donation_percentage'] ?? '0',
+                'show_donation_meter' => $request->donation_attribute['show_donation_meter'] ?? '0',
+                'show_donation_count' => $request->donation_attribute['show_donation_count'] ?? '0',
+                'show_donors_count' => $request->donation_attribute['show_donors_count'] ?? '0',
+                'disable_when_funded' => $request->donation_attribute['disable_when_funded'] ?? '0',
+                'is_disabled' => $request->donation_attribute['is_disabled'] ?? '0',
+            );
+            $this->modelsService->donationAttribute->create($donationData);
+        }
+
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
 
         // Add mission media images
@@ -295,9 +323,9 @@ class MissionRepository implements MissionInterface
 
         // Add mission impact
         if (isset($request->impact) && count($request->impact) > 0) {
-            $missionImpactSettingActivated = $this->tenantActivatedSettingRepository->checkTenantSettingStatus(
+            $missionImpactSettingActivated = in_array(
                 config('constants.tenant_settings.MISSION_IMPACT'),
-                $request
+                $activatedTenantSettings
             );
             if ($missionImpactSettingActivated) {
                 foreach ($request->impact as $impactValue) {
@@ -357,77 +385,118 @@ class MissionRepository implements MissionInterface
             $request->request->add(['organization_id' => $organization->organization_id]);
         }
 
-        // update volunteering attribute
-        $volunteeringAttributeArray = [];
-        if (isset($request->volunteering_attribute['total_seats'])) {
-            $totalSeats = (isset($request->volunteering_attribute['total_seats']) && (trim($request->volunteering_attribute['total_seats']) !== '')) ?
-            $request->volunteering_attribute['total_seats'] : null;
-            $totalSeats = ($totalSeats !== null) ? abs($totalSeats) : $totalSeats;
-            $volunteeringAttributeArray['total_seats'] = $totalSeats;
-        }
-
-        if (isset($request->volunteering_attribute['total_seats']) && ($request->volunteering_attribute['total_seats'] === '')) {
-            $volunteeringAttributeArray['total_seats'] = null;
-        }
-        if (isset($request->volunteering_attribute['availability_id'])) {
-            $volunteeringAttributeArray['availability_id'] = $request->volunteering_attribute['availability_id'];
-        }
-
-        if (isset($request->volunteering_attribute['is_virtual'])) {
-            $volunteeringAttributeArray['is_virtual'] = $request->volunteering_attribute['is_virtual'];
-        }
-
         $mission = $this->modelsService->mission->findOrFail($id);
-        if ($volunteeringAttributeArray) {
-            $mission->volunteeringAttribute()->update($volunteeringAttributeArray);
-        }
+        $mission->update($request->toArray());
 
-        $missionData = $request->toArray();
-        if (array_key_exists('total_seats', $volunteeringAttributeArray)) {
-            $missionData['total_seats'] = $volunteeringAttributeArray['total_seats'];
-        }
-        if (array_key_exists('availability_id', $volunteeringAttributeArray)) {
-            $missionData['availability_id'] = $volunteeringAttributeArray['availability_id'];
-        }
-        if (array_key_exists('is_virtual', $volunteeringAttributeArray)) {
-            $missionData['is_virtual'] = $volunteeringAttributeArray['is_virtual'] ? '1' : '0';
-        }
+        $missionType = $request->mission_type ?? $mission->mission_type;
+        // Volunteering mission
+        if ($missionType === config('constants.mission_type.GOAL') || $missionType === config('constants.mission_type.TIME')) {
 
-        $mission->update($missionData);
-
-        // update goal_mission details
-        if ($mission->mission_type === config('constants.mission_type.GOAL') && (isset($request->goal_objective))) {
-            $goalMissionArray = array(
-                'goal_objective' => $request->goal_objective,
-            );
-            $mission->goalMission()->update($goalMissionArray);
-        }
-        // update into time_mission details
-        if ($mission->mission_type === config('constants.mission_type.TIME')) {
-            $missionDetail = $mission->timeMission()->first();
-            if (!is_null($missionDetail)) {
-                if ((isset($request->application_deadline))) {
-                    $missionDetail->application_deadline = ($request->application_deadline !== '') ?
-                    $request->application_deadline : null;
-                }
-                if ((isset($request->application_start_date))) {
-                    $missionDetail->application_start_date = ($request->application_start_date !== '')
-                    ? $request->application_start_date : null;
-                }
-                if ((isset($request->application_end_date))) {
-                    $missionDetail->application_end_date = ($request->application_end_date !== '')
-                    ? $request->application_end_date : null;
-                }
-                if ((isset($request->application_start_time))) {
-                    $missionDetail->application_start_time = ($request->application_start_time !== '')
-                    ? $request->application_start_time : null;
-                }
-                if ((isset($request->application_end_time))) {
-                    $missionDetail->application_end_time = ($request->application_end_time !== '')
-                    ? $request->application_end_time : null;
-                }
-                $missionDetail->save();
+            // update volunteering attribute
+            $volunteeringAttributeArray = [];
+            if (isset($request->volunteering_attribute['total_seats'])) {
+                $totalSeats = (isset($request->volunteering_attribute['total_seats']) && (trim($request->volunteering_attribute['total_seats']) !== '')) ?
+                $request->volunteering_attribute['total_seats'] : null;
+                $totalSeats = ($totalSeats !== null) ? abs($totalSeats) : $totalSeats;
+                $volunteeringAttributeArray['total_seats'] = $totalSeats;
             }
+            if (isset($request->volunteering_attribute['total_seats']) && ($request->volunteering_attribute['total_seats'] === '')) {
+                $volunteeringAttributeArray['total_seats'] = null;
+            }
+            if (isset($request->volunteering_attribute['availability_id'])) {
+                $volunteeringAttributeArray['availability_id'] = $request->volunteering_attribute['availability_id'];
+            }
+            if (isset($request->volunteering_attribute['is_virtual'])) {
+                $volunteeringAttributeArray['is_virtual'] = $request->volunteering_attribute['is_virtual'];
+            }
+            if (!empty($volunteeringAttributeArray)) {
+                $mission->volunteeringAttribute()->update($volunteeringAttributeArray);
+            }
+
+            if ($missionType === config('constants.mission_type.TIME')) {
+                // update time_mission details
+                $missionDetail = $mission->timeMission()->first();
+                if (!is_null($missionDetail)) {
+                    if ((isset($request->application_deadline))) {
+                        $missionDetail->application_deadline = ($request->application_deadline !== '') ?
+                        $request->application_deadline : null;
+                    }
+                    if ((isset($request->application_start_date))) {
+                        $missionDetail->application_start_date = ($request->application_start_date !== '')
+                        ? $request->application_start_date : null;
+                    }
+                    if ((isset($request->application_end_date))) {
+                        $missionDetail->application_end_date = ($request->application_end_date !== '')
+                        ? $request->application_end_date : null;
+                    }
+                    if ((isset($request->application_start_time))) {
+                        $missionDetail->application_start_time = ($request->application_start_time !== '')
+                        ? $request->application_start_time : null;
+                    }
+                    if ((isset($request->application_end_time))) {
+                        $missionDetail->application_end_time = ($request->application_end_time !== '')
+                        ? $request->application_end_time : null;
+                    }
+                    $missionDetail->save();
+                }
+            } else if (isset($request->goal_objective)) {
+                // update goal_mission details
+                $goalMissionArray = [
+                    'goal_objective' => $request->goal_objective,
+                ];
+                $mission->goalMission()->update($goalMissionArray);
+            }
+        }
+
+        $activatedTenantSettings = $this->tenantActivatedSettingRepository
+            ->getAllTenantActivatedSetting($request);
+
+        $isDonationSettingEnabled = in_array(
+            config('constants.tenant_settings.DONATION_MISSION'),
+            $activatedTenantSettings
+        );
+
+        // Add/update donation attribute
+        if (isset($request->donation_attribute) && !empty($request->donation_attribute) && $isDonationSettingEnabled) {
+            $donationAttributes = [];
+            if ($request->donation_attribute['goal_amount_currency']) {
+                $donationAttributes['goal_amount_currency'] =
+                $request->donation_attribute['goal_amount_currency'];
+            }
+            if ($request->donation_attribute['goal_amount']) {
+                $donationAttributes['goal_amount'] = $request->donation_attribute['goal_amount'];
+            }
+            if (isset($request->donation_attribute['show_goal_amount'])) {
+                $donationAttributes['show_goal_amount'] =
+                $request->donation_attribute['show_goal_amount'];
+            }
+            if (isset($request->donation_attribute['show_donation_percentage'])) {
+                $donationAttributes['show_donation_percentage'] =
+                $request->donation_attribute['show_donation_percentage'];
+            }
+            if (isset($request->donation_attribute['show_donation_meter'])) {
+                $donationAttributes['show_donation_meter'] =
+                $request->donation_attribute['show_donation_meter'];
+            }
+            if (isset($request->donation_attribute['show_donation_count'])) {
+                $donationAttributes['show_donation_count'] =
+                $request->donation_attribute['show_donation_count'];
+            }
+            if (isset($request->donation_attribute['show_donors_count'])) {
+                $donationAttributes['show_donors_count'] =
+                $request->donation_attribute['show_donors_count'];
+            }
+            if (isset($request->donation_attribute['disable_when_funded'])) {
+                $donationAttributes['disable_when_funded'] =
+                $request->donation_attribute['disable_when_funded'];
+            }
+            if (isset($request->donation_attribute['is_disabled'])) {
+                $donationAttributes['is_disabled'] = $request->donation_attribute['is_disabled'];
+            }
+            $this->modelsService->donationAttribute->updateOrCreate(
+                ['mission_id' => $mission->mission_id],
+                $donationAttributes
+            );
         }
 
         // Add/Update mission title
@@ -543,9 +612,9 @@ class MissionRepository implements MissionInterface
         
         // Add/update impact mission
         if (isset($request->impact) && count($request->impact)) {
-            $missionImpactSettingActivated = $this->tenantActivatedSettingRepository->checkTenantSettingStatus(
+            $missionImpactSettingActivated = in_array(
                 config('constants.tenant_settings.MISSION_IMPACT'),
-                $request
+                $activatedTenantSettings
             );
             if ($missionImpactSettingActivated) {
                 foreach ($request->impact as $impactValue) {
@@ -606,7 +675,8 @@ class MissionRepository implements MissionInterface
             'goalMission',
             'unSdg',
             'organization',
-            'volunteeringAttribute'
+            'volunteeringAttribute',
+            'donationAttribute'
         )->with(['missionSkill' => function ($query) {
             $query->with('mission', 'skill');
         }])->with(['missionMedia' => function ($query) {
@@ -693,7 +763,7 @@ class MissionRepository implements MissionInterface
             'mission.organization_id'
         )
         ->with(['city.languages', 'city.state', 'city.state.languages', 'country.languages', 'missionTheme',
-        'missionLanguage', 'goalMission', 'timeMission', 'organization', 'volunteeringAttribute', 'unSdg' ])
+        'missionLanguage', 'goalMission', 'timeMission', 'organization', 'volunteeringAttribute', 'donationAttribute', 'unSdg'])
         ->withCount('missionApplication')
         ->with(['missionSkill' => function ($query) {
             $query->with('mission', 'skill');
@@ -865,8 +935,13 @@ class MissionRepository implements MissionInterface
                 $missionQuery->where('mission.organization_id', $request->input('explore_mission_params'));
             }
         }
+        // donation attribute
+        if ($request->with_donation_attributes && $request->with_donation_attributes !== ''
+            && $request->with_donation_attributes !== 0) {
+            $missionQuery->with(['donationAttribute']);
+        }
 
-        //Explore mission by theme
+        // Explore mission by theme
         if ($userFilterData['search'] && $userFilterData['search'] !== '') {
             $missionQuery->where(function ($query) use ($userFilterData) {
                 $query->wherehas('missionLanguage', function ($missionLanguageQuery) use ($userFilterData) {
@@ -930,7 +1005,7 @@ class MissionRepository implements MissionInterface
             }
         }
 
-        //Explore mission by top favourite
+        // Explore mission by top favourite
         if ($request->has('explore_mission_type') &&
         ($request->input('explore_mission_type') === config('constants.TOP_FAVOURITE'))) {
             $missionQuery->withCount(['favouriteMission as favourite_mission_counts']);
@@ -938,7 +1013,7 @@ class MissionRepository implements MissionInterface
             $missionQuery->orderBY('favourite_mission_counts', 'desc');
         }
 
-        //Explore mission by most ranked
+        // Explore mission by most ranked
         if ($request->has('explore_mission_type') &&
         ($request->input('explore_mission_type') === config('constants.MOST_RANKED'))) {
             $missionQuery->withCount(['missionRating as average_rating' => function ($query) use ($request) {
@@ -948,7 +1023,7 @@ class MissionRepository implements MissionInterface
             $missionQuery->orderBY('mission_rating_count', 'desc');
         }
 
-        //Explore mission by random
+        // Explore mission by random
         if ($request->has('explore_mission_type') &&
         ($request->input('explore_mission_type') === config('constants.RANDOM'))) {
             $missionQuery->inRandomOrder();
@@ -1548,6 +1623,12 @@ class MissionRepository implements MissionInterface
             }, 'missionTabs.getMissionTabDetail' => function ($query) {
             }]);
 
+        // donation attribute
+        if ($request->with_donation_attributes && $request->with_donation_attributes !== ''
+            && $request->with_donation_attributes !== 0) {
+            $missionQuery->with(['donationAttribute']);
+        }
+
         $missionQuery->withCount([
                 'timesheet AS achieved_goal' => function ($query) use ($request) {
                     $query->select(DB::raw('SUM(action) as action'));
@@ -1922,8 +2003,9 @@ class MissionRepository implements MissionInterface
     /**
      * Get mission tab details
      *
-     * @param int $missionId
+     * @param int    $missionId
      * @param string $missionTabId
+     *
      * @return App\Repositories\Mission\MissionTab
      */
     public function isMissionTabLinkedToMission(int $missionId, string $missionTabId)
@@ -2068,7 +2150,10 @@ class MissionRepository implements MissionInterface
 
         $missionTypeSettingsMap = [
             config('constants.mission_type.GOAL') => config('constants.tenant_settings.VOLUNTEERING_GOAL_MISSION'),
-            config('constants.mission_type.TIME') => config('constants.tenant_settings.VOLUNTEERING_TIME_MISSION')
+            config('constants.mission_type.TIME') => config('constants.tenant_settings.VOLUNTEERING_TIME_MISSION'),
+            config('constants.mission_type.DONATION') => config('constants.tenant_settings.DONATION_MISSION'),
+            config('constants.mission_type.EAF') => config('constants.tenant_settings.EAF'),
+            config('constants.mission_type.DISASTER_RELIEF') => config('constants.tenant_settings.DISASTER_RELIEF'),
         ];
 
         $missionTypes = [];

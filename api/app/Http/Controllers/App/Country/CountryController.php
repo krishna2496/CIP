@@ -62,22 +62,30 @@ class CountryController extends Controller
     {
         // Get language id
         $languageId = $this->languageHelper->getLanguageId($request);
-        
+
         // Fetch country lists
         $countryList = $this->countryRepository->countryList();
-        
+
         // Get tenant default language
         $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
+
+        // Get countries with more information
+        $detailed = filter_var(
+            $request->get('detailed'),
+            FILTER_VALIDATE_BOOLEAN,
+            FILTER_NULL_ON_FAILURE
+        );
 
         if (!$countryList->isEmpty()) {
             // Transform country details
             $countryDetails = $this->countryTransform(
                 $countryList->toArray(),
                 $languageId,
-                $defaultTenantLanguage->language_id
+                $defaultTenantLanguage->language_id,
+                $detailed
             );
         }
-        
+
         $apiData = isset($countryDetails) ? $countryDetails : $countryList->toArray();
         $apiStatus = Response::HTTP_OK;
         $apiMessage = (!empty($apiData)) ?

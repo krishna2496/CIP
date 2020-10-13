@@ -2,11 +2,7 @@
 
 namespace Tests\Unit\Http\Controllers\Admin\Mission;
 
-use TestCase;
-use Mockery;
-use App\Models\Mission;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use App\Helpers\Helpers;
 use App\Helpers\LanguageHelper;
 use App\Helpers\ResponseHelper;
 use Illuminate\Http\JsonResponse;
@@ -35,21 +31,13 @@ use App\Models\City;
 use App\Models\MissionTab;
 use App\Models\MissionTabLanguage;
 use App\Models\Organization;
-use App\Repositories\MissionMedia\MissionMediaRepository;
-use App\Repositories\Mission\MissionRepository;
-use App\Repositories\Notification\NotificationRepository;
 use App\Repositories\Organization\OrganizationRepository;
-use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
-use App\Services\Mission\ModelsService;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Mockery;
-use Ramsey\Uuid\Uuid;
 use TestCase;
-use Validator;
+use App\Models\Mission;
 
 class MissionControllerTest extends TestCase
 {
@@ -692,7 +680,8 @@ class MissionControllerTest extends TestCase
         $this->assertEquals($methodResponse, json_decode($response->getContent(), true));
     }
 
-    public function testMissionStoreValidationFailure(){
+    public function testMissionStoreValidationFailure()
+    {
 
         $missionRepository = $this->mock(MissionRepository::class);
         $responseHelper = $this->mock(ResponseHelper::class);
@@ -733,7 +722,8 @@ class MissionControllerTest extends TestCase
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
 
-    public function testMissionStoreOrganizationNameRequired(){
+    public function testMissionStoreOrganizationNameRequired()
+    {
         $input = [
             'organization' => [
                 'organization_id' => rand(),
@@ -1491,7 +1481,8 @@ class MissionControllerTest extends TestCase
      * @param  App\Repositories\Notification\NotificationRepository $notificationRepository
      * @param App\Repositories\Organization\OrganizationRepository $organizationRepository
      * @param  App\Services\Mission\ModelsService $modelService
-     * @return void
+     * @param  App\Helpers\Helpers $helpers
+     * @return MissionController
      */
     private function getController(
         MissionRepository $missionRepository,
@@ -1502,7 +1493,8 @@ class MissionControllerTest extends TestCase
         TenantActivatedSettingRepository $tenantActivatedSettingRepository,
         NotificationRepository $notificationRepository,
         OrganizationRepository $organizationRepository,
-        ModelsService $modelService
+        ModelsService $modelService,
+        Helpers $helpers = null
     ) {
         return new MissionController(
             $missionRepository,
@@ -1513,7 +1505,8 @@ class MissionControllerTest extends TestCase
             $tenantActivatedSettingRepository,
             $notificationRepository,
             $organizationRepository,
-            $modelService
+            $modelService,
+            $helpers ?? $this->mock(Helpers::class)
         );
     }
 

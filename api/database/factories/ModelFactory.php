@@ -78,7 +78,7 @@ $factory->define(App\Models\Slider::class, function (Faker\Generator $faker) {
 $factory->define(App\Models\Mission::class, function (Faker\Generator $faker) {
     \DB::setDefaultConnection('tenant');
     $countryDetail = App\Models\Country::with('city')->whereNull('deleted_at')->first();
-    $cityId = $countryDetail->city->first()->city_id;
+    $cityId = 1;
     \DB::setDefaultConnection('mysql');
 
     return [

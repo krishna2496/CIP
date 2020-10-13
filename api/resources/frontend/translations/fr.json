@@ -36,7 +36,6 @@
 		"all_rights_reserved": "Tous droits réservés",
 		"add": "Ajouter",
 		"already_volunteered": "Demande déjà envoyée",
-		"on_going_opportunities": "Opportunités en cours",
 		"view_detail": "Afficher les détails",
 		"no_record_found": "Aucun document trouvé",
 		"oldest": "Le plus ancien",
@@ -297,7 +296,14 @@
 		"virtual_missions" : "Mécénat en ligne",
 		"home" : "Bouton d'accueil",
 		"login_with_sso": "Connectez-vous avec SSO",
-		"site_title" : "Accueil"
+		"site_title": "Accueil",
+		"ongoing": "En cours",
+		"more": "plus",
+		"and": "et",
+		"for": "Pour",
+		"on": "Sur",
+		"sort_deadline": "Trier par date limite",
+		"no_image_available": "Aucune image disponible"
 	},
 	"placeholder": {
 		"email_address": "Entrez l’e-mail",
@@ -386,7 +392,10 @@
 		"max_image_upload": "20 images au maximum peuvent être ajoutées.",
 		"max_video_upload": "20 vidéos maximum peuvent être ajoutées.",
 		"duplicate_video_url": "Les doublons d’URL vidéo ne sont pas autorisés.",
-		"invalid_saml_setting": "Les mappages suivants sont requis:"
+		"invalid_saml_setting": "Les mappages suivants sont requis:",
+		"password_should_contain_uppercase": "Au moins 1 lettre majuscule",
+		"password_should_contain_lowercase": "Au moins 1 lettre minuscule",
+		"password_should_contain_numbers": "Au moins 1 chiffre"
 	},
 	"export_timesheet_file_names": {
 		"PENDING_TIME_MISSION_ENTRIES_XLSX": "Pending_Time_Mission_Entries.xls",
