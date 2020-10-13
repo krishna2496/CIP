@@ -6,6 +6,7 @@ return [
      * constants to use any where in system
      */
     'TENANT_OPTION_SLIDER' => 'slider',
+    'TENANT_OPTION_CUSTOM_LOGIN_TEXT' => 'custom_login_text',
     'FORGOT_PASSWORD_EXPIRY_TIME' => '4',
     'SLIDER_LIMIT' => '4',
     'SLIDER_IMAGE_PATH' => 'images/',
@@ -145,6 +146,15 @@ return [
         'image/jpeg',
         'image/jpg',
         'image/svg+xml'
+    ],
+
+    /*
+     * Custom login text positions
+     */
+    'custom_login_text_positions' => [
+        'after_login_form',
+        'before_logo',
+        'after_logo'
     ],
 
     /*
@@ -403,6 +413,7 @@ return [
         'ERROR_USER_INVITE_INVALID_DATA' => '210017',
         'ERROR_ACCOUNT_EXPIRED' => '210018',
         'ERROR_MAXIMUM_USERS_REACHED' =>  '210019',
+        'ERROR_MAX_ATTEMPTS_REACHED' =>  '210019',
 
         'ERROR_INVALID_MISSION_APPLICATION_DATA' => '400000',
         'ERROR_INVALID_MISSION_DATA' => '400001',
@@ -470,6 +481,7 @@ return [
         'ERROR_USER_NOTIFICATION_NOT_FOUND' => '600002',
 
         'ERROR_INVALID_JSON' => '900000',
+        'ERROR_TENANT_SETTING_DISABLED' => '900001',
 
         'ERROR_TENANT_ASSET_FOLDER_NOT_FOUND_ON_S3' => '800009',
         'ERROR_NO_FILES_FOUND_IN_ASSETS_FOLDER' => '800010',
@@ -521,6 +533,7 @@ return [
         'ERROR_ORGANIZATION_NOT_FOUND' => '800044',
         'ERROR_ORGANIZATION_LINKED_TO_MISSION' => '80045',
         'MISSION_TAB_NOT_FOUND' => '80046',
+        'ERROR_RETRIEVING_TENANT_ACTIVATED_CURRENCIES' => '80047',
 
         // Donation error codes: 900100 - 900199
         'ERROR_DONATION_IP_WHITELIST_INVALID_DATA' => '900100',

@@ -363,7 +363,8 @@ tspan {
 			&.active {
 				.page-link {
 					color: $white;
-					border-color: $primary !important;
+					background-color: $primary;
+					border-color: $primary;
 				}
 			}
 
@@ -522,7 +523,7 @@ tspan {
 	align-items: flex-start;
 	flex-wrap: wrap;
 	align-items: center;
-	margin-bottom: 27px;
+	margin-bottom: 18px;
 	padding-top: 8px;
 	min-height: 50px;
 
@@ -536,7 +537,7 @@ tspan {
 
 		strong {
 			font-size: 24px;
-			font-weight: 400;
+			font-weight: 700;
 		}
 	}
 
@@ -657,7 +658,7 @@ main {
 				border: none;
 				position: absolute;
 				right: 0;
-				bottom: calc(100% + 25px);
+				bottom: calc(100% + 19px);
 
 				@include md-max {
 					display: none;
@@ -4380,4 +4381,3 @@ main {
 		}
 	}
 }
-

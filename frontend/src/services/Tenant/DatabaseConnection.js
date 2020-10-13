@@ -173,6 +173,12 @@ export default async (langList, defautLang) => {
                 store.commit('siteTitle', JSON.stringify(false));
             }
 
+            if (response.data.data.custom_login_text) {
+                store.commit('customLoginText', JSON.stringify(response.data.data.custom_login_text));
+            } else {
+                store.commit('customLoginText', JSON.stringify(false));
+            }
+
         })
         .catch(function () {
 

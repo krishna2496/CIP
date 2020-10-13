@@ -212,7 +212,9 @@ return [
         'MESSAGE_DONATION_IP_WHITELIST_CREATED' => 'IP whitelist created successfully',
         'MESSAGE_DONATION_IP_WHITELIST_UPDATED' => 'IP whitelist updated successfully',
         'MESSAGE_DONATION_IP_WHITELIST_DELETED' => 'IP whitelist deleted successfully',
-        'MESSAGE_MISSION_IMPACT_DELETED' => 'Mission impact deleted successfully'
+        'MESSAGE_MISSION_IMPACT_DELETED' => 'Mission impact deleted successfully',
+        'MESSAGE_TENANT_ACTIVATED_CURRENCIES_FOUND' => 'Tenant activated currencies listed successfully',
+        'MESSAGE_TENANT_ACTIVATED_CURRENCIES_EMPTY' => 'Tenant has no activated currencies',
     ],
 
 
@@ -296,6 +298,7 @@ return [
         'ERROR_IN_TOKEN_DECODE' => 'An error while decoding token',
         'ERROR_TOKEN_NOT_PROVIDED' => 'Token not provided',
         'ERROR_OLD_PASSWORD_NOT_MATCHED' => 'The old password you have entered is incorrect',
+        'ERROR_PASSWORD_VALIDATION_MESSAGE' => 'Password field must contain one number, uppercase and lowercase letters.',
 
 
         // Custom error code for common exception
@@ -323,6 +326,7 @@ return [
         'ERROR_TENANT_LANGUAGE_INVALID' => 'Invalid tenant language code or file name.',
         'ERROR_INCOMPLETE_LANGUAGE_FILE' => 'Incomplete language file.',
         'ERROR_TENANT_LANGUAGE_INVALID_CODE' => 'Invalid tenant language code.',
+        'ERROR_RETRIEVING_TENANT_ACTIVATED_CURRENCIES' => 'An error was encountered while retrieving tenant activated currencies',
 
         //For timesheet module
         'ERROR_INVALID_ACTION' => 'Entered goal action should not be greater than goal objective',

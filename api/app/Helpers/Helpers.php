@@ -2,16 +2,16 @@
 
 namespace App\Helpers;
 
+use App\Exceptions\TenantDomainNotFoundException;
+use App\Traits\RestExceptionHandlerTrait;
+use Bschmitt\Amqp\Amqp;
+use Carbon\Carbon;
+use Firebase\JWT\JWT;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Config;
-use Firebase\JWT\JWT;
-use App\Traits\RestExceptionHandlerTrait;
-use Throwable;
-use App\Exceptions\TenantDomainNotFoundException;
-use Carbon\Carbon;
 use stdClass;
-use Bschmitt\Amqp\Amqp;
+use Throwable;
 
 class Helpers
 {
@@ -570,5 +570,30 @@ class Helpers
             'profile_text',
             'why_i_volunteer'
         ];
+    }
+
+    /**
+     * Get tenant activated currencies
+     *
+     * @param Request $request
+     *
+     * @return Illuminate\Support\Collection
+     */
+    public function getTenantActivatedCurrencies(Request $request): Collection
+    {
+        $tenant = $this->getTenantDetail($request);
+        $this->switchDatabaseConnection('mysql');
+
+        $currencies = $this->db->table('tenant_currency')
+            ->select('code', 'default')
+            ->where('tenant_id', $tenant->tenant_id)
+            ->where('is_active', 1)
+            ->orderBy('default', 'DESC')
+            ->orderBy('code', 'ASC')
+            ->get();
+
+        $this->switchDatabaseConnection('tenant');
+
+        return $currencies;
     }
 }
