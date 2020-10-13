@@ -6,6 +6,7 @@ return [
      * constants to use any where in system
      */
     'TENANT_OPTION_SLIDER' => 'slider',
+    'TENANT_OPTION_CUSTOM_LOGIN_TEXT' => 'custom_login_text',
     'FORGOT_PASSWORD_EXPIRY_TIME' => '4',
     'SLIDER_LIMIT' => '4',
     'SLIDER_IMAGE_PATH' => 'images/',
@@ -145,6 +146,15 @@ return [
         'image/jpeg',
         'image/jpg',
         'image/svg+xml'
+    ],
+
+    /*
+     * Custom login text positions
+     */
+    'custom_login_text_positions' => [
+        'after_login_form',
+        'before_logo',
+        'after_logo'
     ],
 
     /*
