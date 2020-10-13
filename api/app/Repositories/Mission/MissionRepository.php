@@ -1962,7 +1962,7 @@ class MissionRepository implements MissionInterface
      *
      * @param $value
      * @param $languages
-    */
+     */
     public function missionTabTransformArray($value, $languages)
     {
         $missionTabInfo =  $value['missionTabs']->toArray();
