@@ -226,8 +226,7 @@
           ]
         },
         errorInGetStoryDetail: false,
-        unprocessableEntityStatus: 422,
-        fileIdsForStory: []
+        unprocessableEntityStatus: 422
       }
     },
     // First, create a variable that will have the same value of the files after it was saved
@@ -463,12 +462,6 @@
               this.formChange = 0;
               this.storyId = response.data;
 
-              if (file) {
-                file.filter((fileItem, fileIndex) => {
-                  this.fileIdsForStory.push(fileItem.id);
-                });
-              }
-
               if (params == "preview" && this.storyId != '') {
                 let routeData = this.$router.resolve({
                   path: "/story-preview" + '/' + this.storyId
@@ -476,7 +469,8 @@
                 window.open(routeData.href, '_blank');
                 this.isLoaderActive = false
                 this.saveButtonAjaxCall = false
-                return false;
+                this.getStoryDetail();
+                return;
               } else {
                 this.showDismissibleAlert = true
                 if (this.storyId != '') {
@@ -500,19 +494,6 @@
             formData.append('story_videos', '');
           }
 
-          if (file) {
-            formData.append('story_images[]', '');
-            file.filter((fileItem, fileIndex) => {
-              /**
-              * For the update method, add the files in the request if 
-              * the file ID does not exists in this.fileIdsForStory variable
-              */
-              if (this.fileIdsForStory.indexOf(fileItem.id) === -1) {
-                formData.append('story_images[]', fileItem.file);
-              }
-            });
-          }
-
           formData.append('_method', 'PATCH');
           updateStory(formData, this.storyId).then(response => {
             this.showDismissibleAlert = true
@@ -523,14 +504,6 @@
             } else {
               this.formChange = 0;
 
-              if (file) {
-                // Update the variable once the update method is successful
-                this.fileIdsForStory = [];
-                file.filter((fileItem, fileIndex) => {
-                  this.fileIdsForStory.push(fileItem.id);
-                });
-              }
-
               if (params == "preview" && this.storyId != '') {
                 let routeData = this.$router.resolve({
                   path: `/story-preview/${this.storyId}`
@@ -539,7 +512,8 @@
                 this.isLoaderActive = false;
                 this.saveButtonAjaxCall = false;
                 this.showDismissibleAlert = false;
-                return false;
+                this.getStoryDetail();
+                return;
               }
 
               if (this.storyId != '' && params != 'preview') {
