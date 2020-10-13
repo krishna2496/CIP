@@ -1752,8 +1752,7 @@
         "consumes": [
           "multipart/form-data"
         ],
-        "responses": {
-        }
+        "responses": {}
       }
     },
     "/app/cms/detail": {
@@ -4451,8 +4450,7 @@
             "type": "string"
           }
         ],
-        "responses": {
-        }
+        "responses": {}
       }
     },
     "/app/custom-css": {
@@ -4466,8 +4464,7 @@
         "consumes": [
           "multipart/form-data"
         ],
-        "responses": {
-        }
+        "responses": {}
       }
     },
     "/app/custom-favicon": {
@@ -4496,8 +4493,7 @@
         "consumes": [
           "multipart/form-data"
         ],
-        "responses": {
-        }
+        "responses": {}
       }
     },
     "/app/explore-mission": {
@@ -8457,7 +8453,7 @@
       "get": {
         "operationId": "GET_team4-cip-api-get-timezone",
         "summary": "Admin - Fetch timezone list",
-        "tags":[
+        "tags": [
           "Timezone"
         ],
         "parameters": [
@@ -8470,8 +8466,8 @@
           }
         ],
         "responses": {
-          "401":{
-            "description":"Unauthorized - Invalid API key or secret key"
+          "401": {
+            "description": "Unauthorized - Invalid API key or secret key"
           }
         }
       }
@@ -9214,7 +9210,7 @@
                       "type": "string",
                       "description": "Language ISO code (e.g. en, fr)"
                     },
-                    "content" : {
+                    "content": {
                       "type": "string",
                       "description": "Mission impact description"
                     }
@@ -9307,7 +9303,11 @@
         "un_sdg": {
           "type": "array",
           "description": "Array of valid UN SDG numbers (1 to 17)",
-          "example": [1, 2, 3]
+          "example": [
+            1,
+            2,
+            3
+          ]
         },
         "organization": {
           "type": "object",
@@ -9347,6 +9347,40 @@
             "postal_code": {
               "type": "string",
               "description": "Organization postal code"
+            }
+          }
+        },
+        "donation_attribute": {
+          "type": "object",
+          "properties": {
+            "goal_amount_currency": {
+              "type": "string",
+              "description": "Goal amount's currency"
+            },
+            "goal_amount": {
+              "type": "integer",
+              "description": "Goal amount for donation"
+            },
+            "show_goal_amount": {
+              "type": "boolean"
+            },
+            "show_donation_percentage": {
+              "type": "boolean"
+            },
+            "show_donation_meter": {
+              "type": "boolean"
+            },
+            "show_donation_count": {
+              "type": "boolean"
+            },
+            "show_donors_count": {
+              "type": "boolean"
+            },
+            "disable_when_funded": {
+              "type": "boolean"
+            },
+            "is_disabled": {
+              "type": "boolean"
             }
           }
         }
@@ -9598,6 +9632,42 @@
             }
           }
         },
+        "impact": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "mission_impact_id": {
+                "type": "string",
+                "description": "Required only when updating an existing mission impact"
+              },
+              "icon_path": {
+                "type": "string",
+                "description": "URL of mission impact icon"
+              },
+              "sort_key": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "translations": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "language_code": {
+                      "type": "string",
+                      "description": "Language ISO code (e.g. en, fr)"
+                    },
+                    "content": {
+                      "type": "string",
+                      "description": "Mission impact description"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
         "start_date": {
           "type": "string",
           "format": "date-time",
@@ -9681,7 +9751,11 @@
         "un_sdg": {
           "type": "array",
           "description": "Array of valid UN SDG numbers (1 to 17)",
-          "example": [1, 2, 3]
+          "example": [
+            1,
+            2,
+            3
+          ]
         },
         "organization": {
           "type": "object",
@@ -9721,6 +9795,40 @@
             "postal_code": {
               "type": "string",
               "description": "Organization postal code"
+            }
+          }
+        },
+        "donation_attribute": {
+          "type": "object",
+          "properties": {
+            "goal_amount_currency": {
+              "type": "string",
+              "description": "Goal amount's currency"
+            },
+            "goal_amount": {
+              "type": "integer",
+              "description": "Goal amount for donation"
+            },
+            "show_goal_amount": {
+              "type": "boolean"
+            },
+            "show_donation_percentage": {
+              "type": "boolean"
+            },
+            "show_donation_meter": {
+              "type": "boolean"
+            },
+            "show_donation_count": {
+              "type": "boolean"
+            },
+            "show_donors_count": {
+              "type": "boolean"
+            },
+            "disable_when_funded": {
+              "type": "boolean"
+            },
+            "is_disabled": {
+              "type": "boolean"
             }
           }
         }
@@ -9859,7 +9967,7 @@
         "status": {
           "type": "integer",
           "description": "1 => Active, 0 => Inactive",
-          "enum":[
+          "enum": [
             "1",
             "0"
           ]
@@ -9872,7 +9980,7 @@
           "type": "string"
         },
         "expiry": {
-          "type":  "string",
+          "type": "string",
           "format": "date-time",
           "description": "yyyy-mm-dd hh:mm:ss 24-hour format in UTC"
         },
@@ -9880,7 +9988,7 @@
           "type": "string"
         },
         "invitation_sent_at": {
-          "type":  "string",
+          "type": "string",
           "format": "date-time",
           "description": "yyyy-mm-dd hh:mm:ss 24-hour format in UTC"
         }

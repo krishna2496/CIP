@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Transformations;
 
 use App\Models\Mission;
@@ -8,7 +9,7 @@ use Illuminate\Support\Collection;
 trait MissionTransformable
 {
     /**
-     * Select mission fields
+     * Select mission fields.
      *
      * @param App\Models\Mission $mission
      * @param string $languageCode
@@ -16,7 +17,6 @@ trait MissionTransformable
      * @param int $defaultTenantLanguage
      * @param string $timezone
      * @param object $tenantLanguages
-     * @param array $userCurrency
      * @return App\Models\Mission
      */
     protected function transformMission(
@@ -25,11 +25,10 @@ trait MissionTransformable
         int $languageId,
         int $defaultTenantLanguage,
         string $timezone,
-        Collection $tenantLanguages,
-        array $userCurrency = null
+        Collection $tenantLanguages
     ): Mission {
         if (isset($mission['goalMission']) && is_numeric($mission['goalMission']['goal_objective'])) {
-            $mission['goal_objective']  = $mission['goalMission']['goal_objective'];
+            $mission['goal_objective'] = $mission['goalMission']['goal_objective'];
         }
 
         if (isset($mission['start_date'])) {
@@ -76,10 +75,10 @@ trait MissionTransformable
         }
         unset($mission['goalMission']);
         unset($mission['timeMission']);
-        $mission['achieved_goal']  = $mission['achieved_goal'] ?? '';
-        $mission['user_application_status']  = ($mission['missionApplication'][0]['approval_status']) ?? '';
-        $mission['rating']  = ($mission['missionRating'][0]['rating']) ?? 0;
-        $mission['is_favourite']  = ($mission['favourite_mission_count'] && ($mission['favourite_mission_count'] !== 0))
+        $mission['achieved_goal'] = $mission['achieved_goal'] ?? '';
+        $mission['user_application_status'] = ($mission['missionApplication'][0]['approval_status']) ?? '';
+        $mission['rating'] = ($mission['missionRating'][0]['rating']) ?? 0;
+        $mission['is_favourite'] = ($mission['favourite_mission_count'] && ($mission['favourite_mission_count'] !== 0))
         ? 1 : 0;
         unset($mission['missionRating']);
         unset($mission['favouriteMission']);
@@ -133,7 +132,7 @@ trait MissionTransformable
         // Check for apply in mission validity
         $mission['set_view_detail'] = 0;
 
-        $todayDate = Carbon::parse(date(config("constants.DB_DATE_FORMAT")));
+        $todayDate = Carbon::parse(date(config('constants.DB_DATE_FORMAT')));
         $today = $todayDate->setTimezone(config('constants.TIMEZONE'))->format(config('constants.DB_DATE_FORMAT'));
         $todayTime = $this->helpers->getUserTimeZoneDate(date(config("constants.DB_DATE_TIME_FORMAT")));
 
@@ -175,7 +174,7 @@ trait MissionTransformable
                         $value['skill']['translations'],
                         'lang'
                     ));
-                    if ($arrayKey  !== '') {
+                    if ($arrayKey !== '') {
                         $returnData[config('constants.SKILL')][$key]['title'] =
                         $value['skill']['translations'][$arrayKey]['title'];
                         $returnData[config('constants.SKILL')][$key]['id'] =
@@ -193,7 +192,7 @@ trait MissionTransformable
         && (is_array($mission['organisation_detail']))) {
             if ($mission['organisation_detail']) {
                 $arrayKey = array_search($languageCode, array_column($mission['organisation_detail'], 'lang'));
-                if ($arrayKey  !== '') {
+                if ($arrayKey !== '') {
                     $mission['organisation_detail'] = $mission['organisation_detail'][$arrayKey]['detail'];
                 }
             }
@@ -220,9 +219,6 @@ trait MissionTransformable
         unset($mission['city']->languages);
         unset($mission['missionSkill']);
 
-        // Add user currency
-        $mission['user_currency'] = $userCurrency;
-        
         // get mission tab transformation
         $missionTabDetails = $mission['missionTabs']->toArray();
         if ($missionTabDetails) {
