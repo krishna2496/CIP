@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Mockery;
 use TestCase;
+use Validator;
 
 class TenantActivatedSettingControllerTest extends TestCase
 {
@@ -130,6 +131,94 @@ class TenantActivatedSettingControllerTest extends TestCase
                 'title' => 'skills enabled'
             ]
         ]);
+    }
+
+    /**
+    * @testdox Test store check volunteering time and goal disabled conditions
+    *
+    * @return void
+    */
+    public function testStoreCheckVolunteeringTimeGoalSetting()
+    {
+        $responseHelper = $this->mock(ResponseHelper::class);
+        $helper = $this->mock(Helpers::class);
+        $repository = $this->mock(TenantActivatedSettingRepository::class);
+        $requestData = new Request();
+        $validator = $this->mock(\Illuminate\Validation\Validator::class);
+        $validator->shouldReceive('fails')
+            ->andReturn(false);
+
+        Validator::shouldReceive('make')
+            ->andReturn($validator);
+
+        $repository->shouldReceive('checkVolunteeringTimeAndGoalSetting')
+            ->once()
+            ->andReturn(false);
+
+        $responseHelper->shouldReceive('error')
+            ->once()
+            ->with(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_VOLUNTEERING_TIME_OR_GOAL_SHOULD_BE_ACTIVE'),
+                trans('messages.custom_error_message.ERROR_VOLUNTEERING_TIME_OR_GOAL_SHOULD_BE_ACTIVE')
+            );
+        
+        $controller = $this->getController(
+            $repository,
+            $responseHelper,
+            $helper
+        );
+
+        $response = $controller->store($requestData);
+
+        $this->assertInstanceOf(JsonResponse::class, $response);
+    }
+
+    /**
+    * @testdox Test store check volunteering setting disabled
+    *
+    * @return void
+    */
+    public function testStoreCheckVolunteeringSettingDisabled()
+    {
+        $responseHelper = $this->mock(ResponseHelper::class);
+        $helper = $this->mock(Helpers::class);
+        $repository = $this->mock(TenantActivatedSettingRepository::class);
+        $requestData = new Request();
+        $validator = $this->mock(\Illuminate\Validation\Validator::class);
+        $validator->shouldReceive('fails')
+            ->andReturn(false);
+
+        Validator::shouldReceive('make')
+            ->andReturn($validator);
+
+        $repository->shouldReceive('checkVolunteeringTimeAndGoalSetting')
+            ->once()
+            ->andReturn(true);
+
+        $repository->shouldReceive('checkVolunteeringSettingDisabled')
+            ->once()
+            ->andReturn(false);
+
+        $responseHelper->shouldReceive('error')
+            ->once()
+            ->with(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_VOLUNTEERING_SHOULD_BE_ENABLED'),
+                trans('messages.custom_error_message.ERROR_VOLUNTEERING_SHOULD_BE_ENABLED')
+            );
+        
+        $controller = $this->getController(
+            $repository,
+            $responseHelper,
+            $helper
+        );
+
+        $response = $controller->store($requestData);
+
+        $this->assertInstanceOf(JsonResponse::class, $response);
     }
 
     /**

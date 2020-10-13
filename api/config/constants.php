@@ -346,7 +346,8 @@ return [
         'STATE_ENABLED' => 'state_selection',
         'MISSION_IMPACT' => 'mission_impact',
         'VOLUNTEERING_GOAL_MISSION' => 'volunteering_goal_mission',
-        'VOLUNTEERING_TIME_MISSION' => 'volunteering_time_mission'
+        'VOLUNTEERING_TIME_MISSION' => 'volunteering_time_mission',
+        'VOLUNTEERING' => 'volunteering'
     ],
 
     'TOP_THEME' => "top_themes",
@@ -539,7 +540,9 @@ return [
         'ERROR_DONATION_IP_WHITELIST_INVALID_DATA' => '900100',
         'ERROR_DONATION_IP_WHITELIST_NOT_FOUND' => '900101',
         'ERROR_SORT_KEY_ALREADY_EXIST' => '900102',
-        'ERROR_IMPACT_SORT_KEY_ALREADY_EXIST' => '900103'
+        'ERROR_IMPACT_SORT_KEY_ALREADY_EXIST' => '900103',
+        'ERROR_VOLUNTEERING_TIME_OR_GOAL_SHOULD_BE_ACTIVE' => '900104',
+        'ERROR_VOLUNTEERING_SHOULD_BE_ENABLED' => '900105'
     ],
 
     /**

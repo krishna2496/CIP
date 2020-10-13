@@ -118,6 +118,28 @@ class TenantActivatedSettingController extends Controller
             );
         }
 
+        // check for volunterring time or goal should be enabled
+        $response = $this->tenantActivatedSettingRepository->checkVolunteeringTimeAndGoalSetting($request->toArray());
+        if (!$response) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_VOLUNTEERING_TIME_OR_GOAL_SHOULD_BE_ACTIVE'),
+                trans('messages.custom_error_message.ERROR_VOLUNTEERING_TIME_OR_GOAL_SHOULD_BE_ACTIVE')
+            );
+        }
+
+        // Check volunteering setting is disabled or not
+        $response = $this->tenantActivatedSettingRepository->checkVolunteeringSettingDisabled($request->toArray());
+        if (!$response) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_VOLUNTEERING_SHOULD_BE_ENABLED'),
+                trans('messages.custom_error_message.ERROR_VOLUNTEERING_SHOULD_BE_ENABLED')
+            );
+        }
+
         // Store settings
         $this->tenantActivatedSettingRepository->store($request->toArray());
 
