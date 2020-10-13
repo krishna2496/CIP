@@ -41,6 +41,7 @@
     </div>
 </template>
 <script>
+  import constants from '../constant';
   import ThePrimaryHeader from "../components/Layouts/ThePrimaryHeader";
   import TheSecondaryFooter from "../components/Layouts/TheSecondaryFooter";
   import {
@@ -56,7 +57,8 @@
       return {
         footerItems: [],
         isPolicyDataSet: false,
-        slug: this.$route.params.policyPage
+        slug: this.$route.params.policyPage,
+        isPolicyEnabled: true
       };
     },
     mounted() {},
@@ -149,6 +151,10 @@
       }
     },
     created() {
+      this.isPolicyEnabled = this.settingEnabled(constants.POLICIES_ENABLED);
+      if(!this.isPolicyEnabled) {
+        this.$router.push('/home')
+      }
       this.policyListing(this.slug);
       window.addEventListener("scroll", this.handleScroll);
       window.addEventListener("resize", this.handleScroll);
