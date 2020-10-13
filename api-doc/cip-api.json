@@ -4058,6 +4058,79 @@
         }
       }
     },
+    "/style/favicon": {
+      "get": {
+        "operationId": "GET_team4-cip-api-favicon",
+        "summary": "Admin - Retrieve tenant favicon",
+        "description": "Retrieve the tenant favicon url (if it exists).",
+        "tags": [
+          "Tenant - Admin"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or secret key"
+          },
+          "404": {
+            "description": "No favicon found for the tenant"
+          }
+        }
+      },
+      "post": {
+        "operationId": "POST_team4-cip-api-favicon",
+        "summary": "Admin - Upload / Update tenant favicon",
+        "description": "Upload (or update if it already exists) the tenant favicon.",
+        "tags": [
+          "Tenant - Admin"
+        ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+          {
+            "name": "favicon",
+            "in": "formData",
+            "required": true,
+            "type": "file"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or secret key"
+          },
+          "404": {
+            "description": "Unable to read the file specified in the favicon field"
+          },
+          "422": {
+            "description": "The favicon field is required"
+          }
+        }
+      }
+    },
     "/tenant-option": {
       "post": {
         "operationId": "GET_team4-cip-api-save-tenant-option",
@@ -4310,11 +4383,44 @@
             "items": {
               "type": "string"
             }
-          },
+          }
         ],
         "responses": {
           "200": {
             "description": "Settings listed successfully"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or secret key"
+          }
+        }
+      }
+    },
+    "/tenant-currencies": {
+      "get": {
+        "operationId": "GET-cip-api-get-activated-currencies",
+        "summary": "Admin - Get tenant activated currencies",
+        "description": "List of all the tenant activated currencies",
+        "tags": [
+          "Tenant - Admin"
+        ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tenant activated currencies listed successfully | Tenant has no activated currencies"
           },
           "400": {
             "description": "Bad Request"
@@ -4359,6 +4465,21 @@
         ],
         "consumes": [
           "multipart/form-data"
+        ],
+        "responses": {
+        }
+      }
+    },
+    "/app/custom-favicon": {
+      "get": {
+        "operationId": "GET_team4-cip-api-custom-favicon",
+        "summary": "App - Get custom favicon url",
+        "description": "This API will retrieve custom favicon url. So front end can use this favicon.",
+        "tags": [
+          "Tenant - App"
+        ],
+        "consumes": [
+          "application/json"
         ],
         "responses": {
         }
@@ -4443,7 +4564,7 @@
       "post": {
         "operationId": "GET_team4-cip-api-get-tenant-option",
         "summary": "App - Get tenant option value by option name (Milestone - 2)",
-        "description": "In front end - It will fetch particular option value by its name which is set by tenant adnin. Example: it will fetch option_value (Custom text set by admin) for option_name(no_mission_custom_text)",
+        "description": "In front end - It will fetch particular option value by its name which is set by tenant admin. Example: it will fetch option_value (Custom text set by admin) for option_name(no_mission_custom_text)",
         "tags": [
           "Tenant - App"
         ],
@@ -6125,7 +6246,7 @@
     },
     "/app/story/list": {
       "get": {
-        "operationId": "POST_team4-cip-api-get-story-lsiting",
+        "operationId": "POST_team4-cip-api-get-story-listing",
         "summary": "App - Get published stories (Milestone - 4)",
         "description": "Fetch all published stories for story listing page",
         "tags": [
@@ -7304,7 +7425,7 @@
             "description": "Unauthorized - Invalid API key or secret key"
           },
           "404": {
-            "description": "Not found - Availabilty does not found in system"
+            "description": "Not found - Availability was not found in system"
           },
           "502": {
             "description": "Bad Gateway - Database operational error"
@@ -7344,7 +7465,7 @@
             "description": "Unauthorized - Invalid API key or secret key"
           },
           "404": {
-            "description": "Not found - Availabilty does not found in system"
+            "description": "Not found - Availability was not found in system"
           },
           "502": {
             "description": "Bad Gateway - Database operational error"
@@ -7384,10 +7505,46 @@
             "description": "Unauthorized - Invalid API key or secret key"
           },
           "404": {
-            "description": "Not found - Availabilty does not found in system"
+            "description": "Not found - Availability was not found in system"
           },
           "502": {
             "description": "Bad Gateway - Database operational error"
+          }
+        }
+      }
+    },
+    "/app/country": {
+      "get": {
+        "operationId": "GET_cip-api-get-country",
+        "summary": "App - Get country list",
+        "tags": [
+          "Country"
+        ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+          {
+            "name": "detailed",
+            "in": "path",
+            "description": "If true, return the country list with more information",
+            "required": false,
+            "type": "boolean"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid token"
           }
         }
       }
@@ -9735,7 +9892,7 @@
         "expiry": {
           "type":  "string",
           "format": "date-time",
-          "description": "yyyy-mm-dd hh:mm:ss 24-hour format in UTC",
+          "description": "yyyy-mm-dd hh:mm:ss 24-hour format in UTC"
         },
         "position": {
           "type": "string"

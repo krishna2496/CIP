@@ -9,6 +9,7 @@ import {
     setTimeout
 } from "timers";
 import customCss from './services/CustomCss';
+import customFavicon from './services/CustomFavicon';
 import { setSiteTitle } from './utils';
 
 export default {
@@ -79,14 +80,17 @@ export default {
     },
     created() {
         document.body.classList.add("loader-enable");
-        setSiteTitle();
-
         customCss()
             .catch(() => {
                 import( /* webpackChunkName: "default-theme.css" */ './assets/scss/custom.scss');
             }).finally(() => {
                 document.body.classList.remove("loader-enable");
                 this.stylesLoaded = true;
+            });
+
+        customFavicon()
+            .catch(() => {
+              /* nothing to do since default favicon is already set to Optimy icon*/
             });
 
         let ua = navigator.userAgent.toLowerCase();
@@ -108,6 +112,7 @@ export default {
         window.addEventListener("resize", this.signinAdj);
         window.addEventListener("scroll", this.handleScroll);
         window.scrollTo(0, 0);
+        setSiteTitle();
     },
     updated() {
         window.scrollTo(0, 0);
@@ -167,26 +172,26 @@ export default {
                 });
             });
 
-            let validationButton = document.querySelectorAll(".btn");
-            validationButton.forEach((saveButton) => {
-                saveButton.addEventListener("click", () => {
-                    let windowTop = window.pageYOffset;
-                    let controlError = document.querySelector(".is-invalid");
-                    setTimeout(() => {
-                        let alertPopup = document.querySelector(".alert");
-                        if (alertPopup) {
-                            window.scrollTo(0, 0);
-                        }
-                    }, 100)
+            let validationButton = document.querySelectorAll(".btn-validate");
+                validationButton.forEach((saveButton) => {
+                    saveButton.addEventListener("click", () => {
+                        let windowTop = window.pageYOffset;
+                        let controlError = document.querySelector(".is-invalid");
+                        setTimeout(() => {
+                            let alertPopup = document.querySelector(".alert");
+                            if (alertPopup) {
+                                window.scrollTo(0, 0);
+                            }
+                        }, 100)
 
-                    if (controlError) {
-                        let headerHeight = document.querySelector("header").offsetHeight;
-                        let offsetTopValue = controlError.getBoundingClientRect().top +
-                            windowTop - headerHeight - 40;
-                        window.scrollTo(0, offsetTopValue);
-                    }
+                        if (controlError) {
+                            let headerHeight = document.querySelector("header").offsetHeight;
+                            let offsetTopValue = controlError.getBoundingClientRect().top +
+                                windowTop - headerHeight - 40;
+                            window.scrollTo(0, offsetTopValue);
+                        }
+                    });
                 });
-            });
 
         }, 1000);
 

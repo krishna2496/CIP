@@ -144,6 +144,7 @@ return [
         'MESSAGE_STORY_COPIED_SUCCESS' => "Verhaal succesvol gekopieerd",
         'MESSAGE_UNABLE_TO_EXPORT_USER_STORIES_ENTRIES' => "Er konden geen verhalen worden gevonden",
         'MESSAGE_STORY_UPDATED' => "Verhaal succesvol bijgewerkt",
+        'MESSAGE_FAVICON_UPLOADED' => 'Favicon succesvol geüpload',
 
         'MESSAGE_USER_COMMENTS_LISTING' => "Gebruikersopmerkingen succesvol vermeld",
         'MESSAGE_STORY_SUBMITTED_SUCCESSFULLY' => "Verhaal succesvol ingediend",

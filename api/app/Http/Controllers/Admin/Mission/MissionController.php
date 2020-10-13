@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\Admin\Mission;
 
+use App\Events\Mission\MissionDeletedEvent;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -203,7 +204,7 @@ class MissionController extends Controller
                 "mission_detail.*.label_goal_achieved" => 'sometimes|required_if:mission_type,GOAL|max:255',
                 "mission_detail.*.label_goal_objective" => 'sometimes|required_if:mission_type,GOAL|max:255',
                 "impact" => "sometimes|required|array",
-                "impact.*.icon_path" => 'sometimes|required|valid_icon_path',
+                "impact.*.icon_path" => 'valid_icon_path',
                 "impact.*.sort_key" => 'required|integer|min:0|distinct',
                 "impact.*.translations" => 'required',
                 "impact.*.translations.*.language_code" => 'required_with:impact.*.translations|max:2',
@@ -244,7 +245,7 @@ class MissionController extends Controller
             return $this->responseHelper->error(
                 Response::HTTP_FORBIDDEN,
                 Response::$statusTexts[Response::HTTP_FORBIDDEN],
-                config('constants.error_codes.ERROR_INVALID_MISSION_DATA'),
+                config('constants.error_codes.ERROR_TENANT_SETTING_DISABLED'),
                 trans('messages.custom_error_message.ERROR_TENANT_SETTING_DISABLED')
             );
         }
@@ -416,7 +417,7 @@ class MissionController extends Controller
                 "impact.*.mission_impact_id" =>
                 "sometimes|required|exists:mission_impact,mission_impact_id,deleted_at,NULL",
                 "impact" => "sometimes|required|array",
-                "impact.*.icon_path" => "sometimes|required|valid_icon_path",
+                "impact.*.icon_path" => "valid_icon_path",
                 "impact.*.sort_key" => "required_without:impact.*.mission_impact_id|integer|min:0|distinct",
                 "impact.*.translations"  => "required_without:impact.*.mission_impact_id",
                 "impact.*.translations.*.language_code" => "required_with:impact.*.translations|max:2",
@@ -469,7 +470,7 @@ class MissionController extends Controller
             return $this->responseHelper->error(
                 Response::HTTP_FORBIDDEN,
                 Response::$statusTexts[Response::HTTP_FORBIDDEN],
-                config('constants.error_codes.ERROR_INVALID_MISSION_DATA'),
+                config('constants.error_codes.ERROR_TENANT_SETTING_DISABLED'),
                 trans('messages.custom_error_message.ERROR_TENANT_SETTING_DISABLED')
             );
         }
@@ -715,11 +716,8 @@ class MissionController extends Controller
     public function destroy(int $missionId): JsonResponse
     {
         try {
-            $mission = $this->missionRepository->delete($missionId);
-            // delete notification related to mission
-            $this->notificationRepository->deleteMissionNotifications($missionId);
-            $apiStatus = Response::HTTP_NO_CONTENT;
-            $apiMessage = trans('messages.success.MESSAGE_MISSION_DELETED');
+            $this->missionRepository->delete($missionId);
+
 
             // Make activity log
             event(new UserActivityLogEvent(
@@ -733,7 +731,7 @@ class MissionController extends Controller
                 $missionId
             ));
 
-            return $this->responseHelper->success($apiStatus, $apiMessage);
+            return $this->responseHelper->success(Response::HTTP_NO_CONTENT, trans('messages.success.MESSAGE_MISSION_DELETED'));
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),

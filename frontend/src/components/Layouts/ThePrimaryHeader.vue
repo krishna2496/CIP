@@ -30,8 +30,7 @@
                         </b-button>
                         <ul v-if="this.$store.state.isLoggedIn">
                             <li v-if="this.$store.state.logoRedirectUrl !== 'home'" class="has-menu no-dropdown home-link">
-                                <router-link :to="{ path: '/home'}"
-                                    :title="languageData.label.home" class="home-icon">
+                                <router-link :to="{ path: '/home'}" class="home-icon">
                                     <img class="home-icon"
                                         :src="$store.state.imagePath+'/assets/images/home-ic.svg'"
                                     />
@@ -39,8 +38,7 @@
                             </li>
 
                             <li class="has-menu">
-                                <a href="Javascript:void(0)"
-                                    :title='languageData.label.explore'>{{ languageData.label.explore}}</a>
+                                <a href="Javascript:void(0)">{{ languageData.label.explore}}</a>
                                 <i class="collapse-toggle"></i>
                                 <ul class="dropdown-menu sub-dropdown">
                                     <li v-if="isThemeDisplay" v-bind:class="topThemeClass">
@@ -126,8 +124,7 @@
                             </li>
 
                             <li class="has-menu" v-show="isPolicyDisplay && policyPage.length > 0">
-                                <a href="Javascript:void(0)"
-                                    :title='languageData.label.policy'>{{ languageData.label.policy}}
+                                <a href="Javascript:void(0)">{{ languageData.label.policy}}
                                 </a>
                                 <i class="collapse-toggle"></i>
                                 <ul class="dropdown-menu" v-show="policyPage.length > 0">
@@ -324,6 +321,7 @@
             exploreMission,
             policy,
             loadLocaleMessages,
+            logout,
             notificationSettingListing,
             updateNotificationSetting,
             clearNotification,
@@ -433,7 +431,7 @@
                 },
                 logout() {
                         document.querySelector('body').classList.remove('small-header');
-                        this.$store.commit('logoutUser');
+                        logout();
                 },
                 menuBarclickHandler() {
 

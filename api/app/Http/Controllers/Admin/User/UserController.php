@@ -253,7 +253,13 @@ class UserController extends Controller
             "first_name" => "sometimes|required|max:60",
             "last_name" => "sometimes|required|max:60",
             "email" => "required|email|unique:user,email,NULL,user_id,deleted_at,NULL",
-            "password" => "required|min:8",
+            "password" => [
+                'required',
+                'min:8',
+                'regex:/[0-9]/',
+                'regex:/[a-z]/',
+                'regex:/[A-Z]/'
+            ],
             "availability_id" => "sometimes|required|integer|exists:availability,availability_id,deleted_at,NULL",
             "timezone_id" => "sometimes|required|integer|exists:timezone,timezone_id,deleted_at,NULL",
             "language_id" => "sometimes|required|int",
@@ -281,7 +287,8 @@ class UserController extends Controller
         // Server side validataions
         $validator = Validator::make(
             $request->all(),
-            $fieldsToValidate
+            $fieldsToValidate,
+            ['password.regex' => trans('messages.custom_error_message.ERROR_PASSWORD_VALIDATION_MESSAGE')]
         );
         // If request parameter have any error
         if ($validator->fails()) {
@@ -398,7 +405,8 @@ class UserController extends Controller
             // Server side validataions
             $validator = Validator::make(
                 $request->all(),
-                $fieldsToValidate
+                $fieldsToValidate,
+                ['password.regex' => trans('messages.custom_error_message.ERROR_PASSWORD_VALIDATION_MESSAGE')]
             );
 
             // If request parameter have any error
@@ -515,7 +523,14 @@ class UserController extends Controller
                 "email",
                 Rule::unique('user')->ignore($id, 'user_id,deleted_at,NULL')
             ],
-            "password" => "sometimes|required|min:8",
+            "password" => [
+                'sometimes',
+                'required',
+                'min:8',
+                'regex:/[0-9]/',
+                'regex:/[a-z]/',
+                'regex:/[A-Z]/'
+            ],
             "employee_id" => [
                 "sometimes",
                 "required",

@@ -13,7 +13,6 @@ export default async(storyId) => {
         method: 'GET',
         headers: {
             'X-localization': defaultLanguage,
-            'token': store.state.token,
         }
     })
       .then((response) => {

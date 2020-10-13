@@ -47,6 +47,7 @@ return [
         'array'   => 'The :attribute may not have more than :max items.',
     ],
     'mimes'                => 'The :attribute must be a file of type: :values.',
+    'mimetypes'            => 'The :attribute must be a file of type: :values.',
     'min'                  => [
         'numeric' => 'The :attribute must be at least :min.',
         'file'    => 'The :attribute must be at least :min kilobytes.',
@@ -77,6 +78,7 @@ return [
     'uuid'                 => 'Please use valid UUID string for :attribute',
     'ip_whitelist_pattern' => 'The :attribute field is in invalid format. Example: (216.109.112.0-135, 216.109.112.0/24, 216.109.*.*)',
     'max_item'             => 'The record count may not be greater than :max_item.',
+    'max_html_stripped'    => 'The :attribute may not be greater than :max characters.',
 
     /*
     |--------------------------------------------------------------------------
@@ -189,6 +191,8 @@ return [
         'settings.*.tenant_setting_id' => 'tenant setting id',
         'settings.*.value' => 'value',
         'option_value.translations.*.lang' => 'language code',
+        'option_value.translations.*.message' => 'option value',
+        'option_value.position' => 'custom login text position',
         'timesheet_entries.*.timesheet_id' => 'timesheet id',
 		'mission_detail.*.short_description' => 'short description',
         'news_content.translations' => 'translations',
@@ -225,7 +229,7 @@ return [
         'mission_detail.*.label_goal_objective' => 'label goal objective',
         'mission_detail.*.label_goal_achieved' => 'label goal achieved',
         'impact.*.icon_path' => 'icon path',
-        'impact.*.sort_key' => 'sort key',
+        'impact.*.sort_key' => 'impact sort key',
         'impact.*.translations' => 'translations',
         'impact.*.translations.*.language_code' => 'language code',
         'impact.*.translations.*.content' => 'content',
@@ -245,7 +249,7 @@ return [
         'volunteering_attribute.is_virtual' => 'is virtual',
         'volunteering_attribute.total_seats' => 'total seats',
         'mission_tabs.*.translations' => 'mission tab translation',
-        'mission_tabs.*.sort_key' => 'sort key',
+        'mission_tabs.*.sort_key' => 'mission_tabs sort key',
         'mission_tabs.*.languages.*.language_id' => 'language id',
         'mission_tabs.*.languages.*.name' => 'name',
         'mission_tabs.*.translations.*.lang' => 'language code',
