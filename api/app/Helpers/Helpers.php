@@ -571,29 +571,4 @@ class Helpers
             'why_i_volunteer'
         ];
     }
-
-    /**
-     * Get tenant activated currencies
-     *
-     * @param Request $request
-     *
-     * @return Illuminate\Support\Collection
-     */
-    public function getTenantActivatedCurrencies(Request $request): Collection
-    {
-        $tenant = $this->getTenantDetail($request);
-        $this->switchDatabaseConnection('mysql');
-
-        $currencies = $this->db->table('tenant_currency')
-            ->select('code', 'default')
-            ->where('tenant_id', $tenant->tenant_id)
-            ->where('is_active', 1)
-            ->orderBy('default', 'DESC')
-            ->orderBy('code', 'ASC')
-            ->get();
-
-        $this->switchDatabaseConnection('tenant');
-
-        return $currencies;
-    }
 }

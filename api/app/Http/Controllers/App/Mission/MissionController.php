@@ -162,7 +162,6 @@ class MissionController extends Controller
         $language = $this->languageHelper->getLanguageDetails($request);
         $languageId = $language->language_id;
         $languageCode = $language->code;
-        $tenantLanguages = $this->languageHelper->getLanguages();
         $userFilterData = [];
         $tenantLanguages = $this->languageHelper->getLanguages();
 
@@ -206,7 +205,6 @@ class MissionController extends Controller
         }
 
         $missionList = $this->missionRepository->getMissions($request, $userFilterData);
-        $userSelectedCurrency = $this->missionRepository->getUserCurrencyDetails($request);
 
         $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
         $defaultTenantLanguageId = $defaultTenantLanguage->language_id;
@@ -214,9 +212,9 @@ class MissionController extends Controller
         $missionsTransformed = $missionList
             ->getCollection()
             ->map(function ($item) use ($languageCode, $languageId, $defaultTenantLanguageId, $timezone, 
-                $tenantLanguages, $userSelectedCurrency) {
+                $tenantLanguages) {
                 return $this->transformMission($item, $languageCode, $languageId, $defaultTenantLanguageId, $timezone, 
-                $tenantLanguages, $userSelectedCurrency);
+                $tenantLanguages);
             })->toArray();
 
         $requestString = $request->except(['page', 'perPage']);
@@ -707,7 +705,6 @@ class MissionController extends Controller
             $tenantLanguages = $this->languageHelper->getLanguages();
 
             $missionData = $this->missionRepository->getMissionDetail($request, $missionId);
-            $userSelectedCurrency = $this->missionRepository->getUserCurrencyDetails($request);
 
             $isRequiredSettingEnabled = $this->isRequiredSettingForMissionTypeEnabled(
                 $request,
@@ -728,7 +725,7 @@ class MissionController extends Controller
 
             $mission = $missionData->map(
                 function (Mission $mission) use ($languageCode, $languageId, $defaultTenantLanguageId, $timezone,
-                 $tenantLanguages, $userSelectedCurrency
+                 $tenantLanguages
                 ) {
                     return $this->transformMission(
                         $mission,
@@ -736,8 +733,7 @@ class MissionController extends Controller
                         $languageId,
                         $defaultTenantLanguageId,
                         $timezone,
-                        $tenantLanguages,
-                        $userSelectedCurrency
+                        $tenantLanguages
                     );
                 }
             )->all();
