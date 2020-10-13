@@ -435,12 +435,12 @@ class MissionRepositoryTest extends TestCase
         $missionUnitedNationSDGRepository = $this->mock(MissionUnitedNationSDGRepository::class);
         $collection = $this->mock(Collection::class);
         $organization = $this->mock(Organization::class);
+        $donationAttribute = $this->mock(DonationAttribute::class);
+        $missionImpactRepository = $this->mock(MissionImpactRepository::class);
+        $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
+        $missionImpact = $this->mock(MissionImpact::class);
         $missionImpactDonation = $this->mock(MissionImpactDonation::class);
         $impactDonationMissionRepository = $this->mock(ImpactDonationMissionRepository::class);
-        $missionImpactRepository = $this->mock(MissionImpactRepository::Class);
-        $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::Class);
-        $missionImpact = $this->mock(MissionImpact::Class);
-        $donationAttribute = $this->mock(DonationAttribute::class);
 
         $modelService = $this->modelService(
             $mission,
