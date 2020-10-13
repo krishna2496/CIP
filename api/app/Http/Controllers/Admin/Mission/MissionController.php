@@ -1,28 +1,29 @@
 <?php
+
 namespace App\Http\Controllers\Admin\Mission;
 
 use App\Events\Mission\MissionDeletedEvent;
+use App\Events\User\UserActivityLogEvent;
+use App\Events\User\UserNotificationEvent;
+use App\Helpers\Helpers;
+use App\Helpers\LanguageHelper;
+use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
+use App\Repositories\Mission\MissionRepository;
+use App\Repositories\MissionMedia\MissionMediaRepository;
+use App\Repositories\Notification\NotificationRepository;
+use App\Repositories\Organization\OrganizationRepository;
+use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
+use App\Services\Mission\ModelsService;
+use App\Traits\RestExceptionHandlerTrait;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Validation\Rule;
-use App\Repositories\Mission\MissionRepository;
-use App\Repositories\MissionMedia\MissionMediaRepository;
-use App\Helpers\ResponseHelper;
-use Validator;
-use App\Traits\RestExceptionHandlerTrait;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use InvalidArgumentException;
-use App\Exceptions\TenantDomainNotFoundException;
-use App\Events\User\UserNotificationEvent;
-use App\Events\User\UserActivityLogEvent;
-use App\Helpers\LanguageHelper;
-use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
-use App\Repositories\Notification\NotificationRepository;
-use App\Repositories\Organization\OrganizationRepository;
-use App\Services\Mission\ModelsService;
+use Validator;
 
 //!  Mission controller
 /*!
@@ -77,10 +78,15 @@ class MissionController extends Controller
     private $modelsService;
 
     /**
+     * @var App\Helpers\Helpers
+     */
+    private $helpers;
+
+    /**
      * Create a new controller instance.
      *
-     * @param  App\Repositories\Mission\MissionRepository $missionRepository
-     * @param  App\Helpers\ResponseHelper $responseHelper
+     * @param App\Repositories\Mission\MissionRepository $missionRepository
+     * @param App\Helpers\ResponseHelper $responseHelper
      * @param Illuminate\Http\Request $request
      * @param App\Helpers\LanguageHelper $languageHelper
      * @param App\Repositories\MissionMedia\MissionMediaRepository $missionMediaRepository
@@ -88,6 +94,7 @@ class MissionController extends Controller
      * @param App\Repositories\Notification\NotificationRepository $notificationRepository
      * @param App\Repositories\Organization\OrganizationRepository $organizationRepository
      * @param  App\Services\Mission\ModelsService $modelsService
+     * @param App\Helpers\Helpers $helpers
      * @return void
      */
     public function __construct(
@@ -99,7 +106,8 @@ class MissionController extends Controller
         TenantActivatedSettingRepository $tenantActivatedSettingRepository,
         NotificationRepository $notificationRepository,
         OrganizationRepository $organizationRepository,
-        ModelsService $modelsService
+        ModelsService $modelsService,
+        Helpers $helpers
     ) {
         $this->missionRepository = $missionRepository;
         $this->responseHelper = $responseHelper;
@@ -110,12 +118,14 @@ class MissionController extends Controller
         $this->notificationRepository = $notificationRepository;
         $this->organizationRepository = $organizationRepository;
         $this->modelsService = $modelsService;
+        $this->helpers = $helpers;
     }
 
     /**
      * Display a listing of Mission.
      *
      * @param \Illuminate\Http\Request $request
+     *
      * @return Illuminate\Http\JsonResponse
      */
     public function index(Request $request): JsonResponse
@@ -138,6 +148,7 @@ class MissionController extends Controller
             $apiStatus = Response::HTTP_OK;
             $apiMessage = ($missions->isEmpty()) ? trans('messages.success.MESSAGE_NO_RECORD_FOUND')
              : trans('messages.success.MESSAGE_MISSION_LISTING');
+
             return $this->responseHelper->successWithPagination($apiStatus, $apiMessage, $apiData);
         } catch (InvalidArgumentException $e) {
             return $this->invalidArgument(
@@ -151,6 +162,7 @@ class MissionController extends Controller
      * Store a newly created resource in storage.
      *
      * @param \Illuminate\Http\Request $request
+     *
      * @return Illuminate\Http\JsonResponse
      */
     public function store(Request $request): JsonResponse
@@ -225,11 +237,21 @@ class MissionController extends Controller
                 "required_with:mission_tabs.*.translations.*.sections",
                 "mission_tabs.*.translations.*.sections.*.content" =>
                 "required_with:mission_tabs.*.translations.*.sections",
+                'donation_attribute' => 'required_if:mission_type,DONATION,EAF,DISASTER_RELIEF',
+                'donation_attribute.goal_amount_currency' => 'required_with:donation_attribute.goal_amount|string|min:3|max:3',
+                'donation_attribute.goal_amount' => 'sometimes|required_if:mission_type,DISASTER_RELIEF|numeric|min:1|digits_between:1,20',
+                'donation_attribute.show_goal_amount' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean',
+                'donation_attribute.show_donation_percentage' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean',
+                'donation_attribute.show_donation_meter' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean',
+                'donation_attribute.show_donation_count' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean',
+                'donation_attribute.show_donors_count' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean',
+                'donation_attribute.disable_when_funded' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean',
+                'donation_attribute.is_disabled' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean',
                 "un_sdg" => "sometimes|required|array",
                 "un_sdg.*" => "sometimes|required|integer|distinct|min:1|max:17"
-
             ]
         );
+
         // If request parameter have any error
         if ($validator->fails()) {
             return $this->responseHelper->error(
@@ -247,6 +269,21 @@ class MissionController extends Controller
                 Response::$statusTexts[Response::HTTP_FORBIDDEN],
                 config('constants.error_codes.ERROR_TENANT_SETTING_DISABLED'),
                 trans('messages.custom_error_message.ERROR_TENANT_SETTING_DISABLED')
+            );
+        }
+
+        // Check goal amount currency  set is valid or not
+        if (isset($request->get('donation_attribute')['goal_amount_currency'])
+            && !$this->helpers->isValidTenantCurrency(
+                $request,
+                $request->get('donation_attribute')['goal_amount_currency']
+            )
+        ) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_INVALID_CURRENCY'),
+                trans('messages.custom_error_message.ERROR_INVALID_TENANT_CURRENCY')
             );
         }
 
@@ -309,6 +346,7 @@ class MissionController extends Controller
             null,
             $mission->mission_id
         ));
+
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 
@@ -450,6 +488,16 @@ class MissionController extends Controller
                 "required_with:mission_tabs.*.translations.*.sections",
                 "mission_tabs.*.translations.*.sections" =>
                 "required_without:mission_tabs.*.mission_tab_id",
+                'donation_attribute' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF',
+                'donation_attribute.goal_amount_currency' => 'sometimes|required_with:donation_attribute.goal_amount|string|min:3|max:3',
+                'donation_attribute.goal_amount' => 'sometimes|required_if:mission_type,DISASTER_RELIEF|numeric|min:1|digits_between:1,20',
+                'donation_attribute.show_goal_amount' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean',
+                'donation_attribute.show_donation_percentage' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean',
+                'donation_attribute.show_donation_meter' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean',
+                'donation_attribute.show_donation_count' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean',
+                'donation_attribute.show_donors_count' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean',
+                'donation_attribute.disable_when_funded' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean',
+                'donation_attribute.is_disabled' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean'
             ]
         );
 
@@ -472,6 +520,16 @@ class MissionController extends Controller
                 Response::$statusTexts[Response::HTTP_FORBIDDEN],
                 config('constants.error_codes.ERROR_TENANT_SETTING_DISABLED'),
                 trans('messages.custom_error_message.ERROR_TENANT_SETTING_DISABLED')
+            );
+        }
+
+        // Check goal amount currency  set is valid or not
+        if (isset($request->get('donation_attribute')['goal_amount_currency']) && $request->get('donation_attribute')['goal_amount_currency'] != '' && !$this->helpers->validateTenantCurrency($request, $request->get('donation_attribute')['goal_amount_currency'])) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_INVALID_CURRENCY'),
+                trans('messages.custom_error_message.ERROR_INVALID_TENANT_CURRENCY')
             );
         }
 
@@ -533,7 +591,7 @@ class MissionController extends Controller
         try {
             if (isset($request->media_images) && count($request->media_images) > 0) {
                 foreach ($request->media_images as $mediaImages) {
-                    if (isset($mediaImages['media_id']) && ($mediaImages['media_id'] !== "")) {
+                    if (isset($mediaImages['media_id']) && ($mediaImages['media_id'] !== '')) {
                         $this->missionMediaRepository->find($mediaImages['media_id']);
                         $mediaImage = $this->missionMediaRepository->isMediaLinkedToMission(
                             $mediaImages['media_id'],
@@ -553,7 +611,7 @@ class MissionController extends Controller
 
             if (isset($request->media_videos) && count($request->media_videos) > 0) {
                 foreach ($request->media_videos as $mediaVideos) {
-                    if (isset($mediaVideos['media_id']) && ($mediaVideos['media_id'] != "")) {
+                    if (isset($mediaVideos['media_id']) && ($mediaVideos['media_id'] != '')) {
                         $this->missionMediaRepository->find($mediaVideos['media_id']);
                         $mediaVideo = $this->missionMediaRepository->isMediaLinkedToMission(
                             $mediaVideos['media_id'],
@@ -580,7 +638,7 @@ class MissionController extends Controller
         try {
             if (isset($request->documents) && count($request->documents) > 0) {
                 foreach ($request->documents as $mediaDocuments) {
-                    if (isset($mediaDocuments['document_id']) && ($mediaDocuments['document_id'] !== "")) {
+                    if (isset($mediaDocuments['document_id']) && ($mediaDocuments['document_id'] !== '')) {
                         $this->missionRepository->findDocument($mediaDocuments['document_id']);
                         $mediaDocument = $this->missionRepository->isDocumentLinkedToMission(
                             $mediaDocuments['document_id'],
@@ -704,6 +762,7 @@ class MissionController extends Controller
 
             event(new UserNotificationEvent($notificationType, $entityId, $action));
         }
+
         return $this->responseHelper->success($apiStatus, $apiMessage);
     }
 
@@ -744,6 +803,7 @@ class MissionController extends Controller
      * Remove the mission media from storage.
      *
      * @param int $mediaId
+     *
      * @return Illuminate\Http\JsonResponse
      */
     public function removeMissionMedia(int $mediaId): JsonResponse
@@ -778,6 +838,7 @@ class MissionController extends Controller
      * Remove the mission document from storage.
      *
      * @param int $documentId
+     *
      * @return Illuminate\Http\JsonResponse
      */
     public function removeMissionDocument(int $documentId): JsonResponse
@@ -896,6 +957,15 @@ class MissionController extends Controller
                 break;
             case config('constants.mission_type.TIME'):
                 $tenantSetting = config('constants.tenant_settings.VOLUNTEERING_TIME_MISSION');
+                break;
+            case config('constants.mission_type.DONATION'):
+                $tenantSetting = config('constants.tenant_settings.DONATION_MISSION');
+                break;
+            case config('constants.mission_type.EAF'):
+                $tenantSetting = config('constants.tenant_settings.EAF');
+                break;
+            case config('constants.mission_type.DISASTER_RELIEF'):
+                $tenantSetting = config('constants.tenant_settings.DISASTER_RELIEF');
                 break;
         }
 
