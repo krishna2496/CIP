@@ -17,10 +17,10 @@ use App\Repositories\MissionImpact\MissionImpactRepository;
 use App\Repositories\MissionMedia\MissionMediaRepository;
 use App\Repositories\MissionTab\MissionTabRepository;
 use App\Repositories\MissionUnitedNationSDG\MissionUnitedNationSDGRepository;
+use App\Services\Mission\ModelsService;
 use App\Repositories\ImpactDonationMission\ImpactDonationMissionRepository;
 use App\Models\MissionImpactDonation;
 use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
-use App\Services\Mission\ModelsService;
 use App\Transformations\AdminMissionTransformable;
 use Carbon\Carbon;
 use DB;
@@ -776,7 +776,6 @@ class MissionRepository implements MissionInterface
         }])->with(['impactDonation' => function ($query) {
             $query->orderBy('amount');
         }, 'impactDonation.getMissionImpactDonationDetail' => function ($query) {
-        }])->with(['missionTab' => function ($query) {
         }])->with(['missionTabs' => function ($query) {
             $query->select('mission_tab.sort_key', 'mission_tab.mission_tab_id', 'mission_tab.mission_id')->orderBy('sort_key');
         }, 'missionTabs.getMissionTabDetail' => function ($query) {
