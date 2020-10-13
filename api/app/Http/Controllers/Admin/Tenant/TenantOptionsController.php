@@ -287,14 +287,27 @@ class TenantOptionsController extends Controller
      */
     public function storeTenantOption(Request $request): JsonResponse
     {
+        $rules = [
+            'option_name' => 'required|unique:tenant_option,option_name,NULL,tenant_option_id,deleted_at,NULL',
+            'option_value' => 'required',
+            'option_value.translations.*.lang' => 'max:2'
+        ];
+
+        $data = $request->toArray();
+        if ($data['option_name'] === config('constants.TENANT_OPTION_CUSTOM_LOGIN_TEXT')) {
+            $rules['option_value'] = 'required|array';
+            $rules['option_value.translations'] = 'required|array';
+            $rules['option_value.translations.*.message'] = 'required|max_html_stripped:370';
+            $rules['option_value.position'] = [
+                'required',
+                Rule::in(config('constants.custom_login_text_positions'))
+            ];
+        }
+
         // Server side validataions
         $validator = Validator::make(
             $request->all(),
-            [
-                "option_name" => "required|unique:tenant_option,option_name,NULL,tenant_option_id,deleted_at,NULL",
-                "option_value" => "required",
-                "option_value.translations.*.lang" => "max:2"
-            ]
+            $rules
         );
 
         // If request parameter have any error
@@ -306,8 +319,6 @@ class TenantOptionsController extends Controller
                 $validator->errors()->first()
             );
         }
-
-        $data = $request->toArray();
 
         $data['option_value'] = is_array($request->option_value) ?
             json_encode($request->option_value, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) :
@@ -340,13 +351,25 @@ class TenantOptionsController extends Controller
      */
     public function updateTenantOption(Request $request): JsonResponse
     {
+        $rules = [
+            'option_name' => 'required',
+            'option_value' => 'required',
+            'option_value.translations.*.lang' => 'max:2'
+        ];
+
+        if ($request->option_name === config('constants.TENANT_OPTION_CUSTOM_LOGIN_TEXT')) {
+            $rules['option_value'] = 'required|array';
+            $rules['option_value.translations'] = 'required|array';
+            $rules['option_value.translations.*.message'] = 'required|max_html_stripped:370';
+            $rules['option_value.position'] = [
+                'required',
+                Rule::in(config('constants.custom_login_text_positions'))
+            ];
+        }
+
         $validator = Validator::make(
             $request->all(),
-            [
-                "option_name" => "required",
-                "option_value" => "required",
-                "option_value.translations.*.lang" => "max:2"
-            ]
+            $rules
         );
 
         // If request parameter have any error
