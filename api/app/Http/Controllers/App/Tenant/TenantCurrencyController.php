@@ -55,7 +55,7 @@ class TenantCurrencyController extends Controller
     public function index(Request $request): JsonResponse
     {
         // Fetch tenant all currency details
-        $getTenantCurrency = $this->helpers->getTenantCurrencies($request);
+        $getTenantCurrency = $this->helpers->getTenantActivatedCurrencies($request);
         $currencyList = $this->currencyRepository->findAll();        
         $allCurrencies = array();
 

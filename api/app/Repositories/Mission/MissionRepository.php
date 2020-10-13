@@ -1508,7 +1508,7 @@ class MissionRepository implements MissionInterface
                     $query->select(DB::raw('AVG(rating) as rating'));
                 },
             ])->withCount([
-                'missionRating as mission_rating_total_volunteers'
+                'missionRating as mission_rating_total_volunteers',
             ])->with(['missionTabs' => function ($query) {
                 $query->orderBy('sort_key');
             }, 'missionTabs.getMissionTabDetail' => function ($query) {
@@ -1518,8 +1518,8 @@ class MissionRepository implements MissionInterface
                 'timesheet AS achieved_goal' => function ($query) use ($request) {
                     $query->select(DB::raw('SUM(action) as action'));
                     $query->whereIn('status', array(config('constants.timesheet_status.APPROVED'),
-                    config('constants.timesheet_status.AUTOMATICALLY_APPROVED')));
-                }]);
+                    config('constants.timesheet_status.AUTOMATICALLY_APPROVED'), ));
+                }, ]);
                 
         return $missionQuery->get();
     }
@@ -1912,11 +1912,11 @@ class MissionRepository implements MissionInterface
     }
 
     /**
-     * Get mission tab response data
+     * Transfrom mission tab array for response
      * 
      * @param $value
      * @param $languages
-    */
+     */
     public function missionTabTransformArray($value, $languages)
     {
         $missionTabInfo =  $value['missionTabs']->toArray();

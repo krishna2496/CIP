@@ -533,7 +533,7 @@ class Helpers
      * @param \Illuminate\Http\Request $request
      * @return Illuminate\Support\Collection
      */
-    public function getTenantCurrencies(Request $request) : Collection
+    public function getTenantActivatedCurrencies(Request $request) : Collection
     {
         $tenant = $this->getTenantDetail($request);
 

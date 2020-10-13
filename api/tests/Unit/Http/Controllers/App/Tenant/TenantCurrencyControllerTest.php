@@ -40,7 +40,7 @@ class TenantCurrencyControllerTest extends TestCase
 
         $collectionCurrency = collect($currencies);
 
-        $helpers->shouldReceive('getTenantCurrencies')
+        $helpers->shouldReceive('getTenantActivatedCurrencies')
         ->times()
         ->with($request)
         ->andReturn($collectionCurrency);
@@ -93,7 +93,7 @@ class TenantCurrencyControllerTest extends TestCase
 
         $collectionCurrency = collect($currencies);
 
-        $helpers->shouldReceive('getTenantCurrencies')
+        $helpers->shouldReceive('getTenantActivatedCurrencies')
         ->times()
         ->with($request)
         ->andReturn($collectionCurrency);
