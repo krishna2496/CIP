@@ -229,12 +229,6 @@
         unprocessableEntityStatus: 422
       }
     },
-    // First, create a variable that will have the same value of the files after it was saved
-    // Second, if user will update, compare if the two variables still have the same value
-    // If yes, do not add the files to the request
-    // If no, add the files to the request
-    // Once update is done, update the value of the new variable
-    // Do the same for update method
     validations: {
       story: {
         title: {
