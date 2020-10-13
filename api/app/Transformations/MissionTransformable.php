@@ -25,7 +25,7 @@ trait MissionTransformable
         int $languageId,
         int $defaultTenantLanguage,
         string $timezone,
-        object $tenantLanguages = null,
+        Collection $tenantLanguages,
         array $userCurrency = null
     ): Mission {
         if (isset($mission['goalMission']) && is_numeric($mission['goalMission']['goal_objective'])) {

@@ -12,7 +12,6 @@ use App\Models\MissionApplication;
 use App\Models\City;
 use App\Models\MissionImpact;
 use App\Models\Organization;
-use App\Models\MissionImpactDonation;
 use App\Models\MissionTab;
 use App\Models\MissionTabLanguage;
 
@@ -73,16 +72,6 @@ class ModelsService
      * @var App\Models\Organization
      */
     public $organization;
-    
-    /** 
-     * @var App\Models\MissionImpactDonation
-     */
-    public $missionImpactDonation;
-
-    /**
-     * @var App\Models\MissionImpact
-     */
-    public $missionImpact;
 
     /**
      * @var App\Models\MissionTab
@@ -108,8 +97,6 @@ class ModelsService
      * @param  App\Models\City $city
      * @param  App\Models\MissionImpact $missionImpact
      * @param  App\Models\Organization $organization
-     * @param  App\Models\MissionImpactDonation $missionImpactDonation
-     * @param  App\Models\MissionImpact $missionImpact
      * @param  App\Models\MissionTab $missionTab
      * @param  App\Models\MissionTabLanguage $missionTabLanguage
      * @return void
@@ -126,8 +113,6 @@ class ModelsService
         City $city,
         MissionImpact $missionImpact,
         Organization $organization,
-        MissionImpactDonation $missionImpactDonation,
-        MissionImpact $missionImpact,
         MissionTab $missionTab,
         MissionTabLanguage $missionTabLanguage
     ) {
@@ -142,8 +127,6 @@ class ModelsService
         $this->city = $city;
         $this->missionImpact = $missionImpact;
         $this->organization = $organization;
-        $this->missionImpactDonation = $missionImpactDonation;
-        $this->missionImpact = $missionImpact;
         $this->missionTab = $missionTab;
         $this->missionTabLanguage = $missionTabLanguage;
     }
