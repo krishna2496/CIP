@@ -7,13 +7,6 @@ use App\Models\Currency;
 
 class CurrencyRepository implements CurrencyInterface
 {
-    /**
-     * Create currency instance
-     */
-    public function __construct()
-    {
-    }
-
     const SUPPORTED_CURRENCIES = [
         'USD' => '$',
         'AED' => 'د.إ',

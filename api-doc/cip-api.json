@@ -4630,16 +4630,19 @@
       "get": {
         "operationId": "GET-cip-api-get-tenant-currency",
         "summary": "App - Get tenant currencies",
-        "description": "In front end - It will fetch tenant currencies set by tenant super admin.",
+        "description": "Get the list of all the tenant activated currencies",
         "tags": [
           "Tenant - App"
         ],
-        "consumes": [
-          "multipart/form-data"
-        ],
         "responses": {
-          "400": {
-            "description": "Bad request"
+          "200": {
+            "description": "Currencies listed successfully"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid token"
+          },
+          "403": {
+            "description": "Forbidden - Required tenant setting is disabled"
           }
         }
       }

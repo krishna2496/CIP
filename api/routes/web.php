@@ -97,7 +97,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Fetch tenant currency */
     $router->get('/app/tenant-currencies', ['as' => 'app.tenant-currency',
-        'middleware' => 'tenant.connection',
+        'middleware' => 'tenant.connection|jwt.auth|TenantHasSettings:donation',
         'uses' => 'App\Tenant\TenantCurrencyController@index']);
 
     /* Apply to a mission */
