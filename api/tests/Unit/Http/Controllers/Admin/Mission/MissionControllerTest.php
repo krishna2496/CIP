@@ -2,6 +2,7 @@
 namespace Tests\Unit\Http\Controllers\Admin\Mission;
 
 use App\Events\User\UserActivityLogEvent;
+use App\Helpers\Helpers;
 use App\Helpers\LanguageHelper;
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Admin\Mission\MissionController;
@@ -553,7 +554,8 @@ class MissionControllerTest extends TestCase
         $this->assertEquals($methodResponse, json_decode($response->getContent(), true));
     }
 
-    public function testMissionStoreValidationFailure(){
+    public function testMissionStoreValidationFailure()
+    {
 
         $missionRepository = $this->mock(MissionRepository::class);
         $responseHelper = $this->mock(ResponseHelper::class);
@@ -594,7 +596,8 @@ class MissionControllerTest extends TestCase
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
 
-    public function testMissionStoreOrganizationNameRequired(){
+    public function testMissionStoreOrganizationNameRequired()
+    {
         $input = [
             'organization' => [
                 'organization_id' => rand(),
@@ -1236,7 +1239,8 @@ class MissionControllerTest extends TestCase
      * @param  App\Repositories\Notification\NotificationRepository $notificationRepository
      * @param App\Repositories\Organization\OrganizationRepository $organizationRepository
      * @param  App\Services\Mission\ModelsService $modelService
-     * @return void
+     * @param  App\Helpers\Helpers $helpers
+     * @return MissionController
      */
     private function getController(
         MissionRepository $missionRepository,
@@ -1247,7 +1251,8 @@ class MissionControllerTest extends TestCase
         TenantActivatedSettingRepository $tenantActivatedSettingRepository,
         NotificationRepository $notificationRepository,
         OrganizationRepository $organizationRepository,
-        ModelsService $modelService
+        ModelsService $modelService,
+        Helpers $helpers = null
     ) {
         return new MissionController(
             $missionRepository,
@@ -1258,7 +1263,8 @@ class MissionControllerTest extends TestCase
             $tenantActivatedSettingRepository,
             $notificationRepository,
             $organizationRepository,
-            $modelService
+            $modelService,
+            $helpers ?? $this->mock(Helpers::class)
         );
     }
 

@@ -1,6 +1,6 @@
 <?php
-return [
 
+return [
     /*
     |--------------------------------------------------------------------------
     | Validation Language Lines
@@ -12,63 +12,63 @@ return [
     |
     */
 
-    'accepted'             => 'The :attribute must be accepted.',
-    'active_url'           => 'The :attribute is not a valid URL.',
-    'after'                => 'The :attribute must be a date after :date.',
-    'alpha'                => 'The :attribute may only contain letters.',
-    'alpha_dash'           => 'The :attribute may only contain letters, numbers, and dashes.',
-    'alpha_num'            => 'The :attribute may only contain letters and numbers.',
-    'array'                => 'The :attribute must be an array.',
-    'before'               => 'The :attribute must be a date before :date.',
-    'between'              => [
+    'accepted' => 'The :attribute must be accepted.',
+    'active_url' => 'The :attribute is not a valid URL.',
+    'after' => 'The :attribute must be a date after :date.',
+    'alpha' => 'The :attribute may only contain letters.',
+    'alpha_dash' => 'The :attribute may only contain letters, numbers, and dashes.',
+    'alpha_num' => 'The :attribute may only contain letters and numbers.',
+    'array' => 'The :attribute must be an array.',
+    'before' => 'The :attribute must be a date before :date.',
+    'between' => [
         'numeric' => 'The :attribute must be between :min and :max.',
-        'file'    => 'The :attribute must be between :min and :max kilobytes.',
-        'string'  => 'The :attribute must be between :min and :max characters.',
-        'array'   => 'The :attribute must have between :min and :max items.',
+        'file' => 'The :attribute must be between :min and :max kilobytes.',
+        'string' => 'The :attribute must be between :min and :max characters.',
+        'array' => 'The :attribute must have between :min and :max items.',
     ],
-    'boolean'              => 'The :attribute field must be true or false.',
-    'confirmed'            => 'The :attribute confirmation does not match.',
-    'date'                 => 'The :attribute is not a valid date.',
-    'date_format'          => 'The :attribute does not match the format :format.',
-    'different'            => 'The :attribute and :other must be different.',
-    'digits'               => 'The :attribute must be :digits digits.',
-    'digits_between'       => 'The :attribute must be between :min and :max digits.',
-    'email'                => 'The :attribute must be a valid email address.',
-    'filled'               => 'The :attribute field is required.',
-    'exists'               => 'The selected :attribute is invalid.',
-    'image'                => 'The :attribute must be an image.',
-    'in'                   => 'The selected :attribute is invalid.',
-    'integer'              => 'The :attribute must be an integer.',
-    'ip'                   => 'The :attribute must be a valid IP address.',
-    'max'                  => [
+    'boolean' => 'The :attribute field must be true or false.',
+    'confirmed' => 'The :attribute confirmation does not match.',
+    'date' => 'The :attribute is not a valid date.',
+    'date_format' => 'The :attribute does not match the format :format.',
+    'different' => 'The :attribute and :other must be different.',
+    'digits' => 'The :attribute must be :digits digits.',
+    'digits_between' => 'The :attribute must be between :min and :max digits.',
+    'email' => 'The :attribute must be a valid email address.',
+    'filled' => 'The :attribute field is required.',
+    'exists' => 'The selected :attribute is invalid.',
+    'image' => 'The :attribute must be an image.',
+    'in' => 'The selected :attribute is invalid.',
+    'integer' => 'The :attribute must be an integer.',
+    'ip' => 'The :attribute must be a valid IP address.',
+    'max' => [
         'numeric' => 'The :attribute may not be greater than :max.',
-        'file'    => 'The :attribute may not be greater than :max kilobytes.',
-        'string'  => 'The :attribute may not be greater than :max characters.',
-        'array'   => 'The :attribute may not have more than :max items.',
+        'file' => 'The :attribute may not be greater than :max kilobytes.',
+        'string' => 'The :attribute may not be greater than :max characters.',
+        'array' => 'The :attribute may not have more than :max items.',
     ],
     'mimes'                => 'The :attribute must be a file of type: :values.',
     'mimetypes'            => 'The :attribute must be a file of type: :values.',
     'min'                  => [
         'numeric' => 'The :attribute must be at least :min.',
-        'file'    => 'The :attribute must be at least :min kilobytes.',
-        'string'  => 'The :attribute must be at least :min characters.',
-        'array'   => 'The :attribute must have at least :min items.',
+        'file' => 'The :attribute must be at least :min kilobytes.',
+        'string' => 'The :attribute must be at least :min characters.',
+        'array' => 'The :attribute must have at least :min items.',
     ],
-    'not_in'               => 'The selected :attribute is invalid.',
-    'numeric'              => 'The :attribute must be a number.',
-    'regex'                => 'The :attribute format is invalid.',
-    'required'             => 'The :attribute field is required.',
-    'required_if'          => 'The :attribute field is required when :other is :value.',
-    'required_with'        => 'The :attribute field is required when :values is present.',
-    'required_with_all'    => 'The :attribute field is required when :values is present.',
-    'required_without'     => 'The :attribute field is required when :values is not present.',
+    'not_in' => 'The selected :attribute is invalid.',
+    'numeric' => 'The :attribute must be a number.',
+    'regex' => 'The :attribute format is invalid.',
+    'required' => 'The :attribute field is required.',
+    'required_if' => 'The :attribute field is required when :other is :value.',
+    'required_with' => 'The :attribute field is required when :values is present.',
+    'required_with_all' => 'The :attribute field is required when :values is present.',
+    'required_without' => 'The :attribute field is required when :values is not present.',
     'required_without_all' => 'The :attribute field is required when none of :values are present.',
-    'same'                 => 'The :attribute and :other must match.',
-    'size'                 => [
+    'same' => 'The :attribute and :other must match.',
+    'size' => [
         'numeric' => 'The :attribute must be :size.',
-        'file'    => 'The :attribute must be :size kilobytes.',
-        'string'  => 'The :attribute must be :size characters.',
-        'array'   => 'The :attribute must contain :size items.',
+        'file' => 'The :attribute must be :size kilobytes.',
+        'string' => 'The :attribute must be :size characters.',
+        'array' => 'The :attribute must contain :size items.',
     ],
     'timezone'             => 'The :attribute must be a valid zone.',
     'unique'               => 'The :attribute has already been taken.',
@@ -98,13 +98,13 @@ return [
         'documents.*.document_path' => [
             'valid_document_path' => 'Please enter valid document file',
         ],
-		'media_videos.*.media_path' => [
+        'media_videos.*.media_path' => [
             'valid_video_url' => 'Please enter valid youtube url',
         ],
-		'avatar' => [
+        'avatar' => [
             'valid_profile_image' => 'Invalid image file or image type is not allowed. Allowed types: png, jpeg, jpg',
         ],
-		'parent_skill' => [
+        'parent_skill' => [
             'valid_parent_skill' => 'Invalid parent skill',
         ],
         'url' => [
@@ -115,8 +115,8 @@ return [
         ],
         'documents.*' => [
             'valid_timesheet_document_type' => 'Please select valid timesheet documents',
-            'max' => 'Document file size must be ' .
-            (config('constants.TIMESHEET_DOCUMENT_SIZE_LIMIT') / 1024) . 'mb or below',
+            'max' => 'Document file size must be '.
+            (config('constants.TIMESHEET_DOCUMENT_SIZE_LIMIT') / 1024).'mb or below',
         ],
         'date_volunteered' => [
             'before' => 'You cannot add time entry for future dates',
@@ -129,8 +129,8 @@ return [
         ],
         'story_images.*' => [
             'valid_story_image_type' => 'Please select valid image type',
-            'max' => 'Image size must be ' .
-            (config('constants.STORY_IMAGE_SIZE_LIMIT') / 1024) . 'mb or below',
+            'max' => 'Image size must be '.
+            (config('constants.STORY_IMAGE_SIZE_LIMIT') / 1024).'mb or below',
         ],
         'story_videos' => [
             'valid_story_video_url' => 'Please enter valid video url',
@@ -194,7 +194,7 @@ return [
         'option_value.translations.*.message' => 'option value',
         'option_value.position' => 'custom login text position',
         'timesheet_entries.*.timesheet_id' => 'timesheet id',
-		'mission_detail.*.short_description' => 'short description',
+        'mission_detail.*.short_description' => 'short description',
         'news_content.translations' => 'translations',
         'news_content.translations.*.lang' => 'language code',
         'news_content.translations.*.title' => 'title',
@@ -258,5 +258,14 @@ return [
         'mission_tabs.*.translations.*.sections.*.title' => 'section title',
         'mission_tabs.*.translations.*.sections.*.content' => 'section content',
         'mission_tabs.*.mission_tab_id' => 'mission tab id',
+        'donation_attribute.goal_amount_currency' => 'goal amount currency',
+        'donation_attribute.goal_amount' => 'goal amount',
+        'donation_attribute.show_goal_amount' => 'show goal amount',
+        'donation_attribute.show_donation_percentage' => 'show donation percentage',
+        'donation_attribute.show_donation_meter' => 'show donation meter',
+        'donation_attribute.show_donation_count' => 'show donation count',
+        'donation_attribute.show_donors_count' => 'show donors count',
+        'donation_attribute.disable_when_funded' => 'disable when funded',
+        'donation_attribute.is_disabled' => 'is disabled'
 	]
 ];
