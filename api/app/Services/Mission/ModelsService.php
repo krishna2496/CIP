@@ -15,7 +15,7 @@ use App\Models\MissionImpact;
 use App\Models\Organization;
 use App\Models\MissionTab;
 use App\Models\MissionTabLanguage;
-
+use App\Models\DonationAttribute;
 
 class ModelsService
 {
@@ -90,6 +90,11 @@ class ModelsService
     public $missionTabLanguage;
 
     /**
+     * @var App\Models\DonationAttribute
+     */
+    public $donationAttribute;
+
+    /**
      * Create a new service instance.
      *
      * @param  App\Models\Mission $mission
@@ -106,6 +111,7 @@ class ModelsService
      * @param  App\Models\Organization $organization
      * @param  App\Models\MissionTab $missionTab
      * @param  App\Models\MissionTabLanguage $missionTabLanguage
+     * @param App\Models\DonationAttribute $donationAttribute
      * @return void
      */
     public function __construct(
@@ -122,7 +128,8 @@ class ModelsService
         MissionImpact $missionImpact,
         Organization $organization,
         MissionTab $missionTab,
-        MissionTabLanguage $missionTabLanguage
+        MissionTabLanguage $missionTabLanguage,
+        DonationAttribute $donationAttribute
     ) {
         $this->mission = $mission;
         $this->timeMission = $timeMission;
@@ -138,5 +145,6 @@ class ModelsService
         $this->organization = $organization;
         $this->missionTab = $missionTab;
         $this->missionTabLanguage = $missionTabLanguage;
+        $this->donationAttribute = $donationAttribute;
     }
 }

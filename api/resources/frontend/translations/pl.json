@@ -36,7 +36,6 @@
 		"all_rights_reserved": "Wszelkie prawa zastrzeżone",
 		"add": "Dodaj",
 		"already_volunteered": "Już zgłoszony na ochotnika",
-		"on_going_opportunities": "Bieżące możliwości",
 		"view_detail": "Zobacz szczegóły",
 		"no_record_found": "Nie znaleziono żadnych danych",
 		"oldest": "Najstarszy",
@@ -297,7 +296,14 @@
 		"virtual_missions" : "Wirtualny wolontariat",
 		"home" : "Dom",
 		"login_with_sso": "Entrar com SSO",
-		"site_title" : "Strona główna"
+		"site_title": "Strona główna",
+		"ongoing": "W trakcie realizacji",
+		"more": "więcej",
+		"and": "oraz",
+		"for": "Dla",
+		"on": "Na stronie",
+		"sort_deadline": "Sortowanie według terminów",
+		"no_image_available": "Brak obrazu"
 	},
 	"placeholder": {
 		"email_address": "Wprowadź adres e-mail",
@@ -386,7 +392,10 @@
 		"max_image_upload": "Można dodać maksymalnie 20 obrazów",
 		"max_video_upload": "Można dodać maksymalnie 20 filmików wideo",
 		"duplicate_video_url": "Duplikaty adresów wideo url nie są dozwolone",
-		"invalid_saml_setting": "Wymagane są następujące mapowania:"
+		"invalid_saml_setting": "Wymagane są następujące mapowania:",
+		"password_should_contain_uppercase": "Przynajmniej 1 wielka litera",
+		"password_should_contain_lowercase": "Przynajmniej 1 mała litera",
+		"password_should_contain_numbers": "Przynajmniej 1 cyfra"
 	},
 	"export_timesheet_file_names": {
 		"PENDING_TIME_MISSION_ENTRIES_XLSX": "Pending_Time_Mission_Entries.xls",

@@ -36,7 +36,6 @@
 		"all_rights_reserved": "Todos los derechos reservados",
 		"add": "Añadir",
 		"already_volunteered": "Ya prestó voluntariado",
-		"on_going_opportunities": "Oportunidades en curso",
 		"view_detail": "Ver detalles",
 		"no_record_found": "No se encontraron registros",
 		"oldest": "Más antiguo",
@@ -297,7 +296,14 @@
 		"virtual_missions" : "Voluntariado virtual",
 		"home" : "Hogar",
 		"login_with_sso": "Iniciar sesión con SSO",
-		"site_title" : "Inicio"
+		"site_title": "Inicio",
+		"ongoing": "En curso",
+		"more": "más",
+		"and": "y",
+		"for": "Para",
+		"on": "En",
+		"sort_deadline": "Ordenar por fecha límite",
+		"no_image_available": "No hay imagen disponible"
 	},
 	"placeholder": {
 		"email_address": "Introduzca la dirección de correo electrónico",
@@ -386,7 +392,10 @@
 		"max_image_upload": "Se pueden añadir un máximo de 20 imágenes",
 		"max_video_upload": "Se pueden añadir un máximo de 20 vídeos",
 		"duplicate_video_url": "No se permiten URL de vídeos duplicadas",
-		"invalid_saml_setting": "Se requieren las siguientes asignaciones:"
+		"invalid_saml_setting": "Se requieren las siguientes asignaciones:",
+		"password_should_contain_uppercase": "Como mínimo 1 letra en mayúsculas",
+		"password_should_contain_lowercase": "Como mínimo 1 letra en minúsculas",
+		"password_should_contain_numbers": "Como mínimo 1 número"
 	},
 	"export_timesheet_file_names": {
 		"PENDING_TIME_MISSION_ENTRIES_XLSX": "Pending_Time_Mission_Entries.xls",

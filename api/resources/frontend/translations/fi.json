@@ -36,7 +36,6 @@
 		"all_rights_reserved": "Kaikki oikeudet pidätetään",
 		"add": "Lisää",
 		"already_volunteered": "Tarjouduttu jo vapaaehtoiseksi",
-		"on_going_opportunities": "Tämänhetkiset mahdollisuudet",
 		"view_detail": "Katso tiedot",
 		"no_record_found": "Tietoja ei löytynyt",
 		"oldest": "Vanhin",
@@ -297,7 +296,14 @@
 		"virtual_missions" : "Virtuaalinen vapaaehtoistyö",
 		"home" : "Koti",
 		"login_with_sso": "Kirjaudu sisään SSO: lla",
-		"site_title" : "Koti"
+		"site_title": "Koti",
+		"ongoing": "Jatkuva",
+		"more": "lisää",
+		"and": "ja",
+		"for": "Sillä",
+		"on": "Päällä",
+		"sort_deadline": "Lajittele määräajan mukaan",
+		"no_image_available": "Ei kuvaa saatavilla"
 	},
 	"placeholder": {
 		"email_address": "Anna sähköpostiosoite",
@@ -386,7 +392,10 @@
 		"max_image_upload": "Kuvia voidaan lisätä korkeintaan 20",
 		"max_video_upload": "Videoita voidaan lisätä korkeintaan 20",
 		"duplicate_video_url": "Videon url-osoitteen kaksoiskappale ei ole sallittu",
-		"invalid_saml_setting": "Seuraavat kartoitukset vaaditaan:"
+		"invalid_saml_setting": "Seuraavat kartoitukset vaaditaan:",
+		"password_should_contain_uppercase": "Vähintään 1 iso kirjain",
+		"password_should_contain_lowercase": "Vähintään 1 pieni kirjain",
+		"password_should_contain_numbers": "Vähintään 1 numero"
 	},
 	"export_timesheet_file_names": {
 		"PENDING_TIME_MISSION_ENTRIES_XLSX": "Pending_Time_Mission_Entries.xls",

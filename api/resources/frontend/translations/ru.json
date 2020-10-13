@@ -36,7 +36,6 @@
 		"all_rights_reserved": "Все права защищены",
 		"add": "Добавить",
 		"already_volunteered": "Отработано волонтёром",
-		"on_going_opportunities": "Текущие возможности",
 		"view_detail": "Просмотреть детали",
 		"no_record_found": "Записей не найдено",
 		"oldest": "Самые старые",
@@ -297,7 +296,14 @@
 		"virtual_missions" : "Виртуальное волонтерство",
 		"home" : "дом",
 		"login_with_sso": "Войти с помощью SSO",
-		"site_title" : "Главная"
+		"site_title": "Главная",
+		"ongoing": "Постоянно",
+		"more": "Больше",
+		"and": "а также",
+		"for": "За",
+		"on": "Ha",
+		"sort_deadline": "Сортировать по сроку",
+		"no_image_available": "Изображение отсутствует"
 	},
 	"placeholder": {
 		"email_address": "Введите e-mail",
@@ -386,7 +392,10 @@
 		"max_image_upload": "Можно добавить не более 20 изображений",
 		"max_video_upload": "Можно добавить не более 20 видео",
 		"duplicate_video_url": "Не допускается дублировать URL видео",
-		"invalid_saml_setting": "Требуется следующее сопоставление (я):"
+		"invalid_saml_setting": "Требуется следующее сопоставление (я):",
+		"password_should_contain_uppercase": "Как минимум 1 заглавная буква",
+		"password_should_contain_lowercase": "Как минимум 1 строчная буква",
+		"password_should_contain_numbers": "Как минимум 1 цифра"
 	},
 	"export_timesheet_file_names": {
 		"PENDING_TIME_MISSION_ENTRIES_XLSX": "Pending_Time_Mission_Entries.xls",

@@ -16,7 +16,7 @@ class ResponseHelper
     public function success(string $apiStatus = '', string $apiMessage = '', array $apiData = [])
     {
         $response['status'] = $apiStatus;
-        
+
         if (!empty($apiData)) {
             $response['data'] = $apiData;
         }
@@ -24,7 +24,7 @@ class ResponseHelper
         if ($apiMessage) {
             $response['message'] = $apiMessage;
         }
-       
+
         return response()->json($response, $apiStatus, [], JSON_NUMERIC_CHECK);
     }
 
@@ -84,8 +84,8 @@ class ResponseHelper
             $response['code'] = $customErrorCode;
         }
         $response['message'] = $customErrorMessage;
-        $data["errors"][] = $response;
-       
+        $data['errors'][] = $response;
+
         return response()->json($data, $statusCode, [], JSON_NUMERIC_CHECK);
     }
 }
