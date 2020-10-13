@@ -372,29 +372,6 @@ class Mission extends Model
     }
 
     /**
-     * Get users associated with the mission availability.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function availableUsers(): HasMany
-    {
-        return $this->hasMany('App\User', 'availability_id', 'availability_id');
-    }
-
-    /**
-     * Set is virtual attribute on the model.
-     *
-     * @param $value
-     * @return void
-     */
-    public function setIsVirtualAttribute($value): void
-    {
-        if (!is_null($value)) {
-            $this->attributes['is_virtual'] = (string)$value;
-        }
-    }
-
-    /**
      * Get mission donation impact with the mission
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany

@@ -16,7 +16,7 @@ class CreateTableMissionImpactDonationLanguage extends Migration
         Schema::create('mission_impact_donation_language', function (Blueprint $table) {
             $table->uuid('mission_impact_donation_language_id');
             $table->string('impact_donation_id', 36);
-            $table->integer('language_id', false);
+            $table->unsignedBigInteger('language_id');
             $table->mediumText('content', 160);
             $table->timestamps();
             $table->softDeletes();

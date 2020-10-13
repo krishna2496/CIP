@@ -215,6 +215,7 @@ class MissionController extends Controller
                 "volunteering_attribute.availability_id" => "integer|required|exists:availability,availability_id,deleted_at,NULL",
                 "mission_detail.*.label_goal_achieved" => 'sometimes|required_if:mission_type,GOAL|max:255',
                 "mission_detail.*.label_goal_objective" => 'sometimes|required_if:mission_type,GOAL|max:255',
+                "impact_donation" => "sometimes|required|array",
                 "impact_donation.*.amount" => 'required|integer|min:1',
                 "impact_donation.*.translations" => 'required',
                 "impact_donation.*.translations.*.language_code" => 
@@ -723,7 +724,7 @@ class MissionController extends Controller
          try {
             if (isset($request->impact_donation) && count($request->impact_donation) > 0) {
                 foreach ($request->impact_donation as $impactDonationValue) {
-                    if (isset($impactDonationValue['impact_donation_id']) && ($impactDonationValue['impact_donation_id'] !== "")) {
+                    if (isset($impactDonationValue['impact_donation_id']) && ($impactDonationValue['impact_donation_id'] !== '')) {
                         $this->missionRepository->isMissionDonationImpactLinkedToMission($missionId, $impactDonationValue['impact_donation_id']);
                     }
                 }
