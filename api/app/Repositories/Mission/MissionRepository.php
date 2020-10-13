@@ -72,7 +72,7 @@ class MissionRepository implements MissionInterface
      * @var App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository
      */
     private $tenantActivatedSettingRepository;
-    
+
     /**
      * @var App\Repositories\MissionUnitedNationSDG\MissionUnitedNationSDGRepository;
      */
@@ -278,7 +278,7 @@ class MissionRepository implements MissionInterface
                 $this->missionMediaRepository->saveMediaVideos($request->media_videos, $mission->mission_id);
             }
         }
-            
+
         // Add mission documents
         if (isset($request->documents) && count($request->documents) > 0) {
             if (!empty($request->documents)) {
@@ -602,7 +602,7 @@ class MissionRepository implements MissionInterface
                 }
             }
         }
-        
+
         // Update UN SDG for mission
         if (isset($request->un_sdg) && count($request->un_sdg) > 0) {
             $this->missionUnitedNationSDGRepository->updateUnSdg($mission->mission_id, $request->toArray());
@@ -862,7 +862,7 @@ class MissionRepository implements MissionInterface
             $query->orderBy('sort_key');
         }, 'missionTabs.getMissionTabDetail' => function ($query) {
         }]);
-       
+
         //Explore mission recommended to user
         if ($request->has('explore_mission_type') &&
         ($request->input('explore_mission_type') === config('constants.TOP_RECOMMENDED'))) {
@@ -1592,7 +1592,7 @@ class MissionRepository implements MissionInterface
                     $query->whereIn('status', array(config('constants.timesheet_status.APPROVED'),
                     config('constants.timesheet_status.AUTOMATICALLY_APPROVED'), ));
                 }, ]);
-                
+
         return $missionQuery->get();
     }
 
@@ -1928,7 +1928,7 @@ class MissionRepository implements MissionInterface
 
         return $applicationStatusData->isEmpty() ? true : false;
     }
-    
+
     /**
      * Check impact mission is available for mission
      *
