@@ -56,22 +56,23 @@ class TenantCurrencyController extends Controller
     {
         // Fetch tenant all currency details
         $getTenantCurrency = $this->helpers->getTenantActivatedCurrencies($request);
-        $currencyList = $this->currencyRepository->findAll();        
+        $currencyList = $this->currencyRepository->findAll();
         $allCurrencies = array();
 
-        foreach ($currencyList as $key => $value) {
+        foreach ($currencyList as $value) {
             $code = $value->code();
             $symbol = $value->symbol();
             $allCurrencies[$code] = $symbol;
         }
 
         $tenantCurrencies = $getTenantCurrency->toArray();
-        foreach ($tenantCurrencies as $key => $val) {
-            if (array_key_exists($val->code, $allCurrencies)) {
-                $val->symbol = $allCurrencies[$val->code];
+        foreach ($tenantCurrencies as $currency) {
+            if (array_key_exists($currency->code, $allCurrencies)) {
+                $currency->symbol = $allCurrencies[$currency->code];
+                $currency->default = $currency->default ? true : false;
             }
         }
-        
+
         // Set response data
         $apiData = $getTenantCurrency->toArray();
         $apiStatus = Response::HTTP_OK;

@@ -569,8 +569,7 @@ class Helpers
         $tenantCurrencies = $this->db->table('tenant_currency')
             ->select(
                 'tenant_currency.code',
-                'tenant_currency.default',
-                'tenant_currency.is_active'
+                'tenant_currency.default'
             )
             ->where('tenant_id', $tenant->tenant_id)
             ->where('tenant_currency.is_active', '1')

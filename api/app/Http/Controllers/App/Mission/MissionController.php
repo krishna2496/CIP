@@ -211,10 +211,8 @@ class MissionController extends Controller
         $timezone = $this->userRepository->getUserTimezone($request->auth->user_id);
         $missionsTransformed = $missionList
             ->getCollection()
-            ->map(function ($item) use ($languageCode, $languageId, $defaultTenantLanguageId, $timezone, 
-                $tenantLanguages) {
-                return $this->transformMission($item, $languageCode, $languageId, $defaultTenantLanguageId, $timezone, 
-                $tenantLanguages);
+            ->map(function ($item) use ($languageCode, $languageId, $defaultTenantLanguageId, $timezone, $tenantLanguages) {
+                return $this->transformMission($item, $languageCode, $languageId, $defaultTenantLanguageId, $timezone, $tenantLanguages);
             })->toArray();
 
         $requestString = $request->except(['page', 'perPage']);
@@ -724,8 +722,7 @@ class MissionController extends Controller
             $timezone = $this->userRepository->getUserTimezone($request->auth->user_id);
 
             $mission = $missionData->map(
-                function (Mission $mission) use ($languageCode, $languageId, $defaultTenantLanguageId, $timezone,
-                 $tenantLanguages
+                function (Mission $mission) use ($languageCode, $languageId, $defaultTenantLanguageId, $timezone, $tenantLanguages
                 ) {
                     return $this->transformMission(
                         $mission,

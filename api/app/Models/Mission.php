@@ -399,7 +399,7 @@ class Mission extends Model
     {
         return $this->hasMany(MissionImpact::class, 'mission_id', 'mission_id')->orderBy('sort_key');
     }
-
+    
     /** 
      * Get mission-tab associated with the mission.
      *

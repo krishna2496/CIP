@@ -18,7 +18,7 @@ use App\Models\Currency;
 class TenantCurrencyControllerTest extends TestCase
 {
     /**
-     * @testdox get tenant currency list success
+     * @testdox Get tenant currency list success
      */
     public function testGetTenantCurrencyListSuccess()
     {
@@ -33,38 +33,43 @@ class TenantCurrencyControllerTest extends TestCase
         $currencies = [
             (object) [
                 'code'=> 'USD',
-                'default' => 1,
-                'is_active' => 1
+                'default' => 1
             ]
         ];
 
         $collectionCurrency = collect($currencies);
 
         $helpers->shouldReceive('getTenantActivatedCurrencies')
-        ->times()
-        ->with($request)
-        ->andReturn($collectionCurrency);
+            ->times()
+            ->with($request)
+            ->andReturn($collectionCurrency);
 
         $currencyRepository->shouldReceive('findAll')
-        ->once()
-        ->andReturn($currencyDataArray);
+            ->once()
+            ->andReturn($currencyDataArray);
 
         $apiData = $collectionCurrency->toArray();
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_TENANT_CURRENCY_LISTING');
 
         $methodResponse = [
-            "status" => $apiStatus,
-            "data" => $apiData,
-            "message" => $apiMessage,
+            'status' => $apiStatus,
+            'data' => $apiData,
+            'message' => $apiMessage,
         ];
 
         $jsonResponse = $this->getJson($methodResponse);
 
         $responseHelper->shouldReceive('success')
-        ->once()
-        ->with($apiStatus, $apiMessage, $apiData)
-        ->andReturn($jsonResponse);
+            ->once()
+            ->with($apiStatus, $apiMessage, [
+                (object) [
+                    'code' => 'USD',
+                    'default' => 1,
+                    'symbol' => '$'
+                ]
+            ])
+            ->andReturn($jsonResponse);
 
         $callController = $this->getController(
             $helpers,
@@ -77,7 +82,7 @@ class TenantCurrencyControllerTest extends TestCase
     }
 
     /**
-     * @testdox get tenant currency list empty success
+     * @testdox Get tenant currency list empty success
      */
     public function testGetTenantCurrencyListEmptySuccess()
     {
@@ -94,29 +99,29 @@ class TenantCurrencyControllerTest extends TestCase
         $collectionCurrency = collect($currencies);
 
         $helpers->shouldReceive('getTenantActivatedCurrencies')
-        ->times()
-        ->with($request)
-        ->andReturn($collectionCurrency);
+            ->times()
+            ->with($request)
+            ->andReturn($collectionCurrency);
 
         $currencyRepository->shouldReceive('findAll')
-        ->once()
-        ->andReturn($currencyDataArray);
+            ->once()
+            ->andReturn($currencyDataArray);
 
         $apiData = $collectionCurrency->toArray();
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_NO_RECORD_FOUND');
 
         $methodResponse = [
-            "status" => $apiStatus,
-            "message" => $apiMessage,
+            'status' => $apiStatus,
+            'message' => $apiMessage,
         ];
 
         $jsonResponse = $this->getJson($methodResponse);
 
         $responseHelper->shouldReceive('success')
-        ->once()
-        ->with($apiStatus, $apiMessage, $apiData)
-        ->andReturn($jsonResponse);
+            ->once()
+            ->with($apiStatus, $apiMessage, $apiData)
+            ->andReturn($jsonResponse);
 
         $callController = $this->getController(
             $helpers,
@@ -150,22 +155,22 @@ class TenantCurrencyControllerTest extends TestCase
     }
 
     /**
-    * Mock an object
-    *
-    * @param string name
-    * @return Mockery
-    */
+     * Mock an object
+     *
+     * @param string name
+     * @return Mockery
+     */
     private function mock($class)
     {
         return Mockery::mock($class);
     }
 
     /**
-    * get json reponse
-    *
-    * @param class name
-    * @return JsonResponse
-    */
+     * Get json reponse
+     *
+     * @param class name
+     * @return JsonResponse
+     */
     private function getJson($class)
     {
         return new JsonResponse($class);
