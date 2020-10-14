@@ -214,6 +214,7 @@ return [
         'MESSAGE_MISSION_IMPACT_DELETED' => 'Mission impact deleted successfully',
         'MESSAGE_TENANT_ACTIVATED_CURRENCIES_FOUND' => 'Tenant activated currencies listed successfully',
         'MESSAGE_TENANT_ACTIVATED_CURRENCIES_EMPTY' => 'Tenant has no activated currencies',
+        'MESSAGE_MISSION_IMPACT_DONATION_DELETED' => 'Mission impact donation deleted successfully',
     ],
 
 

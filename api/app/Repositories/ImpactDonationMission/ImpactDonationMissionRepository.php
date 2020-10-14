@@ -11,6 +11,7 @@ use App\Services\Mission\ModelsService;
 use App\Models\MissionImpactDonationLanguage;
 use App\Helpers\LanguageHelper;
 use Ramsey\Uuid\Uuid;
+use App\Models\MissionImpactDonation;
 
 class ImpactDonationMissionRepository
 {
@@ -132,5 +133,16 @@ class ImpactDonationMissionRepository
                 unset($impactDonationArray);
             }
         }
+    }
+
+    /**
+     * Delete mission impact donation data
+     *
+     * @param string $missionImpactDonationId
+     * @return bool
+     */
+    public function deleteMissionImpactDonation(string $missionImpactDonationId): bool
+    {
+        return MissionImpactDonation::findOrFail($missionImpactDonationId)->delete();
     }
 }

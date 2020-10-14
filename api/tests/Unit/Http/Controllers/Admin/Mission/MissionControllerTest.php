@@ -75,6 +75,8 @@ class MissionControllerTest extends TestCase
 
         $requestData = new Request($data);
         $missionId = rand(50000, 70000);
+        $missionModel = new Mission();
+        $missionModel->mission_type = 'TIME';
 
         $languageHelper = $this->mock(LanguageHelper::class);
         $missionMediaRepository = $this->mock(MissionMediaRepository::class);
@@ -86,6 +88,7 @@ class MissionControllerTest extends TestCase
         $mission = $this->mock(Mission::class);
         $organizationRepository = $this->mock(OrganizationRepository::class);
         $modelService = $this->mock(ModelsService::class);
+        $missionController = $this->mock(MissionController::class);
 
         $defaultLanguage = (object)[
             'language_id' => 1,
@@ -96,39 +99,44 @@ class MissionControllerTest extends TestCase
 
         $key = str_random(16);
         $requestHeader = $request->shouldReceive('header')
-        ->once()
-        ->with('php-auth-user')
-        ->andReturn($key);
+            ->once()
+            ->with('php-auth-user')
+            ->andReturn($key);
 
         Validator::shouldReceive('make')
-        ->once()
-        ->andReturn(Mockery::mock(['fails' => false]));
+            ->once()
+            ->andReturn(Mockery::mock(['fails' => false]));
 
         $missionRepository->shouldReceive('find')
-        ->once()
-        ->with($missionId)
-        ->andReturn();
+            ->once()
+            ->with($missionId)
+            ->andReturn($missionModel);
+
+        $tenantActivatedSettingRepository->shouldReceive('checkTenantSettingStatus')
+            ->once()
+            ->with(config('constants.tenant_settings.VOLUNTEERING_TIME_MISSION'), $requestData)
+            ->andReturn(true);
 
         $languageHelper->shouldReceive('getDefaultTenantLanguage')
-        ->once()
-        ->with($requestData)
-        ->andReturn($defaultLanguage);
+            ->once()
+            ->with($requestData)
+            ->andReturn($defaultLanguage);
 
         $missionModel = new Mission();
-        $missionModel->publication_status = "DRAFT";
+        $missionModel->publication_status = 'DRAFT';
         $missionRepository->shouldReceive('getMissionDetailsFromId')
-        ->once()
-        ->with($missionId, $defaultLanguage->language_id)
-        ->andReturn($missionModel);
+            ->once()
+            ->with($missionId, $defaultLanguage->language_id)
+            ->andReturn($missionModel);
 
         $missionRepository->shouldReceive('isMissionDonationImpactLinkedToMission')
-        ->once()
-        ->with($missionId, $data['impact_donation'][0]['impact_donation_id'])
-        ->andReturn();
+            ->once()
+            ->with($missionId, $data['impact_donation'][0]['impact_donation_id'])
+            ->andReturn();
 
         $missionRepository->shouldReceive('update')
-        ->once()
-        ->andReturn();
+            ->once()
+            ->andReturn();
 
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_MISSION_UPDATED');
@@ -682,7 +690,6 @@ class MissionControllerTest extends TestCase
 
     public function testMissionStoreValidationFailure()
     {
-
         $missionRepository = $this->mock(MissionRepository::class);
         $responseHelper = $this->mock(ResponseHelper::class);
         $request = new Request();
@@ -901,6 +908,8 @@ class MissionControllerTest extends TestCase
 
         $requestData = new Request($data);
         $missionId = rand(50000, 70000);
+        $missionModel = new Mission();
+        $missionModel->mission_type = 'TIME';
 
         $languageHelper = $this->mock(LanguageHelper::class);
         $missionMediaRepository = $this->mock(MissionMediaRepository::class);
@@ -923,35 +932,40 @@ class MissionControllerTest extends TestCase
 
         $key = str_random(16);
         $requestHeader = $request->shouldReceive('header')
-        ->once()
-        ->with('php-auth-user')
-        ->andReturn($key);
+            ->once()
+            ->with('php-auth-user')
+            ->andReturn($key);
 
         Validator::shouldReceive('make')
-        ->once()
-        ->andReturn(Mockery::mock(['fails' => false]));
+            ->once()
+            ->andReturn(Mockery::mock(['fails' => false]));
 
         $missionRepository->shouldReceive('find')
-        ->once()
-        ->with($missionId)
-        ->andReturn();
+            ->once()
+            ->with($missionId)
+            ->andReturn($missionModel);
+
+        $tenantActivatedSettingRepository->shouldReceive('checkTenantSettingStatus')
+            ->once()
+            ->with(config('constants.tenant_settings.VOLUNTEERING_TIME_MISSION'), $requestData)
+            ->andReturn(true);
 
         $languageHelper->shouldReceive('getDefaultTenantLanguage')
-        ->once()
-        ->with($requestData)
-        ->andReturn($defaultLanguage);
+            ->once()
+            ->with($requestData)
+            ->andReturn($defaultLanguage);
 
         $missionModel = new Mission();
         $missionModel->publication_status = 'DRAFT';
         $missionRepository->shouldReceive('getMissionDetailsFromId')
-        ->once()
-        ->with($missionId, $defaultLanguage->language_id)
-        ->andReturn($missionModel);
+            ->once()
+            ->with($missionId, $defaultLanguage->language_id)
+            ->andReturn($missionModel);
 
         $missionRepository->shouldReceive('isMissionDonationImpactLinkedToMission')
-        ->once()
-        ->with($missionId, $data['impact_donation'][0]['impact_donation_id'])
-        ->andThrow($modelNotFoundException);
+            ->once()
+            ->with($missionId, $data['impact_donation'][0]['impact_donation_id'])
+            ->andThrow($modelNotFoundException);
 
         $methodResponse = [
             'errors' => [
@@ -967,14 +981,14 @@ class MissionControllerTest extends TestCase
         $jsonResponse = $this->getJson($methodResponse);
 
         $responseHelper->shouldReceive('error')
-        ->once()
-        ->with(
-            Response::HTTP_NOT_FOUND,
-            Response::$statusTexts[Response::HTTP_NOT_FOUND],
-            config('constants.error_codes.IMPACT_DONATION_MISSION_NOT_FOUND'),
-            trans('messages.custom_error_message.ERROR_IMPACT_DONATION_MISSION_NOT_FOUND')
-        )
-        ->andReturn($jsonResponse);
+            ->once()
+            ->with(
+                Response::HTTP_NOT_FOUND,
+                Response::$statusTexts[Response::HTTP_NOT_FOUND],
+                config('constants.error_codes.IMPACT_DONATION_MISSION_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_IMPACT_DONATION_MISSION_NOT_FOUND')
+            )
+            ->andReturn($jsonResponse);
 
         $callController = $this->getController(
             $missionRepository,
@@ -1470,6 +1484,134 @@ class MissionControllerTest extends TestCase
     }
 
     /**
+    * @testdox Test remove mission impact donation by mission_impact_donation_id error for mission_impact_donation_id does not found
+    *
+    * @return void
+    */
+    public function testRemoveMissionImpactDonationByMissionImpactDoantionIdError()
+    {
+        $missionImpactDonationId = Uuid::uuid4()->toString();
+
+        $methodResponse = [
+            'errors'=> [
+                [
+                    'status'=> Response::HTTP_NOT_FOUND,
+                    'type'=> Response::$statusTexts[Response::HTTP_NOT_FOUND],
+                    'code'=> config('constants.error_codes.IMPACT_DONATION_MISSION_NOT_FOUND'),
+                    'message'=> trans('messages.custom_error_message.ERROR_IMPACT_DONATION_MISSION_NOT_FOUND')
+                ]
+            ]
+        ];
+
+        $jsonResponse = new JsonResponse(
+            $methodResponse
+        );
+
+        $missionRepository = $this->mock(MissionRepository::class);
+        $responseHelper = $this->mock(ResponseHelper::class);
+        $request = new Request();
+        $languageHelper = $this->mock(LanguageHelper::class);
+        $missionMediaRepository = $this->mock(MissionMediaRepository::class);
+        $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
+        $notificationRepository = $this->mock(NotificationRepository::class);
+        $modelNotFoundException = $this->mock(ModelNotFoundException::class);
+        $modelService = $this->mock(ModelsService::class);
+        $organizationRepository = $this->mock(OrganizationRepository::class);
+        $helpers = $this->mock(Helpers::class);
+
+        $missionRepository->shouldReceive('deleteMissionImpactDonation')
+            ->once()
+            ->with($missionImpactDonationId)
+            ->andThrow($modelNotFoundException);
+
+        $responseHelper->shouldReceive('error')
+            ->once()
+            ->with(
+                Response::HTTP_NOT_FOUND,
+                Response::$statusTexts[Response::HTTP_NOT_FOUND],
+                config('constants.error_codes.IMPACT_DONATION_MISSION_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_IMPACT_DONATION_MISSION_NOT_FOUND')
+            )
+           ->andReturn($jsonResponse);
+
+        $callController = $this->getController(
+            $missionRepository,
+            $responseHelper,
+            $request,
+            $languageHelper,
+            $missionMediaRepository,
+            $tenantActivatedSettingRepository,
+            $notificationRepository,
+            $organizationRepository,
+            $modelService,
+            $helpers
+        );
+
+        $response = $callController->removeMissionImpactDonation($missionImpactDonationId);
+        $this->assertInstanceOf(JsonResponse::class, $response);
+        $this->assertEquals($methodResponse, json_decode($response->getContent(), true));
+    }
+
+    /**
+    * @testdox Test remove mission impact donation by mission_impact_donation_id successfully
+    *
+    * @return void
+    */
+    public function testRemoveMissionImpactDonationByMissionImpactDonationIdSuccess()
+    {
+        $missionTabId = Uuid::uuid4()->toString();
+
+        $methodResponse = [
+            'status'=> Response::HTTP_NO_CONTENT,
+            'message'=> trans('messages.success.MESSAGE_MISSION_IMPACT_DONATION_DELETED')
+        ];
+
+        $jsonResponse = new JsonResponse(
+            $methodResponse
+        );
+
+        $missionRepository = $this->mock(MissionRepository::class);
+        $responseHelper = $this->mock(ResponseHelper::class);
+        $request = new Request();
+        $languageHelper = $this->mock(LanguageHelper::class);
+        $missionMediaRepository = $this->mock(MissionMediaRepository::class);
+        $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
+        $notificationRepository = $this->mock(NotificationRepository::class);
+        $modelService = $this->mock(ModelsService::class);
+        $organizationRepository = $this->mock(OrganizationRepository::class);
+
+        $this->expectsEvents(UserActivityLogEvent::class);
+
+        $missionRepository->shouldReceive('deleteMissionImpactDonation')
+            ->once()
+            ->andReturn(true);
+
+        $responseHelper->shouldReceive('success')
+            ->once()
+            ->with(
+                Response::HTTP_NO_CONTENT,
+                trans('messages.success.MESSAGE_MISSION_IMPACT_DONATION_DELETED')
+            )
+           ->andReturn($jsonResponse);
+
+        $callController = $this->getController(
+            $missionRepository,
+            $responseHelper,
+            $request,
+            $languageHelper,
+            $missionMediaRepository,
+            $tenantActivatedSettingRepository,
+            $notificationRepository,
+            $organizationRepository,
+            $modelService
+        );
+
+        $response = $callController->removeMissionImpactDonation($missionTabId);
+        $this->assertInstanceOf(JsonResponse::class, $response);
+        $this->assertEquals($methodResponse, json_decode($response->getContent(), true));
+    }
+
+    /**
      * Create a new service instance.
      *
      * @param  App\Repositories\Mission\MissionRepository $missionRepository
@@ -1534,7 +1676,7 @@ class MissionControllerTest extends TestCase
         return new JsonResponse($class);
     }
     
-    /** 
+    /**
      * Create a new service instance.
      *
      * @param  App\Models\Mission $mission
@@ -1576,16 +1718,5 @@ class MissionControllerTest extends TestCase
             $missionTab,
             $missionTabLanguage
         );
-    }
-
-    /**
-    * get json reponse
-    *
-    * @param array $data
-    * @return JsonResponse
-    */
-    private function getJson($data)
-    {
-        return new JsonResponse($data);
     }
 }

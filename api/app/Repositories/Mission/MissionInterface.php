@@ -264,4 +264,12 @@ interface MissionInterface
      * @return bool
      */
     public function checkExistImpactSortKey(int $missionId, array $missionImpact): bool;
+
+    /**
+     * Remove mission impact donation by mission_impact_donation_id
+     *
+     * @param string $missionImpactDonationId
+     * @return bool
+     */
+    public function deleteMissionImpactDonation(string $missionImpactDonationId): bool;
 }

@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use  App\Models\MissionImpactDonationLanguage;
+use Iatstuti\Database\Support\CascadeSoftDeletes;
 
 class MissionImpactDonation extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, CascadeSoftDeletes;
 
     /**
      * The table associated with the model.
@@ -44,6 +45,11 @@ class MissionImpactDonation extends Model
      * @var array
      */
     protected $fillable = ['mission_impact_donation_id', 'mission_id', 'amount'];
+
+    /*
+     * Iatstuti\Database\Support\CascadeSoftDeletes;
+     */
+    protected $cascadeDeletes = ['getMissionImpactDonationDetail'];
 
     /**
      * Find the specified resource.

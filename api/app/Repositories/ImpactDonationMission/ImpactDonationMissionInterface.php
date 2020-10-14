@@ -15,7 +15,7 @@ interface ImpactDonationMissionInterface
      */
     public function store(array $missionDonationValue, int $missionId);
 
-        /**
+    /**
      * Store a newly created resource into database
      *
      * @param array $missionDonationValue
@@ -23,4 +23,12 @@ interface ImpactDonationMissionInterface
      * @return void
      */
     public function update(array $missionDonationValue, int $missionId);
+
+    /**
+     * Delete mission impact donation data
+     *
+     * @param string $missionImpactDonationId
+     * @return bool
+     */
+    public function deleteMissionImpactDonation(string $missionImpactDonationId): bool;
 }

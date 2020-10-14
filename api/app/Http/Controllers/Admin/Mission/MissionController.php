@@ -1007,4 +1007,38 @@ class MissionController extends Controller
             $request
         );
     }
+
+    /**
+     * Remove mission impact donation
+     *
+     * @param string $missionImpactDonationId
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function removeMissionImpactDonation($missionImpactDonationId): JsonResponse
+    {
+        try {
+            $this->missionRepository->deleteMissionImpactDonation($missionImpactDonationId);
+
+            $apiStatus = Response::HTTP_NO_CONTENT;
+            $apiMessage = trans('messages.success.MESSAGE_MISSION_IMPACT_DONATION_DELETED');
+
+            // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.MISSION_IMPACT_DONATION'),
+                config('constants.activity_log_actions.DELETED'),
+                config('constants.activity_log_user_types.API'),
+                $this->userApiKey,
+                get_class($this),
+                null,
+                null,
+                $missionImpactDonationId
+            ));
+            return $this->responseHelper->success($apiStatus, $apiMessage);
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.IMPACT_DONATION_MISSION_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_IMPACT_DONATION_MISSION_NOT_FOUND')
+            );
+        }
+    }
 }

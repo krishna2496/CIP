@@ -2168,4 +2168,15 @@ class MissionRepository implements MissionInterface
             $missionTypes
         );
     }
+
+    /**
+     * Remove mission impact donation by mission_impact_donation_id
+     *
+     * @param string $missionImpactDonationId
+     * @return bool
+     */
+    public function deleteMissionImpactDonation(string $missionImpactDonationId): bool
+    {
+        return $this->impactDonationMissionRepository->deleteMissionImpactDonation($missionImpactDonationId);
+    }
 }

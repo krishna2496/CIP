@@ -146,6 +146,8 @@ class MissionRepositoryTest extends TestCase
         $missionImpact = $this->mock(MissionImpact::class);
         $missionUnitedNationSDGRepository = $this->mock(MissionUnitedNationSDGRepository::class);
         $missionImpactRepository = $this->mock(MissionImpactRepository::class);
+        $missionImpactDonation = $this->mock(MissionImpactDonation::class);
+        $impactDonationMissionRepository = $this->mock(ImpactDonationMissionRepository::class);
 
         $organizationObject = factory(Organization::class)->make([
             'organization_id' => $request->organization['organization_id'],
@@ -178,6 +180,7 @@ class MissionRepositoryTest extends TestCase
             $missionRating,
             $missionApplication,
             $city,
+            $missionImpactDonation,
             $missionImpact,
             $organization,
             $missionTab,
@@ -235,6 +238,7 @@ class MissionRepositoryTest extends TestCase
             $countryRepository,
             $missionMediaRepository,
             $modelsService,
+            $impactDonationMissionRepository,
             $missionImpactRepository,
             $tenantActivatedSettingRepository,
             $missionUnitedNationSDGRepository,
@@ -321,7 +325,8 @@ class MissionRepositoryTest extends TestCase
         $missionImpact = $this->mock(MissionImpact::class);
         $missionUnitedNationSDGRepository = $this->mock(MissionUnitedNationSDGRepository::class);
         $missionImpactRepository = $this->mock(MissionImpactRepository::class);
-
+        $missionImpactDonation = $this->mock(MissionImpactDonation::class);
+        $impactDonationMissionRepository = $this->mock(ImpactDonationMissionRepository::class);
         $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
 
         $modelsService = $this->modelService(
@@ -334,6 +339,7 @@ class MissionRepositoryTest extends TestCase
             $missionRating,
             $missionApplication,
             $city,
+            $missionImpactDonation,
             $missionImpact,
             $organization,
             $missionTab,
@@ -394,6 +400,7 @@ class MissionRepositoryTest extends TestCase
             $countryRepository,
             $missionMediaRepository,
             $modelsService,
+            $impactDonationMissionRepository,
             $missionImpactRepository,
             $tenantActivatedSettingRepository,
             $missionUnitedNationSDGRepository,

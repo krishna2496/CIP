@@ -372,16 +372,6 @@ class Mission extends Model
     }
 
     /**
-     * Get mission donation impact with the mission
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function impactDonation(): HasMany
-    {
-        return $this->hasMany(MissionImpactDonation::class, 'mission_id', 'mission_id');
-    }
-
-    /**
      * Get Organization associated with the mission.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne

@@ -26,6 +26,8 @@ use App\Models\City;
 use App\Models\Organization;
 use App\Models\MissionTab;
 use App\Models\MissionTabLanguage;
+use App\Models\MissionImpact;
+use App\Models\DonationAttribute;
 
 class ImpactDonationMissionRepositoryTest extends TestCase
 {
@@ -90,6 +92,8 @@ class ImpactDonationMissionRepositoryTest extends TestCase
         $organization = $this->mock(Organization::class);
         $missionTab = $this->mock(MissionTab::class);
         $missionTabLanguage = $this->mock(MissionTabLanguage::class);
+        $missionImpact = $this->mock(MissionImpact::class);
+        $donationAttribute = $this->mock(DonationAttribute::class);
 
         $modelService = $this->modelService(
             $mission,
@@ -102,9 +106,11 @@ class ImpactDonationMissionRepositoryTest extends TestCase
             $missionApplication,
             $city,
             $missionImpactDonation,
+            $missionImpact,
             $organization,
             $missionTab,
-            $missionTabLanguage
+            $missionTabLanguage,
+            $donationAttribute
         );
 
         $languageHelper->shouldReceive('getLanguages')
@@ -197,6 +203,8 @@ class ImpactDonationMissionRepositoryTest extends TestCase
         $organization = $this->mock(Organization::class);
         $missionTab = $this->mock(MissionTab::class);
         $missionTabLanguage = $this->mock(MissionTabLanguage::class);
+        $missionImpact = $this->mock(MissionImpact::class);
+        $donationAttribute = $this->mock(DonationAttribute::class);
 
         $modelService = $this->modelService(
             $mission,
@@ -209,9 +217,11 @@ class ImpactDonationMissionRepositoryTest extends TestCase
             $missionApplication,
             $city,
             $missionImpactDonation,
+            $missionImpact,
             $organization,
             $missionTab,
-            $missionTabLanguage
+            $missionTabLanguage,
+            $donationAttribute
         );
 
         $languageData = $languageHelper->shouldReceive('getLanguages')
@@ -288,9 +298,11 @@ class ImpactDonationMissionRepositoryTest extends TestCase
      * @param  App\Models\MissionApplication $missionApplication
      * @param  App\Models\City $city
      * @param  App\Models\MissionImpactDonation $missionImpactDonation
+     * @param  App\Models\MissionImpact $missionImpact
      * @param  App\Models\Organization $organization
      * @param  App\Models\MissionTab $missionTab
      * @param  App\Models\MissionTabLanguage $missionTabLanguage
+     * @param  App\Models\DonationAttribute $donationAttribute
      * @return void
      */
     private function modelService(
@@ -304,9 +316,11 @@ class ImpactDonationMissionRepositoryTest extends TestCase
         MissionApplication $missionApplication,
         City $city,
         MissionImpactDonation $missionImpactDonation,
+        MissionImpact $missionImpact,
         Organization $organization,
         MissionTab $missionTab,
-        MissionTabLanguage $missionTabLanguage
+        MissionTabLanguage $missionTabLanguage,
+        DonationAttribute $donationAttribute
     ) {
         return new ModelsService(
             $mission,
@@ -319,9 +333,11 @@ class ImpactDonationMissionRepositoryTest extends TestCase
             $missionApplication,
             $city,
             $missionImpactDonation,
+            $missionImpact,
             $organization,
             $missionTab,
-            $missionTabLanguage
+            $missionTabLanguage,
+            $donationAttribute
         );
     }
 

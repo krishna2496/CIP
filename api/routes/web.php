@@ -595,6 +595,8 @@ $router->group(
             'uses' => 'Admin\Mission\MissionController@removeMissionTab']);
             $router->delete('/mission-impact/{missionImpactId}', ['middleware' => ['TenantHasSettings:mission_impact'], 'as' => 'missions.missionimpact.delete',
             'uses' => 'Admin\Mission\MissionController@removeMissionImpact']);
+            $router->delete('/mission-impact-donation/{missionImpactDonationId}', ['middleware' => ['TenantHasSettings:impact_donation'], 'as' => 'missions.missionimpactdonation.delete',
+            'uses' => 'Admin\Mission\MissionController@removeMissionImpactDonation']);
         }
     );
 

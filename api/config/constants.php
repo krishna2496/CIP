@@ -647,7 +647,8 @@ return [
         'ORGANIZATION' => 'ORGANIZATION',
         'MISSION_TAB' => 'MISSION_TAB',
         'DONATION_IP_WHITELIST' => 'DONATION_IP_WHITELIST',
-        'MISSION_IMPACT' => 'MISSION_IMPACT'
+        'MISSION_IMPACT' => 'MISSION_IMPACT',
+        'MISSION_IMPACT_DONATION' => 'MISSION_IMPACT_DONATION'
     ],
 
     'activity_log_actions' => [
