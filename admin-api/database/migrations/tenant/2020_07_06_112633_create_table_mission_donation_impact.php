@@ -16,7 +16,7 @@ class CreateTableMissionDonationImpact extends Migration
         Schema::create('mission_impact_donation', function (Blueprint $table) {
             $table->uuid('mission_impact_donation_id')->primary();
             $table->unsignedBigInteger('mission_id');
-            $table->float('amount', 16, 4);
+            $table->decimal('amount', 16, 4);
             $table->timestamps();
             $table->softDeletes();
 
