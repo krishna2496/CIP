@@ -580,6 +580,22 @@
     .content-block {
       max-width: 100%;
       flex: 0 0 100%;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      .mission-label-wrap,
+      .content-inner-block,
+      .event-block {
+        width: 100%;
+      }
+      .mission-label-wrap {
+        min-height: 32px;
+      }
+      .event-block {
+        display: flex;
+        align-items: flex-end;
+        flex-wrap: wrap;
+      }
     }
   }
 
@@ -589,7 +605,7 @@
     }
 
     @include xs-max {
-      padding: 0;
+      padding: 0 15px;
     }
 
     .card-outer {
@@ -631,7 +647,6 @@
       flex-direction: row;
       height: 100%;
       flex-wrap: wrap;
-
       .favourite-icon {
         bottom: auto;
         top: 73px;
@@ -646,9 +661,11 @@
         flex: 0 0 25%;
         height: auto;
         min-height: 220px;
+        border-radius: 10px 0 0 10px;
+        overflow: hidden;
 
         .group-img {
-          border-radius: 3px 0 0 3px;
+          border-radius: 10px 0 0 10px;
         }
 
         @include md-max {
@@ -673,6 +690,10 @@
         @include md-max {
           max-width: 70%;
           flex: 0 0 70%;
+          height: 100%;
+          display: flex;
+          flex-wrap: wrap;
+          align-content: space-between;
         }
 
         .content-block {

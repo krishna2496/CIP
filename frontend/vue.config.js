@@ -1,5 +1,6 @@
 const host = "0.0.0.0";
 const port = 7000;
+const fs = require('fs');
 module.exports = {
     chainWebpack: config => {
         config.module
@@ -31,7 +32,8 @@ module.exports = {
     devServer: {
         host: host,
         port: port,
-        https: false,
+        https: true,
+        disableHostCheck: true,
     },
 
     pluginOptions: {

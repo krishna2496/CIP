@@ -5,8 +5,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
     state: {
-        isLoggedIn: !!localStorage.getItem('token'),
-        token: localStorage.getItem('token'),
+        isLoggedIn: !!localStorage.getItem('isLoggedIn'),
         listOfLanguage: localStorage.getItem('listOfLanguage'),
         defaultLanguage: localStorage.getItem('defaultLanguage'),
         defaultLanguageId: localStorage.getItem('defaultLanguageId'),
@@ -56,18 +55,18 @@ export default new Vuex.Store({
         policyPage: localStorage.getItem('policyPage'),
         logoRedirectUrl: localStorage.getItem('logoRedirectUrl'),
         isProfileComplete: localStorage.getItem('isProfileComplete'),
-        getEmailNotification : localStorage.getItem('getEmailNotification'),
-        defaultTenantLanguage : localStorage.getItem('defaultTenantLanguage'),
+        getEmailNotification: localStorage.getItem('getEmailNotification'),
+        defaultTenantLanguage: localStorage.getItem('defaultTenantLanguage'),
         stateId: localStorage.getItem('stateId'),
         samlSettings: JSON.parse(localStorage.getItem('samlSettings')),
         ssoLogin: JSON.parse(localStorage.getItem('ssoLogin')),
+        siteTitle: JSON.parse(localStorage.getItem('siteTitle')),
+        customLoginText : localStorage.getItem('customLoginText')
     },
     mutations: {
-        setToken(state, data) {
-            localStorage.setItem('token', data)
-            localStorage.setItem('isLoggedIn', data.token)
-            state.isLoggedIn = true;
-            state.token = data;
+        setIsLoggedIn(state, data) {
+            localStorage.setItem('isLoggedIn', true)
+            state.isLoggedIn = data;
         },
         // Set login data in state and local storage
         loginUser(state, data) {
@@ -80,8 +79,8 @@ export default new Vuex.Store({
             localStorage.setItem('cookieAgreementDate', data.cookie_agreement_date)
             localStorage.setItem('email', data.email)
             localStorage.setItem('userTimezone', data.timezone)
-            localStorage.setItem('isProfileComplete',data.is_profile_complete)
-            localStorage.setItem('getEmailNotification',data.receive_email_notification);
+            localStorage.setItem('isProfileComplete', data.is_profile_complete)
+            localStorage.setItem('getEmailNotification', data.receive_email_notification);
             localStorage.setItem('ssoLogin', data.ssoLogin === true);
             state.userId = data.user_id;
             state.firstName = data.first_name;
@@ -99,7 +98,6 @@ export default new Vuex.Store({
         logoutUser(state, data) {
             localStorage.setItem('logout-event', 'logout');
             localStorage.removeItem('logout-event', 'logout');
-            localStorage.removeItem('token')
             localStorage.removeItem('userId')
             localStorage.removeItem('firstName')
             localStorage.removeItem('lastName')
@@ -107,8 +105,12 @@ export default new Vuex.Store({
             localStorage.removeItem('cookieAgreementDate')
             localStorage.removeItem('policyPage')
             localStorage.removeItem('isProfileComplete');
+            localStorage.removeItem('email');
+            localStorage.removeItem('cityId');
+            localStorage.removeItem('userTimezone');
+            localStorage.removeItem('tags');
+            localStorage.removeItem('isLoggedIn');
             state.isLoggedIn = false;
-            state.token = null;
             state.userId = null;
             state.firstName = null;
             state.lastName = null;
@@ -125,9 +127,9 @@ export default new Vuex.Store({
             }
 
             if (!data || !data.stay) {
-              router.push({
-                  name: 'login'
-              });
+                router.push({
+                    name: 'login'
+                });
             }
         },
         // Set default language code and id data in state and local storage
@@ -146,7 +148,7 @@ export default new Vuex.Store({
             state.slider = slider;
         },
         // Set language list in state and local storage
-        setLanguageList(state, languageList, ) {
+        setLanguageList(state, languageList) {
             localStorage.removeItem('listOfLanguage');
             localStorage.setItem('listOfLanguage', languageList);
             state.listOfLanguage = languageList;
@@ -168,11 +170,15 @@ export default new Vuex.Store({
             localStorage.setItem('search', filters.search)
             localStorage.setItem('countryId', filters.countryId)
             if (filters.stateId) {
-                localStorage.setItem('stateId',filters.stateId)
+                localStorage.setItem('stateId', filters.stateId)
             } else {
-                localStorage.setItem('stateId','')
+                localStorage.setItem('stateId', '')
             }
-            localStorage.setItem('cityId', filters.cityId)
+            if (filters.cityId) {
+                localStorage.setItem('cityId', filters.cityId)
+            } else {
+                localStorage.setItem('cityId', '')
+            }
             localStorage.setItem('themeId', filters.themeId)
             localStorage.setItem('skillId', filters.skillId)
             localStorage.setItem('tags', JSON.stringify(filters.tags))
@@ -191,7 +197,11 @@ export default new Vuex.Store({
             } else {
                 state.stateId = ''
             }
-            state.cityId = filters.cityId
+            if (filters.cityId) {
+                state.cityId = filters.cityId
+            } else {
+                state.cityId = ''
+            }
             state.themeId = filters.themeId
             state.skillId = filters.skillId
             state.tags = JSON.stringify(filters.tags)
@@ -240,10 +250,6 @@ export default new Vuex.Store({
             localStorage.setItem("languageLabel", JSON.stringify(data));
             state.languageLabel = JSON.stringify(data);
         },
-        changeToken(state, data) {
-            localStorage.setItem('token', data)
-            state.token = data;
-        },
         changeAvatar(state, data) {
             localStorage.setItem('avatar', data.avatar)
             state.avatar = data.avatar;
@@ -255,13 +261,11 @@ export default new Vuex.Store({
             localStorage.setItem('defaultLanguage', langaugeCode.toUpperCase())
             localStorage.setItem('defaultLanguageId', data.language);
             localStorage.setItem('countryId', data.country)
-            localStorage.setItem('cityId', data.city)
             state.defaultLanguage = langaugeCode.toUpperCase()
             state.defaultLanguageId = data.language;
             state.firstName = data.firstName;
             state.lastName = data.lastName;
             state.countryId = data.country
-            state.cityId = data.city
         },
         saveCurrentSkill(state, data) {
             if (data !== null) {
@@ -281,13 +285,13 @@ export default new Vuex.Store({
             let tag = []
             localStorage.setItem('search', '')
             localStorage.setItem('countryId', '')
-            localStorage.setItem('stateId','')
+            localStorage.setItem('stateId', '')
             localStorage.setItem('cityId', '')
             localStorage.setItem('themeId', '')
             localStorage.setItem('skillId', '')
             localStorage.setItem('tags', JSON.stringify(tag))
             localStorage.setItem('sortBy', ''),
-            state.search = ''
+                state.search = ''
             state.countryId = ''
             state.stateId = ''
             state.cityId = ''
@@ -373,17 +377,17 @@ export default new Vuex.Store({
                 state.policyPage = null
             }
         },
-        changeProfileSetFlag(state,data) {
-            localStorage.setItem('isProfileComplete',data);
+        changeProfileSetFlag(state, data) {
+            localStorage.setItem('isProfileComplete', data);
             state.isProfileComplete = data;
         },
-        changeNotificationFlag(state,data) {
-            localStorage.setItem('getEmailNotification',data);
+        changeNotificationFlag(state, data) {
+            localStorage.setItem('getEmailNotification', data);
             state.getEmailNotification = data;
         },
         // Set tenant default language code and id data in state and local storage
         setTenantDefaultLanguage(state, language) {
-            localStorage.setItem('defaultTenantLanguage',language);
+            localStorage.setItem('defaultTenantLanguage', language);
             state.defaultTenantLanguage = language;
         },
 
@@ -391,6 +395,16 @@ export default new Vuex.Store({
             localStorage.setItem('samlSettings', data);
             state.samlSettings = JSON.parse(data);
         },
+
+        siteTitle(state, data) {
+            localStorage.setItem('siteTitle', data);
+            state.siteTitle = JSON.parse(data);
+        },
+
+        customLoginText(state, data) {
+            localStorage.setItem('customLoginText', data);
+            state.customLoginText = data;
+        }
     },
     getters: {},
     actions: {}

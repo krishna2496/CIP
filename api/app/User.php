@@ -2,6 +2,7 @@
 namespace App;
 
 use Illuminate\Auth\Authenticatable;
+use Illuminate\Database\Eloquent\Collection;
 use Laravel\Lumen\Auth\Authorizable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -39,6 +40,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 {
     use Authenticatable, Authorizable, CanResetPasswordTrait, Notifiable, SoftDeletes, SearchableTrait,
     CascadeSoftDeletes;
+
+    private const DATETIME_FORMAT = 'Y-m-d H:i:s';
 
     /**
      * The table associated with the model.
@@ -81,7 +84,10 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'hours_goal',
         'is_profile_complete',
         'receive_email_notification',
-        'expiry'
+        'expiry',
+        'invitation_sent_at',
+        'pseudonymize_at',
+        'is_admin',
     ];
 
     /**
@@ -90,7 +96,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var array
      */
     protected $visible = [
-        'user_id', 
+        'user_id',
         'first_name',
         'last_name',
         'email',
@@ -123,13 +129,16 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'stories_count',
         'stories_views_count',
         'stories_invited_users_count',
+        'first_login',
         'last_login',
         'last_volunteer',
         'open_volunteer_request',
         'mission',
         'favourite_mission',
         'hours_goal',
-        'expiry'
+        'expiry',
+        'invitation_sent_at',
+        'pseudonymize_at'
     ];
 
      /*
@@ -147,6 +156,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      */
     protected $hidden = [
         'password',
+        'is_admin',
     ];
 
     /**
@@ -231,7 +241,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      */
     public function findUser(int $id)
     {
-        return static::with('city', 'country', 'timezone', 'userCustomFieldValue.userCustomField')->findOrFail($id);
+        return static::with('city', 'country', 'timezone', 'userCustomFieldValue.userCustomField', 'skills.skill')->findOrFail($id);
     }
 
     /**
@@ -251,11 +261,17 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @param string $term
      * @param int $userId
      *
-     * @return mixed
+     * @return Collection
      */
-    public function searchUser($term, $userId)
+    public function searchUser(string $term, int $userId)
     {
-        return self::where('user_id', '<>', $userId)->search($term);
+        return $this->where('user_id', '<>', $userId)
+            ->where('status', '=', '1')
+            ->where(function ($query) {
+                $query->whereNull('expiry')
+                    ->orWhere('expiry', '>', (new \DateTimeImmutable())->format(self::DATETIME_FORMAT));
+            })
+            ->search($term);
     }
 
     /**
@@ -277,7 +293,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      */
     public function findUserDetail(int $userId): User
     {
-        return static::with('city', 'country', 'timezone', 'availability', 'userCustomFieldValue')->findOrFail($userId);
+        return static::with('city', 'country', 'timezone', 'availability', 'userCustomFieldValue', 'skills.skill')->findOrFail($userId);
     }
 
     /**

@@ -2,7 +2,9 @@
 namespace App\Rules;
 
 use Illuminate\Support\Facades\Validator;
+use App\Helpers\IPValidationHelper;
 use App\Models\Skill;
+use DB;
 
 class CustomValidationRules
 {
@@ -29,7 +31,7 @@ class CustomValidationRules
                 return false;
             }
         });
-        
+
         Validator::extend('valid_video_url', function ($attribute, $value) {
             return (preg_match(
                 '~^(?:https?://)?(?:www[.])?(?:youtube[.]com/watch[?]v=|youtu[.]be/)([^&]{11}) ~x',
@@ -37,7 +39,7 @@ class CustomValidationRules
             ))
             ? true : false;
         });
-        
+
         Validator::extend('valid_profile_image', function ($attribute, $value, $params, $validator) {
             $image = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $value));
             $f = finfo_open();
@@ -51,9 +53,7 @@ class CustomValidationRules
 
         Validator::extend('valid_linkedin_url', function ($attribute, $value) {
             return (preg_match(
-                '/(https?)?:?(\/\/)?(([w]{3}||\w\w)\.)'.
-                '?linkedin.com(\w+:{0,1}\w*@)?(\S+)'.
-                '(:([0-9])+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/',
+                '/^https:\/\/www\.linkedin\.com\/[a-z0-9]+/',
                 $value
             ))
             ? true : false;
@@ -70,7 +70,7 @@ class CustomValidationRules
             $imageUrlExtension = strtolower($urlExtension);
             return (!in_array($imageUrlExtension, config('constants.story_image_types'))) ? false : true;
         });
-        
+
         Validator::extend('valid_story_video_url', function ($attribute, $value) {
             $storyVideos = explode(",", $value);
             $val = true;
@@ -94,5 +94,58 @@ class CustomValidationRules
             }
             return true;
         });
+
+        Validator::extend('ip_whitelist_pattern', function ($attribute, $value) {
+            $ipHelper = new IPValidationHelper();
+            // Check for valid range pattern
+            if ($ipHelper->validRangePattern($value)) {
+                return true;
+            }
+            // Check for valid wildcard pattern
+            if ($ipHelper->validWildcardPattern($value)) {
+                return true;
+            }
+            // Check for valid cidr pattern
+            if ($ipHelper->validCidrPattern($value)) {
+                return true;
+            }
+            // Check for valid valid ip
+            if ($ipHelper->validIp($value)) {
+                return true;
+            }
+            return false;
+        });
+
+        Validator::extend('max_item', function ($attribute, $value, $params) {
+            $itemCount = DB::table($params[0])
+                ->whereNull('deleted_at')
+                ->count();
+
+            return $itemCount + 1 <= $params[1];
+        });
+
+        Validator::replacer('max_item', function($message, $attribute, $rule, $parameters) {
+            return str_replace(':max_item', $parameters[1], $message);
+        });
+
+        Validator::extend('valid_icon_path', function ($attribute, $value) {
+            try {
+                $urlMimeType = isset(get_headers($value, 1)['Content-Type']) ? get_headers($value, 1)['Content-Type'] :
+                get_headers($value, 1)['content-type'];
+                $validMimeTypes = config('constants.icon_image_mime_types');
+                return (!in_array($urlMimeType, $validMimeTypes)) ? false : true;
+            } catch (\Exception $e) {
+                return false;
+            }
+        });
+
+        Validator::extend('max_html_stripped', function($attribute, $value, $params) {
+            return strlen(strip_tags($value)) <= $params[0];
+        });
+        Validator::replacer('max_html_stripped',
+            function($message, $attribute, $rule, $params) {
+                return str_replace(':max', $params[0], $message);
+            }
+        );
     }
 }

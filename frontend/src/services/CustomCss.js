@@ -12,7 +12,7 @@ export default async() => {
       // Add the CSS to the page
       document
         .getElementById("customCss")
-        .setAttribute("href", custom_css);
+        .setAttribute("href", `${custom_css}?v=2`);
 
       return Promise.resolve();
     });

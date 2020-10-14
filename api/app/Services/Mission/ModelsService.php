@@ -10,6 +10,11 @@ use App\Models\TimeMission;
 use App\Models\MissionRating;
 use App\Models\MissionApplication;
 use App\Models\City;
+use App\Models\MissionImpact;
+use App\Models\Organization;
+use App\Models\MissionTab;
+use App\Models\MissionTabLanguage;
+use App\Models\DonationAttribute;
 
 class ModelsService
 {
@@ -42,7 +47,7 @@ class ModelsService
      * @var App\models\MissionDocument
      */
     public $missionDocument;
-        
+
     /**
     * @var App\Models\MissionRating
     */
@@ -59,6 +64,31 @@ class ModelsService
     public $city;
 
     /**
+     * @var App\Models\MissionImpact
+     */
+    public $missionImpact;
+    
+    /** 
+     * @var App\Models\Organization
+     */
+    public $organization;
+
+    /**
+     * @var App\Models\MissionTab
+     */
+    public $missionTab;
+
+    /**
+     * @var App\Models\MissionTabLanguage
+     */
+    public $missionTabLanguage;
+
+    /**
+     * @var App\Models\DonationAttribute
+     */
+    public $donationAttribute;
+
+    /**
      * Create a new service instance.
      *
      * @param  App\Models\Mission $mission
@@ -70,6 +100,11 @@ class ModelsService
      * @param  App\Models\MissionRating $missionRating
      * @param  App\Models\MissionApplication $missionApplication
      * @param  App\Models\City $city
+     * @param  App\Models\MissionImpact $missionImpact
+     * @param  App\Models\Organization $organization
+     * @param  App\Models\MissionTab $missionTab
+     * @param  App\Models\MissionTabLanguage $missionTabLanguage
+     * @param App\Models\DonationAttribute $donationAttribute
      * @return void
      */
     public function __construct(
@@ -81,7 +116,12 @@ class ModelsService
         MissionSkill $missionSkill,
         MissionRating $missionRating,
         MissionApplication $missionApplication,
-        City $city
+        City $city,
+        MissionImpact $missionImpact,
+        Organization $organization,
+        MissionTab $missionTab,
+        MissionTabLanguage $missionTabLanguage,
+        DonationAttribute $donationAttribute
     ) {
         $this->mission = $mission;
         $this->timeMission = $timeMission;
@@ -92,5 +132,10 @@ class ModelsService
         $this->missionRating = $missionRating;
         $this->missionApplication = $missionApplication;
         $this->city = $city;
+        $this->missionImpact = $missionImpact;
+        $this->organization = $organization;
+        $this->missionTab = $missionTab;
+        $this->missionTabLanguage = $missionTabLanguage;
+        $this->donationAttribute = $donationAttribute;
     }
 }

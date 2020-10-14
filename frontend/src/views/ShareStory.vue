@@ -212,20 +212,21 @@
         pageLoaded: false,
         config: {
           toolbar: [
-            ['Source', '-', 'NewPage', 'DocProps', 'Preview', 'Print', '-', 'Templates'],
+            ['Templates'],
             ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo'],
-            ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat'],
-            ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', 'CreateDiv',
+            ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-'],
+            ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote',
               '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'BidiLtr',
               'BidiRtl'
             ],
-            ['Link', 'Unlink', 'Anchor'],
-            ['Image', 'Table', 'HorizontalRule', 'Smiley', 'SpecialChar', 'PageBreak', 'Iframe'],
-            ['Styles', 'Format', 'Font', 'FontSize'],
-            ['TextColor', 'BGColor'],
+            ['Link', 'Unlink'],
+            ['Image', 'Table', 'HorizontalRule', 'Smiley', 'SpecialChar', 'PageBreak'],
+            ['Format'],
             ['ShowBlocks','Maximize']
           ]
-        }
+        },
+        errorInGetStoryDetail: false,
+        unprocessableEntityStatus: 422
 
       }
     },
@@ -482,16 +483,6 @@
             this.saveButtonAjaxCall = false
           })
         } else {
-          if (params == "preview" && this.storyId != '') {
-            this.formChange = 0;
-            let routeData = this.$router.resolve({
-              path: "/story-preview" + '/' + this.storyId
-            });
-            window.open(routeData.href, '_blank');
-            this.isLoaderActive = false
-            this.saveButtonAjaxCall = false
-            return false;
-          }
           if (this.story.videoUrl == '') {
             formData.append('story_videos', '');
           }
@@ -504,7 +495,19 @@
               this.message = response.message
             } else {
               this.formChange = 0;
-              if (this.storyId != '') {
+
+              if (params == "preview" && this.storyId != '') {
+                let routeData = this.$router.resolve({
+                  path: `/story-preview/${this.storyId}`
+                });
+                window.open(routeData.href, '_blank');
+                this.isLoaderActive = false;
+                this.saveButtonAjaxCall = false;
+                this.showDismissibleAlert = false;
+                return false;
+              }
+
+              if (this.storyId != '' && params != 'preview') {
                 this.previewButtonEnable = false
                 this.submitButtonEnable = false
                 this.getStoryDetail();
@@ -597,7 +600,22 @@
             },500)
 
           } else {
-            this.$router.push('/404');
+            if (response.status !== this.unprocessableEntityStatus) {
+              this.errorInGetStoryDetail = true;
+              return this.$router.push('/404');
+            }
+
+            this.$bvModal.msgBoxOk(response.message, {
+              buttonSize: 'sm',
+              size: 'md',
+              okVariant: 'danger',
+              footerClass: 'p-2 border-top-0',
+              centered: true
+            }).then(() => {
+              this.errorInGetStoryDetail = true;
+              return this.$router.push('/my-stories');
+            });
+
           }
         })
       },
@@ -623,7 +641,7 @@
 
     },
     beforeRouteLeave (to, from, next) {
-      if(this.formChange != 0) {
+      if(this.formChange != 0 && this.errorInGetStoryDetail === false) {
         this.$bvModal.msgBoxConfirm(this.languageData.label.cancel_story, {
           buttonSize: 'md',
           okTitle: this.languageData.label.yes,

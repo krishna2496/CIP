@@ -26,8 +26,8 @@
                                         </star-rating>
                                     </div>
                                     <div class="btn-outer">
-                                        <b-button v-bind:class="{ 
-											'btn-borderprimary': true, 
+                                        <b-button v-bind:class="{
+											'btn-borderprimary': true,
 											'icon-btn': true,
 											'added-fav' : missionAddedToFavoriteByUser
 										}" @click="favoriteMission(missionId)">
@@ -67,7 +67,7 @@
                                             </span>
 
                                         </b-button>
-                                        <!-- <b-button class="btn-borderprimary icon-btn btn-add-entry" v-if="allowAddEntry" 
+                                        <!-- <b-button class="btn-borderprimary icon-btn btn-add-entry" v-if="allowAddEntry"
 									@click="addEntry">
 									Add entry
 								</b-button> -->
@@ -117,7 +117,7 @@
                                                     {{ missionDetail.end_date | formatDate }}
                                                 </template>
                                                 <template v-else>
-                                                    {{ languageData.label.on_going_opportunities }}
+                                                    {{ languageData.label.ongoing }}
                                                 </template>
                                             </template>
                                             <!-- Mission type goal -->
@@ -144,7 +144,7 @@
                                                     </div>
                                                 </div>
                                             </template>
-                                            
+
                                             <template>
                                                 <div class="detail-column info-block" v-if="(missionDetail.application_deadline != '' && missionDetail.application_deadline != null) || (missionDetail.application_start_date != null && missionDetail.application_end_date != null )">
                                                     <i class="icon-wrap">
@@ -199,7 +199,7 @@
                                                     </div>
                                                 </template>
                                             </div>
-                                            <div 
+                                            <div
                                               v-bind:class="{
                                                 'progress-bar-block': (missionDetail.total_seats == 0 || missionDetail.total_seats === null),
                                                 'detail-column' : true,
@@ -215,7 +215,7 @@
                                                         :max="missionDetail.goal_objective" class="mb-2"></b-progress>
                                                         <span class="subtitle-text">
                                                         {{missionDetail.achieved_goal}}
-                                                        <span 
+                                                        <span
                                                             v-if="missionDetail.label_goal_achieved != ''">
                                                             {{ missionDetail.label_goal_achieved }}
                                                         </span>
@@ -260,7 +260,7 @@
                                                 <p class="text-wrap">{{missionDetail.start_date | formatDate}}</p>
                                             </template>
                                             <template v-else>
-                                                <p class="text-wrap">{{ languageData.label.on_going_opportunities }}</p>
+                                                <p class="text-wrap">{{ languageData.label.ongoing }}</p>
                                             </template>
 
                                         </div>
@@ -272,7 +272,7 @@
                                                      alt="" />
                                             </i>
                                             <span class="label">{{ languageData.label.organisation}}</span>
-                                            <p class="text-wrap">{{missionDetail.organisation_name}}</p>
+                                            <p class="text-wrap">{{missionDetail.organization ? missionDetail.organization.name : ''}}</p>
                                         </div>
                                     </b-list-group-item>
                                 </b-list-group>
@@ -330,9 +330,8 @@
                                 <ul class="nav-tabs nav">
                                     <li><a href="javascript:void(0)" data-id="mission" class="tablinks active">
                                         {{ languageData.label.mission }}</a></li>
-                                    <li><a href="javascript:void(0)" data-id="organization" class="tablinks">
+                                    <li v-show="isOrganizationDisplay"><a href="javascript:void(0)" data-id="organization" class="tablinks">
                                         {{ languageData.label.organisation }}</a></li>
-
                                     <li @click="missionComments('0')"><a href="javascript:void(0)" data-id="comments"
                                                                          class="tablinks" v-if="isCommentDisplay">{{ languageData.label.comments }}
                                     </a></li>
@@ -349,7 +348,7 @@
                                                  v-if="!checkMissionTypeTime(missionDetail.mission_type)">
                                                 <div class="col-sm-4 mission-tab-col" v-if="isMissionGoalDisplay">
                                                     <div class="mission-tab-inner">
-                                                        <p v-if="missionDetail.goal_objective">  
+                                                        <p v-if="missionDetail.goal_objective">
                                                             {{missionDetail.goal_objective}}
                                                             <span v-if="missionDetail.label_goal_objective != ''">
                                                                 {{missionDetail.label_goal_objective}}
@@ -370,7 +369,7 @@
                                                     <div class="mission-tab-inner">
                                                         <p v-if="missionDetail.achieved_goal">
                                                             {{missionDetail.achieved_goal}}
-                                                            <span 
+                                                            <span
                                                                 v-if="missionDetail.label_goal_achieved != ''">
                                                                 {{ missionDetail.label_goal_achieved }}
                                                             </span>
@@ -378,7 +377,7 @@
                                                         </p>
                                                         <p v-else>
                                                             0
-                                                            <span 
+                                                            <span
                                                                 v-if="missionDetail.label_goal_achieved != ''">
                                                                 {{ missionDetail.label_goal_achieved }}
                                                             </span>
@@ -434,13 +433,21 @@
                                                                                class="has-img no-close" :url="bgImage[2]" />
                                                             </b-link>
                                                         </template>
+                                                        <!-- txt -->
+                                                        <template v-if="document.document_type === 'txt'">
+                                                            <b-link :href="document.document_path" target="_blank"
+                                                                    :title="document.document_name">
+                                                                <AppCustomChip :textVal="document.document_name"
+                                                                               class="has-img no-close" :url="bgImage[3]" />
+                                                            </b-link>
+                                                        </template>
                                                     </div>
 
                                                 </div>
                                             </div>
                                         </b-collapse>
                                     </div>
-                                    <div class="tabs">
+                                    <div class="tabs" v-show="isOrganizationDisplay">
                                         <div class="tab-title">
                                             <h3 v-b-toggle.organization>{{ languageData.label.organisation }}</h3>
                                         </div>
@@ -493,7 +500,7 @@
                                                                 </i>
                                                                 <div class="comment-title">
                                                                     <h5 v-if="comments.user.user_id != null">
-                                                                      {{comments.user.first_name}}{{comments.user.last_name}}</h5>
+                                                                      {{comments.user.first_name}} {{comments.user.last_name}}</h5>
                                                                     <h5 v-else>{{ languageData.label.deleted_user }}</h5>
                                                                     <p>{{ getCommentDate(comments.created_at) }}</p>
                                                                 </div>
@@ -576,47 +583,18 @@
                         <div v-bind:class="{ 'content-loader-wrap': true, 'mission-loader': relatedMissionlLoader}">
                             <div class="content-loader"></div>
                         </div>
-                        <GridView id="gridView" :items="missionListing" v-if="isShownComponent" :userList="userList"
-                                  :relatedMission=relatedMission @getMissions="getRelatedMissions" small />
+                        <GridView
+                          id="gridView"
+                          :items="missionListing"
+                          v-if="isShownComponent"
+                          :relatedMission=relatedMission
+                          @getMissions="getRelatedMissions"
+                          small
+                        />
                     </div>
                 </b-container>
             </div>
-            <b-modal @hidden="hideModal" ref="userDetailModal" :modal-class="myclass" hide-footer size="lg">
-                <template slot="modal-header" slot-scope="{ close }">
-                    <i class="close" @click="close()" v-b-tooltip.hover :title="languageData.label.close"></i>
-                    <h5 class="modal-title">{{languageData.label.search_user}}</h5>
-                </template>
-                <b-alert show :variant="classVariant" dismissible v-model="showErrorDiv">
-                    {{ message }}
-                </b-alert>
-                <div class="autocomplete-control">
-                    <div class="autosuggest-container">
-                        <VueAutosuggest ref="autosuggest" name="user" v-model="query" :suggestions="filteredOptions"
-                                        @input="onInputChange" @selected="onSelected" :get-suggestion-value="getSuggestionValue"
-                                        :input-props="{
-								id:'autosuggest__input', 
-								placeholder:autoSuggestPlaceholder,
-								ref:'inputAutoSuggest'
-	                        }">
-                            <div slot-scope="{suggestion}">
-                                <img :src="suggestion.item.avatar" />
-                                <div>
-                                    {{suggestion.item.first_name}} {{suggestion.item.last_name}}
-                                </div>
-                            </div>
-                        </VueAutosuggest>
-                    </div>
-                </div>
-                <b-form>
-                    <div class="btn-wrap">
-                        <b-button @click="$refs.userDetailModal.hide()" class="btn-borderprimary">
-                            {{ languageData.label.close }}</b-button>
-                        <b-button class="btn-bordersecondary" @click="inviteColleagues" ref="autosuggestSubmit"
-                                  v-bind:disabled="submitDisable">
-                            {{ languageData.label.submit }}</b-button>
-                    </div>
-                </b-form>
-            </b-modal>
+          <invite-co-worker ref="userDetailModal" entity-type="MISSION" :entity-id="currentMissionId"></invite-co-worker>
         </main>
         <footer v-if="isShownComponent">
             <TheSecondaryFooter v-if="isShownComponent"></TheSecondaryFooter>
@@ -629,20 +607,14 @@
   import StarRating from 'vue-star-rating';
   import constants from '../constant';
   import {
-    VueAutosuggest
-  } from 'vue-autosuggest';
-  import {
     favoriteMission,
-    inviteColleague,
     applyMission,
-    searchUser,
     storeMissionRating,
     missionDetail,
     relatedMissions,
     missionComments,
     storeMissionComments
   } from "../services/service";
-  import SimpleBar from 'simplebar';
   import store from "../store";
   import moment from 'moment';
   import {
@@ -650,6 +622,7 @@
     maxLength
   } from 'vuelidate/lib/validators';
   import SocialSharing from 'vue-social-sharing';
+  import InviteCoWorker from "@/components/InviteCoWorker";
 
   export default {
     components: {
@@ -658,38 +631,22 @@
       ThePrimaryHeader: () => import("../components/Layouts/ThePrimaryHeader"),
       TheSecondaryFooter: () => import("../components/Layouts/TheSecondaryFooter"),
       GridView: () => import("../components/MissionGridView"),
-      VueAutosuggest,
-      SimpleBar,
       RecentVolunteers: () => import("../components/RecentVolunteers"),
       MissionCarousel: () => import("../components/MissionCarousel"),
-      SocialSharing
+      SocialSharing,
+      InviteCoWorker
     },
     data() {
       return {
         relatedMission: true,
-        defaultWorkday: "",
-        workDayList: [
-          ["WORKDAY", "workday"],
-          ["WEEKEND", "weekend"],
-          ["HOLIDAY", "holiday"],
-        ],
         sharingUrl: "",
         isShownComponent: false,
         missionId: this.$route.params.misisonId,
         timeSheetId: '',
         missionAddedToFavoriteByUser: false,
-        query: "",
-        selected: "",
         search: "",
-        userList: [],
-        myclass: ["userdetail-modal"],
         currentMissionId: 0,
-        invitedUserId: 0,
-        showErrorDiv: false,
         message: null,
-        classVariant: "success",
-        autoSuggestPlaceholder: '',
-        submitDisable: true,
         recentVolunterLoader: true,
         missionDetail: [],
         disableApply: false,
@@ -701,6 +658,7 @@
           require("@/assets/images/pdf.svg"),
           require("@/assets/images/doc.svg"),
           require("@/assets/images/xlsx.svg"),
+          require("@/assets/images/txt.svg"),
         ],
         orgLogo: require("@/assets/images/ces-logo.png"),
         currentPage: 1,
@@ -725,6 +683,7 @@
         isStarDisplay: false,
         isThemeDisplay: false,
         isInviteCollegueDisplay: false,
+        isOrganizationDisplay: false,
         isCommentDisplay: false,
         isRecentVolunteerDispaly: false,
         isMissionGoalDisplay: false,
@@ -755,10 +714,11 @@
       };
     },
     mounted() {
-      let tabItem = document.querySelectorAll(".platform-details-tab .nav-tabs li a")
-      tabItem.forEach(function (tabItemEvent) {
-        tabItemEvent.addEventListener("click", tabsHandle);
-      });
+      setTimeout(() => {
+         let tabItem = document.querySelectorAll(".platform-details-tab .nav-tabs li a")
+          tabItem.forEach(function (tabItemEvent) {
+            tabItemEvent.addEventListener("click", tabsHandle);
+          });
 
       function tabsHandle(tabsEvent) {
 
@@ -776,6 +736,8 @@
         }
         tabsEvent.currentTarget.className += " active";
       }
+      }, 1000);
+
 
       if (!window.location.origin) {
         window.location.origin = window.location.protocol + "//" + window.location.hostname + (window.location
@@ -795,21 +757,6 @@
       this.socialSharingUrl = process.env.VUE_APP_API_ENDPOINT + "social-sharing/" + this.domainName + "/" + this
         .missionId + "/" + store.state.defaultLanguageId;
     },
-    computed: {
-      filteredOptions() {
-        if (this.userList) {
-          return [{
-            data: this.userList.filter(option => {
-              let firstName = option.first_name.toLowerCase();
-              let lastName = option.last_name.toLowerCase();
-              let email = option.email.toLowerCase();
-              let searchString = firstName + '' + lastName + '' + email;
-              return searchString.indexOf(this.query.toLowerCase()) > -1;
-            })
-          }];
-        }
-      }
-    },
     validations: {
       comment: {
         required,
@@ -817,13 +764,6 @@
       },
     },
     methods: {
-      hideModal() {
-        this.autoSuggestPlaceholder = ""
-        this.submitDisable = true
-        this.invitedUserId = ""
-        this.query = ""
-        this.selected = ""
-      },
       addEntry() {
         let missionData = {
           "missionId": '',
@@ -834,6 +774,7 @@
         store.commit('timeSheetEntryDetail', missionData);
         this.$router.push('/volunteering-timesheet');
       },
+
       // Get comment create date format
       getCommentDate(commentDate) {
         if (commentDate != null) {
@@ -844,6 +785,7 @@
           return '';
         }
       },
+
       // Check mission type
       checkMissionTypeTime(missionType) {
         return missionType == constants.MISSION_TYPE_TIME
@@ -864,6 +806,7 @@
           }
         });
       },
+
       // Add mission to favorite
       favoriteMission(missionId) {
         let missionData = {
@@ -880,85 +823,33 @@
         });
 
       },
-      onInputChange() {
-        this.submitDisable = true;
-      },
-      // For selected user id.
-      onSelected(item) {
-        if (item) {
-          this.selected = item.item;
-          this.submitDisable = false;
-          this.invitedUserId = item.item.user_id;
-        }
-      },
-      //This is what the <input/> value is set to when you are selecting a suggestion.
+
+      /*
+			 * Sets display value of suggestion in Invite Co-worker modal
+			 */
       getSuggestionValue(suggestion) {
         let firstName = suggestion.item.first_name;
         let lastName = suggestion.item.last_name;
-        return firstName + ' ' + lastName;
+        return firstName + " " + lastName;
       },
-      // Open auto suggest modal
+      /*
+       * Opens Recommend to a co-worker modal
+       */
       handleModal(missionId) {
-        this.autoSuggestPlaceholder = this.languageData.placeholder.search_user
-        this.showErrorDiv = false;
-        this.message = null;
+        this.currentMissionId = missionId;
         this.$refs.userDetailModal.show();
-        this.currentMission = missionId;
-        setTimeout(() => {
-          this.$refs.autosuggest.$refs.inputAutoSuggest.focus();
-          var input = document.getElementById("autosuggest__input");
-          input.addEventListener("keyup", (event) => {
-            if (event.keyCode === 13 && !this.submitDisable) {
-              event.preventDefault();
-              this.inviteColleagues()
-            }
-          });
-        }, 100);
       },
 
       defaultMediaPathDetail(defaultImage) {
         this.defaultMedia = defaultImage;
         this.isShareComponentShown = true;
       },
-      // invite collegues api call
-      inviteColleagues() {
-        let inviteData = {};
-        inviteData.mission_id = this.currentMission;
-        inviteData.to_user_id = this.invitedUserId;
-        inviteColleague(inviteData).then(response => {
-          this.submitDisable = true;
-          if (response.error == true) {
-            this.classVariant = "danger";
-            this.message = response.message;
-            this.$refs.autosuggest.$data.currentIndex = null;
-            this.$refs.autosuggest.$data.internalValue = '';
-            this.showErrorDiv = true;
-          } else {
-            this.query = "";
-            this.selected = "";
-            this.currentMissionId = 0;
-            this.invitedUserId = 0;
-            this.$refs.autosuggest.$data.currentIndex = null;
-            this.$refs.autosuggest.$data.internalValue = '';
-            this.classVariant = "success";
-            this.message = response.message;
-            this.showErrorDiv = true;
-          }
-        })
-      },
 
-      searchUsers() {
-        searchUser().then(userResponse => {
-          this.userList = userResponse;
-          this.getRelatedMissions();
-        });
-      },
       // Apply for mission
       applyForMission(missionId) {
         let missionData = {};
         missionData.mission_id = missionId;
-        // TODO change that hardcoded value
-        missionData.availability_id = 1;
+        missionData.availability_id = this.missionDetail.availability_id;
 
         applyMission(missionData).then(response => {
           if (response.error == true) {
@@ -1070,7 +961,14 @@
               this.$router.push('/404');
             }
 
-            this.searchUsers();
+            this.getRelatedMissions();
+
+            /*
+             * If this.missionDetail.organisation_detail is a string it means that the details are not empty
+             * so we can display the organization tab.
+             * Otherwise this.missionDetail.organisation_detail is an array if the details are empty.
+             */
+            this.isOrganizationDisplay = typeof this.missionDetail.organisation_detail === 'string';
           })
         } else {
           this.$router.push('/404');
@@ -1246,19 +1144,10 @@
         this.isShownComponent = false
         this.missionId = this.$route.params.misisonId
         this.missionAddedToFavoriteByUser = false
-        this.query = ""
-        this.selected = ""
         this.rating = 3.5
         this.search = ""
-        this.userList = []
-        this.myclass = ["userdetail-modal"]
         this.currentMissionId = 0
-        this.invitedUserId = 0
-        this.showErrorDiv = false
         this.message = null
-        this.classVariant = "success"
-        this.autoSuggestPlaceholder = ''
-        this.submitDisable = true
         this.recentVolunterLoader = true
         this.missionDetail = []
         this.disableApply = false

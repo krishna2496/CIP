@@ -19,7 +19,7 @@
                         v-if="this.$store.state.isLoggedIn && this.$store.state.logoRedirectUrl !== 'home'">
                     </b-navbar-brand>
                     <b-navbar-brand :to="{ name: 'login' }"
-                        :style="{backgroundImage: 'url('+this.$store.state.logo+')'}" 
+                        :style="{backgroundImage: 'url('+this.$store.state.logo+')'}"
                         v-if="!this.$store.state.isLoggedIn"
                     >
                     </b-navbar-brand>
@@ -30,18 +30,15 @@
                         </b-button>
                         <ul v-if="this.$store.state.isLoggedIn">
                             <li v-if="this.$store.state.logoRedirectUrl !== 'home'" class="has-menu no-dropdown home-link">
-                                <router-link :to="{ path: '/home'}" 
-                                    @click.native="homePage()"
-                                    :title="languageData.label.home" class="home-icon">
+                                <router-link :to="{ path: '/home'}" class="home-icon">
                                     <img class="home-icon"
-                                        :src="$store.state.imagePath+'/assets/images/home-ic.svg'"  
+                                        :src="$store.state.imagePath+'/assets/images/home-ic.svg'"
                                     />
                                 </router-link>
                             </li>
-                           
+
                             <li class="has-menu">
-                                <a href="Javascript:void(0)"
-                                    :title='languageData.label.explore'>{{ languageData.label.explore}}</a>
+                                <a href="Javascript:void(0)">{{ languageData.label.explore}}</a>
                                 <i class="collapse-toggle"></i>
                                 <ul class="dropdown-menu sub-dropdown">
                                     <li v-if="isThemeDisplay" v-bind:class="topThemeClass">
@@ -127,8 +124,7 @@
                             </li>
 
                             <li class="has-menu" v-show="isPolicyDisplay && policyPage.length > 0">
-                                <a href="Javascript:void(0)"
-                                    :title='languageData.label.policy'>{{ languageData.label.policy}}
+                                <a href="Javascript:void(0)">{{ languageData.label.policy}}
                                 </a>
                                 <i class="collapse-toggle"></i>
                                 <ul class="dropdown-menu" v-show="policyPage.length > 0">
@@ -173,7 +169,7 @@
                             <b-nav-item-dropdown right class="profile-menu" v-if="this.$store.state.isLoggedIn">
                                 <template slot="button-content">
                                     <i :style="{backgroundImage: 'url('+this.$store.state.avatar+')'}"></i>
-                                   
+
                                 </template>
                                  <b-dropdown-item class="profile-menu-user-name"> <em>{{this.$store.state.firstName+' '+this.$store.state.lastName}}</em>
                                 </b-dropdown-item>
@@ -293,16 +289,16 @@
                                         </b-form-checkbox-group>
                                         <b-form-checkbox-group id="checkbox-group-1" v-model="getEmailNotificationSelected"
                                             name="flavour-1">
-                                         
+
                                             <b-list-group-item>
                                                 <b-form-checkbox v-bind:value="getEmailNotification">
                                                     {{languageData.label.receive_email_notification}} </b-form-checkbox>
                                             </b-list-group-item>
-                                           
+
                                         </b-form-checkbox-group>
                                     </b-list-group>
 
-                                    
+
                                 </div>
                                 <div class="setting-footer">
                                     <b-button class="btn-bordersecondary" @click="saveNotificationSetting">
@@ -325,6 +321,7 @@
             exploreMission,
             policy,
             loadLocaleMessages,
+            logout,
             notificationSettingListing,
             updateNotificationSetting,
             clearNotification,
@@ -434,7 +431,7 @@
                 },
                 logout() {
                         document.querySelector('body').classList.remove('small-header');
-                        this.$store.commit('logoutUser');
+                        logout();
                 },
                 menuBarclickHandler() {
 
@@ -579,10 +576,10 @@
                         })
                     } else {
                         data.user_settings.push({
-                            'receive_email_notification':0   
+                            'receive_email_notification':0
                         })
                     }
-                   
+
                     this.notificationSettingId.filter((data, index) => {
                         let values = 0;
                         if (this.selectedNotification.includes(data)) {
@@ -594,8 +591,8 @@
                         })
 
                     })
-                    data.settings = settingArray        
-                    
+                    data.settings = settingArray
+
                     updateNotificationSetting(data).then(response => {
                         let classVariant = 'success'
                         if (response.error == true) {
@@ -658,11 +655,19 @@
                 },
                 submitNewMission() {
                     if (this.submitNewMissionUrl != '') {
-                        window.open(this.submitNewMissionUrl, '_self');
+                        window.open(this.submitNewMissionUrl, '_blank');
                     }
                 },
-                homePage() {
-                    location.reload();
+                setPolicyPage() {
+                    policy().then(response => {
+                      if (response.error == false) {
+                        if(response.data.length > 0) {
+                          this.policyPage = response.data;
+                          return store.commit('policyPage',response.data);
+                        }
+                      }
+                      store.commit('policyPage',null);
+                    });
                 }
             },
             created() {
@@ -677,9 +682,13 @@
                 if (!store.state.isLoggedIn) {
                     this.isSubmitNewMissionSet = false
                 }
-                if (JSON.parse(store.state.policyPage) != null) {
-                    this.policyPage = JSON.parse(store.state.policyPage)
+
+                if (JSON.parse(store.state.policyPage) === null && store.state.isLoggedIn === true) {
+                    this.setPolicyPage();
+                } else {
+                    this.policyPage = JSON.parse(store.state.policyPage);
                 }
+
                 setTimeout(function () {
                     let notificationMenu = document.querySelector(".notification-menu");
                     if (notificationMenu != null) {
@@ -744,18 +753,22 @@
                             }
                         });
                     }
-                    removeActive.addEventListener("click", function () {
-                        if (screen.width < 992) {
-                            for (let i = 0; i < hasmenuList.length; ++i) {
-                                hasmenuList[i].classList.remove("active");
+
+                    if (removeActive) {
+                        removeActive.addEventListener("click", function () {
+                            if (screen.width < 992) {
+                                for (let i = 0; i < hasmenuList.length; ++i) {
+                                    hasmenuList[i].classList.remove("active");
+                                }
                             }
-                        }
-                        if (screen.width < 768) {
-                            if (breadcrumbDropdown != null) {
-                                breadcrumbDropdown.classList.remove("open");
+                            if (screen.width < 768) {
+                                if (breadcrumbDropdown != null) {
+                                    breadcrumbDropdown.classList.remove("open");
+                                }
                             }
-                        }
-                    });
+                        });
+                    }
+
                     let backBtn = document.querySelectorAll(".btn-back");
                     backBtn.forEach(function (e) {
                         e.addEventListener("click", function () {
@@ -789,7 +802,7 @@
                     this.exploreMissions();
                     this.getNotificationListing()
                 }
-                
+
                 window.addEventListener("resize", function () {
                     let body = document.querySelectorAll("body, html");
                     if (screen.width > 991) {

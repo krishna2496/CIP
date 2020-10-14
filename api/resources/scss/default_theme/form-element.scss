@@ -90,39 +90,6 @@ a {
     background: none !important;
     border-color: $primary !important;
   }
-  &.icon-btn {
-    i {
-      svg {
-        height: 100%;
-        width: 100%;
-        fill: $white;
-      }
-    }
-
-    &:hover {
-      i {
-        svg {
-          fill: $primary;
-        }
-      }
-    }
-
-    &:focus {
-      i {
-        svg {
-          fill: $primary;
-        }
-      }
-
-      &:hover {
-        i {
-          svg {
-            fill: $primary;
-          }
-        }
-      }
-    }
-  }
 }
 
 .btn-bordersecondary {
@@ -446,7 +413,7 @@ textarea {
   outline: none;
   overflow: hidden;
   @include placeholder {
-    color: $black-primary;
+    color: $gray-secondary;
     font-family: $general-font;
     font-size: 14px;
     font-weight: 400;
@@ -522,7 +489,8 @@ label {
       border-radius: 2px;
     }
     &:after {
-      background: no-repeat 60% / 60% 60%;
+      background: no-repeat center center;
+      background-size: 10px 10px;
     }
   }
   .custom-control-input {
@@ -684,7 +652,7 @@ label {
     }
     &::before {
       top: 10px;
-      left: 15px;
+      left: 14px;
       @include xl-max {
         left: 10px;
       }

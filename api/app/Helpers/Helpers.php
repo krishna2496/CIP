@@ -2,14 +2,16 @@
 
 namespace App\Helpers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Config;
-use Firebase\JWT\JWT;
-use App\Traits\RestExceptionHandlerTrait;
-use Throwable;
 use App\Exceptions\TenantDomainNotFoundException;
+use App\Traits\RestExceptionHandlerTrait;
+use Bschmitt\Amqp\Amqp;
 use Carbon\Carbon;
+use Firebase\JWT\JWT;
+use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Config;
 use stdClass;
+use Throwable;
 
 class Helpers
 {
@@ -21,13 +23,21 @@ class Helpers
     private $db;
 
     /**
+     * Amqp
+     *
+     * @var Amqp
+     */
+    private $amqp;
+
+    /**
      * Create a new helper instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(Amqp $amqp)
     {
         $this->db = app()->make('db');
+        $this->amqp = $amqp;
     }
 
     /**
@@ -264,6 +274,7 @@ class Helpers
         // Connect master database to get tenant settings
         $this->switchDatabaseConnection('mysql');
 
+        $keys = $request->keys ?? [];
         $tenantSetting = $this->db->table('tenant_has_setting')
             ->select(
                 'tenant_has_setting.tenant_setting_id',
@@ -278,6 +289,9 @@ class Helpers
                 '=',
                 'tenant_has_setting.tenant_setting_id'
             )
+            ->when(!empty($keys), function ($query) use ($keys) {
+                return $query->whereIn('tenant_setting.key', $keys);
+            })
             ->whereNull('tenant_has_setting.deleted_at')
             ->whereNull('tenant_setting.deleted_at')
             ->where('tenant_id', $tenant->tenant_id)
@@ -424,6 +438,42 @@ class Helpers
     }
 
     /**
+     * Sync volunteer to Optimyapp
+     *
+     * @param Request $request
+     * @param User $user
+     *
+     * @return boolean
+     */
+    public function syncUserData($request, $user)
+    {
+        if ($user->pseudonymize_at  && $user->pseudonymize_at !== '0000-00-00 00:00:00') {
+            return false;
+        }
+
+        $tenantIdAndSponsorId = $this->getTenantIdAndSponsorIdFromRequest($request);
+
+        $params = [
+            'activity_type' => 'user',
+            'sponsor_frontend_id' => $tenantIdAndSponsorId->sponsor_id,
+            'ci_user_id' => $user->user_id,
+            'tenant_id' => $tenantIdAndSponsorId->tenant_id
+        ];
+
+        $payload = json_encode($params);
+
+        $this->amqp->publish(
+            'ciSynchronizer',
+            $payload,
+            [
+                'queue' => 'ciSynchronizer'
+            ]
+        );
+
+        return true;
+    }
+
+    /**
      * Retrieve tenant's name
      *
      * @param Request
@@ -475,5 +525,69 @@ class Helpers
         $this->switchDatabaseConnection($connection);
 
         return (bool)$adminUser;
+    }
+
+    public function getSupportedFieldsToPseudonymize()
+    {
+        return [
+            'first_name',
+            'last_name',
+            'email',
+            'employee_id',
+            'linked_in_url',
+            'position',
+            'department',
+            'profile_text',
+            'why_i_volunteer'
+        ];
+    }
+
+    /**
+     * Check for valid currency from `ci_admin` table.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param string $currencyCode
+     * @return bool
+     */
+    public function isValidTenantCurrency(Request $request, string $currencyCode)
+    {
+        $tenant = $this->getTenantDetail($request);
+        // Connect master database to get currency details
+        $this->switchDatabaseConnection('mysql');
+
+        $tenantCurrency = $this->db->table('tenant_currency')
+            ->where('tenant_id', $tenant->tenant_id)
+            ->where('code', $currencyCode)
+            ->where('is_active', '1');
+
+        // Connect tenant databases
+        $this->switchDatabaseConnection('tenant');
+
+        return ($tenantCurrency->count() > 0) ? true : false;
+    }
+
+    /**
+     * Get tenant activated currencies
+     *
+     * @param Request $request
+     *
+     * @return Illuminate\Support\Collection
+     */
+    public function getTenantActivatedCurrencies(Request $request): Collection
+    {
+        $tenant = $this->getTenantDetail($request);
+        $this->switchDatabaseConnection('mysql');
+
+        $currencies = $this->db->table('tenant_currency')
+            ->select('code', 'default')
+            ->where('tenant_id', $tenant->tenant_id)
+            ->where('is_active', 1)
+            ->orderBy('default', 'DESC')
+            ->orderBy('code', 'ASC')
+            ->get();
+
+        $this->switchDatabaseConnection('tenant');
+
+        return $currencies;
     }
 }

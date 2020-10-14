@@ -22,6 +22,7 @@ return [
         'MESSAGE_SLIDER_ADD_SUCCESS' => 'Slider image added successfully',
         'MESSAGE_USER_LOGGED_IN' => 'You are successfully logged in',
         'MESSAGE_PASSWORD_RESET_LINK_SEND_SUCCESS' => 'Reset password link is sent to your email account. Link will expire in ' . config('constants.FORGOT_PASSWORD_EXPIRY_TIME') . ' hours.',
+        'MESSAGE_USER_INVITE_LINK_SEND_SUCCESS' => 'Invite link is sent to the email account.',
         'MESSAGE_PASSWORD_CHANGE_SUCCESS' => 'Your password has been changed successfully.',
         'MESSAGE_CUSTOM_FIELD_ADDED' => 'User custom field added successfully',
         'MESSAGE_CUSTOM_FIELD_UPDATED' => 'User custom field updated successfully',
@@ -144,13 +145,14 @@ return [
         'MESSAGE_STORY_COPIED_SUCCESS' => 'Story copied successfully',
         'MESSAGE_UNABLE_TO_EXPORT_USER_STORIES_ENTRIES' => 'No stories found',
         'MESSAGE_STORY_UPDATED' => 'Story updated successfully',
+        'MESSAGE_FAVICON_UPLOADED' => 'Favicon uploaded successfully',
 
         'MESSAGE_USER_COMMENTS_LISTING' => 'User comments listed successfully',
         'MESSAGE_STORY_SUBMITTED_SUCCESSFULLY' => 'Story submitted successfully',
         'MESSAGE_STORY_IMAGE_DELETED' => 'Story image deleted successfully',
-		'MESSAGE_USER_MESSAGE_SEND_SUCCESSFULLY' => 'Message sent successfully',
+        'MESSAGE_USER_MESSAGE_SEND_SUCCESSFULLY' => 'Message sent successfully',
         'MESSAGE_USER_MESSAGES_SEND_SUCCESSFULLY' => 'Messages sent successfully',
-    	'MESSAGE_NOTIFICATION_SETTINGS_LISTING' => 'Notification settings listed successfully',
+        'MESSAGE_NOTIFICATION_SETTINGS_LISTING' => 'Notification settings listed successfully',
         'MESSAGE_USER_NOTIFICATION_SETTINGS_UPDATED' => 'User notification settings updated successfully',
         'MESSAGE_USER_MESSAGE_DELETED' => 'Message deleted successfully',
         'MESSAGE_NO_MISSION_COMMENTS_ENTRIES' => 'No mission comments found',
@@ -196,8 +198,22 @@ return [
         'MESSAGE_STATE_LISTING' => 'States listed successfully',
         'MESSAGE_STATE_FOUND' => 'State found successfully',
         'MESSAGE_NO_STATE_FOUND' => 'State not found',
+        'MESSAGE_ORGANIZATION_CREATED' => "Organization created successfully",
+        'MESSAGE_ORGANIZATION_UPDATED' => "Organization updated successfully",
+        'MESSAGE_ORGANIZATION_DELETED' => "Organization deleted successfully",
+        'MESSAGE_ORGANIZATION_FOUND' => 'Organization found successfully',
+        'MESSAGE_ORGANIZATION_LISTING' => 'Organization listed successfully',
         'MESSAGE_TENANT_USER_CONTENT_STATISTICS_SUCCESS' => 'User content statistics retrieved successfully',
-        'MESSAGE_TENANT_USER_VOLUNTEER_SUMMARY_SUCCESS' => 'Volunteer summary retrieved successfully'
+        'MESSAGE_TENANT_USER_VOLUNTEER_SUMMARY_SUCCESS' => 'Volunteer summary retrieved successfully',
+        'MESSAGE_MISSION_TAB_DELETED' => 'Mission tab deleted successfully',
+        'MESSAGE_NO_DONATION_IP_WHITELIST_FOUND' => 'No whitelisted IP found',
+        'MESSAGE_DONATION_IP_WHITELIST_LISTING' => 'IP whitelists listed successfully',
+        'MESSAGE_DONATION_IP_WHITELIST_CREATED' => 'IP whitelist created successfully',
+        'MESSAGE_DONATION_IP_WHITELIST_UPDATED' => 'IP whitelist updated successfully',
+        'MESSAGE_DONATION_IP_WHITELIST_DELETED' => 'IP whitelist deleted successfully',
+        'MESSAGE_MISSION_IMPACT_DELETED' => 'Mission impact deleted successfully',
+        'MESSAGE_TENANT_ACTIVATED_CURRENCIES_FOUND' => 'Tenant activated currencies listed successfully',
+        'MESSAGE_TENANT_ACTIVATED_CURRENCIES_EMPTY' => 'Tenant has no activated currencies',
     ],
 
 
@@ -222,7 +238,10 @@ return [
         'ERROR_INVALID_EMAIL_OR_PASSWORD' => 'Either email address or password is incorrect',
         'ERROR_USER_EXPIRED' => 'Your account has expired. Please contact your administrator.',
         'ERROR_USER_BLOCKED' => 'Your account is disabled. Please contact your administrator.',
+        'ERROR_USER_ACTIVE' => 'Account is already active.',
         'ERROR_INVALID_IMAGE_URL' => 'The url must be a file of type: jpeg, png, jpg',
+        'ERROR_ACCOUNT_EXPIRED' => 'User account is expired.',
+        'ERROR_MAXIMUM_USERS_REACHED' => 'You have reached the maximum number of users. Contact us at ' . config('constants.SUPPORT_EMAIL') . ' to upgrade your account.',
 
 
         // Custom error code for CMS Module - 300000 - 309999
@@ -263,6 +282,7 @@ return [
         'ERROR_DOCUMENT_ID_DOSENT_EXIST' => 'Document id doesnt exist',
         'ERROR_DOCUMENT_NOT_LINKED_WITH_MISSION' => 'Document id is not linked to mission',
         'ERROR_MISSION_DEFAULT_LANGUAGE_CANNOT_DELETED' => 'Default mission language cannot be deleted.',
+        'ERROR_INVALID_TENANT_CURRENCY' => 'Please input a valid tenant currency.',
 
         // Custom error code for Tenant Authorization - 210000 - 219999
         'ERROR_INVALID_API_AND_SECRET_KEY' => 'Invalid API key or secret key',
@@ -271,17 +291,20 @@ return [
         'ERROR_INVALID_RESET_PASSWORD_LINK' => 'Reset password link is expired or invalid',
         'ERROR_RESET_PASSWORD_INVALID_DATA' => 'Invalid input data',
         'ERROR_SEND_RESET_PASSWORD_LINK' => 'Something went wrong while sending reset password link',
+        'ERROR_SEND_USER_INVITE_LINK' => 'Something went wrong while sending the invite link',
         'ERROR_INVALID_DETAIL' => 'Invalid reset password token or email address',
         'ERROR_TENANT_DOMAIN_NOT_FOUND' => 'Tenant domain not found',
         'ERROR_TOKEN_EXPIRED' => 'Provided token is expired',
         'ERROR_IN_TOKEN_DECODE' => 'An error while decoding token',
         'ERROR_TOKEN_NOT_PROVIDED' => 'Token not provided',
         'ERROR_OLD_PASSWORD_NOT_MATCHED' => 'The old password you have entered is incorrect',
+        'ERROR_PASSWORD_VALIDATION_MESSAGE' => 'Password field must contain one number, uppercase and lowercase letters.',
 
 
         // Custom error code for common exception
         'ERROR_INVALID_JSON' => 'Invalid Json format',
         'ERROR_INTERNAL_SERVER_ERROR' => 'Internal server error',
+        'ERROR_TENANT_SETTING_DISABLED' => 'Required tenant setting is disabled.',
 
         // Custom error code for other errors - 800000 - 809999
         'ERROR_TENANT_ASSET_FOLDER_NOT_FOUND_ON_S3' => 'Tenant asset folder not found',
@@ -303,6 +326,7 @@ return [
         'ERROR_TENANT_LANGUAGE_INVALID' => 'Invalid tenant language code or file name.',
         'ERROR_INCOMPLETE_LANGUAGE_FILE' => 'Incomplete language file.',
         'ERROR_TENANT_LANGUAGE_INVALID_CODE' => 'Invalid tenant language code.',
+        'ERROR_RETRIEVING_TENANT_ACTIVATED_CURRENCIES' => 'An error was encountered while retrieving tenant activated currencies',
 
         //For timesheet module
         'ERROR_INVALID_ACTION' => 'Entered goal action should not be greater than goal objective',
@@ -356,10 +380,28 @@ return [
         'ERROR_INVALID_SAML_ARGS_TIMEZONE' => 'Invalid SAML arguments for timezone.',
         'ERROR_INVALID_SAML_ARGS_COUNTRY' =>  'Invalid SAML arguments for country.',
         'ERROR_INVALID_SAML_ACCESS' => 'You are not allowed to access this page.',
+        'ERROR_SAML_ACCESS_ONLY_ACTIVE' => 'Saml Access Only is currently active.',
         'ERROR_STATE_UNABLE_TO_DELETE' => 'You can not delete this state as it is link to mission',
         'ERROR_THEME_UNABLE_TO_DELETE' => 'Mission theme can not be deleted as it is currently in use.',
         'ERROR_SKILL_UNABLE_TO_DELETE' => 'Skill can not be deleted as it is currently in use.',
         'ERROR_AVAILABILITY_UNABLE_TO_DELETE' => 'Availability can not be deleted as it is currently in use.',
+        'ERROR_ORGANIZATION_NOT_FOUND' => 'Organization not found in the system',
         'ERROR_UNAUTHORIZED_LOGIN_METHOD' => 'Unauthorized login method.',
-       ]
+
+        'ERROR_IMPACT_MISSION_NOT_FOUND' => 'Mission impact not found in the system.',
+        'ERROR_ORGANIZATION_NAME_REQUIRED' => 'Organization name is required when organization id does not exist.',
+        'ERROR_ORGANIZATION_LINKED_TO_MISSION' => 'Cannot delete this organization as it is linked to a mission.',
+
+        // Mission Tab module
+        'MISSION_TAB_NOT_FOUND' => 'Mission tab not found in the system.',
+
+        // For Donation IP Whitelist module
+        'ERROR_DONATION_IP_WHITELIST_NOT_FOUND' => 'IP whitelist not found in system',
+        'ERROR_SORT_KEY_ALREADY_EXIST' => 'The sort key has already been taken.',
+        'ERROR_IMPACT_SORT_KEY_ALREADY_EXIST' => 'The impact sort key has already been taken.',
+
+        // For submitting a story feature
+        'ERROR_STORY_MISSION_APPLICATION_NOT_APPROVED' => 'You cannot submit a story, mission application was not approved.',
+        'ERROR_STORY_MISSION_APPLICATION_NOT_FOUND' => 'You cannot submit a story, mission application of the user was not found.',
+    ]
 ];

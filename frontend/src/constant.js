@@ -1,6 +1,7 @@
 export default Object.freeze({
     YOUTUBE_VIDEO_FORMAT: 'mp4',
     MISSION_TYPE_TIME: 'TIME',
+    MISSION_TYPE_GOAL: 'GOAL',
     PASSWORD_MIN_LENGTH: 8,
     MAX_RATINGS: 5,
     RATING_INCREMENT: 0.5,
@@ -56,5 +57,7 @@ export default Object.freeze({
     MESSAGE : "message_enabled",
     MAX_FILE_NUMBER: 20,
     MISSION_RATING_VOLUNTEER :"mission_rating_volunteer",
-    STATE_ENABLED : "state_selection"
-})
+    STATE_ENABLED : "state_selection",
+    VOLUNTEERING_GOAL_MISSION : 'volunteering_goal_mission',
+    VOLUNTEERING_TIME_MISSION : 'volunteering_time_mission'
+});

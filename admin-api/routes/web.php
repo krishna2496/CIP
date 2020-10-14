@@ -124,5 +124,34 @@ $router->group(
         // Fetch activity logs
         $router->get('/logs', ['middleware' => ['PaginationMiddleware'],
                 'uses' => 'ActivityLogController@index']);
+
+        // Currency routes
+        $router->post(
+            '/{tenantId}/tenant-currencies',
+            ['as' => 'tenants.store-tenantcurrency', 'middleware' => ['JsonApiMiddleware'],
+            'uses' => 'TenantCurrencyController@store']
+        );
+        $router->get(
+
+            '/{tenantId}/tenant-currencies',
+            ['as' => 'tenants.get-tenantcurrency', 'middleware' => ['PaginationMiddleware'],
+            'uses' => 'TenantCurrencyController@index']
+        );
+        $router->patch(
+            '/{tenantId}/tenant-currencies',
+            ['as' => 'tenants.update-tenantcurrency', 'middleware' => ['JsonApiMiddleware'],
+            'uses' => 'TenantCurrencyController@update']
+        );
+    }
+);
+
+/* health check */
+$router->group(
+    ['prefix' => '/health'],
+
+    function ($router) {
+        $router->get(
+            '/', 'HealthCheckController@index'
+        );
     }
 );

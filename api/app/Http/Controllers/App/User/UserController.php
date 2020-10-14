@@ -1,7 +1,6 @@
 <?php
 namespace App\Http\Controllers\App\User;
 
-use InvalidArgumentException;
 use App\Transformations\UserTransformable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Helpers\LanguageHelper;
@@ -14,76 +13,83 @@ use App\Http\Controllers\Controller;
 use App\Repositories\User\UserRepository;
 use App\Repositories\UserCustomField\UserCustomFieldRepository;
 use App\Repositories\UserFilter\UserFilterRepository;
+use App\Repositories\TenantOption\TenantOptionRepository;
 use App\Repositories\City\CityRepository;
 use App\Helpers\ResponseHelper;
 use App\Traits\RestExceptionHandlerTrait;
 use App\User;
 use Illuminate\Validation\Rule;
 use App\Helpers\S3Helper;
-use Illuminate\Support\Facades\Storage;
 use App\Events\User\UserActivityLogEvent;
 use App\Transformations\CityTransformable;
+use App\Models\TenantOption;
+use App\Notifications\InviteUser;
+use Carbon\Carbon;
 
-//!  User controller
-/*!
-This controller is responsible for handling user listing, show, save cookie agreement and
-upload profile image operations.
- */
+
 class UserController extends Controller
 {
     use RestExceptionHandlerTrait, UserTransformable, CityTransformable;
+
     /**
-     * @var App\Repositories\User\UserRepository
+     * @var UserRepository
      */
     private $userRepository;
 
     /**
-     * @var App\Repositories\UserCustomField\UserCustomFieldRepository
+     * @var UserCustomFieldRepository
      */
     private $userCustomFieldRepository;
 
     /**
-     * @var App\Repositories\City\CityRepository
+     * @var CityRepository
      */
     private $cityRepository;
 
     /**
-     * @var App\Helpers\ResponseHelper
+     * @var ResponseHelper
      */
     private $responseHelper;
 
     /**
-     * @var App\Helpers\LanguageHelper
+     * @var LanguageHelper
      */
     private $languageHelper;
 
     /**
-     * @var App\Helpers\Helpers
+     * @var Helpers
      */
     private $helpers;
 
     /**
-     * @var App\Helpers\S3Helper
+     * @var S3Helper
      */
     private $s3helper;
 
     /**
-     * @var App\Repositories\UserFilter\UserFilterRepository
+     * @var UserFilterRepository
      */
     private $userFilterRepository;
 
     /**
+     * The response instance.
+     *
+     * @var TenantOptionRepository
+     */
+    private $tenantOptionRepository;
+
+    /**
      * Create a new controller instance.
      *
-     * @param App\Repositories\User\UserRepository $userRepository
-     * @param App\Repositories\UserCustomField\UserCustomFieldRepository $userCustomFieldRepository
-     * @param App\Repositories\City\CityRepository $cityRepository
-     * @param Illuminate\Http\UserFilterRepository $userFilterRepository
-     * @param Illuminate\Http\ResponseHelper $responseHelper
-     * @param App\Helpers\LanguageHelper $languageHelper
-     * @param App\Helpers\Helpers $helpers
-     * @param App\Helpers\S3Helper $s3helper
-     * @return void
+     * @param UserRepository $userRepository
+     * @param UserCustomFieldRepository $userCustomFieldRepository
+     * @param CityRepository $cityRepository
+     * @param UserFilterRepository $userFilterRepository
+     * @param ResponseHelper $responseHelper
+     * @param LanguageHelper $languageHelper
+     * @param Helpers $helpers
+     * @param S3Helper $s3helper
+     * @param TenantOptionRepository $tenantOptionRepository
      */
     public function __construct(
         UserRepository $userRepository,
@@ -93,7 +99,8 @@ class UserController extends Controller
         ResponseHelper $responseHelper,
         LanguageHelper $languageHelper,
         Helpers $helpers,
-        S3Helper $s3helper
+        S3Helper $s3helper,
+        TenantOptionRepository $tenantOptionRepository
     ) {
         $this->userRepository = $userRepository;
         $this->userCustomFieldRepository = $userCustomFieldRepository;
@@ -103,38 +110,39 @@ class UserController extends Controller
         $this->languageHelper = $languageHelper;
         $this->helpers = $helpers;
         $this->s3helper = $s3helper;
+        $this->tenantOptionRepository = $tenantOptionRepository;
     }
 
     /**
      * Display a listing of the resource.
      *
-     * @param Illuminate\Http\Request $request
-     * @return Illuminate\Http\JsonResponse
+     * @param Request $request
+     * @return JsonResponse
      */
     public function index(Request $request): JsonResponse
     {
-        $userList = $this->userRepository->listUsers($request->auth->user_id);
-        if ($request->has('search')) {
-            $userList = $this->userRepository->searchUsers($request->input('search'), $request->auth->user_id);
-        }
+        $userList = $request->has('search')
+            ? $this->userRepository->searchUsers($request->input('search'), $request->auth->user_id)
+            : $this->userRepository->listUsers($request->auth->user_id);
+
         $tenantName = $this->helpers->getSubDomainFromRequest($request);
         $users = $userList->map(function (User $user) use ($request, $tenantName) {
             $user = $this->transformUser($user, $tenantName);
             return $user;
         })->all();
 
-        // Set response data
-        $apiStatus = Response::HTTP_OK;
-        $apiMessage = (empty($users)) ? trans('messages.success.MESSAGE_NO_RECORD_FOUND')
+        $apiMessage = (empty($users))
+            ? trans('messages.success.MESSAGE_NO_RECORD_FOUND')
             : trans('messages.success.MESSAGE_USER_LISTING');
+
         return $this->responseHelper->success(Response::HTTP_OK, $apiMessage, $users);
     }
 
     /**
      * Get default language of user
      *
-     * @param Illuminate\Http\Request $request
-     * @return Illuminate\Http\JsonResponse
+     * @param Request $request
+     * @return JsonResponse
      */
     public function getUserDefaultLanguage(Request $request): JsonResponse
     {
@@ -144,7 +152,6 @@ class UserController extends Controller
 
             $userLanguage['default_language_id'] = $user->language_id;
 
-            $apiStatus = Response::HTTP_OK;
             return $this->responseHelper->success(Response::HTTP_OK, '', $userLanguage);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
@@ -287,22 +294,23 @@ class UserController extends Controller
         // Server side validataions
         $validator = Validator::make(
             $request->all(),
-            ["first_name" => "required|max:16",
-            "last_name" => "required|max:16",
+            ["first_name" => "required|max:60",
+            "last_name" => "required|max:60",
             "password" => "sometimes|required|min:8",
             "employee_id" => [
-                "max:16",
-				"nullable",
+                "max:60",
+                "nullable",
                 Rule::unique('user')->ignore($id, 'user_id,deleted_at,NULL')],
-            "department" => "max:16",
+            "department" => "max:60",
             "linked_in_url" => "url|valid_linkedin_url",
             "availability_id" => "integer|exists:availability,availability_id,deleted_at,NULL",
             "timezone_id" => "required|integer|exists:timezone,timezone_id,deleted_at,NULL",
-            "city_id" => "required|integer|exists:city,city_id,deleted_at,NULL",
+            "city_id" => "sometimes|integer|exists:city,city_id,deleted_at,NULL",
             "country_id" => "required|integer|exists:country,country_id,deleted_at,NULL",
             "custom_fields.*.field_id" => "sometimes|required|exists:user_custom_field,field_id,deleted_at,NULL",
             'skills' => 'array',
-            'skills.*.skill_id' => 'required_with:skills|integer|exists:skill,skill_id,deleted_at,NULL']
+            'skills.*.skill_id' => 'required_with:skills|integer|exists:skill,skill_id,deleted_at,NULL',
+            "title" => "max:60"]
         );
 
         // If request parameter have any error
@@ -339,14 +347,49 @@ class UserController extends Controller
             }
         }
 
+        $request->expiry = (isset($request->expiry) && $request->expiry)
+            ? $request->expiry : null;
+
+        if (isset($request->status)) {
+            $request->status = $request->status
+                ? config('constants.user_statuses.ACTIVE')
+                : config('constants.user_statuses.INACTIVE');
+        }
+
         //Remove params
         $request->request->remove("email");
+        $request->request->remove("is_admin");
+        $request->request->remove("expiry");
 
         // Update user filter
         $this->userFilterRepository->saveFilter($request);
 
+        $userDetail = $this->userRepository->find($id);
+        $requestData = $request->toArray();
+        // Skip updaing pseudonymize fields
+        if ($userDetail->pseudonymize_at && $userDetail->pseudonymize_at !== '0000-00-00 00:00:00') {
+            $pseudonymizeFields = $this->helpers->getSupportedFieldsToPseudonymize();
+            foreach ($pseudonymizeFields as $field) {
+                if (array_key_exists($field, $requestData)) {
+                    unset($requestData[$field]);
+                }
+            }
+
+
+            if (array_key_exists('pseudonymize_at', $requestData)) {
+                unset($requestData['pseudonymize_at']);
+            }
+        }
+
+        // Set user status to inactive when pseudonymized
+        if (($userDetail->pseudonymize_at === '0000-00-00 00:00:00' || $userDetail->pseudonymize_at === null) &&
+            array_key_exists('pseudonymize_at', $requestData)
+        ) {
+            $requestData['status'] = config('constants.user_statuses.INACTIVE');
+        }
+
         // Update user
-        $user = $this->userRepository->update($request->toArray(), $id);
+        $user = $this->userRepository->update($requestData, $id);
 
         // Check profile complete status
         $userData = $this->userRepository->checkProfileCompleteStatus($user->user_id, $request);
@@ -361,6 +404,8 @@ class UserController extends Controller
             $this->userRepository->deleteSkills($id);
             $this->userRepository->linkSkill($request->toArray(), $id);
         }
+
+        $this->helpers->syncUserData($request, $user);
 
         // Set response data
         $apiData = ['user_id' => $user->user_id, 'is_profile_complete' => $userData->is_profile_complete];
@@ -412,8 +457,7 @@ class UserController extends Controller
         $avatar = preg_replace('#^data:image/\w+;base64,#i', '', $request->avatar);
         $imagePath = $this->s3helper->uploadProfileImageOnS3Bucket($avatar, $tenantName, $userId);
 
-        $userData['avatar'] = $imagePath;
-        $this->userRepository->update($userData, $userId);
+        $this->userRepository->update(['avatar' => $imagePath], $userId);
 
         $apiData = ['avatar' => $imagePath];
         $apiMessage = trans('messages.success.MESSAGE_PROFILE_IMAGE_UPLOADED');
@@ -465,5 +509,179 @@ class UserController extends Controller
         ));
 
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+    }
+
+    /**
+     * Create Password - Send create password link to user's email address
+     *
+     * @param App\User $user
+     * @param Illuminate\Http\Request $request
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function inviteUser(User $user, Request $request): JsonResponse
+    {
+        $samlSettings = $this->tenantOptionRepository->getOptionValue(TenantOption::SAML_SETTINGS);
+
+        if (
+            $samlSettings
+            && count($samlSettings)
+            && $samlSettings[0]['option_value']
+            && $samlSettings[0]['option_value']['saml_access_only']
+        ) {
+            return $this->responseHelper->error(
+                Response::HTTP_BAD_REQUEST,
+                Response::$statusTexts[Response::HTTP_BAD_REQUEST],
+                config('constants.error_codes.ERROR_SAML_ACCESS_ONLY_ACTIVE'),
+                trans('messages.custom_error_message.ERROR_SAML_ACCESS_ONLY_ACTIVE')
+            );
+        }
+
+        // Server side validations
+        $validator = Validator::make($request->toArray(), [
+            'email' => 'required|email',
+            'subject' => 'required',
+            'body' => 'required',
+            'language' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_USER_INVITE_INVALID_DATA'),
+                $validator->errors()->first()
+            );
+        }
+
+        $userDetail = $this->userRepository->findUserByEmail($request->get('email'));
+
+        if (!$userDetail) {
+            return $this->responseHelper->error(
+                Response::HTTP_NOT_FOUND,
+                Response::$statusTexts[Response::HTTP_NOT_FOUND],
+                config('constants.error_codes.ERROR_EMAIL_NOT_EXIST'),
+                trans('messages.custom_error_message.ERROR_EMAIL_NOT_EXIST')
+            );
+        }
+
+        if ($userDetail->status === config('constants.user_statuses.ACTIVE')) {
+            return $this->responseHelper->error(
+                Response::HTTP_BAD_REQUEST,
+                Response::$statusTexts[Response::HTTP_BAD_REQUEST],
+                config('constants.error_codes.ERROR_USER_ACTIVE'),
+                trans('messages.custom_error_message.ERROR_USER_ACTIVE')
+            );
+        }
+
+        if ($userDetail->expiry) {
+            $userExpirationDate = new \DateTime($userDetail->expiry);
+            if ($userExpirationDate < new \DateTime()) {
+                return $this->responseHelper->error(
+                    Response::HTTP_BAD_REQUEST,
+                    Response::$statusTexts[Response::HTTP_BAD_REQUEST],
+                    config('constants.error_codes.ERROR_ACCOUNT_EXPIRED'),
+                    trans('messages.custom_error_message.ERROR_ACCOUNT_EXPIRED')
+                );
+            }
+        }
+
+        $tenantLogo = $this->tenantOptionRepository->getOptionValueFromOptionName('custom_logo');
+
+        $details = [
+            'subject' => $request->get('subject'),
+            'body' => $request->get('body'),
+            'company_logo' => $tenantLogo->option_value,
+            'language' => $request->get('language'),
+        ];
+
+        try {
+            $userDetail->notify(new InviteUser($details));
+        } catch (\Exception $e) {
+            return $this->responseHelper->error(
+                Response::HTTP_INTERNAL_SERVER_ERROR,
+                Response::$statusTexts[Response::HTTP_INTERNAL_SERVER_ERROR],
+                config('constants.error_codes.ERROR_SEND_USER_INVITE_LINK'),
+                trans('messages.custom_error_message.ERROR_SEND_USER_INVITE_LINK')
+            );
+        }
+
+        $userDetail->status = config('constants.user_statuses.ACTIVE');
+        $userDetail->invitation_sent_at = Carbon::now()->toDateTimeString();
+        $userDetail->save();
+
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage = trans('messages.success.MESSAGE_USER_INVITE_LINK_SEND_SUCCESS');
+
+        event(new UserActivityLogEvent(
+            config('constants.activity_log_types.AUTH'),
+            config('constants.activity_log_actions.UPDATED'),
+            config('constants.activity_log_user_types.REGULAR'),
+            $userDetail->email,
+            get_class($this),
+            $request->only('email', 'subject', 'language'),
+            $userDetail->user_id
+        ));
+
+        return $this->responseHelper->success($apiStatus, $apiMessage);
+    }
+
+    /**
+     * Set password triggered by the send invite action
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function createPassword(Request $request): JsonResponse
+    {
+        $validator = Validator::make($request->toArray(), [
+                'email' => 'required|email',
+                'password' => [
+                    'required',
+                    'min:8',
+                    'regex:/[0-9]/',
+                    'regex:/[a-z]/',
+                    'regex:/[A-Z]/'
+                ]
+            ],
+            ['password.regex' => trans('messages.custom_error_message.ERROR_PASSWORD_VALIDATION_MESSAGE')]
+        );
+
+        if ($validator->fails()) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_INVALID_DETAIL'),
+                $validator->errors()->first()
+            );
+        }
+
+        $userDetail = $this->userRepository->findUserByEmail($request->get('email'));
+
+        if (!$userDetail) {
+            return $this->responseHelper->error(
+                Response::HTTP_NOT_FOUND,
+                Response::$statusTexts[Response::HTTP_NOT_FOUND],
+                config('constants.error_codes.ERROR_EMAIL_NOT_EXIST'),
+                trans('messages.custom_error_message.ERROR_EMAIL_NOT_EXIST')
+            );
+        }
+
+        $userDetail->password = $request->get('password');
+        $userDetail->save();
+
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage = trans('messages.success.MESSAGE_PASSWORD_CHANGE_SUCCESS');
+
+        event(new UserActivityLogEvent(
+            config('constants.activity_log_types.AUTH'),
+            config('constants.activity_log_actions.PASSWORD_UPDATED'),
+            config('constants.activity_log_user_types.REGULAR'),
+            $userDetail->email,
+            get_class($this),
+            $request->only('email'),
+            $userDetail->user_id
+        ));
+
+        return $this->responseHelper->success($apiStatus, $apiMessage);
     }
 }
