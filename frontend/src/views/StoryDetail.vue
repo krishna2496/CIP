@@ -143,7 +143,6 @@
   import Slick from "vue-slick";
   import store from '../store';
   import constants from '../constant';
-  import sanitizeHtml from 'sanitize-html'
   import { storyDetail } from "../services/service";
   import InviteCoWorker from "@/components/InviteCoWorker";
   export default {
@@ -258,10 +257,7 @@
           if (response.error == false) {
             let mediaType = []
             this.storyDetailList = response.data
-            this.storyDetailList.description = sanitizeHtml(this.storyDetailList.description, {
-              allowedTags: false,
-              allowedAttributes: false
-            });
+            this.storyDetailList.description = this.$sanitize(this.storyDetailList.description)
             let newMediaType = response.data.storyMedia
             if (newMediaType) {
               newMediaType.filter((data, index) => {
