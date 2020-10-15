@@ -101,9 +101,7 @@
                     </b-row>
                 </div>
                 <div class="story-content-wrap">
-                    <div class="story-content cms-content" v-html="storyDetailList.description">
-
-                    </div>
+                  <div class="story-content cms-content" v-html="storyDetailList.description"></div>
                     <div class="btn-wrap group-btns">
                         <b-button class="btn-borderprimary icon-btn" @click="handleModal()">
                             <i>
@@ -259,6 +257,7 @@
           if (response.error == false) {
             let mediaType = []
             this.storyDetailList = response.data
+            this.storyDetailList.description = this.$sanitize(this.storyDetailList.description)
             let newMediaType = response.data.storyMedia
             if (newMediaType) {
               newMediaType.filter((data, index) => {
