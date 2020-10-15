@@ -14,7 +14,6 @@ export default async(storyId) => {
         method: 'GET',
         headers: {
             'X-localization': defaultLanguage,
-            'token': store.state.token,
         }
     })
       .then((response) => {
@@ -24,6 +23,7 @@ export default async(storyId) => {
           // document.body.classList.remove("loader-enable");
       })
       .catch((error) => {
+          responseData.status = error.response.status;
           if (error.response.data.errors[0].message) {
               responseData.error = true;
               responseData.message = error.response.data.errors[0].message;

@@ -25,20 +25,20 @@
                 </div>
 
                 <b-list-group>
-                    <b-list-group-item v-if="isCountrySelectionSet">
+                    <b-list-group-item v-if="isCountrySelectionSet" @click="quickAcessFilterChange()">
                         <AppFilterDropdown :optionList="countryList" :defaultText="defaultCountry" translationEnable="false" @updateCall="changeCountry" v-if="isComponentVisible" />
                     </b-list-group-item>
                     <b-list-group-item v-if="isStateSelectionDisplay">
-                        <AppCheckboxDropdown v-if="isComponentVisible" :filterTitle="defaultState" :selectedItem="selectedState" :checkList="stateList" @updateCall="changeState" />
+                        <AppCheckboxDropdown @quickAcessFilterChange="quickAcessFilterChange" v-if="isComponentVisible" :filterTitle="defaultState" :selectedItem="selectedState" :checkList="stateList" @updateCall="changeState" />
                     </b-list-group-item>
                     <b-list-group-item>
-                        <AppCheckboxDropdown v-if="isComponentVisible" :filterTitle="defaultCity" :selectedItem="selectedCity" :checkList="cityList" @updateCall="changeCity" />
+                        <AppCheckboxDropdown @quickAcessFilterChange="quickAcessFilterChange" v-if="isComponentVisible" :filterTitle="defaultCity" :selectedItem="selectedCity" :checkList="cityList" @updateCall="changeCity" />
                     </b-list-group-item>
                     <b-list-group-item v-if="isThemeDisplay">
-                        <AppCheckboxDropdown v-if="isComponentVisible" :filterTitle="defaultTheme" :selectedItem="selectedTheme" :checkList="themeList" @changeParmas="changeThemeParmas" @updateCall="changeTheme" />
+                        <AppCheckboxDropdown @quickAcessFilterChange="quickAcessFilterChange" v-if="isComponentVisible" :filterTitle="defaultTheme" :selectedItem="selectedTheme" :checkList="themeList" @changeParmas="changeThemeParmas" @updateCall="changeTheme" />
                     </b-list-group-item>
                     <b-list-group-item v-if="isSkillDisplay && isVolunteeringSettingEnabled">
-                        <AppCheckboxDropdown v-if="isComponentVisible" :filterTitle="defaultSkill" :checkList="skillList" :selectedItem="selectedSkill" @changeParmas="changeSkillParmas" @updateCall="changeSkill" />
+                        <AppCheckboxDropdown @quickAcessFilterChange="quickAcessFilterChange" v-if="isComponentVisible" :filterTitle="defaultSkill" :checkList="skillList" :selectedItem="selectedSkill" @changeParmas="changeSkillParmas" @updateCall="changeSkill" />
                     </b-list-group-item>
                 </b-list-group>
             </b-col>
@@ -78,6 +78,7 @@ export default {
             searchPlaceHolder: '',
             defaultCountry: "Country",
             defaultCity: "",
+            defaultState: "",
             defaultTheme: "",
             defaultSkill: "",
             stateList: [],
@@ -119,6 +120,10 @@ export default {
             isStateSelectionDisplay: false,
             searchString: this.search,
             languageData: [],
+            isStateClick: false,
+            isCityClick: false,
+            isThemeClick: false,
+            isSkillClick: false,
             isVolunteeringSettingEnabled: true,
             isDonationSettingEnabled: true
         };
@@ -134,6 +139,21 @@ export default {
         }
     },
     methods: {
+        quickAcessFilterChange(val) {
+            if (val == this.defaultState) {
+                this.isStateClick = true
+            }
+            if (val == this.defaultCity) {
+                this.isCityClick = true
+            }
+            if (val == this.defaultTheme) {
+                this.isThemeClick = true
+            }
+            if (val == this.defaultSkill) {
+                this.isSkillClick = true
+            }
+            this.$parent.addLoader();
+        },
         changeThemeParmas() {
             this.isCountryChange = false;
             this.isCityChange = false;
@@ -163,7 +183,11 @@ export default {
 
         removeItems(data) {
             if (data.selectedType == "country") {
-                data.selectedId = "";
+                data.selectedId = store.state.defaultCountryId;
+                let selectedCountryData = this.countryList.filter((country) => {
+                    return (data.selectedId == country[1].id);
+                });
+                data.selectedVal = selectedCountryData[0][1].title;
                 this.changeCountry(data)
             }
             if (data.selectedType == "state") {
@@ -171,6 +195,7 @@ export default {
                 this.isStateChange = false;
                 this.isCityChange = false;
                 this.isThemeChange = false;
+                this.isStateClick = true
                 let selectedData = store.state.stateId.toString().split(',');
                 let filteredState = selectedData.filter((value) => {
                     return value != data.selectedId;
@@ -185,6 +210,7 @@ export default {
                 this.isStateChange = false;
                 this.isCityChange = false;
                 this.isThemeChange = false;
+                this.isCityClick = true
                 let selectedData = store.state.cityId.toString().split(',');
                 let filteredCity = selectedData.filter((value) => {
                     return value != data.selectedId;
@@ -198,6 +224,7 @@ export default {
                 this.isStateChange = false;
                 this.isCityChange = false;
                 this.isThemeChange = false;
+                this.isThemeClick = true
                 let selectedData = store.state.themeId.toString().split(',');
                 let filteredTheme = selectedData.filter((value) => {
                     return value != data.selectedId;
@@ -207,6 +234,7 @@ export default {
 
             }
             if (data.selectedType == "skill") {
+                this.isSkillClick = true
                 let selectedData = store.state.skillId.toString().split(',');
                 let filteredSkill = selectedData.filter((value) => {
                     return value != data.selectedId;
@@ -316,6 +344,7 @@ export default {
                         this.skillList = Object.entries(response.skill);
                         this.selectedSkill = [];
                     }
+                    this.quickAcessFilterChange();
                 }
                 this.$parent.searchMissions(this.search, this.selectedfilterParams);
             });
@@ -324,7 +353,7 @@ export default {
 
         async changeState(state) {
             this.isStateChange = true;
-            if (!this.isCountryChange) {
+            if (!this.isCountryChange && this.isStateClick) {
                 this.selectedfilterParams.stateId = state;
                 this.selectedfilterParams.cityId = '';
                 this.selectedfilterParams.themeId = '';
@@ -350,6 +379,7 @@ export default {
                             this.skillList = Object.entries(response.skill);
                             this.selectedSkill = [];
                         }
+                        this.isStateClick = false
                     }
                     this.$parent.searchMissions(this.search, this.selectedfilterParams);
                 });
@@ -359,7 +389,7 @@ export default {
 
         async changeCity(city) {
             this.isCityChange = true;
-            if (!this.isCountryChange) {
+            if (!this.isCountryChange && this.isCityClick) {
                 this.selectedfilterParams.cityId = city;
                 this.selectedfilterParams.themeId = '';
                 this.selectedfilterParams.skillId = '';
@@ -379,6 +409,7 @@ export default {
                             this.skillList = Object.entries(response.skill);
                             this.selectedSkill = [];
                         }
+                        this.isCityClick = false
                     }
                     this.$parent.searchMissions(this.search, this.selectedfilterParams);
                 });
@@ -388,7 +419,7 @@ export default {
 
         async changeTheme(theme) {
             this.isThemeChange = true;
-            if (!this.isCountryChange && !this.isCityChange) {
+            if (!this.isCountryChange && !this.isCityChange && this.isThemeClick) {
                 this.selectedfilterParams.themeId = theme;
                 this.selectedfilterParams.skillId = '';
                 this.selectedfilterParams.exploreMissionType = store.state.exploreMissionType
@@ -402,6 +433,7 @@ export default {
                             this.skillList = Object.entries(response.skill);
                             this.selectedSkill = [];
                         }
+                        this.isThemeClick = false
                     }
                     this.$parent.searchMissions(this.search, this.selectedfilterParams);
                 });
@@ -410,11 +442,12 @@ export default {
         },
 
         async changeSkill(skill) {
-            if (!this.isCountryChange && !this.isCityChange && !this.isThemeChange) {
+            if (!this.isCountryChange && !this.isCityChange && !this.isThemeChange && this.isSkillClick) {
                 this.selectedfilterParams.skillId = skill;
                 this.selectedfilterParams.exploreMissionType = store.state.exploreMissionType
                 this.selectedfilterParams.exploreMissionParams = store.state.exploreMissionParams;
                 this.$parent.searchMissions(this.search, this.selectedfilterParams);
+                this.isSkillClick = false
             }
         },
 
@@ -560,6 +593,7 @@ export default {
                     if (response.country) {
                         this.countryList = Object.entries(response.country);
                     } else {
+                        this.countryList = []
                         this.defaultCountry = this.languageData.label.country;
                     }
 
@@ -588,6 +622,7 @@ export default {
                     }
                 } else {
                     this.defaultCountry = this.languageData.label.country;
+                    this.countryList = []
                     this.stateList = []
                     this.cityList = []
                     this.themeList = []
@@ -595,6 +630,7 @@ export default {
                     this.selectedCity = []
                     this.selectedSkill = []
                     this.selectedTheme = []
+                    this.$parent.removeLoader();
                 }
             });
         },
@@ -615,6 +651,7 @@ export default {
             this.selectedfilterParams.cityId = '';
             this.selectedfilterParams.themeId = '';
             this.selectedfilterParams.skillId = '';
+            this.stateList = [];
             this.cityList = [];
             this.themeList = [];
             this.skillList = [];
@@ -639,53 +676,13 @@ export default {
                     name: 'home'
                 });
             }
-            this.$parent.getMissions("removeLoader");
-            setTimeout(() => {
-                this.selectedfilterParams.countryId = store.state.countryId;
-                this.selectedfilterParams.cityId = store.state.cityId;
-                filterList(this.selectedfilterParams).then(response => {
-                    if (response) {
-                        if (response.country) {
-                            this.countryList = Object.entries(response.country);
-                        }
-
-                        if (response.state) {
-                            this.stateList = Object.entries(response.state);
-                        }
-
-                        if (response.city) {
-                            this.cityList = Object.entries(response.city);
-                        }
-                        if (response.themes) {
-                            this.themeList = Object.entries(response.themes);
-                        }
-
-                        if (response.skill) {
-                            this.skillList = Object.entries(response.skill);
-                        }
-                        if (store.state.countryId != '') {
-                            if (this.countryList) {
-                                let selectedCountryData = this.countryList.filter((
-                                    country) => {
-                                    if (store.state.countryId == country[1].id) {
-                                        return country;
-                                    }
-                                });
-                                this.defaultCountry = selectedCountryData[0][1].title;
-                            }
-                        } else {
-                            this.defaultCountry = this.languageData.label.country;
-                        }
-                        if (store.state.stateId != '') {
-                            this.selectedState = store.state.stateId.toString().split(',')
-                        }
-
-                        if (store.state.cityId != '') {
-                            this.selectedCity = store.state.cityId.toString().split(',')
-                        }
-                    }
-                });
-            }, 500);
+            let country = {};
+            country.selectedId = store.state.defaultCountryId;
+            let selectedCountryData = this.countryList.filter((countryData) => {
+                return (country.selectedId == countryData[1].id);
+            });
+            country.selectedVal = selectedCountryData[0][1].title;
+            this.changeCountry(country);
         },
         clearMissionFilters() {
             this.$parent.clearMissionFilter();

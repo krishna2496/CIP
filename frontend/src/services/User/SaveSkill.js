@@ -27,7 +27,6 @@ export default async(data) => {
         data: skills,
         headers: {
             'X-localization': defaultLanguage,
-            'token': store.state.token,
         }
     })
       .then((response) => {

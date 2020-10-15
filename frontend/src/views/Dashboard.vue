@@ -19,7 +19,7 @@
                 </div>
                 <div class="inner-content-wrap">
                     <b-list-group class="status-bar">
-                        <b-list-group-item v-if="isTotalVolunteeredHourDisplay && isVolunteeringSettingEnabled">
+                        <b-list-group-item v-if="isTotalVolunteeredHourDisplay && isTimeMissionActive && isVolunteeringSettingEnabled">
                             <div class="list-item">
                                 <i>
                                     <img :src="$store.state.imagePath+'/assets/images/clock-ic.svg'" alt />
@@ -29,7 +29,7 @@
                                 </p>
                             </div>
                         </b-list-group-item>
-                        <b-list-group-item v-if="isVolunteeringSettingEnabled">
+                        <b-list-group-item v-if="isTimeMissionActive && isVolunteeringSettingEnabled">
                             <div class="list-item">
                                 <i>
                                     <img :src="$store.state.imagePath+'/assets/images/certified-ic.svg'" alt />
@@ -40,7 +40,7 @@
                                 </p>
                             </div>
                         </b-list-group-item>
-                        <b-list-group-item v-if="isVolunteeringSettingEnabled">
+                        <b-list-group-item>
                             <div class="list-item">
                                 <i>
                                     <img :src="$store.state.imagePath+'/assets/images/request-ic.svg'" alt />
@@ -50,7 +50,7 @@
                                 </p>
                             </div>
                         </b-list-group-item>
-                        <b-list-group-item v-if="isVolunteeringSettingEnabled">
+                        <b-list-group-item>
                             <div class="list-item">
                                 <i>
                                     <img :src="$store.state.imagePath+'/assets/images/target-ic.svg'" alt />
@@ -75,8 +75,8 @@
                             </div>
                         </b-list-group-item>
                     </b-list-group>
-                    <b-row class="chart-block" v-if="isVolunteeringSettingEnabled">
-                        <b-col lg="6" class="chart-col">
+                    <b-row class="chart-block">
+                        <b-col lg="6" class="chart-col" v-if="isTimeMissionActive && isVolunteeringSettingEnabled">
                             <div class="inner-chart-col">
                                 <div class="chart-title">
                                     <h5>{{languageData.label.hours_tracked_this_year}}</h5>
@@ -96,7 +96,7 @@
                                 </div>
                             </div>
                         </b-col>
-                        <b-col lg="6" class="chart-col">
+                        <b-col lg="6" class="chart-col" v-if="isTimeMissionActive && isVolunteeringSettingEnabled">
                             <div class="inner-chart-col">
                                 <div class="chart-title">
                                     <h5>{{languageData.label.hours_per_month}}</h5>
@@ -235,6 +235,8 @@ export default {
             isTotalVolunteeredHourDisplay: true,
             isChartDataFound: true,
             missionFilterDisplay: false,
+            isGoalMissionActive: false,
+            isTimeMissionActive: false,
             isVolunteeringSettingEnabled: true,
             isDonationSettingEnabled: true
         };
@@ -254,6 +256,22 @@ export default {
             yearsListing.push([index, index]);
         }
         this.yearList = yearsListing;
+
+        // let currentYear = new Date().getFullYear();
+        // let yearsList = [];
+        // let yearDiff  = 5;
+        // if(store.state.timesheetFromYear && store.state.timesheetFromYear != '') {
+        // 	let lastYear = store.state.timesheetFromYear;
+        // 	if((currentYear - lastYear) +1 > 0) {
+        // 		yearDiff = (currentYear - lastYear) +1;
+        // 	}
+        // }
+        // for (let index = currentYear; index > (currentYear - yearDiff); index--) {
+        // 	yearsList.push([index, index]);
+        // }
+        // this.yearList = yearsList;
+        // this.lastYear = parseInt(yearsList[yearsList.length -1][1]);
+
     },
     methods: {
         updateYear(value) {
@@ -295,6 +313,11 @@ export default {
                     let missionArray = response.data
                     if (missionArray) {
                         missionArray.filter((data, index) => {
+                            // array[index] = new Array(2);
+                            // array[index][0] = data.mission_id
+                            // array[index][1] = data.title
+                            // array[index] = data.title
+
                             array.push({
                                 'text': data.title,
                                 'value': data.mission_id
@@ -502,13 +525,22 @@ export default {
         this.defaultMonth = this.languageData.label.month
         this.defaultMissionTitle = this.languageData.label.mission_title
         this.isTotalVolunteeredHourDisplay = this.settingEnabled(constants.TOTAL_HOURS_VOLUNTEERED)
+        this.isGoalMissionActive = this.settingEnabled(constants.VOLUNTEERING_GOAL_MISSION),
+        this.isTimeMissionActive = this.settingEnabled(constants.VOLUNTEERING_TIME_MISSION)
         this.isVolunteeringSettingEnabled = this.settingEnabled(constants.VOLUNTERRING_ENABLED);
         this.isDonationSettingEnabled = this.settingEnabled(constants.DONATION_ENABLED);
-
         let currentYear = new Date().getFullYear()
         let currentMonth = moment().format('MM')
+        // this.defaultYear = currentYear.toString();
         this.defaultYear = this.languageData.label.all;
+        // this.monthList.filter((data, index) => {
+        //     if (data[0] == currentMonth) {
+        //         this.defaultMonth = data[1]
+        //     }
+        // })
         this.defaultMonth = this.languageData.label.all;
+        // this.filterData.year = currentYear
+        // this.filterData.month = currentMonth
         this.filterData.year = 0
         this.filterData.month = 0
         this.missionListing()
@@ -516,6 +548,7 @@ export default {
         window.addEventListener('resize', () => {
             this.xvalues = [0]
             this.max = 0
+            // this.getDashboardData(this.filterData);
             if (screen.width < 576) {
                 this.goalHourPart = 5
             } else {

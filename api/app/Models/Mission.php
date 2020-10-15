@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Carbon\Carbon;
@@ -9,13 +10,17 @@ use App\Models\Timesheet;
 use App\Models\GoalMission;
 use App\Models\TimeMission;
 use App\Models\Availability;
-use App\Models\MissionMedia;
-use App\Models\MissionInvite;
-use App\Models\MissionRating;
-use App\Models\MissionDocument;
-use App\Models\MissionLanguage;
-use App\Models\FavouriteMission;
 use App\Models\MissionApplication;
+use App\Models\MissionDocument;
+use App\Models\MissionInvite;
+use App\Models\MissionLanguage;
+use App\Models\MissionMedia;
+use App\Models\MissionRating;
+use App\Models\MissionTab;
+use App\Models\Organization;
+use App\Models\FavouriteMission;
+use App\Models\VolunteeringAttribute;
+use App\Models\DonationAttribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -23,6 +28,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Iatstuti\Database\Support\CascadeSoftDeletes;
+use App\Models\MissionImpact;
+use App\Models\MissionUnSdg;
 
 class Mission extends Model
 {
@@ -48,6 +55,10 @@ class Mission extends Model
 
     private $helpers;
 
+    /**
+     * @var App\Models\MissionTab
+     */
+    public $missionTab;
 
     /**
      * The attributes that are mass assignable.
@@ -55,9 +66,9 @@ class Mission extends Model
      * @var array
      */
     protected $fillable = ['theme_id', 'city_id', 'state_id',
-    'country_id', 'start_date', 'end_date', 'total_seats', 'available_seats',
-    'publication_status', 'organisation_id', 'organisation_name', 'mission_type',
-    'organisation_detail', 'availability_id', 'is_virtual'];
+    'country_id', 'start_date', 'end_date', 'available_seats',
+    'publication_status', 'organization_id', 'mission_type',
+    'organisation_detail'];
 
     /**
      * The attributes that should be visible in arrays.
@@ -65,28 +76,29 @@ class Mission extends Model
      * @var array
      */
     protected $visible = ['mission_id', 'theme_id', 'city_id', 'state_id',
-    'country_id', 'start_date', 'end_date', 'total_seats', 'available_seats',
-    'publication_status', 'organisation_id', 'organisation_name', 'organisation_detail', 'mission_type',
+    'country_id', 'start_date', 'end_date', 'available_seats',
+    'publication_status', 'organisation_detail', 'mission_type',
     'missionDocument', 'missionMedia', 'missionLanguage', 'missionTheme', 'city',
-    'default_media_type','default_media_path', 'default_media_name', 'title','short_description',
-    'description','objective','set_view_detail','city_name',
-    'seats_left','user_application_count','mission_application_count','missionSkill','missionApplication',
-    'country','favouriteMission','missionInvite','missionRating', 'goalMission', 'timeMission', 'application_deadline',
+    'default_media_type', 'default_media_path', 'default_media_name', 'title', 'short_description',
+    'description', 'objective', 'set_view_detail', 'city_name',
+    'seats_left', 'user_application_count', 'mission_application_count', 'missionSkill', 'missionApplication',
+    'country', 'favouriteMission', 'missionInvite', 'missionRating', 'goalMission', 'timeMission', 'application_deadline',
     'application_start_date', 'application_end_date', 'application_start_time', 'application_end_time',
     'goal_objective', 'achieved_goal', 'mission_count', 'mission_rating_count',
-    'already_volunteered','total_available_seat', 'available_seat','deadline',
+    'already_volunteered', 'total_available_seat', 'available_seat', 'deadline',
     'favourite_mission_count', 'mission_rating', 'is_favourite', 'skill_id',
     'user_application_status', 'skill', 'rating', 'mission_rating_total_volunteers',
     'availability_id', 'availability_type', 'average_rating', 'timesheet', 'total_hours', 'time',
-    'hours', 'action', 'ISO', 'total_minutes', 'custom_information', 'is_virtual', 'total_timesheet_time', 'total_timesheet_action', 'total_timesheet',
-    'mission_title', 'mission_objective', 'label_goal_achieved', 'label_goal_objective', 'state', 'state_name'];
+    'hours', 'action', 'ISO', 'total_minutes', 'custom_information', 'total_timesheet_time', 'total_timesheet_action', 'total_timesheet',
+    'mission_title', 'mission_objective', 'label_goal_achieved', 'label_goal_objective', 'state', 'state_name', 'organization', 'organization_name', 'missionTabs', 'volunteeringAttribute',
+    'unSdg', 'is_virtual', 'total_seats', 'impact', 'donationAttribute'];
 
     /*
      * Iatstuti\Database\Support\CascadeSoftDeletes;
      */
     protected $cascadeDeletes = ['missionDocument','missionMedia','missionLanguage',
         'favouriteMission','missionInvite','missionRating','missionApplication','missionSkill',
-        'goalMission','timeMission','comment','timesheet'
+        'goalMission','timeMission','comment','timesheet', 'missionTabs', 'volunteeringAttribute', 'impact', 'donationAttribute'
     ];
 
     /**
@@ -230,15 +242,6 @@ class Mission extends Model
         return $this->hasMany(Comment::class, 'mission_id', 'mission_id');
     }
 
-    /**
-     * Get availability associated with the mission.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function availability(): BelongsTo
-    {
-        return $this->belongsTo(Availability::class, 'availability_id', 'availability_id');
-    }
 
     /**
      * Get timesheet associated with the mission.
@@ -253,7 +256,8 @@ class Mission extends Model
     /**
      * Soft delete from the database.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return bool
      */
     public function deleteMission(int $id): bool
@@ -266,7 +270,7 @@ class Mission extends Model
      *
      * @return string
      */
-    public function getCityTranslationAttribute():object
+    public function getCityTranslationAttribute(): object
     {
         return $this->city->hasMany(CityLanguage::class, 'city_id', 'city_id')->get();
     }
@@ -275,7 +279,6 @@ class Mission extends Model
      * Set start date attribute on the model.
      *
      * @param $value
-     * @return void
      */
     public function setStartDateAttribute($value): void
     {
@@ -292,7 +295,7 @@ class Mission extends Model
     {
         return (isset($this->attributes['start_date']) && !empty(config('constants.TIMEZONE'))) ?
         Carbon::parse($this->attributes['start_date'])->setTimezone(config('constants.TIMEZONE'))
-            ->format(config('constants.DB_DATE_TIME_FORMAT')):
+            ->format(config('constants.DB_DATE_TIME_FORMAT')) :
             null;
     }
 
@@ -300,7 +303,6 @@ class Mission extends Model
      * Set end date attribute on the model.
      *
      * @param $value
-     * @return void
      */
     public function setEndDateAttribute($value): void
     {
@@ -311,28 +313,30 @@ class Mission extends Model
     /**
      * Get end date attribute from the model.
      *
-     * @return null|string
+     * @return string|null
      */
     public function getEndDateAttribute(): ?string
     {
         return (isset($this->attributes['end_date']) && !empty(config('constants.TIMEZONE'))) ?
              Carbon::parse($this->attributes['end_date'])->setTimezone(config('constants.TIMEZONE'))
-             ->format(config('constants.DB_DATE_TIME_FORMAT')):
+             ->format(config('constants.DB_DATE_TIME_FORMAT')) :
              null;
     }
 
     /**
-    * Check seats are available or not.
-    *
-    * @param int $missionId
-    * @return App\Models\Mission
-    */
+     * Check seats are available or not.
+     *
+     * @param int $missionId
+     *
+     * @return App\Models\Mission
+     */
     public function checkAvailableSeats(int $missionId): Mission
     {
         return $this->select('*')
+        ->with(['volunteeringAttribute'])
         ->where('mission.mission_id', $missionId)
         ->withCount(['missionApplication as mission_application_count' => function ($query) use ($missionId) {
-            $query->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"]
+            $query->whereIn('approval_status', [config('constants.application_status')['AUTOMATICALLY_APPROVED'],
             ]);
         }])->first();
     }
@@ -341,7 +345,6 @@ class Mission extends Model
      * Set organisation detail in json_encode form
      *
      * @param array|null $value
-     * @return void
      */
     public function setOrganisationDetailAttribute($value)
     {
@@ -363,30 +366,67 @@ class Mission extends Model
                 return json_decode($value, true);
             }
         }
+
         return null;
     }
 
     /**
-     * Get users associated with the mission availability.
+     * Get Organization associated with the mission.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function availableUsers(): HasMany
+    public function organization(): HasOne
     {
-        return $this->hasMany('App\User', 'availability_id', 'availability_id');
+        return $this->hasOne(Organization::class, 'organization_id', 'organization_id');
     }
 
     /**
-     * Set is virtual attribute on the model.
-     *
-     * @param $value
-     * @return void
-     */
-    public function setIsVirtualAttribute($value): void
+    * Get volunteering attribute associated with the mission.
+    *
+    * @return \Illuminate\Database\Eloquent\Relations\HasOne
+    */
+    public function volunteeringAttribute(): HasOne
     {
-        if (!is_null($value)) {
-            $this->attributes['is_virtual'] = (string)$value;
-        }
+        return $this->hasOne(VolunteeringAttribute::class, 'mission_id', 'mission_id');
     }
 
+    /**
+     * Set impact mission attribute on the model.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function impact(): HasMany
+    {
+        return $this->hasMany(MissionImpact::class, 'mission_id', 'mission_id')->orderBy('sort_key');
+    }
+    
+    /** 
+     * Get mission-tab associated with the mission.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function missionTabs(): HasMany
+    {
+        return $this->hasMany(MissionTab::class, 'mission_id', 'mission_id')->orderBy('sort_key');
+    }
+
+    /**
+     * Get donation attribute associated with mission.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function donationAttribute(): HasOne
+    {
+        return $this->hasOne(DonationAttribute::class, 'mission_id', 'mission_id');
+    }
+
+    /**
+     * Get UN SDG associated with mission.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function unSdg(): HasMany
+    {
+        return $this->hasMany(MissionUnSdg::class, 'mission_id', 'mission_id')->orderBy('un_sdg_number');
+    }
 }

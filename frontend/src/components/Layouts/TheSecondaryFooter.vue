@@ -78,7 +78,7 @@
                     <b-form-group>
                         <label for>{{ languageData.label.message }}</label>
                         <b-form-textarea id :placeholder="languageData.placeholder.message" size="lg" rows="5"
-                            v-model.trim="contactUs.message" 
+                            v-model.trim="contactUs.message"
                             :class="{ 'is-invalid': submitted && $v.contactUs.message.$error }"></b-form-textarea>
                         <div v-if="submitted && !$v.contactUs.message.required" class="invalid-feedback">
                             {{ languageData.errors.message_required }}
@@ -105,6 +105,7 @@
     cookieAgreement,
     contactUs,
     loadLocaleMessages,
+    policy
   } from "../../services/service";
   import constants from '../../constant';
   import AppCustomDropdown from '../../components/AppCustomDropdown';
@@ -248,7 +249,25 @@
         store.commit('setDefaultLanguage', language);
         this.$i18n.locale = language.selectedVal.toLowerCase()
         await loadLocaleMessages(this.$i18n.locale);
-        location.reload();
+        if (store.state.userId) {
+          // only call policy page listing when user is logged in
+          this.setPolicyPage();
+        } else {
+          location.reload();
+        }
+      },
+      setPolicyPage() {
+        policy().then(response => {
+          if (response.error == false) {
+            if(response.data.length > 0) {
+              store.commit('policyPage', response.data);
+              location.reload();
+              return;
+            }
+          }
+          store.commit('policyPage', null);
+          location.reload();
+        });
       },
       agreeCookie() {
         let data = {

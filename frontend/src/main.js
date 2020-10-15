@@ -1,3 +1,6 @@
+import "core-js/shim";
+import "regenerator-runtime/runtime";
+
 import Vue from "vue";
 import VueScrollTo from "vue-scrollto";
 import BootstrapVue from "bootstrap-vue";
@@ -17,7 +20,10 @@ import "aos/dist/aos.css";
 import BackToTop from "vue-backtotop";
 import moment from 'moment'
 import 'moment-timezone';
-import 'vue-search-select/dist/VueSearchSelect.css';
+import customCss from './services/CustomCss'
+import 'vue-search-select/dist/VueSearchSelect.css'
+import 'vue-multiselect/dist/vue-multiselect.min.css'
+import VueSanitize from 'vue-sanitize';
 
 Vue.use(Vuelidate, VueAxios, axios);
 Vue.config.devtools = process.env.NODE_ENV !== 'production';
@@ -26,6 +32,23 @@ Vue.use(BootstrapVue);
 Vue.use(VueScrollTo);
 Vue.use(BackToTop);
 Vue.use(toast);
+
+Vue.use(VueSanitize, {
+  allowedTags: VueSanitize.defaults.allowedTags.concat(['img']),
+  allowedAttributes: {
+    '*': [
+      'style',
+      'border',
+      'cellpadding',
+      'cellspacing',
+      'title',
+      'href',
+      'src',
+      'name',
+      'alt'
+    ]
+  }
+});
 
 AOS.init({
     once: true,
@@ -66,8 +89,12 @@ router.beforeEach(async(to, from, next) => {
         }
 
         entryUrl = to.path;
+        const redirect = `${window.location.origin}${entryUrl}`;
         next({
-            name: "login"
+            name: "login",
+            query: {
+                'returnUrl': redirect
+            }
         });
         return;
     }
@@ -139,8 +166,22 @@ Vue.filter('substring', (value, data) => {
     }
 });
 
+Vue.filter('substringWithOutDot', (value, data) => {
+    if (typeof value !== 'string'
+      && typeof value.toString === 'function'
+    ) {
+      value = value.toString();
+    }
+
+    if (value.length <= data) {
+        return value;
+    } else {
+        return value.substring(0, data);
+    }
+});
+
 window.addEventListener('storage', function (e) {
-    if (event.key === 'logout-event') { 
+    if (event.key === 'logout-event') {
         location.reload();
     }
 },false);

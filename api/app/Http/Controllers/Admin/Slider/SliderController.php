@@ -1,18 +1,19 @@
 <?php
 namespace App\Http\Controllers\Admin\Slider;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Http\JsonResponse;
-use App\Http\Controllers\Controller;
-use App\Repositories\Slider\SliderRepository;
+use App\Events\User\UserActivityLogEvent;
+use App\Helpers\Helpers;
 use App\Helpers\ResponseHelper;
 use App\Helpers\S3Helper;
-use App\Helpers\Helpers;
+use App\Http\Controllers\Controller;
+use App\Repositories\Slider\SliderRepository;
 use App\Traits\RestExceptionHandlerTrait;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Exception;
 use Validator;
-use App\Events\User\UserActivityLogEvent;
 
 //!  Slider controller
 /*!
@@ -111,14 +112,25 @@ class SliderController extends Controller
                 trans('messages.custom_error_message.ERROR_SLIDER_LIMIT')
             );
         } else {
+            // Create new slider
+            $slider = $this->sliderRepository->storeSlider($request->toArray());
+
             // Upload slider image on S3 server
             $tenantName = $this->helpers->getSubDomainFromRequest($request);
             $imageUrl = "";
-            $imageUrl = $this->s3helper->uploadFileOnS3Bucket($request->url, $tenantName);
+
+            $sliderId = $slider->slider_id;
+            $imageUrl = $this->s3helper->uploadFileOnS3Bucket(
+                $request->url,
+                $tenantName,
+                "slider/$sliderId"
+            );
+
+            $this->sliderRepository->updateSlider([
+                'url' => $imageUrl
+            ], $sliderId);
+
             $request->merge(['url' => $imageUrl]);
-            
-            // Create new slider
-            $slider = $this->sliderRepository->storeSlider($request->toArray());
 
             // Set response data
             $apiData = ['slider_id' => $slider->slider_id];
@@ -140,7 +152,7 @@ class SliderController extends Controller
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         }
     }
-    
+
     /**
      * Update slider details.
      *
@@ -174,10 +186,14 @@ class SliderController extends Controller
             $this->sliderRepository->find($id);
             // Upload slider image on S3 server
             $tenantName = $this->helpers->getSubDomainFromRequest($request);
-            
+
             if (isset($request->url)) {
                 $imageUrl = "";
-                $imageUrl = $this->s3helper->uploadFileOnS3Bucket($request->url, $tenantName);
+                $imageUrl = $this->s3helper->uploadFileOnS3Bucket(
+                    $request->url,
+                    $tenantName,
+                    "slider/$id"
+                );
                 $request->merge(['url' => $imageUrl]);
             }
 
@@ -206,7 +222,7 @@ class SliderController extends Controller
                 config('constants.error_codes.ERROR_SLIDER_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_SLIDER_NOT_FOUND')
             );
-        } catch (\ErrorException $e) {
+        } catch (Exception $e) {
             // Response error unable to upload file on S3
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
@@ -216,7 +232,7 @@ class SliderController extends Controller
             );
         }
     }
-    
+
     /**
      * Get tenant slider
      *
@@ -229,7 +245,7 @@ class SliderController extends Controller
         $apiStatus = Response::HTTP_OK;
         $apiMessage = ($slider->isEmpty()) ? trans('messages.success.MESSAGE_NO_SLIDER_FOUND') :
             trans('messages.success.MESSAGE_SLIDERS_LIST');
-        
+
         return $this->responseHelper->success($apiStatus, $apiMessage, $slider->toArray());
     }
 
@@ -243,7 +259,7 @@ class SliderController extends Controller
     {
         try {
             $this->sliderRepository->delete($id);
-            
+
             // Set response data
             $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_SLIDER_DELETED');

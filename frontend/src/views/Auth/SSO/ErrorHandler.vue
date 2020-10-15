@@ -8,6 +8,10 @@
             <i class="glyphicon glyphicon-th-list"></i>
 
             <!-- From Saml SSO -->
+            <template v-if="saml && error">
+              <h4 class="text-danger">{{ error }}</h4>
+            </template>
+
             <template v-if="saml && errors.length">
               <h4 class="text-danger">{{ languageData.errors.invalid_saml_setting }}</h4>
               <span class="errors" v-for="error in errors">{{ error }}</span>
@@ -30,8 +34,8 @@
 
             <div class="btn-row">
               <b-link class="btn btn-bordersecondary icon-btn"
-                :title="languageData.label.go_to_home_page" to="/home">
-                <span>{{languageData.label.go_to_home_page}}</span>
+                :title="action.label" :to="action.url">
+                <span>{{action.label}}</span>
                 <i>
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 16" width="19" height="15">
                     <g id="Main Content">
@@ -69,11 +73,24 @@ export default {
   created() {
     this.saml = this.$route.query.source === 'saml';
     this.google = this.$route.query.source === 'google';
+    if (this.$route.query.error) {
+      this.error = this.$route.query.error;
+    }
     if (this.$route.query.errors) {
       this.errors = this.$route.query.errors.split(',');
     }
 
     this.languageData = JSON.parse(store.state.languageLabel);
+
+    this.action = this.$route.query.action && this.$route.query.action === 'login'
+      ? {
+          label: this.languageData.label.go_to_login_page,
+          url: '/',
+        }
+      : {
+          label: this.languageData.label.go_to_home_page,
+          url: '/home',
+        };
   },
 };
 

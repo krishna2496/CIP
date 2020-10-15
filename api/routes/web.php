@@ -20,13 +20,20 @@ $router->group(['middleware' => 'localization'], function ($router) {
         'uses' => 'App\Tenant\TenantOptionController@getTenantOption']);
 
     /* User login routing using jwt token */
-    $router->post('/app/login', ['as' => 'login', 'middleware' => 'tenant.connection',
+    $router->post('/app/login', ['as' => 'login', 'middleware' => 'throttle:5,1|tenant.connection',
         'uses' => 'App\Auth\AuthController@authenticate']);
 
+    $router->post('/app/transmute', ['as' => 'transmute', 'middleware' => 'tenant.connection',
+        'uses' => 'App\Auth\AuthController@transmute']);
+
+    /* Logout the user */
+    $router->get('/app/logout', ['as' => 'logout', 'middleware' => 'tenant.connection|jwt.auth',
+        'uses' => 'App\Auth\AuthController@logout']);
+
     /* Forgot password routing */
-    $router->post('/app/request-password-reset', ['middleware' => 'tenant.connection|JsonApiMiddleware',
+    $router->post('/app/request-password-reset', ['middleware' => 'throttle:2,1|tenant.connection|JsonApiMiddleware',
         'uses' => 'App\Auth\AuthController@requestPasswordReset']);
-    
+
     /* Password reset routing */
     $router->post('/reset-password/{token}', ['as' => 'password.reset',
         'uses' => 'App\Auth\AuthController@reset_password']);
@@ -46,6 +53,10 @@ $router->group(['middleware' => 'localization'], function ($router) {
     /* Get custom css url  */
     $router->get('/app/custom-css', ['as' => 'custom_css', 'middleware' => 'tenant.connection',
         'uses' => 'App\Tenant\TenantOptionController@getCustomCss']);
+
+    /* Get custom favicon url  */
+    $router->get('/app/custom-favicon', ['as' => 'custom_favicon', 'middleware' => 'tenant.connection',
+        'uses' => 'App\Tenant\TenantOptionController@getCustomFavicon']);
 
     /* Get mission listing  */
     $router->get('/app/missions/', ['as' => 'app.missions',
@@ -87,7 +98,8 @@ $router->group(['middleware' => 'localization'], function ($router) {
     /* Apply to a mission */
     $router->post(
         'app/mission/application',
-        ['middleware' => 'tenant.connection|jwt.auth|user.profile.complete|JsonApiMiddleware',
+        ['middleware' =>
+        'tenant.connection|jwt.auth|user.profile.complete|JsonApiMiddleware|TenantHasSettings:volunteering',
             'uses' => 'App\Mission\MissionApplicationController@missionApplication']
     );
 
@@ -120,7 +132,8 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Fetch recent volunteers */
     $router->get('/app/mission/{missionId}/volunteers', [
-        'middleware' => 'tenant.connection|jwt.auth|user.profile.complete|PaginationMiddleware',
+        'middleware' =>
+        'tenant.connection|jwt.auth|user.profile.complete|PaginationMiddleware|TenantHasSettings:volunteering',
         'uses' => 'App\Mission\MissionApplicationController@getVolunteers']);
 
     /* Get mission related listing  */
@@ -167,16 +180,27 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->get('/app/user/missions', [
         'middleware' => 'tenant.connection|jwt.auth|user.profile.complete|JsonApiMiddleware',
         'uses' => 'App\Mission\MissionController@getUserMissions']);
+
+    /* Forgot password routing for API */
+    $router->post('/users/request-password', ['middleware' => 'auth.tenant.admin|JsonApiMiddleware',
+        'uses' => 'App\Auth\AuthController@requestPasswordReset']);
+
+    $router->post('/users/invite', ['middleware' => 'auth.tenant.admin|JsonApiMiddleware',
+        'uses' => 'App\User\UserController@inviteUser']);
+
+    $router->patch('/users/password', ['middleware' => 'auth.tenant.admin|JsonApiMiddleware',
+        'uses' => 'App\User\UserController@createPassword']);
+
 });
 
 /* SAML */
 $router->group(
- [
+    [
      'prefix' => '/app/saml',
      'namespace' => 'App\Auth',
      'middleware' => 'tenant.connection',
  ],
- function ($router) {
+    function ($router) {
      $router->get('sso', ['as' => 'saml.sso', 'uses' => 'SamlController@sso']);
      $router->post('sso', ['as' => 'saml.sso', 'uses' => 'SamlController@sso']);
      $router->post('acs', ['as' => 'saml.acs', 'uses' => 'SamlController@acs']);
@@ -187,11 +211,11 @@ $router->group(
 
 /* Google Authentication */
 $router->group(
- [
+    [
      'prefix' => '/app/google',
      'namespace' => 'App\Auth',
  ],
- function ($router) {
+    function ($router) {
      $router->get('auth', ['as' => 'google.authentication', 'uses' => 'GoogleAuthController@login']);
  }
 );
@@ -216,7 +240,7 @@ $router->patch('/app/change-password', ['as' => 'password.change',
 
 /* Create user skill */
 $router->post('/app/user/skills', ['as' => 'user.skills',
-    'middleware' => 'tenant.connection|localization|jwt.auth',
+    'middleware' => 'tenant.connection|localization|jwt.auth|TenantHasSettings:volunteering,skills_enabled',
     'uses' => 'App\User\UserController@linkSkill']);
 
 /* Fetch Language json file */
@@ -230,79 +254,83 @@ $router->patch('/app/user/upload-profile-image', ['as' => 'upload.profile.image'
 
 /* Fetch pending goal requests */
 $router->get('/app/timesheet/goal-requests', ['as' => 'app.timesheet.goal-requests',
-    'middleware' => 'localization|tenant.connection|jwt.auth|user.profile.complete|PaginationMiddleware',
+    'middleware' =>
+    'localization|tenant.connection|jwt.auth|user.profile.complete|PaginationMiddleware|TenantHasSettings:volunteering,volunteering_goal_mission',
     'uses' => 'App\Timesheet\TimesheetController@getPendingGoalRequests']);
 
 /* Export pending goal requests */
 $router->get('/app/timesheet/goal-requests/export', ['as' => 'app.timesheet.goal-requests.export',
-    'middleware' => 'localization|tenant.connection|jwt.auth|user.profile.complete',
+    'middleware' => 'localization|tenant.connection|jwt.auth|user.profile.complete|TenantHasSettings:volunteering,volunteering_goal_mission',
     'uses' => 'App\Timesheet\TimesheetController@exportPendingGoalRequests']);
 
 /* Store timesheet data */
 $router->post('/app/timesheet', ['as' => 'app.timesheet',
-    'middleware' => 'localization|tenant.connection|jwt.auth|user.profile.complete',
+    'middleware' =>
+    'localization|tenant.connection|jwt.auth|user.profile.complete|TenantHasSettings:volunteering',
     'uses' => 'App\Timesheet\TimesheetController@store']);
 
 /* Submit timesheet data */
 $router->post('/app/timesheet/submit', ['as' => 'app.timesheet.submit',
-    'middleware' => 'localization|tenant.connection|jwt.auth|user.profile.complete',
+    'middleware' =>
+    'localization|tenant.connection|jwt.auth|user.profile.complete|TenantHasSettings:volunteering',
     'uses' => 'App\Timesheet\TimesheetController@submitTimesheet']);
 
 /* Fetch pending time requests */
 $router->get('/app/timesheet/time-requests', ['as' => 'app.timesheet.time-requests',
-    'middleware' => 'tenant.connection|jwt.auth|user.profile.complete|PaginationMiddleware',
+    'middleware' => 'tenant.connection|jwt.auth|user.profile.complete|PaginationMiddleware|TenantHasSettings:volunteering,volunteering_time_mission',
     'uses' => 'App\Timesheet\TimesheetController@getPendingTimeRequests']);
 
 /* Export pending time requests */
 $router->get('/app/timesheet/time-requests/export', ['as' => 'app.timesheet.time-requests.export',
-    'middleware' => 'tenant.connection|jwt.auth|user.profile.complete',
+    'middleware' => 'tenant.connection|jwt.auth|user.profile.complete|TenantHasSettings:volunteering,volunteering_time_mission',
     'uses' => 'App\Timesheet\TimesheetController@exportPendingTimeRequests']);
 
 /* Get timesheet data */
 $router->get('/app/timesheet', ['as' => 'app.timesheet',
-    'middleware' => 'localization|tenant.connection|jwt.auth|user.profile.complete',
+    'middleware' =>
+    'localization|tenant.connection|jwt.auth|user.profile.complete|TenantHasSettings:volunteering',
     'uses' => 'App\Timesheet\TimesheetController@index']);
 
 /* Get timesheet data */
 $router->get('/app/timesheet/{timesheetId}', ['as' => 'app.timesheet.show',
-    'middleware' => 'localization|tenant.connection|jwt.auth|user.profile.complete',
+    'middleware' => 'localization|tenant.connection|jwt.auth|user.profile.complete|TenantHasSettings:volunteering',
     'uses' => 'App\Timesheet\TimesheetController@show']);
 
 /* Delete timesheet document data */
 $router->delete('/app/timesheet/{timesheetId}/document/{documentId}', ['as' => 'app.timesheet.destroy',
-    'middleware' => 'localization|tenant.connection|jwt.auth|user.profile.complete',
+    'middleware' => 'localization|tenant.connection|jwt.auth|user.profile.complete|TenantHasSettings:volunteering',
     'uses' => 'App\Timesheet\TimesheetController@destroy']);
 
 $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Get volunteering history for theme */
     $router->get('/app/volunteer/history/theme', ['as' => 'app.volunteer.history.theme',
-        'middleware' => 'tenant.connection|jwt.auth|user.profile.complete',
+        'middleware' => 'tenant.connection|jwt.auth|user.profile.complete|TenantHasSettings:volunteering,volunteering_time_mission',
         'uses' => 'App\VolunteerHistory\VolunteerHistoryController@themeHistory']);
 
     /* Get volunteering history for skill */
     $router->get('/app/volunteer/history/skill', ['as' => 'app.volunteer.history.skill',
-        'middleware' => 'tenant.connection|jwt.auth|user.profile.complete',
+        'middleware' => 'tenant.connection|jwt.auth|user.profile.complete|TenantHasSettings:volunteering,volunteering_time_mission',
         'uses' => 'App\VolunteerHistory\VolunteerHistoryController@skillHistory']);
 
     /* Get volunteering  history for time missions */
     $router->get('/app/volunteer/history/time-mission', ['as' => 'app.volunteer.history.time-mission',
-        'middleware' => 'tenant.connection|jwt.auth|user.profile.complete|PaginationMiddleware',
+        'middleware' => 'tenant.connection|jwt.auth|user.profile.complete|PaginationMiddleware|TenantHasSettings:volunteering,volunteering_time_mission',
         'uses' => 'App\VolunteerHistory\VolunteerHistoryController@timeMissionHistory']);
 
     /* Export volunteering  history for time missions */
     $router->get('/app/volunteer/history/time-mission/export', ['as' => 'app.volunteer.history.time-mission.export',
-        'middleware' => 'tenant.connection|jwt.auth|user.profile.complete',
+        'middleware' => 'tenant.connection|jwt.auth|user.profile.complete|TenantHasSettings:volunteering,volunteering_time_mission',
         'uses' => 'App\VolunteerHistory\VolunteerHistoryController@exportTimeMissionHistory']);
 
     /* Get volunteering  history for goal missions */
     $router->get('/app/volunteer/history/goal-mission', ['as' => 'app.volunteer.history.goal-mission',
-        'middleware' => 'tenant.connection|jwt.auth|user.profile.complete|PaginationMiddleware',
+        'middleware' => 'tenant.connection|jwt.auth|user.profile.complete|PaginationMiddleware|TenantHasSettings:volunteering,volunteering_goal_mission',
         'uses' => 'App\VolunteerHistory\VolunteerHistoryController@goalMissionHistory']);
 
     /* Export volunteering  history for goal missions */
     $router->get('/app/volunteer/history/goal-mission/export', ['as' => 'app.volunteer.history.goal-mission.export',
-        'middleware' => 'tenant.connection|jwt.auth|user.profile.complete',
+        'middleware' => 'tenant.connection|jwt.auth|user.profile.complete|TenantHasSettings:volunteering,volunteering_goal_mission',
         'uses' => 'App\VolunteerHistory\VolunteerHistoryController@exportGoalMissionHistory']);
 
     /* News listing */
@@ -446,7 +474,17 @@ $router->group(['middleware' => 'localization'], function ($router) {
         'uses' => 'App\Message\MessageController@readMessage']);
 });
 
+/* health check */
+$router->group(
+    ['prefix' => '/health'],
+    function ($router) {
 
+        $router->get(
+            '/',
+            ['uses' => 'App\HealthCheck\HealthCheckController@index']
+        );
+    }
+);
 
 
 /*
@@ -552,7 +590,11 @@ $router->group(['middleware' => 'localization'], function ($router) {
             $router->delete('/media/{mediaId}', ['as' => 'missions.media.delete',
                'uses' => 'Admin\Mission\MissionController@removeMissionMedia']);
             $router->delete('/document/{documentId}', ['as' => 'missions.document.delete',
-               'uses' => 'Admin\Mission\MissionController@removeMissionDocument']);
+            'uses' => 'Admin\Mission\MissionController@removeMissionDocument']);
+            $router->delete('/mission-tabs/{missionTabId}', ['as' => 'missions.missiontab.delete',
+            'uses' => 'Admin\Mission\MissionController@removeMissionTab']);
+            $router->delete('/mission-impact/{missionImpactId}', ['middleware' => ['TenantHasSettings:mission_impact'], 'as' => 'missions.missionimpact.delete',
+            'uses' => 'Admin\Mission\MissionController@removeMissionImpact']);
         }
     );
 
@@ -575,6 +617,8 @@ $router->group(['middleware' => 'localization'], function ($router) {
             $router->get('/download-style', ['uses' => 'Admin\Tenant\TenantOptionsController@downloadStyleFiles']);
             $router->patch('/update-image', ['uses' => 'Admin\Tenant\TenantOptionsController@updateImage']);
             $router->get('/reset-asset-images', ['uses' => 'Admin\Tenant\TenantOptionsController@resetAssetsImages']);
+            $router->get('/favicon', ['uses' => 'Admin\Tenant\TenantCustomizationController@getFavicon']);
+            $router->post('/favicon', ['uses' => 'Admin\Tenant\TenantCustomizationController@uploadFavicon']);
         }
     );
 
@@ -588,6 +632,11 @@ $router->group(['middleware' => 'localization'], function ($router) {
             $router->get('/activated', ['uses' => 'Admin\Tenant\TenantActivatedSettingController@index']);
         }
     );
+
+    $router->get('/tenant-currencies', [
+        'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware',
+        'uses' => 'Admin\Tenant\TenantActivatedCurrenciesController@index'
+    ]);
 
     /* Set mission theme data for tenant specific */
     $router->group(
@@ -613,7 +662,8 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Set skills data for tenant specific */
     $router->group(
-        ['prefix' => '/entities/skills', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+        ['prefix' => '/entities/skills', 'middleware' =>
+        'localization|auth.tenant.admin|JsonApiMiddleware|TenantHasSettings:volunteering,skills_enabled'],
         function ($router) {
             $router->get('/', ['middleware' => ['PaginationMiddleware'],
                 'uses' => 'Admin\Skill\SkillController@index']);
@@ -655,7 +705,8 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Timesheet management */
     $router->group(
-        ['prefix' => 'timesheet', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+        ['prefix' => 'timesheet', 'middleware' =>
+        'localization|auth.tenant.admin|JsonApiMiddleware|TenantHasSettings:volunteering'],
         function ($router) {
             $router->get('/total-minutes', ['uses' => 'Admin\Timesheet\TimesheetController@getSumOfUsersTotalMinutes']);
             $router->get('/details', ['middleware' => ['PaginationMiddleware'],
@@ -763,10 +814,10 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Availability management */
     $router->group(
-        ['middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+        ['middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware|TenantHasSettings:volunteering'],
         function ($router) {
             /* Get availability */
-            $router->get('/entities/availability', ['middleware' => ['PaginationMiddleware'],
+        $router->get('/entities/availability', ['middleware' => ['PaginationMiddleware'],
                 'uses' => 'Admin\Availability\AvailabilityController@index']);
 
             /* Store availability */
@@ -841,5 +892,29 @@ $router->group(['middleware' => 'localization'], function ($router) {
                 '/',
                 ['uses' => 'App\Timezone\TimezoneController@index']
             );
+        }
+    );
+
+    /* Organizations Management */
+    $router->group(
+        ['prefix' => 'organizations', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
+        function ($router) {
+            $router->get('/', ['middleware' => ['PaginationMiddleware'],
+             'uses' => 'Admin\Organization\OrganizationController@index']);
+            $router->get('/{organizationId}', ['uses' => 'Admin\Organization\OrganizationController@show']);
+            $router->post('/', ['uses' => 'Admin\Organization\OrganizationController@store']);
+            $router->patch('/{organizationId}', ['uses' => 'Admin\Organization\OrganizationController@update']);
+            $router->delete('/{organizationId}', ['uses' => 'Admin\Organization\OrganizationController@destroy']);
+        }
+    );
+
+    /* Routes for whitelisted Ips */
+    $router->group(
+        ['prefix' => 'entities/donation-ip-whitelist', 'middleware' => 'localization|auth.tenant.admin|TenantHasSettings:donation'],
+        function ($router) {
+            $router->get('/', ['middleware' => ['PaginationMiddleware'], 'uses' => 'Admin\DonationIp\WhitelistController@getList']);
+            $router->post('/', ['uses' => 'Admin\DonationIp\WhitelistController@create']);
+            $router->patch('/{id}', ['uses' => 'Admin\DonationIp\WhitelistController@update']);
+            $router->delete('/{id}', ['uses' => 'Admin\DonationIp\WhitelistController@delete']);
         }
     );

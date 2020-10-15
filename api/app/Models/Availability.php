@@ -58,7 +58,11 @@ class Availability extends Model
      */
     public function setTranslationsAttribute(array $value): void
     {
-        $this->attributes['translations'] = json_encode($value,  JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        $translations = [];
+        foreach ($value as $translation) {
+            $translations[$translation['lang']] = $translation['title'];
+        }
+        $this->attributes['translations'] = json_encode($translations,  JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     }
 
     /**
@@ -69,7 +73,17 @@ class Availability extends Model
      */
     public function getTranslationsAttribute(string $value): array
     {
-        return json_decode($value, true);
+        $data = @json_decode($value);
+        $translations = [];
+        if ($data !== null) {
+            foreach ($data as $translationLang => $translationTitle) {
+                $translations[] = [
+                    'lang' => $translationLang,
+                    'title' => $translationTitle
+                ];
+            }
+        }
+        return $translations;
     }
 
     /**
@@ -88,9 +102,9 @@ class Availability extends Model
      *
      * @return void
      */
-    public function mission()
+    public function volunteeringAttribute()
     {
-        return $this->belongsTo(Mission::class, 'availability_id', 'availability_id');
+        return $this->belongsTo(VolunteeringAttribute::class, 'availability_id', 'availability_id');
     }
 
     /**
@@ -102,4 +116,5 @@ class Availability extends Model
     {
         return $this->belongsTo(User::class, 'availability_id', 'availability_id');
     }
+
 }

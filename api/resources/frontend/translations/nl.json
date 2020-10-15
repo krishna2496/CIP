@@ -36,7 +36,6 @@
 		"all_rights_reserved": "Alle rechten voorbehouden",
 		"add": "Toevoegen",
 		"already_volunteered": "Reeds gewerkt als vrijwilliger",
-		"on_going_opportunities": "Lopende opportuniteiten",
 		"view_detail": "Bekijk details",
 		"no_record_found": "Geen verslagen gevonden",
 		"oldest": "Oudste",
@@ -295,7 +294,16 @@
 		"deleted_user" : "Verwijderde gebruike",
 		"virtual_mission" : "Virtueel",
 		"virtual_missions" : "Virtueel vrijwilligerswerk",
-		"home" : "Thuis"
+		"home" : "Thuis",
+		"login_with_sso": "Log in met SSO",
+		"site_title": "Home",
+		"ongoing": "Lopend",
+		"more": "meer",
+		"and": "en",
+		"for": "Voor",
+		"on": "Op",
+		"sort_deadline": "Sorteer op termijn",
+		"no_image_available": "Geen afbeelding beschikbaar"
 	},
 	"placeholder": {
 		"email_address": "Vul e-mailadres in",
@@ -384,7 +392,10 @@
 		"max_image_upload": "Er kunnen maximaal 20 afbeeldingen worden toegevoegd",
 		"max_video_upload": "Er kunnen maximaal 20 video's worden toegevoegd",
 		"duplicate_video_url": "Dubbele video-URL is niet toegestaan",
-		"invalid_saml_setting": "De volgende toewijzing(en) zijn vereist:"
+		"invalid_saml_setting": "De volgende toewijzing(en) zijn vereist:",
+		"password_should_contain_uppercase": "Minstens 1 hoofdletter",
+		"password_should_contain_lowercase": "Minstens 1 kleine letter",
+		"password_should_contain_numbers": "Minstens 1 cijfer"
 	},
 	"export_timesheet_file_names": {
 		"PENDING_TIME_MISSION_ENTRIES_XLSX": "Pending_Time_Mission_Entries.xls",

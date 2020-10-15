@@ -144,6 +144,7 @@ return [
         'MESSAGE_STORY_COPIED_SUCCESS' => "Récit copiée avec succès",
         'MESSAGE_UNABLE_TO_EXPORT_USER_STORIES_ENTRIES' => "Aucun récit n’a pu être trouvée",
         'MESSAGE_STORY_UPDATED' => "Récit mise à jour avec succès",
+        'MESSAGE_FAVICON_UPLOADED' => 'Favicon téléchargé avec succès',
 
         'MESSAGE_USER_COMMENTS_LISTING' => "Commentaires des utilisateurs répertoriés avec succès",
         'MESSAGE_STORY_SUBMITTED_SUCCESSFULLY' => "Récit soumise avec succès",

@@ -13,7 +13,6 @@ export default async(deletFile) => {
         method: 'DELETE',
         headers: {
             'X-localization': defaultLanguage,
-            'token': store.state.token,
         }
     })
       .then((response) => {

@@ -74,7 +74,7 @@
                             <b-col md="6">
                                 <b-form-group>
                                     <label for>{{languageData.label.first_name}}*</label>
-                                    <b-form-input id type="text" v-model.trim="profile.firstName" :class="{ 'is-invalid': submitted && $v.profile.firstName.$error }" @keypress="alphaNumeric($event)" :placeholder="languageData.placeholder.name" maxlength="16"></b-form-input>
+                                    <b-form-input id type="text" v-model.trim="profile.firstName" :class="{ 'is-invalid': submitted && $v.profile.firstName.$error }" @keypress="alphaNumeric($event)" :placeholder="languageData.placeholder.name" maxlength="60"></b-form-input>
                                     <div v-if="submitted && !$v.profile.firstName.required" class="invalid-feedback">
                                         {{ languageData.errors.name_required }}
                                     </div>
@@ -83,7 +83,7 @@
                             <b-col md="6">
                                 <b-form-group>
                                     <label for>{{languageData.label.surname}}*</label>
-                                    <b-form-input id type="text" v-model.trim="profile.lastName" :class="{ 'is-invalid': submitted && $v.profile.lastName.$error }" @keypress="alphaNumeric($event)" :placeholder="languageData.placeholder.surname" maxlength="16">
+                                    <b-form-input id type="text" v-model.trim="profile.lastName" :class="{ 'is-invalid': submitted && $v.profile.lastName.$error }" @keypress="alphaNumeric($event)" :placeholder="languageData.placeholder.surname" maxlength="60">
                                     </b-form-input>
                                     <div v-if="submitted && !$v.profile.lastName.required" class="invalid-feedback">
                                         {{ languageData.errors.last_name_required }}</div>
@@ -92,7 +92,7 @@
                             <b-col md="6">
                                 <b-form-group>
                                     <label for>{{languageData.label.employee_id}}</label>
-                                    <b-form-input id type="text" v-model.trim="profile.employeeId" maxlength="16" :placeholder="languageData.placeholder.employee_id">
+                                    <b-form-input id type="text" v-model.trim="profile.employeeId" maxlength="60" :placeholder="languageData.placeholder.employee_id">
                                     </b-form-input>
                                 </b-form-group>
                             </b-col>
@@ -107,14 +107,32 @@
                             <b-col md="6">
                                 <b-form-group>
                                     <label for>{{languageData.label.title}}</label>
-                                    <b-form-input id type="text" v-model.trim="profile.title" :placeholder="languageData.placeholder.title" maxlength="25">
+                                    <b-form-input id type="text" v-model.trim="profile.title" :placeholder="languageData.placeholder.title" maxlength="60">
                                     </b-form-input>
                                 </b-form-group>
                             </b-col>
                             <b-col md="6">
                                 <b-form-group>
+                                    <label>{{languageData.label.country}}*</label>
+                                    <CustomFieldDropdown v-model="profile.country" :errorClass="submitted && $v.profile.country.$error" :defaultText="countryDefault" :optionList="countryList" @updateCall="updateCountry" translationEnable="false" />
+                                    <div v-if="submitted && !$v.profile.country.required" class="invalid-feedback">
+                                        {{ languageData.errors.country_required }}
+                                    </div>
+                                </b-form-group>
+
+                            </b-col>
+                            <!--                                <b-col md="6">-->
+                            <!--                                    <b-form-group>-->
+                            <!--                                        <label>{{languageData.label.city}}</label>-->
+                            <!--                                        <CustomFieldDropdown v-model="profile.city"-->
+                            <!--                                                             :defaultText="cityDefault"-->
+                            <!--                                                             :optionList="cityList" @updateCall="updateCity" translationEnable="false" />-->
+                            <!--                                    </b-form-group>-->
+                            <!--                                </b-col>-->
+                            <b-col md="6">
+                                <b-form-group>
                                     <label for>{{languageData.label.department}}</label>
-                                    <b-form-input id type="text" v-model.trim="profile.department" maxlength="16" :placeholder="languageData.placeholder.department"></b-form-input>
+                                    <b-form-input id type="text" v-model.trim="profile.department" maxlength="60" :placeholder="languageData.placeholder.department"></b-form-input>
 
                                 </b-form-group>
                             </b-col>
@@ -130,32 +148,6 @@
                                     <label>{{languageData.label.why_i_volunteer}}</label>
                                     <b-form-textarea id v-model.trim="profile.whyiVolunteer" :placeholder="languageData.placeholder.why_i_volunteer" size="lg" no-resize rows="5"></b-form-textarea>
                                 </b-form-group>
-                            </b-col>
-                        </b-row>
-                        <b-row class="row-form">
-                            <b-col cols="12">
-                                <h2 class="title-with-border">
-                                    <span>{{languageData.label.address_information}}</span>
-                                </h2>
-                            </b-col>
-                            <b-col md="6">
-                                <b-form-group>
-                                    <label>{{languageData.label.country}}*</label>
-                                    <CustomFieldDropdown v-model="profile.country" :errorClass="submitted && $v.profile.country.$error" :defaultText="countryDefault" :optionList="countryList" @updateCall="updateCountry" translationEnable="false" />
-                                    <div v-if="submitted && !$v.profile.country.required" class="invalid-feedback">
-                                        {{ languageData.errors.country_required }}
-                                    </div>
-                                </b-form-group>
-
-                            </b-col>
-                            <b-col md="6">
-                                <b-form-group>
-                                    <label>{{languageData.label.city}}*</label>
-                                    <CustomFieldDropdown v-model="profile.city" :errorClass="submitted && $v.profile.city.$error" :defaultText="cityDefault" :optionList="cityList" @updateCall="updateCity" translationEnable="false" />
-                                    <div v-if="submitted && !$v.profile.city.required" class="invalid-feedback">
-                                        {{ languageData.errors.city_required }}</div>
-                                </b-form-group>
-
                             </b-col>
                         </b-row>
                         <b-row class="row-form">
@@ -239,8 +231,17 @@
                         <b-form-input id type="password" v-model.trim="resetPassword.newPassword" :class="{ 'is-invalid': passwordSubmit && $v.resetPassword.newPassword.$error }" :placeholder="languageData.placeholder.new_password"></b-form-input>
                         <div v-if="passwordSubmit && !$v.resetPassword.newPassword.required" class="invalid-feedback">
                             {{ languageData.errors.field_is_required }}</div>
-                        <div v-if="passwordSubmit && !$v.resetPassword.newPassword.minLength" class="invalid-feedback">
+                        <div v-else-if="passwordSubmit && !$v.resetPassword.newPassword.minLength" class="invalid-feedback">
                             {{ languageData.errors.invalid_password }}</div>
+                        <div v-else-if="passwordSubmit && !$v.resetPassword.newPassword.containsUpperCase" class="invalid-feedback">
+                            {{ languageData.errors.password_should_contain_uppercase }}
+                        </div>
+                        <div v-else-if="passwordSubmit && !$v.resetPassword.newPassword.containsLowerCase" class="invalid-feedback">
+                            {{ languageData.errors.password_should_contain_lowercase }}
+                        </div>
+                        <div v-else-if="passwordSubmit && !$v.resetPassword.newPassword.containsNumber" class="invalid-feedback">
+                            {{ languageData.errors.password_should_contain_numbers }}
+                        </div>
                     </b-form-group>
 
                     <b-form-group>
@@ -287,7 +288,8 @@ import {
     loadLocaleMessages,
     country,
     skill,
-    timezone
+    timezone,
+    policy
 } from "../services/service";
 import {
     required,
@@ -296,6 +298,9 @@ import {
     minLength
 } from 'vuelidate/lib/validators';
 import constants from '../constant';
+import {
+    setSiteTitle
+} from '../utils';
 
 export default {
     components: {
@@ -403,7 +408,16 @@ export default {
             },
             newPassword: {
                 required,
-                minLength: minLength(constants.PASSWORD_MIN_LENGTH)
+                minLength: minLength(constants.PASSWORD_MIN_LENGTH),
+                containsUpperCase: function (value) {
+                    return /(?=.*[A-Z])/.test(value);
+                },
+                containsLowerCase: function (value) {
+                    return /(?=.*[a-z])/.test(value);
+                },
+                containsNumber: function (value) {
+                    return /(?=.*[0-9])/.test(value);
+                }
             },
             confirmPassword: {
                 required,
@@ -422,14 +436,11 @@ export default {
                     if (linkedInUrl == '') {
                         return true
                     }
-                    const regexp = /^http(s)?:\/\/([\w]+\.)?linkedin\.com\/[//A-z0-9_-]+\/?$/;
+                    const regexp = /^https:\/\/www\.linkedin\.com\/[a-z0-9]+/;
                     return (regexp.test(linkedInUrl));
                 }
             },
             country: {
-                required
-            },
-            city: {
                 required
             },
             language: {
@@ -560,8 +571,11 @@ export default {
                     if (this.userData.country_id != 0) {
                         this.profile.country = this.userData.country_id
                     }
-                    if (this.userData.city_id != 0) {
+                    if (this.userData.city_id != 0 && this.userData.city_id != null) {
                         this.profile.city = this.userData.city_id
+                    } else {
+                        this.profile.city = null;
+                        this.changeCityData(this.profile.country);
                     }
                     if (this.userData.availability_id != 0 && this.userData.availability_id != null) {
                         this.profile.availability = this.userData.availability_id
@@ -761,7 +775,11 @@ export default {
             this.saveProfileData.why_i_volunteer = this.profile.whyiVolunteer;
             this.saveProfileData.employee_id = this.profile.employeeId;
             this.saveProfileData.department = this.profile.department;
-            this.saveProfileData.city_id = this.profile.city;
+            if (this.profile.city != 0) {
+                this.saveProfileData.city_id = this.profile.city
+            } else {
+                delete this.saveProfileData['city_id'];
+            }
             this.saveProfileData.country_id = this.profile.country;
             this.saveProfileData.profile_text = this.profile.profileText;
             this.saveProfileData.linked_in_url = this.profile.linkedInUrl;
@@ -794,22 +812,38 @@ export default {
                 if (response.error == true) {
                     this.makeToast("danger", response.message);
                 } else {
+                    const redirect = !this.isUserProfileComplete && response.data.is_profile_complete;
                     this.isUserProfileComplete = response.data.is_profile_complete;
                     store.commit('changeProfileSetFlag', response.data.is_profile_complete);
-                    store.commit('setDefaultLanguageCode', this.languageCode)
+                    store.commit('setDefaultLanguageCode', this.languageCode);
                     this.showPage = false;
+                    this.setPolicyPage();
+                    this.isShownComponent = false;
                     this.getUserProfileDetail().then(() => {
                         this.showPage = true;
                         loadLocaleMessages(this.profile.languageCode).then(() => {
                             this.languageData = JSON.parse(store.state.languageLabel);
+                            setSiteTitle();
                             this.makeToast("success", response.message);
                             this.isShownComponent = true;
+                            store.commit("changeUserDetail", this.profile)
+                            if (redirect) {
+                                this.$router.push('/home');
+                            }
                         });
-
-                        store.commit("changeUserDetail", this.profile)
-
                     });
                 }
+            });
+        },
+        setPolicyPage() {
+            policy().then(response => {
+                if (response.error == false) {
+                    if (response.data.length > 0) {
+                        store.commit('policyPage', response.data);
+                        return;
+                    }
+                }
+                store.commit('policyPage', null);
             });
         },
         // changePassword

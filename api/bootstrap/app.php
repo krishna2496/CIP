@@ -69,12 +69,13 @@ $app->routeMiddleware([
     'jwt.auth' => App\Http\Middleware\JwtMiddleware::class, //jwt auth
     'cors' => \App\Http\Middleware\CorsMiddleware::class,
     'tenant.connection' => App\Http\Middleware\TenantConnectionMiddleware::class, // Middle ware that connect tenant user with their tenant
-    //'cros' => \Barryvdh\Cors\HandleCors::class, //cross origin support
     'auth.tenant.admin' => App\Http\Middleware\AuthTenantAdminMiddleware::class,
     'localization' => App\Http\Middleware\LocalizationMiddleware::class,
     'JsonApiMiddleware' => App\Http\Middleware\JsonApiMiddleware::class,
     'PaginationMiddleware' => App\Http\Middleware\PaginationMiddleware::class,
-    'user.profile.complete' => App\Http\Middleware\UserProfileCompleteMiddleware::class
+    'user.profile.complete' => App\Http\Middleware\UserProfileCompleteMiddleware::class,
+    'TenantHasSettings' => App\Http\Middleware\TenantHasSettings::class,
+    'throttle' => \App\Http\Middleware\ThrottleRequestsMiddleware::class
 ]);
 
 /**

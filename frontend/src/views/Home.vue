@@ -27,7 +27,7 @@
                     <span v-for="(item , i) in tags.skill" v-if="isSkillDisplay && isVolunteeringSettingEnabled" :key=i>
                         <AppCustomChip :textVal="item" :tagId="i" type="skill" @updateCall="changeTag" />
                     </span>
-                    <b-button class="clear-btn" v-if="isCountrySelectionSet || tags.city || (tags.theme && isThemeDisplay) || (tags.skill && isSkillDisplay)" @click="clearMissionFilterData">{{languageData.label.clear_all}}</b-button>
+                    <b-button class="clear-btn" v-if="isCountrySelectionSet || isStateSelectionSet || tags.city || (tags.theme && isThemeDisplay) || (tags.skill && isSkillDisplay)" @click="clearMissionFilterData">{{languageData.label.clear_all}}</b-button>
                 </div>
             </div>
             <div v-bind:class="{ 'heading-section': true,
@@ -48,26 +48,51 @@
 
             <b-tabs class="view-tab" v-model="tabNumber">
 
-                <!-- grid view -->
-                <b-tab class="grid-tab-content" @click="changeCurrentView(0)">
-                    <template slot="title">
-                        <i class="grid icon-wrap" @click="activeView = 'gridView'" v-b-tooltip.hover.bottom :title="languageData.label.grid_view" v-if="missionList.length > 0">
-                            <img class="img-normal" :src="$store.state.imagePath+'/assets/images/grid.svg'" alt="Down Arrow" />
-                            <img class="img-rollover" :src="$store.state.imagePath+'/assets/images/grid-h.svg'" alt="Down Arrow" />
-                        </i>
-                    </template>
-                    <GridView id="gridView" :items="missionList" :p:per-page="perPage" :current-page="currentPage" ref="gridView" :relatedMission=relatedMission v-if="isShownComponent" :userList="userList" @getMissions="getMissions" small />
-                </b-tab>
-                <!-- list view -->
-                <b-tab class="list-tab-content" @click="changeCurrentView(1)">
-                    <template slot="title">
-                        <i class="list icon-wrap" @click="activeView = 'listView'" v-b-tooltip.hover.bottom :title="languageData.label.list_view" v-if="missionList.length > 0">
-                            <img class="img-normal" :src="$store.state.imagePath+'/assets/images/list.svg'" alt="Down Arrow" />
-                            <img class="img-rollover" :src="$store.state.imagePath+'/assets/images/list-h.svg'" alt="Down Arrow" />
-                        </i>
-                    </template>
-                    <ListView id="listView" :items="missionList" :per-page="perPage" :current-page="currentPage" v-if="isShownComponent" :userList="userList" @getMissions="getMissions" small />
-                </b-tab>
+                    <!-- grid view -->
+                    <b-tab class="grid-tab-content" @click="changeCurrentView(0)">
+                        <template slot="title">
+                            <i class="grid icon-wrap" @click="activeView = 'gridView'" v-b-tooltip.hover.bottom
+                               :title="languageData.label.grid_view" v-if="missionList.length > 0">
+                                <img class="img-normal" :src="$store.state.imagePath+'/assets/images/grid.svg'"
+                                     alt="Down Arrow" />
+                                <img class="img-rollover" :src="$store.state.imagePath+'/assets/images/grid-h.svg'"
+                                     alt="Down Arrow" />
+                            </i>
+                        </template>
+                        <GridView
+                          id="gridView"
+                          ref="gridView"
+                          :items="missionList"
+                          :per-page="perPage"
+                          :current-page="currentPage"
+                          :relatedMission=relatedMission
+                          v-if="isShownComponent"
+                          @getMissions="getMissions"
+                          small
+                        />
+                    </b-tab>
+                    <!-- list view -->
+                    <b-tab class="list-tab-content" @click="changeCurrentView(1)">
+                        <template slot="title">
+                            <i class="list icon-wrap" @click="activeView = 'listView'" v-b-tooltip.hover.bottom
+                               :title="languageData.label.list_view" v-if="missionList.length > 0">
+                                <img class="img-normal" :src="$store.state.imagePath+'/assets/images/list.svg'"
+                                     alt="Down Arrow" />
+                                <img class="img-rollover" :src="$store.state.imagePath+'/assets/images/list-h.svg'"
+                                     alt="Down Arrow" />
+                            </i>
+                        </template>
+                        <ListView
+                          id="listView"
+                          ref="listView"
+                          :items="missionList"
+                          :per-page="perPage"
+                          :current-page="currentPage"
+                          v-if="isShownComponent"
+                          @getMissions="getMissions"
+                          small
+                        />
+                    </b-tab>
 
             </b-tabs>
 
@@ -104,12 +129,9 @@ import store from '../store';
 import {
     missionListing,
     missionFilterListing,
-    searchUser
-} from '../services/service';
-import constants from '../constant';
-import {
-    setTimeout
-} from 'timers';
+  } from '../services/service';
+  import constants from '../constant';
+  import { setTimeout } from 'timers';
 
 export default {
     components: {
@@ -135,7 +157,7 @@ export default {
                 ["lowest_available_seats", "lowest_available_seats"],
                 ["highest_available_seats", "highest_available_seats"],
                 ["my_favourite", "my_favourite"],
-                ["deadline", "deadline"]
+                ["sort_deadline", "sort_deadline"]
             ],
             sortByDefault: '',
             missionList: [],
@@ -164,7 +186,6 @@ export default {
             tabNumber: 0,
             tags: "",
             sortByFilterSet: true,
-            userList: [],
             languageData: [],
             isTotalMissionDisplay: true,
             isQuickAccessDisplay: true,
@@ -176,6 +197,7 @@ export default {
             defaultCountry: 0,
             isAjaxCall: true,
             hideEllipsis: true,
+            isExploreMission: false,
             isVolunteeringSettingEnabled: true,
             isDonationSettingEnabled: true
         };
@@ -202,9 +224,10 @@ export default {
         },
         //Mission listing
         async getMissions(parmas = "") {
-            if (store.state.clearFilterSet == "") {
+            if (store.state.clearFilterSet == "" && !this.isExploreMission) {
                 this.isAjaxCall = true
             }
+
             let filter = {};
             filter.page = this.currentPage
             filter.search = store.state.search
@@ -239,8 +262,9 @@ export default {
                 }
 
                 this.isShownComponent = true;
-
-                this.isAjaxCall = false
+                if (this.isExploreMission) {
+                    this.isAjaxCall = false
+                }
                 if (store.state.search != null) {
                     this.search = store.state.search;
                 }
@@ -254,11 +278,17 @@ export default {
                     }, 200);
                 }
                 setTimeout(() => {
-                    if (this.tabNumber == 0) {
+                    const bodyTag = document.querySelector("body");
+                    if (this.tabNumber == 0 && !bodyTag.classList.contains('has-favourite')) {
                         this.$refs.gridView.cardHeightAdj();
+                    } else {
+                        bodyTag.classList.remove('has-favourite');
                     }
                 }, 200);
-
+                if (!this.isExploreMission) {
+                    this.isAjaxCall = false
+                }
+                this.$emit('cardHeightAdj')
             });
         },
 
@@ -285,7 +315,6 @@ export default {
             this.getMissions();
         },
         searchMissions(searchParams, filterParmas) {
-
             this.filterData.search = searchParams;
             // if (store.state.exploreMissionType == '') {
             this.filterData.countryId = filterParmas.countryId;
@@ -336,7 +365,8 @@ export default {
             if (filters.parmas) {
                 filteExplore.exploreMissionParams = filters.parmas;
             }
-
+            this.isExploreMission = true;
+            this.isAjaxCall = true;
             store.commit('userFilter', this.filterData)
             store.commit('exploreFilter', filteExplore);
             this.$refs.secondaryHeader.changeSearch();
@@ -357,6 +387,9 @@ export default {
             this.$refs.secondaryHeader.clearAllFilter();
             document.body.classList.remove("loader-enable");
             store.commit('clearFilterClick', '');
+        },
+        addLoader() {
+            this.isAjaxCall = true
         }
     },
     created() {
@@ -364,7 +397,6 @@ export default {
         this.sortByFilterSet = this.settingEnabled(constants.SORTING_MISSIONS)
         this.isVolunteeringSettingEnabled = this.settingEnabled(constants.VOLUNTERRING_ENABLED);
         this.isDonationSettingEnabled = this.settingEnabled(constants.DONATION_ENABLED);
-
         if (!this.isVolunteeringSettingEnabled) {
             this.sortByOptions.splice(2, 2);
             this.sortByOptions.splice(3, 1);
@@ -391,17 +423,14 @@ export default {
             this.missionFilter();
         }
 
-        this.isTotalMissionDisplay = this.settingEnabled(constants.Total_MISSIONS_IN_PLATEFORM)
-        this.isQuickAccessDisplay = this.settingEnabled(constants.QUICK_ACCESS_FILTERS)
-        this.isThemeDisplay = this.settingEnabled(constants.THEMES_ENABLED);
-        this.isSkillDisplay = this.settingEnabled(constants.SKILLS_ENABLED);
-        this.isCountrySelectionSet = this.settingEnabled(constants.IS_COUNTRY_SELECTION);
-        this.isStateSelectionSet = this.settingEnabled(constants.STATE_ENABLED);
-        this.defaultCountry = store.state.defaultCountryId
-        this.activeView = 'listView'
-        searchUser().then(response => {
-            this.userList = response;
-        });
+      this.isTotalMissionDisplay = this.settingEnabled(constants.Total_MISSIONS_IN_PLATEFORM)
+      this.isQuickAccessDisplay = this.settingEnabled(constants.QUICK_ACCESS_FILTERS)
+      this.isThemeDisplay = this.settingEnabled(constants.THEMES_ENABLED);
+      this.isSkillDisplay = this.settingEnabled(constants.SKILLS_ENABLED);
+      this.isCountrySelectionSet = this.settingEnabled(constants.IS_COUNTRY_SELECTION);
+      this.isStateSelectionSet =this.settingEnabled(constants.STATE_ENABLED);
+      this.defaultCountry = store.state.defaultCountryId
+      this.activeView = 'listView'
 
         setTimeout(() => {
             this.sortByDefault = this.languageData.label.sort_by;
