@@ -700,7 +700,7 @@ return [
         'ACTIVE' => '1',
         'INACTIVE' => '0'
     ],
-
+    
     /*
      * Icon image types
      */

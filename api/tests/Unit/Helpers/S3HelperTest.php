@@ -66,8 +66,12 @@ class S3HelperTest extends TestCase
             $customPath
         );
 
-        $expected = "https://optimy-dev-tatvasoft.s3.eu-central-1.amazonaws.com/$path";
-
+        $expected = 'https://'
+            .env('AWS_S3_BUCKET_NAME')
+            .'.s3.'
+            .env('AWS_REGION')
+            .'.amazonaws.com/'
+            .$path;
         $this->assertSame($result, $expected);
     }
 
