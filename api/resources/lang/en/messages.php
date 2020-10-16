@@ -303,7 +303,7 @@ return [
 
 
         // Custom error code for common exception
-        'ERROR_INVALID_JSON' => 'Invalid Json format',
+        'ERROR_INVALID_JSON' => 'Invalid JSON format',
         'ERROR_INTERNAL_SERVER_ERROR' => 'Internal server error',
         'ERROR_TENANT_SETTING_DISABLED' => 'Required tenant setting is disabled.',
 
