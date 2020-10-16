@@ -36,7 +36,6 @@
 		"all_rights_reserved": "Todos os direitos reservados",
 		"add": "Incluir",
 		"already_volunteered": "Já atuou como voluntário",
-		"on_going_opportunities": "Oportunidades atuais",
 		"view_detail": "Visualizar detalhes",
 		"no_record_found": "Nenhum registro encontrado",
 		"oldest": "Mais antigo",
@@ -295,7 +294,16 @@
 		"deleted_user" : "Usuário deletado",
 		"virtual_mission" : "Virtual",
 		"virtual_missions" : "Virtual volunteering",
-		"home" : "Home"
+		"home" : "Home",
+		"login_with_sso": "Entrar com SSO",
+		"site_title": "Início",
+		"ongoing": "Em andamento",
+		"more": "mais",
+		"and": "e",
+		"for": "Para",
+		"on": "Em",
+		"sort_deadline": "Ordenar por prazo",
+		"no_image_available": "Nenhuma imagem disponível"
 	},
 	"placeholder": {
 		"email_address": "Inserir endereço de e-mail",
@@ -384,7 +392,10 @@
 		"max_image_upload": "Podem ser incluídas no máximo 20 imagens",
 		"max_video_upload": "Podem ser incluídos no máximo 20 vídeos",
 		"duplicate_video_url": "Não é permitido URL de vídeo duplicada",
-		"invalid_saml_setting": "Os seguintes mapeamentos são necessários:"
+		"invalid_saml_setting": "Os seguintes mapeamentos são necessários:",
+		"password_should_contain_uppercase": "Pelo menos uma letra maiúscula",
+		"password_should_contain_lowercase": "Pelo menos uma letra minúscula",
+		"password_should_contain_numbers": "Pelo menos 1 dígito"
 	},
 	"export_timesheet_file_names": {
 		"PENDING_TIME_MISSION_ENTRIES_XLSX": "Pending_Time_Mission_Entries.xls",

@@ -4,6 +4,8 @@
 # ADMIN-API
 admin-api/vendor
 admin-api/public/storage
+admin-api/bin/storage
+admin-api/bin/php/storage
 admin-api/.idea
 admin-api/public/uploads
 admin-api/node_modules

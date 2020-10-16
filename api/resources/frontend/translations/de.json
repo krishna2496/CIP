@@ -36,7 +36,6 @@
 		"all_rights_reserved": "Alle Rechte vorbehalten",
 		"add": "Hinzufügen",
 		"already_volunteered": "Bereits freiwillig gemeldet",
-		"on_going_opportunities": "Vorhandene Möglichkeiten",
 		"view_detail": "Einzelheiten anzeigen",
 		"no_record_found": "Keine Aufzeichnungen gefunden",
 		"oldest": "Älteste",
@@ -295,7 +294,16 @@
 		"deleted_user" : "Gelöschter Benutzer",
 		"virtual_mission" : "Virtuell",
 		"virtual_missions" : "Virtuelle Freiwilligenarbeit",
-		"home" : "Zuhause"
+		"home" : "Zuhause",
+		"login_with_sso": "Anmeldung mit SSO",
+		"site_title": "Startseite",
+		"ongoing": "Laufend",
+		"more": "mehr",
+		"and": "und",
+		"for": "Für",
+		"on": "Auf",
+		"sort_deadline": "Nach Frist sortieren",
+		"no_image_available": "Kein Bild verfügbar"
 	},
 	"placeholder": {
 		"email_address": "E-Mail-Adresse eingeben",
@@ -384,7 +392,10 @@
 		"max_image_upload": "Es können maximal 20 Bilder hinzugefügt werden",
 		"max_video_upload": "Es können maximal 20 Videos hinzugefügt werden",
 		"duplicate_video_url": "Doppelte Video-URLs sind nicht gestattet",
-		"invalid_saml_setting": "Die folgenden Zuordnungen sind erforderlich:"
+		"invalid_saml_setting": "Die folgenden Zuordnungen sind erforderlich:",
+		"password_should_contain_uppercase": "Mindestens ein Großbuchstabe",
+		"password_should_contain_lowercase": "Mindestens ein Kleinbuchstabe",
+		"password_should_contain_numbers": "Mindestens eine Zahl"
 	},
 	"export_timesheet_file_names": {
 		"PENDING_TIME_MISSION_ENTRIES_XLSX": "Pending_Time_Mission_Entries.xls",

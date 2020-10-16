@@ -14,7 +14,7 @@
                     </div>
                     <div class="inner-content-wrap">
                         <div class="dashboard-table">
-                            <div class="table-outer">
+                            <div class="table-outer" v-if="isTimeMissionActive">
                                 <div class="table-inner">
                                     <h3>{{languageData.label.volunteering_hours}}</h3>
                                     <VolunteeringTimesheetTableHeader :currentWeek="timeSheetHourCurrentDate"
@@ -82,12 +82,12 @@
                                 </div>
                                 <div class="btn-block">
                                     <b-button class="btn-bordersecondary ml-auto" v-bind:class="{
-                                        disabled : enableSubmitTimeTimeSheet    
+                                        disabled : enableSubmitTimeTimeSheet
                                     }" @click="submitVolunteerTimeSheet('time')">{{languageData.label.submit}}
                                     </b-button>
                                 </div>
                             </div>
-                            <ul class="meta-data-list">
+                            <ul class="meta-data-list" v-if="isTimeMissionActive">
                                 <li class="approve-indication">{{languageData.label.approved}}</li>
                                 <li class="decline-indication">{{languageData.label.declined}}</li>
                                 <li class="approval-indication">
@@ -95,7 +95,7 @@
                                 </li>
                             </ul>
                             <!--    {{goalMissionData}} -->
-                            <div class="table-outer timesheet-table-outer">
+                            <div class="table-outer timesheet-table-outer" v-if="isGoalMissionActive">
                                 <div class="table-inner">
                                     <h3>{{languageData.label.volunteering_goals}}</h3>
                                     <VolunteeringTimesheetTableHeader :currentWeek="timeSheetGoalCurrentDate"
@@ -163,11 +163,11 @@
                                 <div class="btn-block">
                                     <b-button class="btn-bordersecondary ml-auto"
                                               @click="submitVolunteerTimeSheet('goal')" v-bind:class="{
-                                            disabled : enableSubmitGoalTimeSheet    
+                                            disabled : enableSubmitGoalTimeSheet
                                         }">{{languageData.label.submit}}</b-button>
                                 </div>
                             </div>
-                            <ul class="meta-data-list">
+                            <ul class="meta-data-list"  v-if="isGoalMissionActive">
                                 <li class="approve-indication">{{languageData.label.approved}}</li>
                                 <li class="decline-indication">{{languageData.label.declined}}</li>
                                 <li class="approval-indication">
@@ -175,7 +175,7 @@
                                 </li>
                             </ul>
                             <div class="timesheet-Request">
-                            <VolunteeringRequest :headerField="timesheetRequestFields" requestType="time"
+                            <VolunteeringRequest  v-if="isTimeMissionActive" :headerField="timesheetRequestFields" requestType="time"
                                 :items="timesheetRequestItems" :headerLable="timeRequestLabel"
                                 :currentPage="hourRequestCurrentPage" :totalRow="hourRequestTotalRow"
                                 @updateCall="getTimeRequest" exportUrl="app/timesheet/time-requests/export"
@@ -183,7 +183,7 @@
                                 :fileName="languageData.export_timesheet_file_names.PENDING_TIME_MISSION_ENTRIES_XLSX"
                                 :totalPages="timeMissionTotalPage" />
                             </div>
-                            <VolunteeringRequest :headerField="goalRequestFields" requestType="goal"
+                            <VolunteeringRequest  v-if="isGoalMissionActive" :headerField="goalRequestFields" requestType="goal"
                                                  :items="goalRequestItems" :headerLable="goalRequestLabel"
                                                  :currentPage="goalRequestCurrentPage" :totalRow="goalRequestTotalRow"
                                                  @updateCall="getGoalRequest" :perPage="goalRequestPerPage" :nextUrl="goalRequestNextUrl"
@@ -232,7 +232,7 @@
     import AddVolunteeringAction from "../components/AddVolunteeringAction";
     import VolunteeringRequest from "../components/VolunteeringRequest";
     import store from '../store';
-
+    import constants from '../constant';
     import {
         volunteerTimesheetHours,
         fetchTimeSheetDocuments,
@@ -348,7 +348,9 @@
                 goalPage: 1,
                 goalTotalRow: 0,
                 goalPerPage: 0,
-                goalsTableLoaderActive : true
+                goalsTableLoaderActive : true,
+                isGoalMissionActive : false,
+                isTimeMissionActive : false
             };
     },
     updated() {
@@ -493,7 +495,8 @@
           let latestDate = date - 1
           let latestMonth = 0
           let timeSheetArray = timeArray.timesheet;
-          this.currentTimeData.missionName = timeArray.title
+          this.currentTimeData.missionName = timeArray.title;
+          this.currentTimeData.goal = timeArray.objective;
           let months = '';
           let dates = '';
           if (timeSheetType == "time") {
@@ -1094,7 +1097,7 @@
               }
 
             } else {
-              if (this.volunteeringHoursYears.includes(currentArrayYear)) {
+              if (this.volunteeringGoalYears.includes(currentArrayYear)) {
                 if (this.volunteeringGoalMonths.includes(currentArrayMonth)) {
                   action = action + timeEntry.action
                   if (timeEntry.status != "APPROVED" && timeEntry.status != "AUTOMATICALLY_APPROVED") {
@@ -1174,13 +1177,25 @@
               timeSheetArray.filter((timeSheet) => {
                 let currentArrayYear = timeSheet.year
                 let currentArrayMonth = timeSheet.month
-                if (this.volunteeringHoursYears.includes(currentArrayYear)) {
-                  if (this.volunteeringHoursMonths.includes(currentArrayMonth)) {
-                    if (timeSheet.status != "APPROVED" && timeSheet.status != "AUTOMATICALLY_APPROVED") {
-                      timeSheetId.timesheet_entries.push({
-                        'timesheet_id': timeSheet.timesheet_id
-                      })
-                    }
+                if (timeSheetType == "time") {
+                  if (this.volunteeringHoursYears.includes(currentArrayYear) &&
+                      this.volunteeringHoursMonths.includes(currentArrayMonth) &&
+                      timeSheet.status != "APPROVED" &&
+                      timeSheet.status != "AUTOMATICALLY_APPROVED"
+                  ) {
+                    timeSheetId.timesheet_entries.push({
+                      'timesheet_id': timeSheet.timesheet_id
+                    })
+                  }
+                } else {
+                  if (this.volunteeringGoalYears.includes(currentArrayYear) &&
+                      this.volunteeringGoalMonths.includes(currentArrayMonth) &&
+                      timeSheet.status != "APPROVED" &&
+                      timeSheet.status != "AUTOMATICALLY_APPROVED"
+                  ) {
+                    timeSheetId.timesheet_entries.push({
+                      'timesheet_id': timeSheet.timesheet_id
+                    })
                   }
                 }
               });
@@ -1238,11 +1253,16 @@
                 ['mission']: item.title,
                 ['time']: item.time,
                 ['hours']: item.hours,
-                ['organisation']: item.organisation_name,
+                ['organisation']: item.organization_name,
                 ['mission_id']: item.mission_id
               })
               this.timesheetRequestItems = currentData;
             })
+          }
+
+          if (!this.isGoalMissionActive) {
+            this.isComponentLoaded = true;
+            this.isAllVisible = this.timeMissionData.length;
           }
         })
       },
@@ -1293,7 +1313,7 @@
               currentData.push({
                 ['mission']: item.title,
                 ['action']: item.action,
-                ['organisation']: item.organisation_name,
+                ['organisation']: item.organization_name,
                 ['mission_id']: item.mission_id
               })
               this.goalRequestItems = currentData
@@ -1318,17 +1338,19 @@
       this.timeRequestLabel = this.languageData.label.hours_requests
       this.goalRequestLabel = this.languageData.label.goals_requests
       this.userTimezone = store.state.userTimezone
-      this.getVolunteerHoursData();
-      setTimeout(() => {
-        this.getVolunteerGoalsData();
-      }, 90)
+      this.isGoalMissionActive = this.settingEnabled(constants.VOLUNTEERING_GOAL_MISSION)
+      this.isTimeMissionActive = this.settingEnabled(constants.VOLUNTEERING_TIME_MISSION)
+
       this.isShownComponent = true;
-      setTimeout(() => {
+      if (this.isTimeMissionActive) {
+        this.getVolunteerHoursData();
         this.getTimeRequestData(this.hourRequestCurrentPage);
-      }, 80)
-      setTimeout(() => {
+      }
+
+      if (this.isGoalMissionActive) {
+        this.getVolunteerGoalsData();
         this.getGoalRequestData(this.goalRequestCurrentPage);
-      }, 100)
+      }
 
       let timeRequestFieldArray = [
         this.languageData.label.mission,

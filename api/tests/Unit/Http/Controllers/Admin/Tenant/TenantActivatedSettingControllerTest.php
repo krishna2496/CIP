@@ -1,5 +1,5 @@
 <?php
-    
+
 namespace Tests\Unit\Http\Controllers\Admin\Tenant;
 
 use App\Helpers\Helpers;
@@ -24,6 +24,9 @@ class TenantActivatedSettingControllerTest extends TestCase
     public function testIndexSuccess()
     {
         $request = new Request();
+        $request->merge([
+            'keys' => []
+        ]);
         $mockResponse = $this->mockGetAllTenantSettingResponse();
 
         $helper = $this->mock(Helpers::class);
@@ -32,24 +35,30 @@ class TenantActivatedSettingControllerTest extends TestCase
             ->with($request)
             ->andReturn($mockResponse);
 
+        $keys = $mockResponse
+            ->keyBy('tenant_setting_id')
+            ->keys()
+            ->toArray();
+
         $repository = $this->mock(TenantActivatedSettingRepository::class);
-        $repository->shouldReceive('fetchAllTenantSettings')
+        $repository->shouldReceive('getList')
             ->once()
+            ->with($keys)
             ->andReturn(new Collection([
                 (object) [
+                    'tenant_setting_id' => 1,
+                    'setting_id' => 1
+                ],
+                (object) [
                     'tenant_setting_id' => 2,
-                    'settings' => (object) [
-                        'setting_id' => 1
-                    ]
+                    'setting_id' => 2
                 ]
             ]));
 
         $responseHelper = $this->mock(ResponseHelper::class);
         $responseHelper->shouldReceive('success')
             ->once()
-            ->with(Response::HTTP_OK, 'Settings listed successfully', [
-                $mockResponse->first()
-            ]);
+            ->with(Response::HTTP_OK, 'Settings listed successfully', $mockResponse->toArray());
 
         $controller = $this->getController(
             $repository,
@@ -78,9 +87,15 @@ class TenantActivatedSettingControllerTest extends TestCase
             ->with($request)
             ->andReturn($mockResponse);
 
+        $keys = $mockResponse
+            ->keyBy('tenant_setting_id')
+            ->keys()
+            ->toArray();
+
         $repository = $this->mock(TenantActivatedSettingRepository::class);
-        $repository->shouldReceive('fetchAllTenantSettings')
+        $repository->shouldReceive('getList')
             ->once()
+            ->with($keys)
             ->andReturn(new Collection([]));
 
         $responseHelper = $this->mock(ResponseHelper::class);

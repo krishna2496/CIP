@@ -25,6 +25,8 @@ use App\Transformations\MissionTransformable;
 use App\Events\User\UserActivityLogEvent;
 use App\Repositories\User\UserRepository;
 use App\Repositories\State\StateRepository;
+use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
+use App\Repositories\UnitedNationSDG\UnitedNationSDGRepository;
 
 //!  Mission controller
 /*!
@@ -90,19 +92,32 @@ class MissionController extends Controller
     private $stateRepository;
 
     /**
+     * @var App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository
+     */
+    private $tenantActivatedSettingRepository;
+
+    /**
+     * Create a new Mission controller instance.
+     *@var App\Repositories\UnitedNationSDG\UnitedNationSDGRepository $unitedNationSDGRepository
+     */
+    private $unitedNationSDGRepository;
+
+    /**
      * Create a new Mission controller instance
      *
-     * @param App\Repositories\Mission\MissionRepository $missionRepository
-     * @param Illuminate\Helpers\ResponseHelper $responseHelper
-     * @param Illuminate\Http\UserFilterRepository $userFilterRepository
-     * @param Illuminate\Helpers\LanguageHelper $languageHelper
-     * @param App\Helpers\Helpers $helpers
+     * @param App\Repositories\Mission\MissionRepository           $missionRepository
+     * @param Illuminate\Helpers\ResponseHelper                    $responseHelper
+     * @param Illuminate\Http\UserFilterRepository                 $userFilterRepository
+     * @param Illuminate\Helpers\LanguageHelper                    $languageHelper
+     * @param App\Helpers\Helpers                                  $helpers
      * @param App\Repositories\MissionTheme\MissionThemeRepository $themeRepository
      * @param App\Repositories\Skill\SkillRepository $skillRepository
      * @param App\Repositories\Country\CountryRepository $countryRepository
      * @param App\Repositories\City\CityRepository $cityRepository
      * @param App\Repositories\User\UserRepository $userRepository
      * @param App\Repositories\State\StateRepository $stateRepository
+     * @param App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository $tenantActivatedSettingRepository
+     * @param App\Repositories\UnitedNationSDG\UnitedNationSDGRepository $unitedNationSDGRepository
      * @return void
      */
     public function __construct(
@@ -116,7 +131,9 @@ class MissionController extends Controller
         CountryRepository $countryRepository,
         CityRepository $cityRepository,
         UserRepository $userRepository,
-        StateRepository $stateRepository
+        StateRepository $stateRepository,
+        TenantActivatedSettingRepository $tenantActivatedSettingRepository,
+        UnitedNationSDGRepository $unitedNationSDGRepository
     ) {
         $this->missionRepository = $missionRepository;
         $this->responseHelper = $responseHelper;
@@ -129,6 +146,8 @@ class MissionController extends Controller
         $this->cityRepository = $cityRepository;
         $this->userRepository = $userRepository;
         $this->stateRepository = $stateRepository;
+        $this->tenantActivatedSettingRepository = $tenantActivatedSettingRepository;
+        $this->unitedNationSDGRepository = $unitedNationSDGRepository;
     }
 
     /**
@@ -143,9 +162,11 @@ class MissionController extends Controller
         $languageId = $language->language_id;
         $languageCode = $language->code;
         $userFilterData = [];
+        $tenantLanguages = $this->languageHelper->getLanguages();
 
         //Save User search data
         $this->userFilterRepository->saveFilter($request);
+
         // Get users filter
         $userFilters = $this->userFilterRepository->userFilter($request);
         $filterTagArray = $this->missionFiltersTag($request, $language, $userFilters);
@@ -189,8 +210,8 @@ class MissionController extends Controller
         $timezone = $this->userRepository->getUserTimezone($request->auth->user_id);
         $missionsTransformed = $missionList
             ->getCollection()
-            ->map(function ($item) use ($languageCode, $languageId, $defaultTenantLanguageId, $timezone) {
-                return $this->transformMission($item, $languageCode, $languageId, $defaultTenantLanguageId, $timezone);
+            ->map(function ($item) use ($languageCode, $languageId, $defaultTenantLanguageId, $timezone, $tenantLanguages) {
+                return $this->transformMission($item, $languageCode, $languageId, $defaultTenantLanguageId, $timezone, $tenantLanguages);
             })->toArray();
 
         $requestString = $request->except(['page','perPage']);
@@ -288,11 +309,11 @@ class MissionController extends Controller
         // Return data by top organisation
         if (!empty($topOrganisation->toArray())) {
             foreach ($topOrganisation as $key => $value) {
-                if ($value->organisation_name !== '') {
+                if ($value->organization->name !== '') {
                     $returnData[config('constants.TOP_ORGANISATION')][$key]['title'] =
-                    $value->organisation_name;
+                    $value->organization->name;
                     $returnData[config('constants.TOP_ORGANISATION')][$key]['id'] =
-                    $value->organisation_id;
+                    $value->organization->organization_id;
                 }
             }
             $apiData[config('constants.TOP_ORGANISATION')] = $returnData[config('constants.TOP_ORGANISATION')];
@@ -623,6 +644,7 @@ class MissionController extends Controller
         try {
             $language = $this->languageHelper->getLanguageDetails($request);
             $languageId = $language->language_id;
+            $tenantLanguages = $this->languageHelper->getLanguages();
 
             $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
             $defaultTenantLanguageId = $defaultTenantLanguage->language_id;
@@ -631,9 +653,10 @@ class MissionController extends Controller
             $mission = $missionData->map(function (Mission $mission) use (
                 $languageId,
                 $defaultTenantLanguageId,
-                $timezone
+                $timezone,
+                $tenantLanguages
             ) {
-                return $this->transformMission($mission, '', $languageId, $defaultTenantLanguageId, $timezone);
+                return $this->transformMission($mission, '', $languageId, $defaultTenantLanguageId, $timezone, $tenantLanguages);
             })->all();
 
             $apiData = $mission;
@@ -667,22 +690,37 @@ class MissionController extends Controller
             $language = $this->languageHelper->getLanguageDetails($request);
             $languageId = $language->language_id;
             $languageCode = $language->code;
+            $tenantLanguages = $this->languageHelper->getLanguages();
 
             $missionData = $this->missionRepository->getMissionDetail($request, $missionId);
+
+            $isRequiredSettingEnabled = $this->isRequiredSettingForMissionTypeEnabled(
+                $request,
+                $missionData[0]->mission_type
+            );
+            if (!$isRequiredSettingEnabled) {
+                return $this->responseHelper->error(
+                    Response::HTTP_FORBIDDEN,
+                    Response::$statusTexts[Response::HTTP_FORBIDDEN],
+                    config('constants.error_codes.ERROR_TENANT_SETTING_DISABLED'),
+                    trans('messages.custom_error_message.ERROR_TENANT_SETTING_DISABLED')
+                );
+            }
 
             $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
             $defaultTenantLanguageId = $defaultTenantLanguage->language_id;
             $timezone = $this->userRepository->getUserTimezone($request->auth->user_id);
 
             $mission = $missionData->map(
-                function (Mission $mission) use ($languageCode, $languageId, $defaultTenantLanguageId, $timezone
+                function (Mission $mission) use ($languageCode, $languageId, $defaultTenantLanguageId, $timezone, $tenantLanguages
                 ) {
                     return $this->transformMission(
                         $mission,
                         $languageCode,
                         $languageId,
                         $defaultTenantLanguageId,
-                        $timezone
+                        $timezone,
+                        $tenantLanguages
                     );
                 }
             )->all();
@@ -691,7 +729,8 @@ class MissionController extends Controller
             $apiStatus = (empty($mission)) ? Response::HTTP_NOT_FOUND : Response::HTTP_OK;
             $apiMessage = (empty($mission)) ? trans('messages.custom_error_message.ERROR_MISSION_NOT_FOUND') :
              trans('messages.success.MESSAGE_MISSION_FOUND');
-            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+
+            return $this->responseHelper->success($apiStatus, $apiMessage, $apiData, false);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),
@@ -717,5 +756,33 @@ class MissionController extends Controller
         : trans('messages.success.MESSAGE_MISSION_LISTING');
 
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
+    }
+
+    /**
+     * Check if required tenant setting based on mission type is enabled
+     *
+     * @param Request $request
+     * @param string $missionType
+     * @return bool
+     */
+    private function isRequiredSettingForMissionTypeEnabled(
+        Request $request,
+        string $missionType
+    ) : bool {
+
+        $tenantSetting = null;
+        switch ($missionType) {
+            case config('constants.mission_type.GOAL'):
+                $tenantSetting = config('constants.tenant_settings.VOLUNTEERING_GOAL_MISSION');
+                break;
+            case config('constants.mission_type.TIME'):
+                $tenantSetting = config('constants.tenant_settings.VOLUNTEERING_TIME_MISSION');
+                break;
+        }
+
+        return $this->tenantActivatedSettingRepository->checkTenantSettingStatus(
+            $tenantSetting,
+            $request
+        );
     }
 }

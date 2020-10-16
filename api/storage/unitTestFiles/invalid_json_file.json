@@ -126,6 +126,7 @@
 		"page_not_found_message_heading": "Strona, której szukałeś, nie istnieje.",
 		"page_not_found_message_text": "Być może błędnie wpisałeś adres lub strona mogła zostać przeniesiona.",
 		"go_to_home_page": "Przejdź do strony głównej",
+        "go_to_login_page": "Go to login page",
 		"dashboard": "Tablica",
 		"volunteering_history": "Historia wolontariatu",
 		"volunteering_timesheet": "Terminarz wolontariatu",

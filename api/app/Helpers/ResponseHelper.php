@@ -12,10 +12,15 @@ class ResponseHelper
      * @param string $apiStatus
      * @param string $apiMessage
      * @param array $apiData
-     * @return Illuminate\Http\JsonResponse
+     * @param bool $convertNumeric - To specify whether to transform number strings into int type
+     * @return JsonResponse
      */
-    public function success(string $apiStatus = '', string $apiMessage = '', array $apiData = []): JsonResponse
-    {
+    public function success(
+        string $apiStatus = '',
+        string $apiMessage = '',
+        array $apiData = [],
+        bool $convertNumeric = true
+    ): JsonResponse {
         $response['status'] = $apiStatus;
 
         if (!empty($apiData)) {
@@ -26,7 +31,7 @@ class ResponseHelper
             $response['message'] = $apiMessage;
         }
 
-        return response()->json($response, $apiStatus, [], JSON_NUMERIC_CHECK);
+        return response()->json($response, $apiStatus, [], $convertNumeric ? JSON_NUMERIC_CHECK: null);
     }
 
     /**
@@ -42,7 +47,8 @@ class ResponseHelper
         string $apiStatus = '',
         string $apiMessage = '',
         LengthAwarePaginator $apiData = null,
-        array $metaData = []
+        array $metaData = [],
+        bool $convertNumeric = true
     ): JsonResponse {
         $response['status'] = $apiStatus;
         $response['data'] = [];
@@ -69,7 +75,7 @@ class ResponseHelper
             $response['message'] = $apiMessage;
         }
 
-        return response()->json($response, $apiStatus, [], JSON_NUMERIC_CHECK);
+        return response()->json($response, $apiStatus, [], $convertNumeric ? JSON_NUMERIC_CHECK: null);
     }
 
     /**

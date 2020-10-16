@@ -1,25 +1,28 @@
 <?php
 namespace App\Http\Controllers\Admin\Mission;
 
+use App\Events\Mission\MissionDeletedEvent;
+use App\Events\User\UserActivityLogEvent;
+use App\Events\User\UserNotificationEvent;
+use App\Helpers\Helpers;
+use App\Helpers\LanguageHelper;
+use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
+use App\Repositories\Mission\MissionRepository;
+use App\Repositories\MissionMedia\MissionMediaRepository;
+use App\Repositories\Notification\NotificationRepository;
+use App\Repositories\Organization\OrganizationRepository;
+use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
+use App\Services\Mission\ModelsService;
+use App\Traits\RestExceptionHandlerTrait;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Validation\Rule;
-use App\Repositories\Mission\MissionRepository;
-use App\Repositories\MissionMedia\MissionMediaRepository;
-use App\Helpers\ResponseHelper;
-use Validator;
-use App\Traits\RestExceptionHandlerTrait;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use InvalidArgumentException;
-use App\Exceptions\TenantDomainNotFoundException;
-use App\Events\User\UserNotificationEvent;
-use App\Events\User\UserActivityLogEvent;
-use App\Helpers\LanguageHelper;
-use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
-use App\Repositories\Notification\NotificationRepository;
+use Validator;
 
 //!  Mission controller
 /*!
@@ -63,6 +66,21 @@ class MissionController extends Controller
      */
     private $notificationRepository;
 
+    /*
+     * @var App\Repositories\Organization\OrganizationRepository
+     */
+    private $organizationRepository;
+
+    /**
+     * @var App\Services\Mission\ModelsService
+     */
+    private $modelsService;
+
+    /**
+     * @var App\Helpers\Helpers
+     */
+    private $helpers;
+
     /**
      * Create a new controller instance.
      *
@@ -73,6 +91,9 @@ class MissionController extends Controller
      * @param App\Repositories\MissionMedia\MissionMediaRepository $missionMediaRepository
      * @param App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository $tenantActivatedSettingRepository
      * @param App\Repositories\Notification\NotificationRepository $notificationRepository
+     * @param App\Repositories\Organization\OrganizationRepository $organizationRepository
+     * @param  App\Services\Mission\ModelsService $modelsService
+     * @param App\Helpers\Helpers $helpers
      * @return void
      */
     public function __construct(
@@ -82,7 +103,10 @@ class MissionController extends Controller
         LanguageHelper $languageHelper,
         MissionMediaRepository $missionMediaRepository,
         TenantActivatedSettingRepository $tenantActivatedSettingRepository,
-        NotificationRepository $notificationRepository
+        NotificationRepository $notificationRepository,
+        OrganizationRepository $organizationRepository,
+        ModelsService $modelsService,
+        Helpers $helpers
     ) {
         $this->missionRepository = $missionRepository;
         $this->responseHelper = $responseHelper;
@@ -91,6 +115,9 @@ class MissionController extends Controller
         $this->missionMediaRepository = $missionMediaRepository;
         $this->tenantActivatedSettingRepository = $tenantActivatedSettingRepository;
         $this->notificationRepository = $notificationRepository;
+        $this->organizationRepository = $organizationRepository;
+        $this->modelsService = $modelsService;
+        $this->helpers = $helpers;
     }
 
     /**
@@ -102,8 +129,17 @@ class MissionController extends Controller
     public function index(Request $request): JsonResponse
     {
         try {
+            $includeMissionImpact = $this->tenantActivatedSettingRepository
+                ->checkTenantSettingStatus(
+                    config('constants.tenant_settings.MISSION_IMPACT'),
+                    $request
+                );
+
             // Get mission
-            $missions = $this->missionRepository->missionList($request);
+            $missions = $this->missionRepository->missionList(
+                $request,
+                $includeMissionImpact
+            );
 
             // Set response data
             $apiData = $missions;
@@ -136,7 +172,6 @@ class MissionController extends Controller
                 "location" => "required",
                 "location.city_id" => "integer|required|exists:city,city_id,deleted_at,NULL",
                 "location.country_code" => "required|exists:country,ISO,deleted_at,NULL",
-                "availability_id" => "integer|required|exists:availability,availability_id,deleted_at,NULL",
                 "mission_detail" => "required",
                 "mission_detail.*.lang" => "required|max:2",
                 "mission_detail.*.title" => "required",
@@ -144,9 +179,16 @@ class MissionController extends Controller
                 "mission_detail.*.section.*.title" => "required_with:mission_detail.*.section",
                 "mission_detail.*.section.*.description" =>
                 "required_with:mission_detail.*.section",
-                "organisation" => "required",
-                "organisation.organisation_id" => "required",
-                "organisation.organisation_name" => "required",
+                "organization" => "required",
+                "organization.organization_id" => "required|uuid",
+                "organization.name" => "max:255",
+                "organization.legal_number" => "max:255",
+                "organization.phone_number" => "max:120",
+                "organization.address_line_1" => "max:255",
+                "organization.address_line_2" => "max:255",
+                "organization.city_id" => "numeric|exists:city,city_id,deleted_at,NULL",
+                "organization.country_id" => "numeric|exists:country,country_id,deleted_at,NULL",
+                "organization.postal_code" => "max:120",
                 "publication_status" => ['required', Rule::in(config('constants.publication_status'))],
                 "media_images.*.media_path" => "required|valid_media_path",
                 "media_videos.*.media_name" => "required",
@@ -154,7 +196,6 @@ class MissionController extends Controller
                 "documents.*.document_path" => "required|valid_document_path",
                 "start_date" => "required_if:mission_type,TIME|required_with:end_date|date",
                 "end_date" => "sometimes|after:start_date|date",
-                "total_seats" => "integer|min:1",
                 "goal_objective" => "required_if:mission_type,GOAL|integer|min:1",
                 "skills.*.skill_id" => "integer|exists:skill,skill_id,deleted_at,NULL",
                 "mission_detail.*.short_description" => "max:1000",
@@ -165,9 +206,45 @@ class MissionController extends Controller
                 "media_images.*.sort_order" => "required|numeric|min:0|not_in:0",
                 "media_videos.*.sort_order" => "required|numeric|min:0|not_in:0",
                 "documents.*.sort_order" => "required|numeric|min:0|not_in:0",
-                "is_virtual" => "sometimes|required|in:0,1",
+                "volunteering_attribute.is_virtual" => "sometimes|required|boolean",
+                "volunteering_attribute.total_seats" => "integer|min:1",
+                "volunteering_attribute.availability_id" => "integer|required|exists:availability,availability_id,deleted_at,NULL",
                 "mission_detail.*.label_goal_achieved" => 'sometimes|required_if:mission_type,GOAL|max:255',
-                "mission_detail.*.label_goal_objective" => 'sometimes|required_if:mission_type,GOAL|max:255'
+                "mission_detail.*.label_goal_objective" => 'sometimes|required_if:mission_type,GOAL|max:255',
+                "impact" => "sometimes|required|array",
+                "impact.*.icon_path" => 'valid_icon_path',
+                "impact.*.sort_key" => 'required|integer|min:0|distinct',
+                "impact.*.translations" => 'required',
+                "impact.*.translations.*.language_code" => 'required_with:impact.*.translations|max:2',
+                "impact.*.translations.*.content" => 'required_with:impact.*.translations|max:300',
+                "availability_id" => "integer|required_without:volunteering_attribute|exists:availability,availability_id,deleted_at,NULL",
+                "total_seats" => "integer|min:1",
+                "is_virtual" => "sometimes|required|in:0,1",
+                "mission_tabs" => "sometimes|required|array",
+                "mission_tabs.*.sort_key" => 'required|integer|distinct',
+                "mission_tabs.*.translations"=> 'required',
+                "mission_tabs.*.translations.*.lang" =>
+                "required_with:mission_tabs.*.translations|max:2",
+                "mission_tabs.*.translations.*.name" =>
+                "required_with:mission_tabs.*.translations",
+                "mission_tabs.*.translations.*.sections" =>
+                "required_with:mission_tabs.*.translations",
+                "mission_tabs.*.translations.*.sections.*.title" =>
+                "required_with:mission_tabs.*.translations.*.sections",
+                "mission_tabs.*.translations.*.sections.*.content" =>
+                "required_with:mission_tabs.*.translations.*.sections",
+                'donation_attribute' => 'required_if:mission_type,DONATION,EAF,DISASTER_RELIEF',
+                'donation_attribute.goal_amount_currency' => 'required_with:donation_attribute.goal_amount|string|min:3|max:3',
+                'donation_attribute.goal_amount' => 'sometimes|required_if:mission_type,DISASTER_RELIEF|numeric|min:1|digits_between:1,20',
+                'donation_attribute.show_goal_amount' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean',
+                'donation_attribute.show_donation_percentage' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean',
+                'donation_attribute.show_donation_meter' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean',
+                'donation_attribute.show_donation_count' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean',
+                'donation_attribute.show_donors_count' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean',
+                'donation_attribute.disable_when_funded' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean',
+                'donation_attribute.is_disabled' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean',
+                "un_sdg" => "sometimes|required|array",
+                "un_sdg.*" => "sometimes|required|integer|distinct|min:1|max:17"
             ]
         );
 
@@ -178,6 +255,61 @@ class MissionController extends Controller
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
                 config('constants.error_codes.ERROR_INVALID_MISSION_DATA'),
                 $validator->errors()->first()
+            );
+        }
+
+        // Check if required tenant setting based on mission type is enabled
+        if (!$this->isRequiredSettingForMissionTypeEnabled($request)) {
+            return $this->responseHelper->error(
+                Response::HTTP_FORBIDDEN,
+                Response::$statusTexts[Response::HTTP_FORBIDDEN],
+                config('constants.error_codes.ERROR_TENANT_SETTING_DISABLED'),
+                trans('messages.custom_error_message.ERROR_TENANT_SETTING_DISABLED')
+            );
+        }
+
+        // Check goal amount currency  set is valid or not
+        if (isset($request->get('donation_attribute')['goal_amount_currency'])
+            && !$this->helpers->isValidTenantCurrency(
+                $request,
+                $request->get('donation_attribute')['goal_amount_currency']
+            )
+        ) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_INVALID_CURRENCY'),
+                trans('messages.custom_error_message.ERROR_INVALID_TENANT_CURRENCY')
+            );
+        }
+
+        // Update organization city,state & country id to null if it's blank
+        if (isset($request->get('organization')['city_id']) && $request->get('organization')['city_id'] === '') {
+            $organization = $request->get('organization');
+            $organization['city_id'] = null;
+            $request->merge(['organization' => $organization]);
+        }
+        if (isset($request->get('organization')['country_id']) && $request->get('organization')['country_id'] === '') {
+            $organization = $request->get('organization');
+            $organization['country_id'] = null;
+            $request->merge(['organization' => $organization]);
+        }
+
+        // check organization exist in database
+        $organizationId = $request->get('organization')['organization_id'];
+
+        if ((!empty($request->get('organization')) && !empty($request->get('organization')['name']))) {
+            $organizationName = $request->get('organization')['name'];
+        }
+
+        $organization = $this->organizationRepository->find($organizationId);
+        // if organization id not exist then check for organization name is required
+        if (!$organization && empty($organizationName)) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_INVALID_MISSION_DATA'),
+                trans('messages.custom_error_message.ERROR_ORGANIZATION_NAME_REQUIRED')
             );
         }
 
@@ -216,18 +348,38 @@ class MissionController extends Controller
     /**
      * Display the specified mission detail.
      *
+     * @param Request $request
      * @param int $missionId
      * @return Illuminate\Http\JsonResponse
      */
-    public function show(int $missionId): JsonResponse
+    public function show(Request $request, int $missionId): JsonResponse
     {
         try {
+            $includeMissionImpact = $this->tenantActivatedSettingRepository
+                ->checkTenantSettingStatus(
+                    config('constants.tenant_settings.MISSION_IMPACT'),
+                    $request
+                );
+
             // Get data for parent table
-            $mission = $this->missionRepository->find($missionId);
+            $mission = $this->missionRepository->find(
+                $missionId,
+                $includeMissionImpact
+            );
+
+            // Check if required tenant setting based on mission type is enabled
+            if (!$this->isRequiredSettingForMissionTypeEnabled($request, $mission->mission_type)) {
+                throw new ModelNotFoundException();
+            }
 
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_MISSION_FOUND');
-            return $this->responseHelper->success($apiStatus, $apiMessage, $mission->toArray());
+            return $this->responseHelper->success(
+                $apiStatus,
+                $apiMessage,
+                $mission->toArray(),
+                false
+            );
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_NO_MISSION_FOUND'),
@@ -246,7 +398,12 @@ class MissionController extends Controller
     public function update(Request $request, int $missionId): JsonResponse
     {
         try {
-            $this->missionRepository->find($missionId);
+            $mission = $this->missionRepository->find($missionId);
+
+            // Check if required tenant setting based on mission type is enabled
+            if (!$this->isRequiredSettingForMissionTypeEnabled($request, $mission->mission_type)) {
+                throw new ModelNotFoundException();
+            }
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),
@@ -267,13 +424,17 @@ class MissionController extends Controller
                 "goal_objective" => "required_if:mission_type,GOAL|integer|min:1",
                 "start_date" => "sometimes|required_if:mission_type,TIME,required_with:end_date|date",
                 "end_date" => "sometimes|after:start_date|date",
+                "volunteering_attribute.is_virtual" => "sometimes|required|boolean",
+                "volunteering_attribute.total_seats" => "integer|min:1",
+                "volunteering_attribute.availability_id" => "sometimes|required|integer|exists:availability,availability_id,deleted_at,NULL",
+                "skills.*.skill_id" => "integer|exists:skill,skill_id,deleted_at,NULL",
+                "is_virtual" => "sometimes|required|in:0,1",
                 "total_seats" => "integer|min:1",
                 "availability_id" => "sometimes|required|integer|exists:availability,availability_id,deleted_at,NULL",
-                "skills.*.skill_id" => "integer|exists:skill,skill_id,deleted_at,NULL",
                 "theme_id" => "sometimes|integer|exists:mission_theme,mission_theme_id,deleted_at,NULL",
                 "application_deadline" => "date",
                 "mission_detail.*.short_description" => "max:1000",
-                "mission_detail.*.custom_information" =>"nullable",
+                "mission_detail.*.custom_information" => "nullable",
                 "mission_detail.*.custom_information.*.title" => "required_with:mission_detail.*.custom_information",
                 "mission_detail.*.custom_information.*.description" =>
                 "required_with:mission_detail.*.custom_information",
@@ -281,14 +442,57 @@ class MissionController extends Controller
                 "media_videos.*.media_name" => "sometimes|required",
                 "media_videos.*.media_path" => "sometimes|required|valid_video_url",
                 "documents.*.document_path" => "sometimes|required|valid_document_path",
-                "organisation.organisation_id" => "sometimes|required",
-                "organisation.organisation_name" => "sometimes|required",
                 "media_images.*.sort_order" => "sometimes|required|numeric|min:0|not_in:0",
                 "media_videos.*.sort_order" => "sometimes|required|numeric|min:0|not_in:0",
                 "documents.*.sort_order" => "sometimes|required|numeric|min:0|not_in:0",
-                "is_virtual" => "sometimes|required|in:0,1",
                 "mission_detail.*.label_goal_achieved" => 'sometimes|required_if:mission_type,GOAL|max:255',
-                "mission_detail.*.label_goal_objective" => 'sometimes|required_if:mission_type,GOAL|max:255'
+                "mission_detail.*.label_goal_objective" => 'sometimes|required_if:mission_type,GOAL|max:255',
+                "impact.*.mission_impact_id" =>
+                "sometimes|required|exists:mission_impact,mission_impact_id,deleted_at,NULL",
+                "impact" => "sometimes|required|array",
+                "impact.*.icon_path" => "valid_icon_path",
+                "impact.*.sort_key" => "required_without:impact.*.mission_impact_id|integer|min:0|distinct",
+                "impact.*.translations"  => "required_without:impact.*.mission_impact_id",
+                "impact.*.translations.*.language_code" => "required_with:impact.*.translations|max:2",
+                "impact.*.translations.*.content" => "required_with:impact.*.translations|max:300",
+                "un_sdg" => "sometimes|required|array",
+                "un_sdg.*" => "sometimes|required|integer|distinct|min:1|max:17",
+                "organization.organization_id" => "required_with:organization|uuid",
+                "organization.name" => "max:255",
+                "organization.legal_number" => "max:255",
+                "organization.phone_number" => "max:120",
+                "organization.address_line_1" => "max:255",
+                "organization.address_line_2" => "max:255",
+                "organization.city_id" => "numeric|exists:city,city_id,deleted_at,NULL",
+                "organization.country_id" => "numeric|exists:country,country_id,deleted_at,NULL",
+                "organization.postal_code" => "max:120",
+                "mission_tabs" => "sometimes|required|array",
+                "mission_tabs.*.mission_tab_id" =>
+                'sometimes|required|exists:mission_tab,mission_tab_id,deleted_at,NULL',
+                "mission_tabs.*.sort_key" =>
+                'required_without:mission_tabs.*.mission_tab_id|integer|distinct',
+                "mission_tabs.*.translations" =>
+                "required_without:mission_tabs.*.mission_tab_id",
+                "mission_tabs.*.translations.*.lang" =>
+                "required_with:mission_tabs.*.translations|max:2",
+                "mission_tabs.*.translations.*.name" =>
+                "required_with:mission_tabs.*.translations",
+                "mission_tabs.*.translations.*.sections.*.title" =>
+                "required_with:mission_tabs.*.translations.*.sections",
+                "mission_tabs.*.translations.*.sections.*.content" =>
+                "required_with:mission_tabs.*.translations.*.sections",
+                "mission_tabs.*.translations.*.sections" =>
+                "required_without:mission_tabs.*.mission_tab_id",
+                'donation_attribute' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF',
+                'donation_attribute.goal_amount_currency' => 'sometimes|required_with:donation_attribute.goal_amount|string|min:3|max:3',
+                'donation_attribute.goal_amount' => 'sometimes|required_if:mission_type,DISASTER_RELIEF|numeric|min:1|digits_between:1,20',
+                'donation_attribute.show_goal_amount' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean',
+                'donation_attribute.show_donation_percentage' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean',
+                'donation_attribute.show_donation_meter' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean',
+                'donation_attribute.show_donation_count' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean',
+                'donation_attribute.show_donors_count' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean',
+                'donation_attribute.disable_when_funded' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean',
+                'donation_attribute.is_disabled' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean'
             ]
         );
 
@@ -301,7 +505,84 @@ class MissionController extends Controller
                 $validator->errors()->first()
             );
         }
- 
+
+        // Check if required tenant setting based on mission type is enabled
+        if ($request->get('mission_type') &&
+            !$this->isRequiredSettingForMissionTypeEnabled($request)) {
+
+            return $this->responseHelper->error(
+                Response::HTTP_FORBIDDEN,
+                Response::$statusTexts[Response::HTTP_FORBIDDEN],
+                config('constants.error_codes.ERROR_TENANT_SETTING_DISABLED'),
+                trans('messages.custom_error_message.ERROR_TENANT_SETTING_DISABLED')
+            );
+        }
+
+        // Check goal amount currency  set is valid or not
+        if (isset($request->get('donation_attribute')['goal_amount_currency']) && $request->get('donation_attribute')['goal_amount_currency'] != '' && !$this->helpers->validateTenantCurrency($request, $request->get('donation_attribute')['goal_amount_currency'])) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_INVALID_CURRENCY'),
+                trans('messages.custom_error_message.ERROR_INVALID_TENANT_CURRENCY')
+            );
+        }
+
+        // Check sort key already exist for mission tabs
+        if (isset($request->mission_tabs)) {
+            $missionTabresponse = $this->missionRepository->checkExistTabSortKey(
+                $missionId,
+                $request->mission_tabs
+            );
+            if (!$missionTabresponse) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_SORT_KEY_ALREADY_EXIST'),
+                    trans('messages.custom_error_message.ERROR_SORT_KEY_ALREADY_EXIST')
+                );
+            }
+        }
+
+        // Check sort key already exist for mission impact
+        if (isset($request->impact)) {
+            $missionImpactresponse = $this->missionRepository->checkExistImpactSortKey(
+                $missionId,
+                $request->impact
+            );
+            if (!$missionImpactresponse) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_IMPACT_SORT_KEY_ALREADY_EXIST'),
+                    trans('messages.custom_error_message.ERROR_IMPACT_SORT_KEY_ALREADY_EXIST')
+                );
+            }
+        }
+
+        // check organization exist in database
+        if ((!empty($request->get('organization')) && !empty($request->get('organization')['organization_id']))) {
+            $organizationId = $request->get('organization')['organization_id'];
+        }
+
+        if ((!empty($request->get('organization')) && !empty($request->get('organization')['name']))) {
+            $organizationName = $request->get('organization')['name'];
+        }
+
+        if (!empty($organizationId)) {
+            $organization = $this->organizationRepository->find($organizationId);
+
+            // if organization id not exist then check for organization name is required
+            if (!$organization && empty($organizationName)) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_INVALID_MISSION_DATA'),
+                    trans('messages.custom_error_message.ERROR_ORGANIZATION_NAME_REQUIRED')
+                );
+            }
+        }
+
         try {
             if (isset($request->media_images) && count($request->media_images) > 0) {
                 foreach ($request->media_images as $mediaImages) {
@@ -397,6 +678,54 @@ class MissionController extends Controller
             }
         }
 
+        // Check for mission impact id is valid or not
+        try {
+            if (isset($request->impact) && count($request->impact) > 0) {
+                foreach ($request->impact as $impactValue) {
+                    if (isset($impactValue['mission_impact_id'])
+                        && ($impactValue['mission_impact_id'] !== '')) {
+                        $this->missionRepository->isMissionImpactLinkedToMission(
+                            $missionId,
+                            $impactValue['mission_impact_id']
+                        );
+                    }
+                }
+            }
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.IMPACT_MISSION_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_IMPACT_MISSION_NOT_FOUND')
+            );
+        }
+
+        // Check for mission tab id is valid or not
+        try {
+            if (isset($request->mission_tabs) && count($request->mission_tabs) > 0) {
+                foreach ($request->mission_tabs as $missionTabValue) {
+                    if (isset($missionTabValue['mission_tab_id']) && ($missionTabValue['mission_tab_id'] !== "")) {
+                        $this->missionRepository->isMissionTabLinkedToMission($missionId, $missionTabValue['mission_tab_id']);
+                    }
+                }
+            }
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.MISSION_TAB_NOT_FOUND'),
+                trans('messages.custom_error_message.MISSION_TAB_NOT_FOUND')
+            );
+        }
+
+        // Update organization city,state & country id to null if it's blank
+        if (isset($request->get('organization')['city_id']) && $request->get('organization')['city_id'] === '') {
+            $organization = $request->get('organization');
+            $organization['city_id'] = null;
+            $request->merge(['organization' => $organization]);
+        }
+        if (isset($request->get('organization')['country_id']) && $request->get('organization')['country_id'] === '') {
+            $organization = $request->get('organization');
+            $organization['country_id'] = null;
+            $request->merge(['organization' => $organization]);
+        }
+
         $this->missionRepository->update($request, $missionId);
 
         // Set response data
@@ -440,11 +769,8 @@ class MissionController extends Controller
     public function destroy(int $missionId): JsonResponse
     {
         try {
-            $mission = $this->missionRepository->delete($missionId);
-            // delete notification related to mission
-            $this->notificationRepository->deleteMissionNotifications($missionId);
-            $apiStatus = Response::HTTP_NO_CONTENT;
-            $apiMessage = trans('messages.success.MESSAGE_MISSION_DELETED');
+            $this->missionRepository->delete($missionId);
+
 
             // Make activity log
             event(new UserActivityLogEvent(
@@ -458,7 +784,7 @@ class MissionController extends Controller
                 $missionId
             ));
 
-            return $this->responseHelper->success($apiStatus, $apiMessage);
+            return $this->responseHelper->success(Response::HTTP_NO_CONTENT, trans('messages.success.MESSAGE_MISSION_DELETED'));
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
                 config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),
@@ -533,5 +859,111 @@ class MissionController extends Controller
                 trans('messages.custom_error_message.ERROR_MISSION_DOCUMENT_NOT_FOUND')
             );
         }
+    }
+
+    /**
+     * Remove mission tab
+     *
+     * @param int|string $missionTabId
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function removeMissionTab($missionTabId): JsonResponse
+    {
+        try {
+            $this->missionRepository->deleteMissionTabByMissionTabId($missionTabId);
+
+            $apiStatus = Response::HTTP_NO_CONTENT;
+            $apiMessage = trans('messages.success.MESSAGE_MISSION_TAB_DELETED');
+
+            // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.MISSION_TAB'),
+                config('constants.activity_log_actions.DELETED'),
+                config('constants.activity_log_user_types.API'),
+                $this->userApiKey,
+                get_class($this),
+                null,
+                null,
+                $missionTabId
+            ));
+            return $this->responseHelper->success($apiStatus, $apiMessage);
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.MISSION_TAB_NOT_FOUND'),
+                trans('messages.custom_error_message.MISSION_TAB_NOT_FOUND')
+            );
+        }
+    }
+
+    /**
+     * Remove mission impact
+     *
+     * @param string $missionImpactId
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function removeMissionImpact($missionImpactId): JsonResponse
+    {
+        try {
+            $this->missionRepository->deleteMissionImpact($missionImpactId);
+
+            $apiStatus = Response::HTTP_NO_CONTENT;
+            $apiMessage = trans('messages.success.MESSAGE_MISSION_IMPACT_DELETED');
+
+            // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.MISSION_IMPACT'),
+                config('constants.activity_log_actions.DELETED'),
+                config('constants.activity_log_user_types.API'),
+                $this->userApiKey,
+                get_class($this),
+                null,
+                null,
+                $missionImpactId
+            ));
+            return $this->responseHelper->success($apiStatus, $apiMessage);
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.IMPACT_MISSION_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_IMPACT_MISSION_NOT_FOUND')
+            );
+        }
+    }
+
+    /**
+     * Check if required tenant setting based on mission type is enabled
+     *
+     * @param Request $request
+     * @param string $missionType if not provided, mission type from the request will be used
+     * @return bool
+     */
+    private function isRequiredSettingForMissionTypeEnabled(
+        Request $request,
+        string $missionType = null
+    ) : bool {
+
+        $tenantSetting = null;
+        $missionType = $missionType ?? $request->get('mission_type');
+        switch ($missionType) {
+            case config('constants.mission_type.GOAL'):
+                $tenantSetting = config('constants.tenant_settings.VOLUNTEERING_GOAL_MISSION');
+                break;
+            case config('constants.mission_type.TIME'):
+                $tenantSetting = config('constants.tenant_settings.VOLUNTEERING_TIME_MISSION');
+                break;
+            case config('constants.mission_type.DONATION'):
+                $tenantSetting = config('constants.tenant_settings.DONATION_MISSION');
+                break;
+            case config('constants.mission_type.EAF'):
+                $tenantSetting = config('constants.tenant_settings.EAF');
+                break;
+            case config('constants.mission_type.DISASTER_RELIEF'):
+                $tenantSetting = config('constants.tenant_settings.DISASTER_RELIEF');
+                break;
+        }
+
+        return $this->tenantActivatedSettingRepository->checkTenantSettingStatus(
+            $tenantSetting,
+            $request
+        );
     }
 }

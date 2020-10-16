@@ -3,6 +3,7 @@ namespace App\Transformations;
 
 use App\Models\Mission;
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
 
 trait MissionTransformable
 {
@@ -14,6 +15,7 @@ trait MissionTransformable
      * @param int $languageId
      * @param int $defaultTenantLanguage
      * @param string $timezone
+     * @param object $tenantLanguages
      * @return App\Models\Mission
      */
     protected function transformMission(
@@ -21,7 +23,8 @@ trait MissionTransformable
         string $languageCode,
         int $languageId,
         int $defaultTenantLanguage,
-        string $timezone
+        string $timezone,
+        Collection $tenantLanguages
     ): Mission {
         if (isset($mission['goalMission']) && is_numeric($mission['goalMission']['goal_objective'])) {
             $mission['goal_objective']  = $mission['goalMission']['goal_objective'];
@@ -79,17 +82,26 @@ trait MissionTransformable
         unset($mission['missionRating']);
         unset($mission['favouriteMission']);
         unset($mission['missionApplication']);
-        
-        if (isset($mission['availability'])) {
-            $arrayKey = array_search($languageCode, array_column($mission['availability']['translations'], 'lang'));
+
+        if (isset($mission['volunteeringAttribute']['availability'])) {
+            $arrayKey = array_search($languageCode, array_column($mission['volunteeringAttribute']['availability']['translations'], 'lang'));
             if ($arrayKey  !== '') {
-                $mission['availability_type'] = $mission['availability']['translations'][$arrayKey]['title'];
+                $mission['availability_type'] = $mission['volunteeringAttribute']['availability']['translations'][$arrayKey]['title'];
             }
-            unset($mission['availability']);
+            unset($mission['volunteeringAttribute']['availability']);
         }
+
+        if (isset($mission['volunteeringAttribute'])) {
+            $mission['availability_id'] = $mission['volunteeringAttribute']['availability_id'];
+            $mission['is_virtual'] = $mission['volunteeringAttribute']['is_virtual'];
+            $mission['total_seats'] = $mission['volunteeringAttribute']['total_seats'];
+            unset($mission['volunteeringAttribute']);
+        }
+
         // Set seats_left or already_volunteered
         if ($mission['total_seats'] !== 0 && $mission['total_seats'] !== null) {
-            $mission['seats_left'] = ($mission['total_seats']) - ($mission['mission_application_count']);
+            $mission['seats_left'] = ($mission['total_seats']) -
+            ($mission['mission_application_count']);
         } else {
             $mission['already_volunteered'] = $mission['mission_application_count'];
         }
@@ -111,7 +123,6 @@ trait MissionTransformable
             $mission['description'] = $missionLanguage->description ?? '';
         }
         $mission['objective'] = $missionLanguage->objective ?? '';
-       
         $mission['label_goal_achieved'] =  $missionLanguage->label_goal_achieved ?? '';
         $mission['label_goal_objective'] =  $missionLanguage->label_goal_objective ?? '';
         $mission['custom_information'] = $missionLanguage->custom_information ?? null;
@@ -122,12 +133,14 @@ trait MissionTransformable
         $todayDate = Carbon::parse(date(config("constants.DB_DATE_FORMAT")));
         $today = $todayDate->setTimezone(config('constants.TIMEZONE'))->format(config('constants.DB_DATE_FORMAT'));
         $todayTime = $this->helpers->getUserTimeZoneDate(date(config("constants.DB_DATE_TIME_FORMAT")));
-       
-        if (($mission['user_application_count'] > 0) ||
-            ($mission['total_seats'] !== 0 && $mission['total_seats'] === $mission['mission_application_count']) ||
+
+        if ($mission['volunteeringAttribute']) {
+            if (($mission['user_application_count'] > 0) ||
+            ($mission['volunteeringAttribute']['total_seats'] !== 0 && $mission['volunteeringAttribute']['total_seats'] === $mission['mission_application_count']) ||
             ($mission['end_date'] !== null && $mission['end_date'] <= $today)
             ) {
-            $mission['set_view_detail'] = 1;
+                $mission['set_view_detail'] = 1;
+            }
         }
 
         if (isset($mission['application_deadline']) && ($mission['application_deadline'] !== null) &&
@@ -149,7 +162,7 @@ trait MissionTransformable
         }
         
         $mission['mission_rating_count'] = $mission['mission_rating_count'] ?
-        ceil($mission['mission_rating_count']) : 0;
+        round(2* $mission['mission_rating_count'])/2 : 0;
               
         if (!empty($mission['missionSkill']) && (isset($mission['missionSkill']))) {
             $returnData = [];
@@ -197,9 +210,35 @@ trait MissionTransformable
                 $mission['city_name'] = $cityTranslation[$cityTranslationkey]['name'];
             }
         }
+        //set organization name
+        if (!empty($mission['organization']) && (isset($mission['organization']))) {
+            $mission['organisation_name'] = $mission['organization']['name'];
+        }
         unset($mission['city']->languages);
         unset($mission['missionSkill']);
-      
+
+        // get mission tab transformation
+        $missionTabDetails = $mission['missionTabs']->toArray();
+        if ($missionTabDetails) {
+            $missionTranslationsArray = [];
+            foreach ($missionTabDetails as $missionTabKey => $missionTabValue) {
+                $missionTranslationsArray['sort_key'] = $missionTabValue['sort_key'];
+                $missionTranslationsArray['translations'] = [];
+                if (isset($missionTabValue['get_mission_tab_detail'])) {
+                    foreach ($missionTabValue['get_mission_tab_detail'] as $missionTabTranslationsValue) {
+                        $languageCode = $tenantLanguages->where('language_id', $missionTabTranslationsValue['language_id'])->first()->code;
+                        $missionTabTranslations['language_id'] = $missionTabTranslationsValue['language_id'];
+                        $missionTabTranslations['language_code'] = $languageCode;
+                        $missionTabTranslations['name'] = $missionTabTranslationsValue['name'];
+                        $missionTabTranslations['section'] = json_decode($missionTabTranslationsValue['section']);
+                        array_push($missionTranslationsArray['translations'], $missionTabTranslations);
+                    }
+                }
+                $mission['missionTabs'][$missionTabKey] = $missionTranslationsArray;
+            }
+        }
+
+        unset($mission['volunteeringAttribute']);
         return $mission;
     }
 }

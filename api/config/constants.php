@@ -6,6 +6,7 @@ return [
      * constants to use any where in system
      */
     'TENANT_OPTION_SLIDER' => 'slider',
+    'TENANT_OPTION_CUSTOM_LOGIN_TEXT' => 'custom_login_text',
     'FORGOT_PASSWORD_EXPIRY_TIME' => '4',
     'SLIDER_LIMIT' => '4',
     'SLIDER_IMAGE_PATH' => 'images/',
@@ -35,19 +36,22 @@ return [
     'AWS_S3_LOGO_IMAGE_NAME' => 'logo.png',
     'AWS_S3_CUSTOME_CSS_NAME' => 'style.css',
     'AWS_CUSTOM_STYLE_VARIABLE_FILE_NAME' => '_custom-variables.scss',
+    'AWS_S3_CUSTOM_FAVICON_NAME' => 'favicon.ico',
     'TIMEZONE' => 'UTC',
     'MISSION_COMMENT_LIMIT' => 20,
     'AWS_S3_DEFAULT_PROFILE_IMAGE' => 'user.png',
     'FRONT_MISSION_DETAIL_URL' => '.anasource.com/team4/ciplatform/mission-detail/',
     'FRONT_HOME_URL' => '.anasource.com/team4/ciplatform/',
     'DEFAULT_FQDN_FOR_FRONT' => 'web8',
-    'PER_PAGE_MAX' => '50',
+    'PER_PAGE_MAX' => '500',
     'MESSAGE_DATE_FORMAT' => 'Y-m-d',
     'DEFAULT_USER_HOURS_GOAL' => '500',
     'AWS_S3_LANGUAGES_FOLDER_NAME' => 'languages',
     'AWS_S3_LANGUAGE_FILE_EXTENSION' => '.json',
     'AWS_S3_DEFAULT_LANGUAGE_FOLDER_NAME' => 'default_language',
-	'PER_PAGE_ALL' => '100000',
+    'PER_PAGE_ALL' => '100000',
+    'SUPPORT_EMAIL' => 'support@optimy.com',
+
     /*
      * User custom field types
      */
@@ -142,6 +146,15 @@ return [
         'image/jpeg',
         'image/jpg',
         'image/svg+xml'
+    ],
+
+    /*
+     * Custom login text positions
+     */
+    'custom_login_text_positions' => [
+        'after_login_form',
+        'before_logo',
+        'after_logo'
     ],
 
     /*
@@ -330,7 +343,14 @@ return [
         'NEWS_ENABLED' => 'news_enabled',
         'MESSAGE_ENABLED' => 'message_enabled',
         'MISSION_COMMENTS' => 'mission_comments',
-        'STATE_ENABLED' => 'state_selection'
+        'STATE_ENABLED' => 'state_selection',
+        'MISSION_IMPACT' => 'mission_impact',
+        'VOLUNTEERING_GOAL_MISSION' => 'volunteering_goal_mission',
+        'VOLUNTEERING_TIME_MISSION' => 'volunteering_time_mission',
+        'DONATION_MISSION' => 'donation',
+        'VOLUNTEERING_MISSION' => 'volunteering',
+        'EAF' => 'eaf',
+        'DISASTER_RELIEF' => 'disaster_relief'
     ],
 
     'TOP_THEME' => "top_themes",
@@ -393,6 +413,12 @@ return [
         'ERROR_INVALID_EMAIL_OR_PASSWORD' => '210013',
         'ERROR_USER_EXPIRED' => '210014',
         'ERROR_USER_BLOCKED' => '210015',
+        'ERROR_USER_ACTIVE' => '210016',
+        'ERROR_USER_INVITE_INVALID_DATA' => '210017',
+        'ERROR_ACCOUNT_EXPIRED' => '210018',
+        'ERROR_MAXIMUM_USERS_REACHED' =>  '210019',
+        'ERROR_MAX_ATTEMPTS_REACHED' =>  '210019',
+
         'ERROR_INVALID_MISSION_APPLICATION_DATA' => '400000',
         'ERROR_INVALID_MISSION_DATA' => '400001',
         'ERROR_MISSION_NOT_FOUND' => '400003',
@@ -435,6 +461,7 @@ return [
         'ERROR_MEDIA_ID_DOSENT_EXIST' => '400048',
         'ERROR_DOCUMENT_ID_DOSENT_EXIST' => '400049',
         'ERROR_MISSION_DEFAULT_LANGUAGE_CANNOT_DELETED' => '400050',
+        'ERROR_SEND_USER_INVITE_LINK' => '400051',
 
         'ERROR_NEWS_CATEGORY_NOT_FOUND' => '500001',
         'ERROR_NEWS_CATEGORY_INVALID_DATA' => '500002',
@@ -450,6 +477,7 @@ return [
         'ERROR_SUBMIT_STORY_PUBLISHED_OR_DECLINED' => '700008',
         'ERROR_INVALID_INVITE_STORY_DATA' => '700009',
         'ERROR_INVITE_STORY_ALREADY_EXIST' => '700010',
+        'ERROR_SUBMIT_STORY_INVALID' => '700011',
 
         'ERROR_CONTACT_FORM_REQUIRED_FIELDS_EMPTY' => '1000001',
 
@@ -457,6 +485,7 @@ return [
         'ERROR_USER_NOTIFICATION_NOT_FOUND' => '600002',
 
         'ERROR_INVALID_JSON' => '900000',
+        'ERROR_TENANT_SETTING_DISABLED' => '900001',
 
         'ERROR_TENANT_ASSET_FOLDER_NOT_FOUND_ON_S3' => '800009',
         'ERROR_NO_FILES_FOUND_IN_ASSETS_FOLDER' => '800010',
@@ -497,11 +526,25 @@ return [
         'ERROR_INVALID_SAML_ARGS_COUNTRY' =>  '800103',
         'ERROR_INVALID_SAML_ACCESS' => '800104',
         'ERROR_UNAUTHORIZED_LOGIN_METHOD' => '800105',
-
+        'ERROR_SAML_ACCESS_ONLY_ACTIVE' => '800106',
         'ERROR_STATE_UNABLE_TO_DELETE' => '800039',
         'ERROR_THEME_UNABLE_TO_DELETE' => '800040',
         'ERROR_SKILL_UNABLE_TO_DELETE' => '800041',
-        'ERROR_AVAILABILITY_UNABLE_TO_DELETE' => '800042'
+        'ERROR_AVAILABILITY_UNABLE_TO_DELETE' => '800042',
+
+        'IMPACT_MISSION_NOT_FOUND' => '400060',
+        'ERROR_ORGANIZATION_REQUIRED_FIELDS_EMPTY' => '800043',
+        'ERROR_ORGANIZATION_NOT_FOUND' => '800044',
+        'ERROR_ORGANIZATION_LINKED_TO_MISSION' => '80045',
+        'MISSION_TAB_NOT_FOUND' => '80046',
+        'ERROR_RETRIEVING_TENANT_ACTIVATED_CURRENCIES' => '80047',
+
+        // Donation error codes: 900100 - 900199
+        'ERROR_DONATION_IP_WHITELIST_INVALID_DATA' => '900100',
+        'ERROR_DONATION_IP_WHITELIST_NOT_FOUND' => '900101',
+        'ERROR_SORT_KEY_ALREADY_EXIST' => '900102',
+        'ERROR_IMPACT_SORT_KEY_ALREADY_EXIST' => '900103',
+        'ERROR_INVALID_CURRENCY' => '900104'
     ],
 
     /**
@@ -598,7 +641,11 @@ return [
         'MISSION_MEDIA' => 'MISSION_MEDIA',
         'MISSION_DOCUMENT' => 'MISSION_DOCUMENT',
         'TENANT_LANGUAGE' => 'TENANT_LANGUAGE',
-        'STATE' => 'STATE'
+        'STATE' => 'STATE',
+        'ORGANIZATION' => 'ORGANIZATION',
+        'MISSION_TAB' => 'MISSION_TAB',
+        'DONATION_IP_WHITELIST' => 'DONATION_IP_WHITELIST',
+        'MISSION_IMPACT' => 'MISSION_IMPACT'
     ],
 
     'activity_log_actions' => [
@@ -643,7 +690,6 @@ return [
         'first_name',
         'last_name',
         'email',
-        'city_id',
         'country_id',
         'timezone_id',
         'language_id'
@@ -652,5 +698,15 @@ return [
     'user_statuses' => [
         'ACTIVE' => '1',
         'INACTIVE' => '0'
-    ]
+    ],
+    
+    /*
+     * Icon image types
+     */
+    'icon_image_mime_types' => [
+        'image/png',
+        'image/jpeg',
+        'image/jpg',
+        'image/svg+xml'
+    ],
 ];

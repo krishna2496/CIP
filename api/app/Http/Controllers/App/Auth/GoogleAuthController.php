@@ -41,6 +41,7 @@ class GoogleAuthController extends Controller
             $decodedToken = $this->helpers->decodeJwtToken($state);
             $frontendFqdn = $decodedToken->domain;
             $tenantId = $decodedToken->tenant;
+            $request->merge(['tenant' => $tenantId]);
         }
 
         $this->helpers->createConnection($tenantId);
@@ -59,6 +60,7 @@ class GoogleAuthController extends Controller
                         "secret" => env('GOOGLE_AUTH_SECRET'),
                     ],
                     'authorize_url_parameters' => [
+                        'approval_prompt' => 'force',
                         'state' => $state,
                     ]
                 ]
@@ -118,6 +120,7 @@ class GoogleAuthController extends Controller
             'last_name' => $userProfile->lastName,
             'email' => $userProfile->email,
             'status' => '1',
+            'is_admin' => true,
         ];
 
         if (!$userDetail) {
@@ -135,6 +138,8 @@ class GoogleAuthController extends Controller
         $userDetail = $userDetail ?
             $this->userRepository->update($userData, $userDetail->user_id) :
             $this->userRepository->store($userData);
+
+        $this->helpers->syncUserData($request, $userDetail);
 
         $tenantName = $this->helpers->getTenantDomainByTenantId($tenantId);
 

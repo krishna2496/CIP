@@ -18,11 +18,11 @@
 <script>
 import {
     setTimeout
-} from "timers";
+} from 'timers';
 import constants from '../constant';
-import store from "../store";
+import store from '../store';
 export default {
-    name: "Breadcrumb",
+    name: 'Breadcrumb',
     props: {
         breadcrumbActive: String
     },
@@ -32,74 +32,79 @@ export default {
             isCommentDisplay: true,
             isMessageDisplay: true,
             languageData: [],
-            items: [{
+            items: [
+                {
                     id: 1,
                     name: '',
-                    link: "dashboard"
+                    link: 'dashboard'
                 },
                 {
                     id: 2,
                     name: '',
-                    link: "volunteering-history"
+                    link: 'volunteering-history'
                 },
                 {
                     id: 3,
                     name: '',
-                    link: "volunteering-timesheet"
+                    link: 'volunteering-timesheet'
                 },
                 {
                     id: 4,
-                    name: "",
-                    link: "messages"
+                    name: '',
+                    link: 'messages'
                 },
                 {
                     id: 5,
-                    name: "",
-                    link: "comment-history"
+                    name: '',
+                    link: 'comment-history'
                 },
                 {
                     id: 6,
-                    name: "",
-                    link: "my-stories"
+                    name: '',
+                    link: 'my-stories'
                 }
             ],
-            isVolunteeringSettingEnabled: true,
-            isDonationSettingEnabled: true
+            isGoalMissionActive: false,
+            isTimeMissionActive: false,
+            isVolunteeringMission: false
         };
     },
     methods: {
         handleBreadcrumb() {
             if (screen.width < 768) {
                 let breadcrumbDropdown = document.querySelector(
-                    ".breadcrumb-dropdown-wrap"
+                    '.breadcrumb-dropdown-wrap'
                 );
-                breadcrumbDropdown.classList.toggle("open");
+                breadcrumbDropdown.classList.toggle('open');
             }
         }
     },
     created() {
         setTimeout(() => {
-            if (document.querySelector(".breadcrumb") != null) {
+            if (document.querySelector('.breadcrumb') != null) {
                 let currentDashboard = document.querySelector(
-                    ".breadcrumb .router-link-active"
+                    '.breadcrumb .router-link-active'
                 ).innerHTML;
                 this.currentDashboardPage = currentDashboard;
                 let currentLink = document.querySelector(".breadcrumb-current");
                 currentLink.innerHTML = this.currentDashboardPage;
                 currentLink.addEventListener("click", this.handleBreadcrumb);
             }
-        });
+		});
+		this.isGoalMissionActive = this.settingEnabled(constants.VOLUNTEERING_GOAL_MISSION),
+		this.isTimeMissionActive = this.settingEnabled(constants.VOLUNTEERING_TIME_MISSION)
+        if (this.isGoalMissionActive || this.isTimeMissionActive) {
+            this.isVolunteeringMission = true
+        }
         this.isStoryDisplay = this.settingEnabled(constants.STORIES_ENABLED);
         this.isCommentDisplay = this.settingEnabled(constants.MISSION_COMMENTS)
         this.isMessageDisplay = this.settingEnabled(constants.MESSAGE)
         this.languageData = JSON.parse(store.state.languageLabel);
         this.items[0].name = this.languageData.label.dashboard
-
         this.items[1].name = this.languageData.label.volunteering_history
         this.items[2].name = this.languageData.label.volunteering_timesheet
 
-        // this.items[3].name = this.languageData.label.messages
-        if (!this.isCommentDisplay) {
+		if (!this.isCommentDisplay) {
             this.items.splice(4, 1)
         } else {
             this.items[4].name = this.languageData.label.comment_history
@@ -114,11 +119,8 @@ export default {
             this.items.splice(3, 1)
         } else {
             this.items[3].name = this.languageData.label.messages
-        }
-
-        this.isVolunteeringSettingEnabled = this.settingEnabled(constants.VOLUNTERRING_ENABLED);
-        this.isDonationSettingEnabled = this.settingEnabled(constants.DONATION_ENABLED);
-        if (!this.isVolunteeringSettingEnabled) {
+		}
+		if (!this.isVolunteeringMission) {
             this.items.splice(1, 2)
         }
     }
