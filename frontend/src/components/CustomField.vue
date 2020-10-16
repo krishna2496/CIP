@@ -16,12 +16,26 @@
 
             <b-form-group v-if="item.type == 'radio'">
                 <label>{{item.translations.name}}
-                    <span v-if="item.is_mandatory == 1">*</span>
+                  <span v-if="item.is_mandatory == 1">*</span>
                 </label>
-                <b-form-radio-group v-model="customFeildData[item.field_id]" :id='`radio-${item.field_id}`'
-                                    :options="getRadioArrayValue(item.translations.values)"
-                                    :class="{ 'is-invalid': getErrorClass(item.field_id) }" :validstate="getErrorState(item.field_id)"
-                                    @change="updateChanges" :name="item.translations.name">
+                <b-form-radio-group
+                  v-model="customFeildData[item.field_id]" :id='`radio-${item.field_id}`'
+                  :class="{ 'is-invalid': getErrorClass(item.field_id),
+                  'card-columns': item.translations.values.length > 5}"
+                  :style="`column-count: ${Math.min(3, Math.ceil(item.translations.values.length / 5))}`"
+                  :validstate="getErrorState(item.field_id)"
+                  @change="updateChanges" :name="item.translations.name"
+                >
+                  <div
+                    v-for="(option, index) in getRadioArrayValue(item.translations.values)"
+                    :key="index"
+                  >
+                    <b-form-radio
+                      :value="option.value"
+                    >
+                      {{ option.text }}
+                    </b-form-radio>
+                  </div>
                 </b-form-radio-group>
                 <div v-if="getErrorClass(item.field_id)" class="invalid-feedback">
                     {{item.translations.name}} {{ languageData.errors.field_required }}
@@ -30,12 +44,27 @@
 
             <b-form-group v-if="item.type == 'checkbox'">
                 <label>{{item.translations.name}}
-                    <span v-if="item.is_mandatory == 1">*</span>
+                  <span v-if="item.is_mandatory == 1">*</span>
                 </label>
-                <b-form-checkbox-group :id='`checkbox-id-${item.field_id}`' v-model="customFeildData[item.field_id]"
-                                       :options="getRadioArrayValue(item.translations.values)" name="checkbox-custom"
-                                       :class="{ 'is-invalid': getErrorClass(item.field_id) }" :validstate="getErrorState(item.field_id)"
-                                       @input="updateChanges">
+                <b-form-checkbox-group
+                  :id='`checkbox-id-${item.field_id}`' v-model="customFeildData[item.field_id]"
+                  name="checkbox-custom"
+                  :class="{ 'is-invalid': getErrorClass(item.field_id),
+                  'card-columns': item.translations.values.length > 5}"
+                  :style="`column-count: ${Math.min(3, Math.ceil(item.translations.values.length / 5))}`"
+                  :validstate="getErrorState(item.field_id)"
+                  @input="updateChanges"
+                >
+                  <div
+                    v-for="(option, index) in getRadioArrayValue(item.translations.values)"
+                    :key="index"
+                  >
+                    <b-form-checkbox
+                      :value="option.value"
+                    >
+                      {{ option.text }}
+                    </b-form-checkbox>
+                  </div>
                 </b-form-checkbox-group>
                 <div v-if="getErrorClass(item.field_id)" class="invalid-feedback">
                     {{item.translations.name}} {{ languageData.errors.field_required }}
