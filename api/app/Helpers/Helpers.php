@@ -527,21 +527,6 @@ class Helpers
         return (bool)$adminUser;
     }
 
-    public function getSupportedFieldsToPseudonymize()
-    {
-        return [
-            'first_name',
-            'last_name',
-            'email',
-            'employee_id',
-            'linked_in_url',
-            'position',
-            'department',
-            'profile_text',
-            'why_i_volunteer'
-        ];
-    }
-
     /**
      * Check for valid currency from `ci_admin` table.
      *
@@ -571,23 +556,44 @@ class Helpers
      *
      * @param Request $request
      *
+     * @param \Illuminate\Http\Request $request
      * @return Illuminate\Support\Collection
      */
-    public function getTenantActivatedCurrencies(Request $request): Collection
+    public function getTenantActivatedCurrencies(Request $request) : Collection
     {
         $tenant = $this->getTenantDetail($request);
+
+        // Connect master database to get tenant currency
         $this->switchDatabaseConnection('mysql');
 
-        $currencies = $this->db->table('tenant_currency')
-            ->select('code', 'default')
+        $tenantCurrencies = $this->db->table('tenant_currency')
+            ->select(
+                'tenant_currency.code',
+                'tenant_currency.default'
+            )
             ->where('tenant_id', $tenant->tenant_id)
-            ->where('is_active', 1)
-            ->orderBy('default', 'DESC')
-            ->orderBy('code', 'ASC')
+            ->where('tenant_currency.is_active', '1')
+            ->orderBy('tenant_currency.code', 'ASC')
             ->get();
 
+        // Connect tenant database
         $this->switchDatabaseConnection('tenant');
 
-        return $currencies;
+        return $tenantCurrencies;
+    }
+
+    public function getSupportedFieldsToPseudonymize()
+    {
+        return [
+            'first_name',
+            'last_name',
+            'email',
+            'employee_id',
+            'linked_in_url',
+            'position',
+            'department',
+            'profile_text',
+            'why_i_volunteer'
+        ];
     }
 }

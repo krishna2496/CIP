@@ -39,7 +39,7 @@ trait RestExceptionHandlerTrait
             $message
         );
     }
-    
+
     /**
      * Returns json response for Invalid argument exception.
      *
@@ -56,7 +56,7 @@ trait RestExceptionHandlerTrait
             $message
         );
     }
-    
+
     /**
      * Returns json response for Methos not allowed http exception
      *
@@ -88,7 +88,7 @@ trait RestExceptionHandlerTrait
             $message
         );
     }
-    
+
     /**
      * Returns json response for bucket not found on s3
      *
@@ -122,7 +122,7 @@ trait RestExceptionHandlerTrait
             $message
         );
     }
-    
+
     /**
      * Returns json response for tenant's domain not found
      *
@@ -158,6 +158,23 @@ trait RestExceptionHandlerTrait
             $statusCode,
             Response::$statusTexts[$statusCode],
             $customErrorCode,
+            $message
+        );
+    }
+
+    /**
+     * Returns a HTTP 403 Forbidden response
+     * @param string $customErrorCode
+     * @param string $message
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    protected function forbidden($errorCode = '', $message = '')
+    {
+        return $this->jsonResponse(
+            Response::HTTP_FORBIDDEN,
+            Response::$statusTexts[Response::HTTP_FORBIDDEN],
+            $errorCode,
             $message
         );
     }
