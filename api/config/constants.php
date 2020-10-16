@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
      * constants to use any where in system
      */
@@ -86,7 +85,10 @@ return [
      */
     'mission_type' => [
         'TIME' => 'TIME',
-        'GOAL' => 'GOAL'
+        'GOAL' => 'GOAL',
+        'DONATION' => 'DONATION',
+        'EAF' => 'EAF',
+        'DISASTER_RELIEF' => 'DISASTER_RELIEF'
     ],
 
     /*
@@ -117,7 +119,7 @@ return [
     'image_types' => [
         'PNG' => 'png',
         'JPG' => 'jpg',
-        'JPEG' => 'jpeg',
+        'JPEG' => 'jpeg'
     ],
 
     /*
@@ -126,7 +128,7 @@ return [
     'story_image_types' => [
         'PNG' => 'png',
         'JPG' => 'jpg',
-        'JPEG' => 'jpeg',
+        'JPEG' => 'jpeg'
     ],
 
     /*
@@ -135,7 +137,7 @@ return [
     'slider_image_types' => [
         'PNG' => 'png',
         'JPG' => 'jpg',
-        'JPEG' => 'jpeg',
+        'JPEG' => 'jpeg'
     ],
 
     /*
@@ -230,7 +232,7 @@ return [
 
     'ALLOW_TIMESHEET_ENTRY' => 2,
 
-    /**
+    /*
      * Export timesheet file names
      */
     'export_timesheet_file_names' => [
@@ -248,7 +250,6 @@ return [
         'UNPUBLISHED' => 'UNPUBLISHED'
     ],
 
-
     /*
      * Story status
      */
@@ -259,18 +260,18 @@ return [
         'DECLINED' => 'DECLINED'
     ],
 
-    /**
+    /*
      * Export story file names
      */
     'export_story_file_names' => [
-        'STORY_XLSX' => 'Stories.xlsx',
+        'STORY_XLSX' => 'Stories.xlsx'
     ],
 
-    /**
+    /*
      * Export mission comments file names
      */
     'export_mission_comment_file_names' => [
-        'MISSION_COMMENT_XLSX' => 'MissionComments.xlsx',
+        'MISSION_COMMENT_XLSX' => 'MissionComments.xlsx'
     ],
 
     /*
@@ -302,8 +303,8 @@ return [
         'send_message_from' => [
             'all' => 0,
             'user' => 1,
-            'admin' => 2,
-        ]
+            'admin' => 2
+        ],
     ],
 
     /*
@@ -323,7 +324,7 @@ return [
         'NEW_NEWS' => 'New News'
     ],
 
-    /**
+    /*
      * notification status
      */
     'notification' => [
@@ -346,7 +347,11 @@ return [
         'STATE_ENABLED' => 'state_selection',
         'MISSION_IMPACT' => 'mission_impact',
         'VOLUNTEERING_GOAL_MISSION' => 'volunteering_goal_mission',
-        'VOLUNTEERING_TIME_MISSION' => 'volunteering_time_mission'
+        'VOLUNTEERING_TIME_MISSION' => 'volunteering_time_mission',
+        'DONATION_MISSION' => 'donation',
+        'VOLUNTEERING_MISSION' => 'volunteering',
+        'EAF' => 'eaf',
+        'DISASTER_RELIEF' => 'disaster_relief'
     ],
 
     'TOP_THEME' => "top_themes",
@@ -363,16 +368,16 @@ return [
     'STATE' => 'state',
     'VIRTUAL' => 'virtual-missions',
     /* sort by */
-    "NEWEST" => "newest",
-    "OLDEST" => "oldest",
-    "LOWEST_AVAILABLE_SEATS" => "lowest_available_seats",
-    "HIGHEST_AVAILABLE_SEATS" => "highest_available_seats",
-    "MY_FAVOURITE" => "my_favourite",
-    "DEADLINE" => "deadline",
+    'NEWEST' => 'newest',
+    'OLDEST' => 'oldest',
+    'LOWEST_AVAILABLE_SEATS' => 'lowest_available_seats',
+    'HIGHEST_AVAILABLE_SEATS' => 'highest_available_seats',
+    'MY_FAVOURITE' => 'my_favourite',
+    'DEADLINE' => 'deadline',
 
-    'ORGANIZATION' => "organization",
-    'EXPLORE_MISSION_LIMIT' => "5",
-    'IMAGE' => "image",
+    'ORGANIZATION' => 'organization',
+    'EXPLORE_MISSION_LIMIT' => '5',
+    'IMAGE' => 'image',
 
     'error_codes' => [
         'ERROR_FOOTER_PAGE_REQUIRED_FIELDS_EMPTY' => '300000',
@@ -495,7 +500,7 @@ return [
         'ERROR_REQUIRED_FIELDS_FOR_UPDATE_STYLING' => '800023',
         'ERROR_POLICY_PAGE_NOT_FOUND' => '300010',
         'ERROR_POLICY_PAGE_REQUIRED_FIELDS_EMPTY' => '300011',
-        'ERROR_MESSAGE_REQUIRED_FIELDS_EMPTY' =>'1100001',
+        'ERROR_MESSAGE_REQUIRED_FIELDS_EMPTY' => '1100001',
         'ERROR_MESSAGE_USER_MESSAGE_NOT_FOUND' => '1100002',
         'ERROR_ACTIVITY_LOG_REQUIRED_FIELDS_EMPTY' => '1200001',
         'ERROR_AVAILABILITY_INVALID_DATA' => '410001',
@@ -519,7 +524,7 @@ return [
         'ERROR_INVALID_SAML_IDENTITY_PROVIDER' => '800100',
         'ERROR_INVALID_SAML_ARGS_LANGUAGE' => '800101',
         'ERROR_INVALID_SAML_ARGS_TIMEZONE' => '800102',
-        'ERROR_INVALID_SAML_ARGS_COUNTRY' =>  '800103',
+        'ERROR_INVALID_SAML_ARGS_COUNTRY' => '800103',
         'ERROR_INVALID_SAML_ACCESS' => '800104',
         'ERROR_UNAUTHORIZED_LOGIN_METHOD' => '800105',
         'ERROR_SAML_ACCESS_ONLY_ACTIVE' => '800106',
@@ -539,7 +544,8 @@ return [
         'ERROR_DONATION_IP_WHITELIST_INVALID_DATA' => '900100',
         'ERROR_DONATION_IP_WHITELIST_NOT_FOUND' => '900101',
         'ERROR_SORT_KEY_ALREADY_EXIST' => '900102',
-        'ERROR_IMPACT_SORT_KEY_ALREADY_EXIST' => '900103'
+        'ERROR_IMPACT_SORT_KEY_ALREADY_EXIST' => '900103',
+        'ERROR_INVALID_CURRENCY' => '900104'
     ],
 
     /**
@@ -558,7 +564,7 @@ return [
         'NEW_NEWS' => 'new_news'
     ],
 
-    /**
+    /*
      * Notification actions
      */
     'notification_actions' => [
@@ -583,7 +589,7 @@ return [
     'notification_icons' => [
         'APPROVED' => 'approve-ic.png',
         'DECLINED' => 'warning.png',
-        'NEW' => 'circle-plus.png',
+        'NEW' => 'circle-plus.png'
     ],
 
     'notification_status' => [
@@ -673,7 +679,7 @@ return [
         'ACTIVATED' => 'ACTIVATED',
         'DEACTIVATED' => 'DEACTIVATED',
         'CLEAR_ALL' => 'CLEAR_ALL',
-        'PASSWORD_UPDATED' => 'PASSWORD_UPDATED',
+        'PASSWORD_UPDATED' => 'PASSWORD_UPDATED'
     ],
 
     'activity_log_user_types' => [
@@ -681,7 +687,7 @@ return [
         'REGULAR' => 'REGULAR'
     ],
 
-    'profile_required_fields'=> [
+    'profile_required_fields' => [
         'first_name',
         'last_name',
         'email',
@@ -694,7 +700,7 @@ return [
         'ACTIVE' => '1',
         'INACTIVE' => '0'
     ],
-
+    
     /*
      * Icon image types
      */

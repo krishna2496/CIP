@@ -527,6 +527,61 @@ class Helpers
         return (bool)$adminUser;
     }
 
+    /**
+     * Check for valid currency from `ci_admin` table.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param string $currencyCode
+     * @return bool
+     */
+    public function isValidTenantCurrency(Request $request, string $currencyCode)
+    {
+        $tenant = $this->getTenantDetail($request);
+        // Connect master database to get currency details
+        $this->switchDatabaseConnection('mysql');
+
+        $tenantCurrency = $this->db->table('tenant_currency')
+            ->where('tenant_id', $tenant->tenant_id)
+            ->where('code', $currencyCode)
+            ->where('is_active', '1');
+
+        // Connect tenant databases
+        $this->switchDatabaseConnection('tenant');
+
+        return ($tenantCurrency->count() > 0) ? true : false;
+    }
+
+    /**
+     * Get tenant activated currencies
+     *
+     * @param Request $request
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return Illuminate\Support\Collection
+     */
+    public function getTenantActivatedCurrencies(Request $request) : Collection
+    {
+        $tenant = $this->getTenantDetail($request);
+
+        // Connect master database to get tenant currency
+        $this->switchDatabaseConnection('mysql');
+
+        $tenantCurrencies = $this->db->table('tenant_currency')
+            ->select(
+                'tenant_currency.code',
+                'tenant_currency.default'
+            )
+            ->where('tenant_id', $tenant->tenant_id)
+            ->where('tenant_currency.is_active', '1')
+            ->orderBy('tenant_currency.code', 'ASC')
+            ->get();
+
+        // Connect tenant database
+        $this->switchDatabaseConnection('tenant');
+
+        return $tenantCurrencies;
+    }
+
     public function getSupportedFieldsToPseudonymize()
     {
         return [
@@ -540,30 +595,5 @@ class Helpers
             'profile_text',
             'why_i_volunteer'
         ];
-    }
-
-    /**
-     * Get tenant activated currencies
-     *
-     * @param Request $request
-     *
-     * @return Illuminate\Support\Collection
-     */
-    public function getTenantActivatedCurrencies(Request $request): Collection
-    {
-        $tenant = $this->getTenantDetail($request);
-        $this->switchDatabaseConnection('mysql');
-
-        $currencies = $this->db->table('tenant_currency')
-            ->select('code', 'default')
-            ->where('tenant_id', $tenant->tenant_id)
-            ->where('is_active', 1)
-            ->orderBy('default', 'DESC')
-            ->orderBy('code', 'ASC')
-            ->get();
-
-        $this->switchDatabaseConnection('tenant');
-
-        return $currencies;
     }
 }
