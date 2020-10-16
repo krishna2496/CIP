@@ -95,6 +95,11 @@ $router->group(['middleware' => 'localization'], function ($router) {
         'middleware' => 'tenant.connection',
         'uses' => 'App\Tenant\TenantActivatedSettingController@index']);
 
+    /* Fetch tenant currency */
+    $router->get('/app/tenant-currencies', ['as' => 'app.tenant-currency',
+        'middleware' => 'tenant.connection|jwt.auth|TenantHasSettings:donation',
+        'uses' => 'App\Tenant\TenantCurrencyController@index']);
+
     /* Apply to a mission */
     $router->post(
         'app/mission/application',
@@ -305,12 +310,12 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Get volunteering history for theme */
     $router->get('/app/volunteer/history/theme', ['as' => 'app.volunteer.history.theme',
-        'middleware' => 'tenant.connection|jwt.auth|user.profile.complete|TenantHasSettings:volunteering',
+        'middleware' => 'tenant.connection|jwt.auth|user.profile.complete|TenantHasSettings:volunteering,volunteering_time_mission',
         'uses' => 'App\VolunteerHistory\VolunteerHistoryController@themeHistory']);
 
     /* Get volunteering history for skill */
     $router->get('/app/volunteer/history/skill', ['as' => 'app.volunteer.history.skill',
-        'middleware' => 'tenant.connection|jwt.auth|user.profile.complete|TenantHasSettings:volunteering',
+        'middleware' => 'tenant.connection|jwt.auth|user.profile.complete|TenantHasSettings:volunteering,volunteering_time_mission',
         'uses' => 'App\VolunteerHistory\VolunteerHistoryController@skillHistory']);
 
     /* Get volunteering  history for time missions */
@@ -632,6 +637,11 @@ $router->group(
             $router->get('/activated', ['uses' => 'Admin\Tenant\TenantActivatedSettingController@index']);
         }
     );
+
+    $router->get('/tenant-currencies', [
+        'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware',
+        'uses' => 'Admin\Tenant\TenantActivatedCurrenciesController@index'
+    ]);
 
     /* Set mission theme data for tenant specific */
     $router->group(

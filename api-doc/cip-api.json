@@ -1752,8 +1752,7 @@
         "consumes": [
           "multipart/form-data"
         ],
-        "responses": {
-        }
+        "responses": {}
       }
     },
     "/app/cms/detail": {
@@ -4398,6 +4397,39 @@
         }
       }
     },
+    "/tenant-currencies": {
+      "get": {
+        "operationId": "GET-cip-api-get-activated-currencies",
+        "summary": "Admin - Get tenant activated currencies",
+        "description": "List of all the tenant activated currencies",
+        "tags": [
+          "Tenant - Admin"
+        ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tenant activated currencies listed successfully | Tenant has no activated currencies"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or secret key"
+          }
+        }
+      }
+    },
     "/language/{isoCode}": {
       "get": {
         "operationId": "GET_team4-cip-api-skill",
@@ -4418,8 +4450,7 @@
             "type": "string"
           }
         ],
-        "responses": {
-        }
+        "responses": {}
       }
     },
     "/app/custom-css": {
@@ -4433,8 +4464,7 @@
         "consumes": [
           "multipart/form-data"
         ],
-        "responses": {
-        }
+        "responses": {}
       }
     },
     "/app/custom-favicon": {
@@ -4463,8 +4493,7 @@
         "consumes": [
           "multipart/form-data"
         ],
-        "responses": {
-        }
+        "responses": {}
       }
     },
     "/app/explore-mission": {
@@ -4593,6 +4622,27 @@
           },
           "401": {
             "description": "Unauthorized - Invalid token"
+          }
+        }
+      }
+    },
+    "/app/tenant-currencies": {
+      "get": {
+        "operationId": "GET-cip-api-get-tenant-currency",
+        "summary": "App - Get tenant currencies",
+        "description": "Get the list of all the tenant activated currencies",
+        "tags": [
+          "Tenant - App"
+        ],
+        "responses": {
+          "200": {
+            "description": "Currencies listed successfully"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid token"
+          },
+          "403": {
+            "description": "Forbidden - Required tenant setting is disabled"
           }
         }
       }
@@ -7480,6 +7530,42 @@
         }
       }
     },
+    "/app/country": {
+      "get": {
+        "operationId": "GET_cip-api-get-country",
+        "summary": "App - Get country list",
+        "tags": [
+          "Country"
+        ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+          {
+            "name": "detailed",
+            "in": "path",
+            "description": "If true, return the country list with more information",
+            "required": false,
+            "type": "boolean"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid token"
+          }
+        }
+      }
+    },
     "/entities/countries": {
       "post": {
         "operationId": "POST_team4-cip-api-admin-add-country",
@@ -8370,7 +8456,7 @@
       "get": {
         "operationId": "GET_team4-cip-api-get-timezone",
         "summary": "Admin - Fetch timezone list",
-        "tags":[
+        "tags": [
           "Timezone"
         ],
         "parameters": [
@@ -8383,8 +8469,8 @@
           }
         ],
         "responses": {
-          "401":{
-            "description":"Unauthorized - Invalid API key or secret key"
+          "401": {
+            "description": "Unauthorized - Invalid API key or secret key"
           }
         }
       }
@@ -9127,7 +9213,7 @@
                       "type": "string",
                       "description": "Language ISO code (e.g. en, fr)"
                     },
-                    "content" : {
+                    "content": {
                       "type": "string",
                       "description": "Mission impact description"
                     }
@@ -9220,7 +9306,11 @@
         "un_sdg": {
           "type": "array",
           "description": "Array of valid UN SDG numbers (1 to 17)",
-          "example": [1, 2, 3]
+          "example": [
+            1,
+            2,
+            3
+          ]
         },
         "organization": {
           "type": "object",
@@ -9260,6 +9350,40 @@
             "postal_code": {
               "type": "string",
               "description": "Organization postal code"
+            }
+          }
+        },
+        "donation_attribute": {
+          "type": "object",
+          "properties": {
+            "goal_amount_currency": {
+              "type": "string",
+              "description": "Goal amount's currency"
+            },
+            "goal_amount": {
+              "type": "integer",
+              "description": "Goal amount for donation"
+            },
+            "show_goal_amount": {
+              "type": "boolean"
+            },
+            "show_donation_percentage": {
+              "type": "boolean"
+            },
+            "show_donation_meter": {
+              "type": "boolean"
+            },
+            "show_donation_count": {
+              "type": "boolean"
+            },
+            "show_donors_count": {
+              "type": "boolean"
+            },
+            "disable_when_funded": {
+              "type": "boolean"
+            },
+            "is_disabled": {
+              "type": "boolean"
             }
           }
         }
@@ -9537,7 +9661,7 @@
                       "type": "string",
                       "description": "Language ISO code (e.g. en, fr)"
                     },
-                    "content" : {
+                    "content": {
                       "type": "string",
                       "description": "Mission impact description"
                     }
@@ -9630,7 +9754,11 @@
         "un_sdg": {
           "type": "array",
           "description": "Array of valid UN SDG numbers (1 to 17)",
-          "example": [1, 2, 3]
+          "example": [
+            1,
+            2,
+            3
+          ]
         },
         "organization": {
           "type": "object",
@@ -9670,6 +9798,40 @@
             "postal_code": {
               "type": "string",
               "description": "Organization postal code"
+            }
+          }
+        },
+        "donation_attribute": {
+          "type": "object",
+          "properties": {
+            "goal_amount_currency": {
+              "type": "string",
+              "description": "Goal amount's currency"
+            },
+            "goal_amount": {
+              "type": "integer",
+              "description": "Goal amount for donation"
+            },
+            "show_goal_amount": {
+              "type": "boolean"
+            },
+            "show_donation_percentage": {
+              "type": "boolean"
+            },
+            "show_donation_meter": {
+              "type": "boolean"
+            },
+            "show_donation_count": {
+              "type": "boolean"
+            },
+            "show_donors_count": {
+              "type": "boolean"
+            },
+            "disable_when_funded": {
+              "type": "boolean"
+            },
+            "is_disabled": {
+              "type": "boolean"
             }
           }
         }
@@ -9808,7 +9970,7 @@
         "status": {
           "type": "integer",
           "description": "1 => Active, 0 => Inactive",
-          "enum":[
+          "enum": [
             "1",
             "0"
           ]
@@ -9821,7 +9983,7 @@
           "type": "string"
         },
         "expiry": {
-          "type":  "string",
+          "type": "string",
           "format": "date-time",
           "description": "yyyy-mm-dd hh:mm:ss 24-hour format in UTC"
         },
@@ -9829,7 +9991,7 @@
           "type": "string"
         },
         "invitation_sent_at": {
-          "type":  "string",
+          "type": "string",
           "format": "date-time",
           "description": "yyyy-mm-dd hh:mm:ss 24-hour format in UTC"
         }
