@@ -400,6 +400,7 @@ return [
         'ERROR_DONATION_IP_WHITELIST_NOT_FOUND' => 'IP whitelist not found in system',
         'ERROR_SORT_KEY_ALREADY_EXIST' => 'The sort key has already been taken.',
         'ERROR_IMPACT_SORT_KEY_ALREADY_EXIST' => 'The impact sort key has already been taken.',
+        'ERROR_IP_ADDRESS_NOT_ALLOWED' => 'You are not allowed to proceed with this request.',
 
         // For submitting a story feature
         'ERROR_STORY_MISSION_APPLICATION_NOT_APPROVED' => 'You cannot submit a story, mission application was not approved.',

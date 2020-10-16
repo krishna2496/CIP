@@ -39,7 +39,7 @@ class WhitelistRepository
      * Get list of whitelisted Ips
      *
      * @param array $paginate
-     *              $paginate['perPage'] Item limit count per page
+     *              $paginate['perPage'] Item limit count per page|null to disable pagination
      * @param array $filters
      *              $filters['search'] Search for pattern or description
      *
@@ -47,7 +47,7 @@ class WhitelistRepository
      */
     public function getList($paginate, $filters)
     {
-        return $this->donationIpWhitelist
+        $whiteListQuery = $this->donationIpWhitelist
             ->select(
                 'id',
                 'pattern',
@@ -66,8 +66,13 @@ class WhitelistRepository
                     }
                     $query->orderBy($column, $direction);
                 }
-            })
-            ->paginate($paginate['perPage']);
+            });
+
+            if (!$paginate['perPage']) {
+                return $whiteListQuery->get();
+            }
+
+            return $whiteListQuery->paginate($paginate['perPage']);
     }
 
     /**
