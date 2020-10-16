@@ -121,18 +121,18 @@
                     </b-col>
                 </b-row>
                 <div class="btn-row">
-                    <b-button class="btn-borderprimary" @click="cancleShareStory">{{languageData.label.cancel}}
+                    <b-button class="btn-borderprimary btn-validate" @click="cancleShareStory">{{languageData.label.cancel}}
                     </b-button>
                     <!-- <b-button class="btn-borderprimary" v-bind:class="{disabled:previewButtonEnable}"
                         @click="previewStory(storyId)"><span>{{languageData.label.preview}}
                         </span></b-button> -->
-                    <b-button class="btn-borderprimary" @click="saveStory('preview')">
+                    <b-button class="btn-borderprimary btn-validate" @click="saveStory('preview')">
                         <span>{{languageData.label.preview}}
                         </span></b-button>
-                    <b-button class="btn-bordersecondary btn-save"
+                    <b-button class="btn-bordersecondary btn-validate"
                               v-bind:class="{disabled:saveButtonEnable || saveButtonAjaxCall}" @click="saveStory('save')">
                         {{languageData.label.save}}</b-button>
-                    <b-button class="btn-bordersecondary btn-submit"
+                    <b-button class="btn-bordersecondary btn-submit btn-validate"
                               v-bind:class="{disabled:submitButtonEnable || submitButtonAjaxCall}"
                               @click="saveStory('submit')">{{languageData.label.submit}}</b-button>
                 </div>
@@ -227,7 +227,6 @@
         },
         errorInGetStoryDetail: false,
         unprocessableEntityStatus: 422
-
       }
     },
     validations: {
@@ -455,7 +454,8 @@
               this.message = response.message
             } else {
               this.formChange = 0;
-              this.storyId = response.data
+              this.storyId = response.data;
+
               if (params == "preview" && this.storyId != '') {
                 let routeData = this.$router.resolve({
                   path: "/story-preview" + '/' + this.storyId
@@ -463,7 +463,8 @@
                 window.open(routeData.href, '_blank');
                 this.isLoaderActive = false
                 this.saveButtonAjaxCall = false
-                return false;
+                this.getStoryDetail();
+                return;
               } else {
                 this.showDismissibleAlert = true
                 if (this.storyId != '') {
@@ -483,19 +484,10 @@
             this.saveButtonAjaxCall = false
           })
         } else {
-          if (params == "preview" && this.storyId != '') {
-            this.formChange = 0;
-            let routeData = this.$router.resolve({
-              path: "/story-preview" + '/' + this.storyId
-            });
-            window.open(routeData.href, '_blank');
-            this.isLoaderActive = false
-            this.saveButtonAjaxCall = false
-            return false;
-          }
           if (this.story.videoUrl == '') {
             formData.append('story_videos', '');
           }
+
           formData.append('_method', 'PATCH');
           updateStory(formData, this.storyId).then(response => {
             this.showDismissibleAlert = true
@@ -505,7 +497,20 @@
               this.message = response.message
             } else {
               this.formChange = 0;
-              if (this.storyId != '') {
+
+              if (params == "preview" && this.storyId != '') {
+                let routeData = this.$router.resolve({
+                  path: `/story-preview/${this.storyId}`
+                });
+                window.open(routeData.href, '_blank');
+                this.isLoaderActive = false;
+                this.saveButtonAjaxCall = false;
+                this.showDismissibleAlert = false;
+                this.getStoryDetail();
+                return;
+              }
+
+              if (this.storyId != '' && params != 'preview') {
                 this.previewButtonEnable = false
                 this.submitButtonEnable = false
                 this.getStoryDetail();

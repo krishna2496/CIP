@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\App\Story;
 
+use App\Events\Story\StoryDeletedEvent;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Repositories\Story\StoryRepository;
@@ -303,7 +304,7 @@ class StoryController extends Controller
     {
         try {
             $this->storyRepository->delete($storyId, $request->auth->user_id);
-            $this->notificationRepository->deleteStoryNotifications($storyId);
+
             // Set response data
             $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_STORY_DELETED');

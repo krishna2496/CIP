@@ -210,11 +210,11 @@ class UserRepository implements UserInterface
     /**
      * Update the specified resource in storage.
      *
-     * @param Array $request
-     * @param  int  $id
-     * @return App\User
+     * @param array $request
+     * @param int $id
+     * @return User
      */
-    public function update(Array $request, int $id): User
+    public function update(array $request, int $id): User
     {
         $user = $this->user->findOrFail($id);
         $user->update($request);
@@ -224,8 +224,8 @@ class UserRepository implements UserInterface
     /**
      * Find specified resource in storage.
      *
-     * @param  int  $id
-     * @return App\User
+     * @param int $id
+     * @return User
      */
     public function find(int $id): User
     {
@@ -283,7 +283,7 @@ class UserRepository implements UserInterface
      * Display a listing of specified resources.
      *
      * @param int $userId
-     * @return Illuminate\Database\Eloquent\Collection
+     * @return Collection
      */
     public function userSkills(int $userId): Collection
     {
@@ -295,7 +295,7 @@ class UserRepository implements UserInterface
      * List all the users
      *
      * @param int $userId
-     * @return Illuminate\Database\Eloquent\Collection
+     * @return Collection
      */
     public function listUsers(int $userId) : Collection
     {
@@ -305,9 +305,9 @@ class UserRepository implements UserInterface
     /**
      * Search user
      *
-     * @param string $text
+     * @param string|null $text
      * @param int $userId
-     * @return Illuminate\Database\Eloquent\Collection
+     * @return Collection
      */
     public function searchUsers(string $text = null, int $userId): Collection
     {

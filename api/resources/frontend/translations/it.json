@@ -36,7 +36,6 @@
 		"all_rights_reserved": "Tutti i diritti riservati",
 		"add": "Aggiungi",
 		"already_volunteered": "Ho già fatto volontariato",
-		"on_going_opportunities": "Opportunità",
 		"view_detail": "Maggiori informazioni",
 		"no_record_found": "Nessun risultato",
 		"oldest": "Le meno recenti",
@@ -297,7 +296,14 @@
 		"virtual_missions" : "Volontariato virtuale",
 		"home" : "Pulsante Home",
 		"login_with_sso": "Accedi con SSO",
-		"site_title" : "Home"
+		"site_title": "Home",
+		"ongoing": "In corso",
+		"more": "altro",
+		"and": "e",
+		"for": "Per",
+		"on": "Su",
+		"sort_deadline": "Ordina per scadenza",
+		"no_image_available": "Nessuna immagine disponibile"
 	},
 	"placeholder": {
 		"email_address": "Inserisci un indirizzo di posta elettronica",
@@ -386,7 +392,10 @@
 		"max_image_upload": "Può essere aggiunto un massimo di 20 immagini",
 		"max_video_upload": "Può essere aggiunto un massimo di 20 video",
 		"duplicate_video_url": "Gli url duplicati non sono ammessi",
-		"invalid_saml_setting": "Sono richiesti i seguenti mapping:"
+		"invalid_saml_setting": "Sono richiesti i seguenti mapping:",
+		"password_should_contain_uppercase": "Almeno 1 lettera maiuscola",
+		"password_should_contain_lowercase": "Almeno 1 lettera minuscola",
+		"password_should_contain_numbers": "Almeno 1 numero"
 	},
 	"export_timesheet_file_names": {
 		"PENDING_TIME_MISSION_ENTRIES_XLSX": "Pending_Time_Mission_Entries.xls",

@@ -145,6 +145,7 @@ return [
         'MESSAGE_STORY_COPIED_SUCCESS' => 'Story copied successfully',
         'MESSAGE_UNABLE_TO_EXPORT_USER_STORIES_ENTRIES' => 'No stories found',
         'MESSAGE_STORY_UPDATED' => 'Story updated successfully',
+        'MESSAGE_FAVICON_UPLOADED' => 'Favicon uploaded successfully',
 
         'MESSAGE_USER_COMMENTS_LISTING' => 'User comments listed successfully',
         'MESSAGE_STORY_SUBMITTED_SUCCESSFULLY' => 'Story submitted successfully',
@@ -204,13 +205,16 @@ return [
         'MESSAGE_ORGANIZATION_LISTING' => 'Organization listed successfully',
         'MESSAGE_TENANT_USER_CONTENT_STATISTICS_SUCCESS' => 'User content statistics retrieved successfully',
         'MESSAGE_TENANT_USER_VOLUNTEER_SUMMARY_SUCCESS' => 'Volunteer summary retrieved successfully',
+        'MESSAGE_TENANT_CURRENCY_LISTING' => 'Currencies listed successfully',
         'MESSAGE_MISSION_TAB_DELETED' => 'Mission tab deleted successfully',
         'MESSAGE_NO_DONATION_IP_WHITELIST_FOUND' => 'No whitelisted IP found',
         'MESSAGE_DONATION_IP_WHITELIST_LISTING' => 'IP whitelists listed successfully',
         'MESSAGE_DONATION_IP_WHITELIST_CREATED' => 'IP whitelist created successfully',
         'MESSAGE_DONATION_IP_WHITELIST_UPDATED' => 'IP whitelist updated successfully',
         'MESSAGE_DONATION_IP_WHITELIST_DELETED' => 'IP whitelist deleted successfully',
-        'MESSAGE_MISSION_IMPACT_DELETED' => 'Mission impact deleted successfully'
+        'MESSAGE_MISSION_IMPACT_DELETED' => 'Mission impact deleted successfully',
+        'MESSAGE_TENANT_ACTIVATED_CURRENCIES_FOUND' => 'Tenant activated currencies listed successfully',
+        'MESSAGE_TENANT_ACTIVATED_CURRENCIES_EMPTY' => 'Tenant has no activated currencies',
     ],
 
 
@@ -279,6 +283,7 @@ return [
         'ERROR_DOCUMENT_ID_DOSENT_EXIST' => 'Document id doesnt exist',
         'ERROR_DOCUMENT_NOT_LINKED_WITH_MISSION' => 'Document id is not linked to mission',
         'ERROR_MISSION_DEFAULT_LANGUAGE_CANNOT_DELETED' => 'Default mission language cannot be deleted.',
+        'ERROR_INVALID_TENANT_CURRENCY' => 'Please input a valid tenant currency.',
 
         // Custom error code for Tenant Authorization - 210000 - 219999
         'ERROR_INVALID_API_AND_SECRET_KEY' => 'Invalid API key or secret key',
@@ -294,6 +299,7 @@ return [
         'ERROR_IN_TOKEN_DECODE' => 'An error while decoding token',
         'ERROR_TOKEN_NOT_PROVIDED' => 'Token not provided',
         'ERROR_OLD_PASSWORD_NOT_MATCHED' => 'The old password you have entered is incorrect',
+        'ERROR_PASSWORD_VALIDATION_MESSAGE' => 'Password field must contain one number, uppercase and lowercase letters.',
 
 
         // Custom error code for common exception
@@ -321,6 +327,7 @@ return [
         'ERROR_TENANT_LANGUAGE_INVALID' => 'Invalid tenant language code or file name.',
         'ERROR_INCOMPLETE_LANGUAGE_FILE' => 'Incomplete language file.',
         'ERROR_TENANT_LANGUAGE_INVALID_CODE' => 'Invalid tenant language code.',
+        'ERROR_RETRIEVING_TENANT_ACTIVATED_CURRENCIES' => 'An error was encountered while retrieving tenant activated currencies',
 
         //For timesheet module
         'ERROR_INVALID_ACTION' => 'Entered goal action should not be greater than goal objective',
@@ -386,16 +393,17 @@ return [
         'ERROR_ORGANIZATION_NAME_REQUIRED' => 'Organization name is required when organization id does not exist.',
         'ERROR_ORGANIZATION_LINKED_TO_MISSION' => 'Cannot delete this organization as it is linked to a mission.',
 
-        // mission tab module
+        // Mission Tab module
         'MISSION_TAB_NOT_FOUND' => 'Mission tab not found in the system.',
 
         // For Donation IP Whitelist module
         'ERROR_DONATION_IP_WHITELIST_NOT_FOUND' => 'IP whitelist not found in system',
         'ERROR_SORT_KEY_ALREADY_EXIST' => 'The sort key has already been taken.',
         'ERROR_IMPACT_SORT_KEY_ALREADY_EXIST' => 'The impact sort key has already been taken.',
+        'ERROR_IP_ADDRESS_NOT_ALLOWED' => 'You are not allowed to proceed with this request.',
 
-        //For submitting a story feature
+        // For submitting a story feature
         'ERROR_STORY_MISSION_APPLICATION_NOT_APPROVED' => 'You cannot submit a story, mission application was not approved.',
-        'ERROR_STORY_MISSION_APPLICATION_NOT_FOUND' => 'You cannot submit a story, mission application of the user was not found.'
+        'ERROR_STORY_MISSION_APPLICATION_NOT_FOUND' => 'You cannot submit a story, mission application of the user was not found.',
     ]
 ];

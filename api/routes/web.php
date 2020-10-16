@@ -20,7 +20,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
         'uses' => 'App\Tenant\TenantOptionController@getTenantOption']);
 
     /* User login routing using jwt token */
-    $router->post('/app/login', ['as' => 'login', 'middleware' => 'tenant.connection',
+    $router->post('/app/login', ['as' => 'login', 'middleware' => 'throttle:5,1|tenant.connection',
         'uses' => 'App\Auth\AuthController@authenticate']);
 
     $router->post('/app/transmute', ['as' => 'transmute', 'middleware' => 'tenant.connection',
@@ -31,7 +31,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
         'uses' => 'App\Auth\AuthController@logout']);
 
     /* Forgot password routing */
-    $router->post('/app/request-password-reset', ['middleware' => 'tenant.connection|JsonApiMiddleware',
+    $router->post('/app/request-password-reset', ['middleware' => 'throttle:2,1|tenant.connection|JsonApiMiddleware',
         'uses' => 'App\Auth\AuthController@requestPasswordReset']);
 
     /* Password reset routing */
@@ -53,6 +53,10 @@ $router->group(['middleware' => 'localization'], function ($router) {
     /* Get custom css url  */
     $router->get('/app/custom-css', ['as' => 'custom_css', 'middleware' => 'tenant.connection',
         'uses' => 'App\Tenant\TenantOptionController@getCustomCss']);
+
+    /* Get custom favicon url  */
+    $router->get('/app/custom-favicon', ['as' => 'custom_favicon', 'middleware' => 'tenant.connection',
+        'uses' => 'App\Tenant\TenantOptionController@getCustomFavicon']);
 
     /* Get mission listing  */
     $router->get('/app/missions/', ['as' => 'app.missions',
@@ -90,6 +94,11 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->get('/app/tenant-settings', ['as' => 'app.tenant-settings',
         'middleware' => 'tenant.connection',
         'uses' => 'App\Tenant\TenantActivatedSettingController@index']);
+
+    /* Fetch tenant currency */
+    $router->get('/app/tenant-currencies', ['as' => 'app.tenant-currency',
+        'middleware' => 'tenant.connection|jwt.auth|TenantHasSettings:donation',
+        'uses' => 'App\Tenant\TenantCurrencyController@index']);
 
     /* Apply to a mission */
     $router->post(
@@ -301,12 +310,12 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Get volunteering history for theme */
     $router->get('/app/volunteer/history/theme', ['as' => 'app.volunteer.history.theme',
-        'middleware' => 'tenant.connection|jwt.auth|user.profile.complete|TenantHasSettings:volunteering',
+        'middleware' => 'tenant.connection|jwt.auth|user.profile.complete|TenantHasSettings:volunteering,volunteering_time_mission',
         'uses' => 'App\VolunteerHistory\VolunteerHistoryController@themeHistory']);
 
     /* Get volunteering history for skill */
     $router->get('/app/volunteer/history/skill', ['as' => 'app.volunteer.history.skill',
-        'middleware' => 'tenant.connection|jwt.auth|user.profile.complete|TenantHasSettings:volunteering',
+        'middleware' => 'tenant.connection|jwt.auth|user.profile.complete|TenantHasSettings:volunteering,volunteering_time_mission',
         'uses' => 'App\VolunteerHistory\VolunteerHistoryController@skillHistory']);
 
     /* Get volunteering  history for time missions */
@@ -613,6 +622,8 @@ $router->group(
             $router->get('/download-style', ['uses' => 'Admin\Tenant\TenantOptionsController@downloadStyleFiles']);
             $router->patch('/update-image', ['uses' => 'Admin\Tenant\TenantOptionsController@updateImage']);
             $router->get('/reset-asset-images', ['uses' => 'Admin\Tenant\TenantOptionsController@resetAssetsImages']);
+            $router->get('/favicon', ['uses' => 'Admin\Tenant\TenantCustomizationController@getFavicon']);
+            $router->post('/favicon', ['uses' => 'Admin\Tenant\TenantCustomizationController@uploadFavicon']);
         }
     );
 
@@ -626,6 +637,11 @@ $router->group(
             $router->get('/activated', ['uses' => 'Admin\Tenant\TenantActivatedSettingController@index']);
         }
     );
+
+    $router->get('/tenant-currencies', [
+        'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware',
+        'uses' => 'Admin\Tenant\TenantActivatedCurrenciesController@index'
+    ]);
 
     /* Set mission theme data for tenant specific */
     $router->group(
