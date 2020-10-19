@@ -323,7 +323,12 @@ class UserController extends Controller
             );
         }
 
+        if (isset($request->status)) {
+            $data['status'] = ($request->status) ? config('constants.user_statuses.ACTIVE') : config('constants.user_statuses.INACTIVE');
+            $request->merge($data);
+        }
         $request->replace($request->except(['email', 'is_admin', 'expiry']));
+
         $this->userFilterRepository->saveFilter($request);
         $userDetail = $this->userService->findById($id);
         $data = $request->all();
