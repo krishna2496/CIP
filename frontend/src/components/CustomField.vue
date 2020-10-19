@@ -20,22 +20,25 @@
                 </label>
                 <b-form-radio-group
                   v-model="customFeildData[item.field_id]" :id='`radio-${item.field_id}`'
-                  :class="{ 'is-invalid': getErrorClass(item.field_id),
-                  'card-columns': item.translations.values.length > 5}"
-                  :style="`column-count: ${Math.min(3, Math.ceil(item.translations.values.length / 5))}`"
+                  :class="{ 'is-invalid': getErrorClass(item.field_id)}"
                   :validstate="getErrorState(item.field_id)"
                   @change="updateChanges" :name="item.translations.name"
+                >
+                <div
+                  class="custom-group"
+                  :class="getCustomGroupClass(item.translations.values.length)"
                 >
                   <div
                     v-for="(option, index) in getRadioArrayValue(item.translations.values)"
                     :key="index"
                   >
-                    <b-form-radio
-                      :value="option.value"
-                    >
-                      {{ option.text }}
-                    </b-form-radio>
+                    <label class="d-inline-block p-1">
+                      <b-form-radio :value="option.value">
+                        {{ option.text }}
+                      </b-form-radio>
+                    </label>
                   </div>
+                </div>
                 </b-form-radio-group>
                 <div v-if="getErrorClass(item.field_id)" class="invalid-feedback">
                     {{item.translations.name}} {{ languageData.errors.field_required }}
@@ -49,21 +52,24 @@
                 <b-form-checkbox-group
                   :id='`checkbox-id-${item.field_id}`' v-model="customFeildData[item.field_id]"
                   name="checkbox-custom"
-                  :class="{ 'is-invalid': getErrorClass(item.field_id),
-                  'card-columns': item.translations.values.length > 5}"
-                  :style="`column-count: ${Math.min(3, Math.ceil(item.translations.values.length / 5))}`"
+                  :class="{ 'is-invalid': getErrorClass(item.field_id)}"
                   :validstate="getErrorState(item.field_id)"
                   @input="updateChanges"
                 >
                   <div
-                    v-for="(option, index) in getRadioArrayValue(item.translations.values)"
-                    :key="index"
+                    class="custom-group"
+                    :class="getCustomGroupClass(item.translations.values.length)"
                   >
-                    <b-form-checkbox
-                      :value="option.value"
+                    <div
+                      v-for="(option, index) in getRadioArrayValue(item.translations.values)"
+                      :key="index"
                     >
-                      {{ option.text }}
-                    </b-form-checkbox>
+                      <label class="d-inline-block p-1">
+                        <b-form-checkbox :value="option.value">
+                          {{ option.text }}
+                        </b-form-checkbox>
+                      </label>
+                    </div>
                   </div>
                 </b-form-checkbox-group>
                 <div v-if="getErrorClass(item.field_id)" class="invalid-feedback">
@@ -457,6 +463,12 @@
       isUUID(value) {
         const pattern = /^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$/;
         return pattern.test(value);
+      },
+      getCustomGroupClass (length) {
+        if (!length) return '';
+        
+        const count = Math.min(3, Math.ceil(length / 5));
+        return `custom-group--col-${count}`;
       }
     },
     updated() {},

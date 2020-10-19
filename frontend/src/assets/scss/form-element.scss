@@ -1180,6 +1180,22 @@ label {
     position: relative;
   }
   .form-group {
+    /** style for custom-field radio/checkbox group **/
+    @include sm-min {
+      .custom-group {
+        &--col-2 {
+          column-count: 2;
+        }
+        &--col-3 {
+          column-count: 3;
+        }
+        .custom-control-label {
+          word-break: break-word;
+          white-space: inherit;
+        }
+      }
+    }
+    /**/ 
     .is-invalid {
       .custom-control {
         .custom-control-label {
@@ -1194,6 +1210,7 @@ label {
         .custom-control {
           .custom-control-label {
             color: $black-primary;
+            word
             &:before,
             &:after {
               border-color: $control-border !important;
