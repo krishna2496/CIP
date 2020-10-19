@@ -75,7 +75,8 @@ $app->routeMiddleware([
     'PaginationMiddleware' => App\Http\Middleware\PaginationMiddleware::class,
     'user.profile.complete' => App\Http\Middleware\UserProfileCompleteMiddleware::class,
     'TenantHasSettings' => App\Http\Middleware\TenantHasSettings::class,
-    'throttle' => \App\Http\Middleware\ThrottleRequestsMiddleware::class
+    'throttle' => \App\Http\Middleware\ThrottleRequestsMiddleware::class,
+    'DonationIpWhitelistMiddleware' => App\Http\Middleware\DonationIpWhitelistMiddleware::class,
 ]);
 
 /**

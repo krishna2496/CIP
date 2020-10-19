@@ -827,6 +827,7 @@ class MissionRepository implements MissionInterface
             $this->impactMissionDonationTransformArray($value, $languages);
 
             //mission tab array modification
+            // mission tab array modification
             $this->missionTabTransformArray($value, $languages);
 
             if ($includeImpact) {

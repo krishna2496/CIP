@@ -452,7 +452,7 @@
         }
       }
     },
-    "/missions/mission-impact-donation/{missionImpactDonationId}/": {
+    "/missions/impact-donation/{missionImpactDonationId}/": {
       "delete": {
         "operationId": "delete_cip-api-delete-mission-impact-donation",
         "summary": "Admin - Delete mission impact donation",
@@ -4660,6 +4660,27 @@
           },
           "401": {
             "description": "Unauthorized - Invalid token"
+          }
+        }
+      }
+    },
+    "/app/tenant-currencies": {
+      "get": {
+        "operationId": "GET-cip-api-get-tenant-currency",
+        "summary": "App - Get tenant currencies",
+        "description": "Get the list of all the tenant activated currencies",
+        "tags": [
+          "Tenant - App"
+        ],
+        "responses": {
+          "200": {
+            "description": "Currencies listed successfully"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid token"
+          },
+          "403": {
+            "description": "Forbidden - Required tenant setting is disabled"
           }
         }
       }
@@ -9233,6 +9254,34 @@
                     "content": {
                       "type": "string",
                       "description": "Mission impact description"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "impact_donation": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "amount": {
+                "type": "integer",
+                "description": "amount for impact donation mission. It must be numeric value. Example: 10, 15, 30…"
+              },
+              "translations": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "language_code": {
+                      "type": "string",
+                      "description": "Language ISO code (e.g. en, fr)"
+                    },
+                    "content": {
+                      "type": "string",
+                      "description": "Mission impact_donation description"
                     }
                   }
                 }
