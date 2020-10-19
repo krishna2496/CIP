@@ -180,6 +180,7 @@ class UserControllerTest extends TestCase
             'password' => 'Qwerty1234',
             'language_id' => 1,
             'avatar' => null,
+            'status' => null,
             'expiry' => null,
             'skills' => [['skill_id' => 1]]
         ];
@@ -576,6 +577,7 @@ class UserControllerTest extends TestCase
             'language_id' => 1,
             'avatar' => null,
             'expiry' => null,
+            'status' => null,
             'skills' => [['skill_id' => 1]],
             'department' => 'The Department',
             'employee_id' => 123
@@ -715,6 +717,7 @@ class UserControllerTest extends TestCase
             'password' => 'Qwerty1234',
             'language_id' => 1,
             'avatar' => null,
+            'status' => null,
             'expiry' => null,
             'skills' => [['skill_id' => 1]],
             'department' => 'The Department',
