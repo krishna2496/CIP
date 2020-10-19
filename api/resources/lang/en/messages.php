@@ -405,5 +405,6 @@ return [
         // For submitting a story feature
         'ERROR_STORY_MISSION_APPLICATION_NOT_APPROVED' => 'You cannot submit a story, mission application was not approved.',
         'ERROR_STORY_MISSION_APPLICATION_NOT_FOUND' => 'You cannot submit a story, mission application of the user was not found.',
+        'SHOW_DONATION_COUNT_AND_DONORS_COUNT_ERROR' => 'Show donation count and donors count both can not be true at the same time'
     ]
 ];

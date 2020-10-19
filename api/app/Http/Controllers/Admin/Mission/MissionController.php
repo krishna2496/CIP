@@ -212,7 +212,7 @@ class MissionController extends Controller
                 "documents.*.sort_order" => "required|numeric|min:0|not_in:0",
                 "volunteering_attribute.is_virtual" => "sometimes|required|boolean",
                 "volunteering_attribute.total_seats" => "integer|min:1",
-                "volunteering_attribute.availability_id" => "integer|required|exists:availability,availability_id,deleted_at,NULL",
+                "volunteering_attribute.availability_id" => "integer|required_if:mission_type,TIME,GOAL|exists:availability,availability_id,deleted_at,NULL",
                 "mission_detail.*.label_goal_achieved" => 'sometimes|required_if:mission_type,GOAL|max:255',
                 "mission_detail.*.label_goal_objective" => 'sometimes|required_if:mission_type,GOAL|max:255',
                 "impact" => "sometimes|required|array",
@@ -221,7 +221,7 @@ class MissionController extends Controller
                 "impact.*.translations" => 'required',
                 "impact.*.translations.*.language_code" => 'required_with:impact.*.translations|max:2',
                 "impact.*.translations.*.content" => 'required_with:impact.*.translations|max:300',
-                "availability_id" => "integer|required_without:volunteering_attribute|exists:availability,availability_id,deleted_at,NULL",
+                "availability_id" => "integer|required_if:mission_type,TIME,GOAL|required_without:volunteering_attribute|exists:availability,availability_id,deleted_at,NULL",
                 "total_seats" => "integer|min:1",
                 "is_virtual" => "sometimes|required|in:0,1",
                 "mission_tabs" => "sometimes|required|array",
@@ -284,6 +284,16 @@ class MissionController extends Controller
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
                 config('constants.error_codes.ERROR_INVALID_CURRENCY'),
                 trans('messages.custom_error_message.ERROR_INVALID_TENANT_CURRENCY')
+            );
+        }
+
+        // show_donation_count and show_donors_count both can not be true at the same time
+        if ((isset($request->get('donation_attribute')['show_donation_count']) && isset($request->get('donation_attribute')['show_donors_count'])) && ($request->get('donation_attribute')['show_donation_count'] == true && $request->get('donation_attribute')['show_donors_count'] == true)) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_INVALID_MISSION_DATA'),
+                trans('messages.custom_error_message.SHOW_DONATION_COUNT_AND_DONORS_COUNT_ERROR')
             );
         }
 
@@ -431,11 +441,11 @@ class MissionController extends Controller
                 "end_date" => "sometimes|after:start_date|date",
                 "volunteering_attribute.is_virtual" => "sometimes|required|boolean",
                 "volunteering_attribute.total_seats" => "integer|min:1",
-                "volunteering_attribute.availability_id" => "sometimes|required|integer|exists:availability,availability_id,deleted_at,NULL",
+                "volunteering_attribute.availability_id" => "sometimes|required_if:mission_type,TIME,GOAL|integer|exists:availability,availability_id,deleted_at,NULL",
                 "skills.*.skill_id" => "integer|exists:skill,skill_id,deleted_at,NULL",
                 "is_virtual" => "sometimes|required|in:0,1",
                 "total_seats" => "integer|min:1",
-                "availability_id" => "sometimes|required|integer|exists:availability,availability_id,deleted_at,NULL",
+                "availability_id" => "sometimes|required_if:mission_type,TIME,GOAL|integer|exists:availability,availability_id,deleted_at,NULL",
                 "theme_id" => "sometimes|integer|exists:mission_theme,mission_theme_id,deleted_at,NULL",
                 "application_deadline" => "date",
                 "mission_detail.*.short_description" => "max:1000",
@@ -530,6 +540,16 @@ class MissionController extends Controller
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
                 config('constants.error_codes.ERROR_INVALID_CURRENCY'),
                 trans('messages.custom_error_message.ERROR_INVALID_TENANT_CURRENCY')
+            );
+        }
+
+        // show_donation_count and show_donors_count both can not be true at the same time
+        if ((isset($request->get('donation_attribute')['show_donation_count']) && isset($request->get('donation_attribute')['show_donors_count'])) && ($request->get('donation_attribute')['show_donation_count'] == true && $request->get('donation_attribute')['show_donors_count'] == true)) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_INVALID_MISSION_DATA'),
+                trans('messages.custom_error_message.SHOW_DONATION_COUNT_AND_DONORS_COUNT_ERROR')
             );
         }
 
