@@ -9237,7 +9237,10 @@
           "type": "string",
           "enum": [
             "TIME",
-            "GOAL"
+            "GOAL",
+            "DONATION",
+            "DISASTER_RELIEF",
+            "EAF"
           ]
         },
         "goal_objective": {
@@ -9685,7 +9688,10 @@
           "type": "string",
           "enum": [
             "TIME",
-            "GOAL"
+            "GOAL",
+            "DONATION",
+            "DISASTER_RELIEF",
+            "EAF"
           ]
         },
         "goal_objective": {
