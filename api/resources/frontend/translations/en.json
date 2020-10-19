@@ -181,7 +181,6 @@
 		"browse": "Browse",
 		"delete": "Delete",
 		"actions": "Actions",
-		"years": "Years",
 		"goal": "Goal",
 		"submit_for_approval": "Submitted for approval",
 		"day_volunteered": "Day volunteered",
@@ -297,6 +296,12 @@
 		"virtual_mission" : "Virtual",
 		"virtual_missions" : "Virtual volunteering",
 		"home" : "Home",
+		"login_with_sso": "Login with SSO",
+		"site_title": "Home",
+		"on": "On",
+		"sort_deadline": "Sort by deadline",
+		"no_image_available": "No image available",
+		"years": "Years",
 		"for" : "For",
 		"donate_now" : "Donate Now",
 		"raised_by" : "raised",
@@ -404,12 +409,7 @@
 		"change_currency" : "Change currency",
 		"preferences" : "Preferences",
 		"currency" : "Currency",
-		"current_password" : "Current password",
-		"login_with_sso": "Login with SSO",
-		"site_title": "Home",
-		"on": "On",
-		"sort_deadline": "Sort by deadline",
-		"no_image_available": "No image available"
+		"current_password" : "Current password"
 	},
 	"placeholder": {
 		"email_address": "Enter email address",
@@ -426,7 +426,6 @@
 		"why_i_volunteer": "Reason for volunteering",
 		"city": "Select your city",
 		"country": "Select your country",
-		"old_password": "Enter current password",
 		"new_password": "Enter new password",
 		"confirm_password": "Confirm new password",
 		"availability": "Select your availability",
@@ -449,7 +448,8 @@
 		"enter_your_address" : "Enter your address",
 		"enter_your_town" : "Enter your town",
 		"enter_your_zip_postal_code" : "Enter your zip/postal code",
-		"currency": "Select your currency"
+		"currency": "Select your currency",
+		"old_password": "Enter current password"
 	},
 	"errors": {
 		"email_required": "Email address is required",
@@ -506,12 +506,12 @@
 		"max_video_upload": "Maximum 20 videos can be added",
 		"duplicate_video_url": "Duplicate video url are not allowed",
 		"invalid_saml_setting": "The following mapping(s) are required:",
-		"currency_required" : "Currency is required",
-		"donation_goal_required" : "Donation goal amount is required",
-		"valid_donation_goal" : "Please enter valid donation goal amount",
 		"password_should_contain_uppercase": "At least 1 uppercase letter",
 		"password_should_contain_lowercase": "At least 1 lowercase letter",
-		"password_should_contain_numbers": "At least 1 digit"
+		"password_should_contain_numbers": "At least 1 digit",
+		"currency_required" : "Currency is required",
+		"donation_goal_required" : "Donation goal amount is required",
+		"valid_donation_goal" : "Please enter valid donation goal amount"
 	},
 	"export_timesheet_file_names": {
 		"PENDING_TIME_MISSION_ENTRIES_XLSX": "Pending_Time_Mission_Entries.xls",
