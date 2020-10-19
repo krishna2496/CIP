@@ -288,7 +288,11 @@ class MissionController extends Controller
         }
 
         // show_donation_count and show_donors_count both can not be true at the same time
-        if ((isset($request->get('donation_attribute')['show_donation_count']) && isset($request->get('donation_attribute')['show_donors_count'])) && ($request->get('donation_attribute')['show_donation_count'] == true && $request->get('donation_attribute')['show_donors_count'] == true)) {
+        if ((
+            isset($request->get('donation_attribute')['show_donation_count']) && 
+            isset($request->get('donation_attribute')['show_donors_count'])) && 
+            ($request->get('donation_attribute')['show_donation_count'] == true && 
+            $request->get('donation_attribute')['show_donors_count'] == true)) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
@@ -544,7 +548,11 @@ class MissionController extends Controller
         }
 
         // show_donation_count and show_donors_count both can not be true at the same time
-        if ((isset($request->get('donation_attribute')['show_donation_count']) && isset($request->get('donation_attribute')['show_donors_count'])) && ($request->get('donation_attribute')['show_donation_count'] == true && $request->get('donation_attribute')['show_donors_count'] == true)) {
+        if ((
+            isset($request->get('donation_attribute')['show_donation_count']) && 
+            isset($request->get('donation_attribute')['show_donors_count'])) && 
+            ($request->get('donation_attribute')['show_donation_count'] == true && 
+            $request->get('donation_attribute')['show_donors_count'] == true)) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
