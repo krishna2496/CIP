@@ -65,6 +65,10 @@ class TenantActivatedSettingRepository implements TenantActivatedSettingInterfac
     public function store(array $data): bool
     {
         foreach ($data['settings'] as $value) {
+            $response = $this->checkVolunteeringTimeAndGoalSetting($value);
+            if (!$response) {
+                return false;
+            }
             $this->tenantActivatedSetting->storeSettings($value['tenant_setting_id'], $value['value']);
         }
         return true;
@@ -136,53 +140,52 @@ class TenantActivatedSettingRepository implements TenantActivatedSettingInterfac
     /**
     * Check for Volunterring time or goal mission shoudld be enabled
     *
-    * @param array $data
+    * @param array $value
     * @return bool
     */
-    public function checkVolunteeringTimeAndGoalSetting(array $data)
+    public function checkVolunteeringTimeAndGoalSetting(array $value)
     {
         $this->helpers->switchDatabaseConnection('mysql');
         $volunteering = \DB::table('tenant_setting')->where('key', config('constants.tenant_settings.VOLUNTEERING'))->first();
         $this->helpers->switchDatabaseConnection('tenant');
         $tenantVolunteeringSetting = \DB::table('tenant_setting')->where('setting_id', $volunteering->tenant_setting_id)->first();
+        if (!$tenantVolunteeringSetting) {
+            return false;
+        }
         $volunteeringSetting = $this->tenantActivatedSetting->where('tenant_setting_id', $tenantVolunteeringSetting->tenant_setting_id)->first();
 
         if ($volunteeringSetting) {
-            foreach ($data['settings'] as $value) {
+            $this->helpers->switchDatabaseConnection('tenant');
+           
+            $tenantSetting = \DB::table('tenant_setting')->where('tenant_setting_id', $value['tenant_setting_id'])->first();
+            $this->helpers->switchDatabaseConnection('mysql');
+            $masterSetting = \DB::table('tenant_setting')->where('tenant_setting_id', $tenantSetting->setting_id)->first();
+
+            // Check volunteering goal should be active if we disable volunteering time mission
+            if ($masterSetting->key == config('constants.tenant_settings.VOLUNTEERING_TIME_MISSION') && !$value['value']) {
+                $this->helpers->switchDatabaseConnection('mysql');
+                $volunteeringGoal = \DB::table('tenant_setting')->where('key', config('constants.tenant_settings.VOLUNTEERING_GOAL_MISSION'))->first();
                 $this->helpers->switchDatabaseConnection('tenant');
-                $setting = $this->tenantActivatedSetting->where('tenant_setting_id', $value['tenant_setting_id'])->first();
-                if ($setting) {
-                    $tenantSetting = \DB::table('tenant_setting')->where('tenant_setting_id', $value['tenant_setting_id'])->first();
-                    $this->helpers->switchDatabaseConnection('mysql');
-                    $masterSetting = \DB::table('tenant_setting')->where('tenant_setting_id', $tenantSetting->setting_id)->first();
+                $volunteeringGoalSetting = \DB::table('tenant_setting')->where('setting_id', $volunteeringGoal->tenant_setting_id)->first();
+                $volunteeringGoalSetting = $this->tenantActivatedSetting->where(['tenant_setting_id' => $volunteeringGoalSetting->tenant_setting_id])->first();
                     
-                    // Check volunteering goal should be active if we disable volunteering time mission
-                    if ($masterSetting->key == config('constants.tenant_settings.VOLUNTEERING_TIME_MISSION') && !$value['value']) {
-                        $this->helpers->switchDatabaseConnection('mysql');
-                        $volunteeringGoal = \DB::table('tenant_setting')->where('key', config('constants.tenant_settings.VOLUNTEERING_GOAL_MISSION'))->first();
-                        $this->helpers->switchDatabaseConnection('tenant');
-                        $volunteeringGoalSetting = \DB::table('tenant_setting')->where('setting_id', $volunteeringGoal->tenant_setting_id)->first();
-                        $volunteeringGoalSetting = $this->tenantActivatedSetting->where(['tenant_setting_id' => $volunteeringGoalSetting->tenant_setting_id])->first();
-                       
-                        if (!$volunteeringGoalSetting) {
-                            return false;
-                        }
-                    }
-                    // Check volunteering time should be active if we disable volunteering goal mission
-                    if ($masterSetting->key == config('constants.tenant_settings.VOLUNTEERING_GOAL_MISSION') && !$value['value']) {
-                        $this->helpers->switchDatabaseConnection('mysql');
-                        $volunteeringTime = \DB::table('tenant_setting')->where('key', config('constants.tenant_settings.VOLUNTEERING_TIME_MISSION'))->first();
-                        $this->helpers->switchDatabaseConnection('tenant');
-                        $volunteeringTimeSetting = \DB::table('tenant_setting')->where('setting_id', $volunteeringTime->tenant_setting_id)->first();
-                        $volunteeringTimeSetting = $this->tenantActivatedSetting->where(['tenant_setting_id' => $volunteeringTimeSetting->tenant_setting_id])->first();
-                       
-                        if (!$volunteeringTimeSetting) {
-                            return false;
-                        }
-                    }
+                if (!$volunteeringGoalSetting) {
+                    return false;
                 }
-                $this->helpers->switchDatabaseConnection('tenant');
             }
+            // Check volunteering time should be active if we disable volunteering goal mission
+            if ($masterSetting->key == config('constants.tenant_settings.VOLUNTEERING_GOAL_MISSION') && !$value['value']) {
+                $this->helpers->switchDatabaseConnection('mysql');
+                $volunteeringTime = \DB::table('tenant_setting')->where('key', config('constants.tenant_settings.VOLUNTEERING_TIME_MISSION'))->first();
+                $this->helpers->switchDatabaseConnection('tenant');
+                $volunteeringTimeSetting = \DB::table('tenant_setting')->where('setting_id', $volunteeringTime->tenant_setting_id)->first();
+                $volunteeringTimeSetting = $this->tenantActivatedSetting->where(['tenant_setting_id' => $volunteeringTimeSetting->tenant_setting_id])->first();
+                    
+                if (!$volunteeringTimeSetting) {
+                    return false;
+                }
+            }
+            $this->helpers->switchDatabaseConnection('tenant');
         }
         $this->helpers->switchDatabaseConnection('tenant');
         return true;
@@ -200,6 +203,9 @@ class TenantActivatedSettingRepository implements TenantActivatedSettingInterfac
         $volunteering = \DB::table('tenant_setting')->where('key', config('constants.tenant_settings.VOLUNTEERING'))->first();
         $this->helpers->switchDatabaseConnection('tenant');
         $tenantVolunteeringSetting = \DB::table('tenant_setting')->where('setting_id', $volunteering->tenant_setting_id)->first();
+        if (!$tenantVolunteeringSetting) {
+            return false;
+        }
         $volunteeringSetting = $this->tenantActivatedSetting->where('tenant_setting_id', $tenantVolunteeringSetting->tenant_setting_id)->first();
 
         if (!$volunteeringSetting) {

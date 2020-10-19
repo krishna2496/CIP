@@ -151,7 +151,11 @@ class TenantActivatedSettingControllerTest extends TestCase
         Validator::shouldReceive('make')
             ->andReturn($validator);
 
-        $repository->shouldReceive('checkVolunteeringTimeAndGoalSetting')
+        $repository->shouldReceive('checkVolunteeringSettingDisabled')
+            ->once()
+            ->andReturn(true);
+        
+        $repository->shouldReceive('store')
             ->once()
             ->andReturn(false);
 
@@ -192,10 +196,6 @@ class TenantActivatedSettingControllerTest extends TestCase
 
         Validator::shouldReceive('make')
             ->andReturn($validator);
-
-        $repository->shouldReceive('checkVolunteeringTimeAndGoalSetting')
-            ->once()
-            ->andReturn(true);
 
         $repository->shouldReceive('checkVolunteeringSettingDisabled')
             ->once()
