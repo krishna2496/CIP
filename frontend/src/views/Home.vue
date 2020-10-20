@@ -394,7 +394,9 @@ export default {
     created() {
         this.languageData = JSON.parse(store.state.languageLabel);
         this.sortByFilterSet = this.settingEnabled(constants.SORTING_MISSIONS)
-        this.isVolunteeringSettingEnabled = this.settingEnabled(constants.VOLUNTERRING_ENABLED);
+
+        // hide lowest/highest available seats and deadline filter if volunteering setting is disabled
+        this.isVolunteeringSettingEnabled = this.settingEnabled(constants.SETTING_VOLUNTEERING);
         if (!this.isVolunteeringSettingEnabled) {
             this.sortByOptions.splice(2, 2);
             this.sortByOptions.splice(3, 1);

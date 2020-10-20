@@ -696,7 +696,7 @@ export default {
         this.isSkillDisplay = this.settingEnabled(constants.SKILLS_ENABLED);
         this.isCountrySelectionSet = this.settingEnabled(constants.IS_COUNTRY_SELECTION);
         this.isStateSelectionDisplay = this.settingEnabled(constants.STATE_ENABLED);
-        this.isVolunteeringSettingEnabled = this.settingEnabled(constants.VOLUNTERRING_ENABLED);
+        this.isVolunteeringSettingEnabled = this.settingEnabled(constants.SETTING_VOLUNTEERING);
         eventBus.$on('clearAllFilters', () => {
             this.clearFilter();
         });

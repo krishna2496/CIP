@@ -66,7 +66,6 @@
                         </b-card-header>
 
                         <b-card-body>
-
                             <b-link target="_self" :to="'/mission-detail/' + mission.mission_id" class="content-block">
                                 <div class="content-inner-block">
                                     <div class="mission-label-wrap">
@@ -318,9 +317,7 @@
 import store from '../store';
 import constants from '../constant';
 import StarRating from 'vue-star-rating';
-import {
-    favoriteMission
-} from '../services/service';
+import { favoriteMission } from '../services/service';
 import moment from 'moment';
 import InviteCoWorker from '@/components/InviteCoWorker';
 
@@ -345,7 +342,6 @@ export default {
             message: null,
             submitNewMissionUrl: '',
             cardHeightAdjIntervalId: null,
-            isVolunteeringSettingEnabled: true
         };
     },
     methods: {
@@ -481,8 +477,8 @@ export default {
          * Opens Recommend to a co-worker modal
          */
         handleModal(missionId) {
-            this.currentMissionId = missionId;
-            this.$refs.userDetailModal.show();
+          this.currentMissionId = missionId;
+          this.$refs.userDetailModal.show();
         },
 
         makeToast(variant = null, message) {
@@ -499,7 +495,7 @@ export default {
         },
         cardHeightAdj() {
             if (!document.getElementById('gridView')) {
-                return;
+              return;
             }
 
             const cardBodyList = document.querySelectorAll('.card-grid .card-body');
@@ -601,8 +597,6 @@ export default {
         );
         this.isThemeSet = this.settingEnabled(constants.THEMES_ENABLED);
         this.submitNewMissionUrl = store.state.submitNewMissionUrl;
-        this.isVolunteeringSettingEnabled = this.settingEnabled(constants.VOLUNTERRING_ENABLED);
-
         const _this = this;
         window.addEventListener('resize', this.cardHeightAdj);
         const pageItem = document.querySelectorAll('.pagination-block .page-item');

@@ -54,14 +54,11 @@ export default Object.freeze({
     DECLINED_STORY: 'Declined',
     PENDING_STORY: 'Pending',
     CONTACT_US: 'contact_us_enabled',
-    MESSAGE : 'message_enabled',
+    MESSAGE: 'message_enabled',
     MAX_FILE_NUMBER: 20,
-    MISSION_RATING_VOLUNTEER :'mission_rating_volunteer',
-    STATE_ENABLED : 'state_selection',
-    VOLUNTERRING_ENABLED : 'volunteering',
-    DONATION_ENABLED : 'donation',
-    MISSION_TYPE_GOAL : 'GOAL',
-    MISSION_TYPE_DONATION : 'DONATION',
-    VOLUNTEERING_GOAL_MISSION : 'volunteering_goal_mission',
-    VOLUNTEERING_TIME_MISSION : 'volunteering_time_mission'
+    MISSION_RATING_VOLUNTEER:'mission_rating_volunteer',
+    STATE_ENABLED: 'state_selection',
+    VOLUNTEERING_GOAL_MISSION: 'volunteering_goal_mission',
+    VOLUNTEERING_TIME_MISSION: 'volunteering_time_mission',
+    SETTING_VOLUNTEERING: 'volunteering'
 });

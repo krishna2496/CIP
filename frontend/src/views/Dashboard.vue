@@ -13,10 +13,10 @@
                 <div class="heading-section">
                     <h1>{{languageData.label.dashboard}}</h1>
                     <div class="date-filter">
-                        <AppCustomDropdown :optionList="yearList" @updateCall="updateYear" 
+                        <AppCustomDropdown :optionList="yearList" @updateCall="updateYear"
                                            :defaultText="defaultYear" translationEnable="false" />
-                        <AppCustomDropdown :optionList="monthList" @updateCall="updateMonth" 
-                                           :noListItem="noListItem" :defaultText="defaultMonth" 
+                        <AppCustomDropdown :optionList="monthList" @updateCall="updateMonth"
+                                           :noListItem="noListItem" :defaultText="defaultMonth"
                                            translationEnable="true" class="month-dropdown" />
                     </div>
                 </div>
@@ -103,10 +103,17 @@
                             <div class="inner-chart-col">
                                 <div class="chart-title">
                                     <h5>{{languageData.label.hours_per_month}}</h5>
-                                    <model-select class="search-dropdown" v-if="missionFilterDisplay" :options="missionTitle" v-model="defaultMissionModel" :placeholder="defaultMissionTitle" @input="updateMissionTitle">
+                                    <model-select
+                                        class="search-dropdown"
+                                        v-if="missionFilterDisplay"
+                                        :options="missionTitle"
+                                        v-model="defaultMissionModel"
+                                        :placeholder="defaultMissionTitle"
+                                        @input="updateMissionTitle">
                                     </model-select>
                                 </div>
-                                <div v-bind:class="{ 'content-loader-wrap': true, 'loader-active': hoursMonthActive}">
+                                <div
+                                    v-bind:class="{ 'content-loader-wrap': true, 'loader-active': hoursMonthActive}">
                                     <div class="content-loader"></div>
                                 </div>
 
@@ -240,8 +247,7 @@ export default {
             missionFilterDisplay: false,
             isGoalMissionActive: false,
             isTimeMissionActive: false,
-            isVolunteeringSettingEnabled: true,
-            isDonationSettingEnabled: true
+            isVolunteeringSettingEnabled: true
         };
     },
     mounted() {
@@ -530,8 +536,7 @@ export default {
         this.isTotalVolunteeredHourDisplay = this.settingEnabled(constants.TOTAL_HOURS_VOLUNTEERED)
         this.isGoalMissionActive = this.settingEnabled(constants.VOLUNTEERING_GOAL_MISSION),
         this.isTimeMissionActive = this.settingEnabled(constants.VOLUNTEERING_TIME_MISSION)
-        this.isVolunteeringSettingEnabled = this.settingEnabled(constants.VOLUNTERRING_ENABLED);
-        this.isDonationSettingEnabled = this.settingEnabled(constants.DONATION_ENABLED);
+        this.isVolunteeringSettingEnabled = this.settingEnabled(constants.SETTING_VOLUNTEERING);
         let currentYear = new Date().getFullYear()
         let currentMonth = moment().format('MM')
         // this.defaultYear = currentYear.toString();

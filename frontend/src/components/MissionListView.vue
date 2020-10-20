@@ -187,7 +187,7 @@
         </div>
     </div>
     <invite-co-worker ref="userDetailModal" entity-type="MISSION" :entity-id="currentMissionId"></invite-co-worker>
-</div>
+    </div>
 </div>
 <div class="no-data-found" v-else>
     <h2 class="text-center">{{noRecordFound()}}</h2>
@@ -217,9 +217,7 @@ import constants from '../constant';
 import InviteCoWorker from '@/components/InviteCoWorker';
 import StarRating from 'vue-star-rating';
 import moment from 'moment';
-import {
-    favoriteMission
-} from '../services/service';
+import { favoriteMission } from '../services/service';
 
 export default {
     name: 'MissionListView',
@@ -241,8 +239,7 @@ export default {
             languageData: [],
             message: null,
             submitNewMissionUrl: '',
-            isSkillDisplay: true,
-            isVolunteeringSettingEnabled: true
+            isSkillDisplay: true
         };
     },
     methods: {
@@ -413,7 +410,6 @@ export default {
         this.isThemeSet = this.settingEnabled(constants.THEMES_ENABLED);
         this.submitNewMissionUrl = store.state.submitNewMissionUrl;
         this.isSkillDisplay = this.settingEnabled(constants.SKILLS_ENABLED);
-        this.isVolunteeringSettingEnabled = this.settingEnabled(constants.VOLUNTERRING_ENABLED);
     }
 };
 </script>

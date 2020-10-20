@@ -60,7 +60,6 @@ export default new Vuex.Store({
         stateId: localStorage.getItem('stateId'),
         samlSettings: JSON.parse(localStorage.getItem('samlSettings')),
         ssoLogin: JSON.parse(localStorage.getItem('ssoLogin')),
-        missionTypeLabels : localStorage.getItem('missionTypeLabels'),
         siteTitle: JSON.parse(localStorage.getItem('siteTitle')),
         customLoginText : localStorage.getItem('customLoginText')
     },
@@ -397,11 +396,6 @@ export default new Vuex.Store({
             state.samlSettings = JSON.parse(data);
         },
 
-        missionTypeLabels(state,data) { 
-            localStorage.setItem('missionTypeLabels', JSON.stringify(data))
-            state.missionTypeLabels = JSON.stringify(data)
-        },
-        
         siteTitle(state, data) {
             localStorage.setItem('siteTitle', data);
             state.siteTitle = JSON.parse(data);

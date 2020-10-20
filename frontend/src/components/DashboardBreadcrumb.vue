@@ -63,12 +63,7 @@ export default {
                     name: '',
                     link: 'my-stories'
                 }
-            ],
-            isGoalMissionActive: false,
-            isTimeMissionActive: false,
-            isVolunteeringMission: false,
-            isVolunteeringSettingEnabled: true,
-            isDonationSettingEnabled: true
+            ]
         };
     },
     methods: {
@@ -93,36 +88,34 @@ export default {
                 currentLink.addEventListener("click", this.handleBreadcrumb);
             }
 		});
-		this.isGoalMissionActive = this.settingEnabled(constants.VOLUNTEERING_GOAL_MISSION),
-		this.isTimeMissionActive = this.settingEnabled(constants.VOLUNTEERING_TIME_MISSION)
-        if (this.isGoalMissionActive || this.isTimeMissionActive) {
-            this.isVolunteeringMission = true
-        }
-        this.isStoryDisplay = this.settingEnabled(constants.STORIES_ENABLED);
-        this.isCommentDisplay = this.settingEnabled(constants.MISSION_COMMENTS)
-        this.isMessageDisplay = this.settingEnabled(constants.MESSAGE)
+
         this.languageData = JSON.parse(store.state.languageLabel);
         this.items[0].name = this.languageData.label.dashboard
-        this.items[1].name = this.languageData.label.volunteering_history
-        this.items[2].name = this.languageData.label.volunteering_timesheet
-        this.isVolunteeringSettingEnabled = this.settingEnabled(constants.VOLUNTERRING_ENABLED);
-        this.isDonationSettingEnabled = this.settingEnabled(constants.DONATION_ENABLED);
+        this.items[1].name = this.languageData.label.volunteering_history;
+        this.items[2].name = this.languageData.label.volunteering_timesheet;
+        this.items[3].name = this.languageData.label.messages;
+        this.items[4].name = this.languageData.label.comment_history;
+        this.items[5].name = this.languageData.label.my_stories;
 
-        if (!this.isStoryDisplay) {
-            this.items.splice(5, 1)
-        }
-
-        if (!this.isCommentDisplay) {
-            this.items.splice(4, 1)
-        }
-
-        if (!this.isMessageDisplay) {
-            this.items.splice(3, 1)
-        } else {
-            this.items[3].name = this.languageData.label.messages
-		}
-		if (!this.isVolunteeringMission || !this.isVolunteeringSettingEnabled) {
+        const isGoalMissionActive = this.settingEnabled(constants.VOLUNTEERING_GOAL_MISSION);
+        const isTimeMissionActive = this.settingEnabled(constants.VOLUNTEERING_TIME_MISSION);
+        const isVolunteeringSettingEnabled = this.settingEnabled(constants.SETTING_VOLUNTEERING);
+        const displayVolunteeringPages = isVolunteeringSettingEnabled
+            && (isGoalMissionActive || isTimeMissionActive);
+        if (!displayVolunteeringPages) {
             this.items.splice(1, 2)
+        }
+
+        if (!this.settingEnabled(constants.MESSAGE)) {
+            this.items.splice(3, 1);
+        }
+
+        if (!this.settingEnabled(constants.MISSION_COMMENTS)) {
+            this.items.splice(4, 1);
+        }
+
+        if (!this.settingEnabled(constants.STORIES_ENABLED)) {
+            this.items.splice(5, 1);
         }
     }
 };
