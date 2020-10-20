@@ -692,8 +692,11 @@ class MissionController extends Controller
 
         $language = $this->languageHelper->getDefaultTenantLanguage($request);
         $missionDetails = $this->missionRepository->getMissionDetailsFromId($missionId, $language->language_id);
-        if (isset($request->mission_type) && ($missionDetails->mission_type === config('constants.mission_type.GOAL') || $missionDetails->mission_type === config('constants.mission_type.TIME') ||
-            $request->mission_type === config('constants.mission_type.GOAL') || $request->mission_type === config('constants.mission_type.TIME'))
+        if (isset($request->mission_type) && 
+            ($missionDetails->mission_type === config('constants.mission_type.GOAL') || 
+            $missionDetails->mission_type === config('constants.mission_type.TIME') ||
+            $request->mission_type === config('constants.mission_type.GOAL') || 
+            $request->mission_type === config('constants.mission_type.TIME'))
         ) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
