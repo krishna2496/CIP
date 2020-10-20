@@ -52,7 +52,7 @@ return [
         'ERROR_INVALID_JSON' => 'Invalid JSON format',
         'ERROR_LANGUAGE_NOT_FOUND' => 'Language not found in the system',
         'ERROR_TENANT_LANGUAGE_NOT_FOUND' => 'Tenant language not found in the system',
-        'ERROR_TENANT_DEFAULT_LANGUAGE_REQUIRED' => 'Atleast one default language is required',
+        'ERROR_TENANT_DEFAULT_LANGUAGE_REQUIRED' => 'At least one default language is required',
         'ERROR_INVALID_MIGRATION_FILE_EXTENSION' => 'Invalid file extension',
         'ERROR_DELETE_DEFAULT_TENANT_LANGUAGE' => 'You can not delete default tenant language',
         'ERROR_INVALID_FQDN_NAME' => 'Invalid tenant name',
@@ -63,7 +63,9 @@ return [
         'CURRENCY_CODE' => 'Currency Code ',
         'CURRENCY_IS_NOT_VALID_ONLY' => ' is not valid',
         'ERROR_IS_ACTIVE_FIELD_MUST_BE_TRUE' => 'Currency should be active to set it as default.',
-        'ERROR_DEFAULT_CURRENCY_SHOULD_BE_ACTIVE' => 'Cannot deactivate the default currency.'
+        'ERROR_DEFAULT_CURRENCY_SHOULD_BE_ACTIVE' => 'Cannot deactivate the default currency.',
+        'ERROR_VOLUNTEERING_TIME_OR_GOAL_SHOULD_BE_ACTIVE' => 'Volunteering time or volunteering goal should be active while volunteering setting is enabled.',
+        'ERROR_VOLUNTEERING_SHOULD_BE_ENABLED' => 'Volunteering setting should be enabled to update volunteering time or volunteering goal setting.'
     ],
     'email_text' => [
         'ERROR' => 'Error',
