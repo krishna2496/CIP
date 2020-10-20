@@ -303,7 +303,7 @@ return [
 
 
         // Custom error code for common exception
-        'ERROR_INVALID_JSON' => 'Invalid Json format',
+        'ERROR_INVALID_JSON' => 'Invalid JSON format',
         'ERROR_INTERNAL_SERVER_ERROR' => 'Internal server error',
         'ERROR_TENANT_SETTING_DISABLED' => 'Required tenant setting is disabled.',
 
@@ -406,6 +406,8 @@ return [
         'ERROR_STORY_MISSION_APPLICATION_NOT_APPROVED' => 'You cannot submit a story, mission application was not approved.',
         'ERROR_STORY_MISSION_APPLICATION_NOT_FOUND' => 'You cannot submit a story, mission application of the user was not found.',
         'SHOW_DONATION_COUNT_AND_DONORS_COUNT_ERROR' => 'Show donation count and donors count both can not be true at the same time',
+        'ERROR_VOLUNTEERING_TIME_OR_GOAL_SHOULD_BE_ACTIVE' => 'Volunteering time or volunteering goal should be active while volunteering setting is enabled.',
+        'ERROR_VOLUNTEERING_SHOULD_BE_ENABLED' => 'Volunteering setting should be enabled to update volunteering time or volunteering goal setting.',
         'ERROR_CAN_NOT_UPDATE_VOLUNTEERING_MISSION' => 'You cannot update time and goal mission'
     ]
 ];

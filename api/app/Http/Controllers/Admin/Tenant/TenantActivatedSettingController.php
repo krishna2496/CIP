@@ -14,6 +14,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Validator;
+use App\Exceptions\VolunteeringTimeOrGoalSettingShouldBeActiveException;
 
 //!  Tenant activated setting controller
 /*!
@@ -118,8 +119,28 @@ class TenantActivatedSettingController extends Controller
             );
         }
 
-        // Store settings
-        $this->tenantActivatedSettingRepository->store($request->toArray());
+        // Check volunteering setting is disabled or not
+        $response = $this->tenantActivatedSettingRepository->checkVolunteeringSettingDisabled($request->toArray());
+        if (!$response) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_VOLUNTEERING_SHOULD_BE_ENABLED'),
+                trans('messages.custom_error_message.ERROR_VOLUNTEERING_SHOULD_BE_ENABLED')
+            );
+        }
+        
+        try {
+            // Store settings
+            $response = $this->tenantActivatedSettingRepository->store($request->toArray());
+        } catch (VolunteeringTimeOrGoalSettingShouldBeActiveException $e) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_VOLUNTEERING_TIME_OR_GOAL_SHOULD_BE_ACTIVE'),
+                trans('messages.custom_error_message.ERROR_VOLUNTEERING_TIME_OR_GOAL_SHOULD_BE_ACTIVE')
+            );
+        }
 
         $requestArray = $request->toArray();
 
