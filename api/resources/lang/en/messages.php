@@ -408,6 +408,6 @@ return [
         'SHOW_DONATION_COUNT_AND_DONORS_COUNT_ERROR' => 'Show donation count and donors count both can not be true at the same time',
         'ERROR_VOLUNTEERING_TIME_OR_GOAL_SHOULD_BE_ACTIVE' => 'Volunteering time or volunteering goal should be active while volunteering setting is enabled.',
         'ERROR_VOLUNTEERING_SHOULD_BE_ENABLED' => 'Volunteering setting should be enabled to update volunteering time or volunteering goal setting.',
-        'ERROR_CAN_NOT_UPDATE_VOLUNTEERING_MISSION' => 'You cannot update time and goal mission'
+        'ERROR_CAN_NOT_UPDATE_VOLUNTEERING_MISSION' => 'You can not update volunteering mission type'
     ]
 ];
