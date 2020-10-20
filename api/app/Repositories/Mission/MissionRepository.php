@@ -70,7 +70,7 @@ class MissionRepository implements MissionInterface
     */
     private $impactDonationMissionRepository;
     
-    /** 
+    /**
      * @var App\Repositories\MissionImpact\MissionImpactRepository
      */
     private $missionImpactRepository;
@@ -290,9 +290,14 @@ class MissionRepository implements MissionInterface
         }
 
         // Add impact donation mission
-        if (isset($request->impact_donation) && count($request->impact_donation) > 0) {
-            foreach ($request->impact_donation as $impactDonationValue) {
-                $this->impactDonationMissionRepository->store($impactDonationValue, $mission->mission_id, $defaultTenantLanguageId);
+        if ($request->mission_type === config('constants.mission_type.DONATION') ||
+            $request->mission_type === config('constants.mission_type.EAF') ||
+            $request->mission_type === config('constants.mission_type.DISASTER_RELIEF')
+        ) {
+            if (isset($request->impact_donation) && count($request->impact_donation) > 0) {
+                foreach ($request->impact_donation as $impactDonationValue) {
+                    $this->impactDonationMissionRepository->store($impactDonationValue, $mission->mission_id, $defaultTenantLanguageId);
+                }
             }
         }
             
@@ -439,7 +444,7 @@ class MissionRepository implements MissionInterface
                     }
                     $missionDetail->save();
                 }
-            } else if (isset($request->goal_objective)) {
+            } elseif (isset($request->goal_objective)) {
                 // update goal_mission details
                 $goalMissionArray = [
                     'goal_objective' => $request->goal_objective,
@@ -598,14 +603,19 @@ class MissionRepository implements MissionInterface
         }
 
         // Add/Update mission impact donation details
-        if (isset($request->impact_donation) && count($request->impact_donation)) {
-            foreach ($request->impact_donation as $impactDonationValue) {
-                if (isset($impactDonationValue['impact_donation_id'])) {
-                    $this->impactDonationMissionRepository->update($impactDonationValue, $id, $defaultTenantLanguageId);
-                } else {
-
-                    //Impact donation id is not available and create the impact donation and details
-                    $this->impactDonationMissionRepository->store($impactDonationValue, $id, $defaultTenantLanguageId);
+        if ($missionType === config('constants.mission_type.DONATION') ||
+            $missionType === config('constants.mission_type.EAF') ||
+            $missionType === config('constants.mission_type.DISASTER_RELIEF')
+        ) {
+            if (isset($request->impact_donation) && count($request->impact_donation)) {
+                foreach ($request->impact_donation as $impactDonationValue) {
+                    if (isset($impactDonationValue['impact_donation_id'])) {
+                        $this->impactDonationMissionRepository->update($impactDonationValue, $id, $defaultTenantLanguageId);
+                    } else {
+    
+                        //Impact donation id is not available and create the impact donation and details
+                        $this->impactDonationMissionRepository->store($impactDonationValue, $id, $defaultTenantLanguageId);
+                    }
                 }
             }
         }
@@ -687,7 +697,6 @@ class MissionRepository implements MissionInterface
         }])->with(['impactDonation' => function ($query) {
             $query->orderBy('amount');
         }, 'impactDonation.getMissionImpactDonationDetail' => function ($query) {
-        }])->with(['missionTab' => function ($query) {
         }])->with(['missionTabs' => function ($query) {
             $query->orderBy('sort_key');
         }, 'missionTabs.getMissionTabDetail' => function ($query) {
@@ -1986,7 +1995,7 @@ class MissionRepository implements MissionInterface
         return $this->modelsService->missionImpactDonation->where([['mission_id', '=', $missionId], ['mission_impact_donation_id', '=', $missionImpactDonationId]])->firstOrFail();
     }
     
-    /** 
+    /**
      * Check impact mission is available for mission
      *
      * @param int $missionId
@@ -2026,6 +2035,7 @@ class MissionRepository implements MissionInterface
         if ($impactDonationMissionInfo != null) {
             $impactDonationLanguageArray = [];
             foreach ($impactDonationMissionInfo as $impactDonationKey => $impactDonationValue) {
+                $impactDonationLanguageArray['impact_donation_id'] = $impactDonationValue['mission_impact_donation_id'];
                 $impactDonationLanguageArray['amount'] = $impactDonationValue['amount'];
                 $impactDonationLanguageArray["languages"] = [];
                 foreach ($impactDonationValue['get_mission_impact_donation_detail'] as $impactDonationLanguadeValue) {
