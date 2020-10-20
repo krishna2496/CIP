@@ -692,7 +692,16 @@ class MissionController extends Controller
 
         $language = $this->languageHelper->getDefaultTenantLanguage($request);
         $missionDetails = $this->missionRepository->getMissionDetailsFromId($missionId, $language->language_id);
-
+        if (isset($request->mission_type) && ($missionDetails->mission_type === config('constants.mission_type.GOAL') || $missionDetails->mission_type === config('constants.mission_type.TIME') ||
+            $request->mission_type === config('constants.mission_type.GOAL') || $request->mission_type === config('constants.mission_type.TIME'))
+        ) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_INVALID_MISSION_DATA'),
+                trans('messages.custom_error_message.ERROR_CAN_NOT_UPDATE_VOLUNTEERING_MISSION')
+            );
+        }
         // Check for default language delete
         if (isset($request->mission_detail)) {
             foreach ($request->mission_detail as $value) {
