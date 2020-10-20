@@ -154,4 +154,11 @@
   };
 </script>
 <style lang="scss">
+.cms-content .accordian-title {
+  outline: none;
+
+  @media (min-width: 1025px) {
+    cursor: text;
+  }
+}
 </style>
