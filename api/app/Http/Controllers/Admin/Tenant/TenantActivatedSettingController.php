@@ -14,6 +14,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Validator;
+use App\Exceptions\VolunteeringTimeOrGoalSettingShouldBeActiveException;
 
 //!  Tenant activated setting controller
 /*!
@@ -129,9 +130,10 @@ class TenantActivatedSettingController extends Controller
             );
         }
         
-        // Store settings
-        $response = $this->tenantActivatedSettingRepository->store($request->toArray());
-        if (!$response) {
+        try {
+            // Store settings
+            $response = $this->tenantActivatedSettingRepository->store($request->toArray());
+        } catch (VolunteeringTimeOrGoalSettingShouldBeActiveException $e) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],

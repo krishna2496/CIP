@@ -7,6 +7,7 @@ use App\Repositories\TenantActivatedSetting\TenantActivatedSettingInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
+use App\Exceptions\VolunteeringTimeOrGoalSettingShouldBeActiveException;
 
 class TenantActivatedSettingRepository implements TenantActivatedSettingInterface
 {
@@ -67,7 +68,7 @@ class TenantActivatedSettingRepository implements TenantActivatedSettingInterfac
         foreach ($data['settings'] as $value) {
             $response = $this->checkVolunteeringTimeAndGoalSetting($value);
             if (!$response) {
-                return false;
+                throw new VolunteeringTimeOrGoalSettingShouldBeActiveException();
             }
             $this->tenantActivatedSetting->storeSettings($value['tenant_setting_id'], $value['value']);
         }

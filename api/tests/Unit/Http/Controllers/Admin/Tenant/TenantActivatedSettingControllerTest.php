@@ -13,6 +13,7 @@ use Illuminate\Http\Response;
 use Mockery;
 use TestCase;
 use Validator;
+use App\Exceptions\VolunteeringTimeOrGoalSettingShouldBeActiveException;
 
 class TenantActivatedSettingControllerTest extends TestCase
 {
@@ -157,7 +158,7 @@ class TenantActivatedSettingControllerTest extends TestCase
         
         $repository->shouldReceive('store')
             ->once()
-            ->andReturn(false);
+            ->andThrow(new VolunteeringTimeOrGoalSettingShouldBeActiveException);
 
         $responseHelper->shouldReceive('error')
             ->once()
