@@ -345,9 +345,7 @@ export default {
             message: null,
             submitNewMissionUrl: '',
             cardHeightAdjIntervalId: null,
-            isDisplayMissionLabel: false,
-            isVolunteeringSettingEnabled: true,
-            isDonationSettingEnabled: true
+            isVolunteeringSettingEnabled: true
         };
     },
     methods: {
@@ -604,10 +602,6 @@ export default {
         this.isThemeSet = this.settingEnabled(constants.THEMES_ENABLED);
         this.submitNewMissionUrl = store.state.submitNewMissionUrl;
         this.isVolunteeringSettingEnabled = this.settingEnabled(constants.VOLUNTERRING_ENABLED);
-        this.isDonationSettingEnabled = this.settingEnabled(constants.DONATION_ENABLED);
-        if (this.isDonationSettingEnabled && this.isVolunteeringSettingEnabled) {
-            this.isDisplayMissionLabel = true;
-        }
 
         const _this = this;
         window.addEventListener('resize', this.cardHeightAdj);

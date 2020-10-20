@@ -242,20 +242,7 @@ export default {
             message: null,
             submitNewMissionUrl: '',
             isSkillDisplay: true,
-            isDisplayMissionLabel: false,
-            isVolunteeringSettingEnabled: true,
-            isDonationSettingEnabled: true,
-            missionTypeLabels: "",
-            volunteeringMissionTypeLabels: {
-                'icon': '',
-                'label': '',
-                'backgroundColor': ''
-            },
-            donationMissionTypeLabels: {
-                'icon': '',
-                'label': '',
-                'backgroundColor': ''
-            }
+            isVolunteeringSettingEnabled: true
         };
     },
     methods: {
@@ -427,43 +414,6 @@ export default {
         this.submitNewMissionUrl = store.state.submitNewMissionUrl;
         this.isSkillDisplay = this.settingEnabled(constants.SKILLS_ENABLED);
         this.isVolunteeringSettingEnabled = this.settingEnabled(constants.VOLUNTERRING_ENABLED);
-        this.isDonationSettingEnabled = this.settingEnabled(constants.DONATION_ENABLED);
-        if (this.isDonationSettingEnabled && this.isVolunteeringSettingEnabled) {
-            this.isDisplayMissionLabel = true;
-        }
-        this.missionTypeLabels = JSON.parse(store.state.missionTypeLabels);
-        if (JSON.parse(store.state.missionTypeLabels) != "") {
-            let defaultLang = store.state.defaultLanguage.toLowerCase();
-            this.missionTypeLabels.filter((item, i) => {
-                // volunteering mission label
-                if (item.type == constants.VOLUNTERRING_ENABLED) {
-                    this.volunteeringMissionTypeLabels.icon = item.icon;
-                    this.volunteeringMissionTypeLabels.backgroundColor = item.background_color;
-                    let data = item.translations.filter(translationsItem => {
-                        if (translationsItem.language_code == defaultLang) {
-                            this.volunteeringMissionTypeLabels.label = translationsItem.description;
-                        }
-                    });
-                    if (this.volunteeringMissionTypeLabels.label == "" && data[0] && data[0].description) {
-                        this.volunteeringMissionTypeLabels.label = data[0].description;
-                    }
-                }
-                // Donation mission label
-                if (item.type == constants.VOLUNTERRING_ENABLED) {
-                    this.donationMissionTypeLabels.icon = item.icon;
-                    this.donationMissionTypeLabels.backgroundColor = item.background_color;
-                    let data = item.translations.filter(translationsItem => {
-                        if (translationsItem.language_code == defaultLang) {
-                            this.donationMissionTypeLabels.label = translationsItem.description;
-                        }
-                    });
-                    if (this.donationMissionTypeLabels.label == "" && data[0] && data[0].description) {
-                        this.donationMissionTypeLabels.label = data[0].description;
-                    }
-                }
-
-            });
-        }
     }
 };
 </script>
