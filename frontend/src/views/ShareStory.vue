@@ -227,7 +227,6 @@
         },
         errorInGetStoryDetail: false,
         unprocessableEntityStatus: 422
-
       }
     },
     validations: {
@@ -455,7 +454,8 @@
               this.message = response.message
             } else {
               this.formChange = 0;
-              this.storyId = response.data
+              this.storyId = response.data;
+
               if (params == "preview" && this.storyId != '') {
                 let routeData = this.$router.resolve({
                   path: "/story-preview" + '/' + this.storyId
@@ -463,7 +463,8 @@
                 window.open(routeData.href, '_blank');
                 this.isLoaderActive = false
                 this.saveButtonAjaxCall = false
-                return false;
+                this.getStoryDetail();
+                return;
               } else {
                 this.showDismissibleAlert = true
                 if (this.storyId != '') {
@@ -486,6 +487,7 @@
           if (this.story.videoUrl == '') {
             formData.append('story_videos', '');
           }
+
           formData.append('_method', 'PATCH');
           updateStory(formData, this.storyId).then(response => {
             this.showDismissibleAlert = true
@@ -504,7 +506,8 @@
                 this.isLoaderActive = false;
                 this.saveButtonAjaxCall = false;
                 this.showDismissibleAlert = false;
-                return false;
+                this.getStoryDetail();
+                return;
               }
 
               if (this.storyId != '' && params != 'preview') {

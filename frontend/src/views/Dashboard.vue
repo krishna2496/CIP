@@ -13,8 +13,11 @@
                 <div class="heading-section">
                     <h1>{{languageData.label.dashboard}}</h1>
                     <div class="date-filter">
-                        <AppCustomDropdown :optionList="yearList" @updateCall="updateYear" :defaultText="defaultYear" translationEnable="false" />
-                        <AppCustomDropdown :optionList="monthList" @updateCall="updateMonth" :noListItem="noListItem" :defaultText="defaultMonth" translationEnable="true" class="month-dropdown" />
+                        <AppCustomDropdown :optionList="yearList" @updateCall="updateYear" 
+                                           :defaultText="defaultYear" translationEnable="false" />
+                        <AppCustomDropdown :optionList="monthList" @updateCall="updateMonth" 
+                                           :noListItem="noListItem" :defaultText="defaultMonth" 
+                                           translationEnable="true" class="month-dropdown" />
                     </div>
                 </div>
                 <div class="inner-content-wrap">
@@ -40,7 +43,7 @@
                                 </p>
                             </div>
                         </b-list-group-item>
-                        <b-list-group-item>
+                        <b-list-group-item v-if="isVolunteeringSettingEnabled">
                             <div class="list-item">
                                 <i>
                                     <img :src="$store.state.imagePath+'/assets/images/request-ic.svg'" alt />

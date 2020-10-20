@@ -76,9 +76,6 @@ class TenantSettingsController extends Controller
                 $index = $adminTenantSettings->search(function ($value, $key) use ($tenantSetting) {
                     return $value->tenant_setting_id === $tenantSetting->setting_id;
                 });
-                if ($index === false) {
-                    continue;
-                }
                 $tenantSettingData[] = [
                     'tenant_setting_id' => $tenantSetting->tenant_setting_id,
                     'key' => $adminTenantSettings[$index]->key,

@@ -84,6 +84,13 @@ class MasterTenantSettingSeeder extends Seeder
                 "updated_at" => Carbon::now()
             ],
             [
+                'title' => 'time credit mission',
+                'description' => 'Display if the mission support time credit volunteering ',
+                'key' => 'time_credit_mission',
+                "created_at" => Carbon::now(),
+                "updated_at" => Carbon::now()
+            ],
+            [
                 'title' => 'user can submit mission',
                 'description' => 'User can submit a mission',
                 'key' => 'user_can_submit_mission',

@@ -198,8 +198,7 @@ export default {
             isAjaxCall: true,
             hideEllipsis: true,
             isExploreMission: false,
-            isVolunteeringSettingEnabled: true,
-            isDonationSettingEnabled: true
+            isVolunteeringSettingEnabled: true
         };
     },
     methods: {
@@ -396,7 +395,6 @@ export default {
         this.languageData = JSON.parse(store.state.languageLabel);
         this.sortByFilterSet = this.settingEnabled(constants.SORTING_MISSIONS)
         this.isVolunteeringSettingEnabled = this.settingEnabled(constants.VOLUNTERRING_ENABLED);
-        this.isDonationSettingEnabled = this.settingEnabled(constants.DONATION_ENABLED);
         if (!this.isVolunteeringSettingEnabled) {
             this.sortByOptions.splice(2, 2);
             this.sortByOptions.splice(3, 1);

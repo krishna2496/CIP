@@ -37,8 +37,8 @@ class AvailabilityRepository implements AvailabilityInterface
         $availabilityQuery = $this->availability->select('availability_id', 'type', 'translations');
         if ($request->has('search')) {
             $availabilityQuery->where(function ($query) use ($request) {
-                $query->orWhere('type', 'like', '%' . $request->input('search') . '%');
-                $query->orWhere('translations', 'like', '%' . $request->input('search') . '%');
+                $query->orWhere('type', 'like', $request->input('search') . '%');
+                $query->orWhere('translations', 'like', $request->input('search') . '%');
             });
         }
         if ($request->has('order')) {
@@ -83,7 +83,7 @@ class AvailabilityRepository implements AvailabilityInterface
     {
         return $this->availability->deleteAvailability($availabilityId);
     }
-    
+
     /**
      * Find availability details.
      *

@@ -49,7 +49,7 @@ return [
         'ERROR_NO_DATA_FOUND' => 'No data found',
         'ERROR_INVALID_ARGUMENT' => 'Invalid argument',
         'ERROR_API_USER_NOT_FOUND' => 'API user not found',
-        'ERROR_INVALID_JSON' => 'Format Json invalid',
+        'ERROR_INVALID_JSON' => 'Invalid JSON format',
         'ERROR_LANGUAGE_NOT_FOUND' => 'Language not found in the system',
         'ERROR_TENANT_LANGUAGE_NOT_FOUND' => 'Tenant language not found in the system',
         'ERROR_TENANT_DEFAULT_LANGUAGE_REQUIRED' => 'Atleast one default language is required',

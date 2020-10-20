@@ -124,8 +124,7 @@ export default {
             isCityClick: false,
             isThemeClick: false,
             isSkillClick: false,
-            isVolunteeringSettingEnabled: true,
-            isDonationSettingEnabled: true
+            isVolunteeringSettingEnabled: true
         };
     },
     mounted() {
@@ -698,7 +697,6 @@ export default {
         this.isCountrySelectionSet = this.settingEnabled(constants.IS_COUNTRY_SELECTION);
         this.isStateSelectionDisplay = this.settingEnabled(constants.STATE_ENABLED);
         this.isVolunteeringSettingEnabled = this.settingEnabled(constants.VOLUNTERRING_ENABLED);
-        this.isDonationSettingEnabled = this.settingEnabled(constants.DONATION_ENABLED);
         eventBus.$on('clearAllFilters', () => {
             this.clearFilter();
         });

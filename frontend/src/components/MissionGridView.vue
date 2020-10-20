@@ -347,18 +347,7 @@ export default {
             cardHeightAdjIntervalId: null,
             isDisplayMissionLabel: false,
             isVolunteeringSettingEnabled: true,
-            isDonationSettingEnabled: true,
-            missionTypeLabels: "",
-            volunteeringMissionTypeLabels: {
-                'icon': '',
-                'label': '',
-                'backgroundColor': ''
-            },
-            donationMissionTypeLabels: {
-                'icon': '',
-                'label': '',
-                'backgroundColor': ''
-            }
+            isDonationSettingEnabled: true
         };
     },
     methods: {
@@ -620,39 +609,6 @@ export default {
             this.isDisplayMissionLabel = true;
         }
 
-        this.missionTypeLabels = JSON.parse(store.state.missionTypeLabels);
-        if (JSON.parse(store.state.missionTypeLabels) != "") {
-            let defaultLang = store.state.defaultLanguage.toLowerCase();
-            this.missionTypeLabels.filter((item, i) => {
-                // volunteering mission label
-                if (item.type == constants.VOLUNTERRING_ENABLED) {
-                    this.volunteeringMissionTypeLabels.icon = item.icon;
-                    this.volunteeringMissionTypeLabels.backgroundColor = item.background_color;
-                    let data = item.translations.filter(translationsItem => {
-                        if (translationsItem.language_code == defaultLang) {
-                            this.volunteeringMissionTypeLabels.label = translationsItem.description;
-                        }
-                    });
-                    if (this.volunteeringMissionTypeLabels.label == "" && data[0] && data[0].description) {
-                        this.volunteeringMissionTypeLabels.label = data[0].description;
-                    }
-                }
-                // Donation mission label
-                if (item.type == constants.VOLUNTERRING_ENABLED) {
-                    this.donationMissionTypeLabels.icon = item.icon;
-                    this.donationMissionTypeLabels.backgroundColor = item.background_color;
-                    let data = item.translations.filter(translationsItem => {
-                        if (translationsItem.language_code == defaultLang) {
-                            this.donationMissionTypeLabels.label = translationsItem.description;
-                        }
-                    });
-                    if (this.donationMissionTypeLabels.label == "" && data[0] && data[0].description) {
-                        this.donationMissionTypeLabels.label = data[0].description;
-                    }
-                }
-
-            });
-        }
         const _this = this;
         window.addEventListener('resize', this.cardHeightAdj);
         const pageItem = document.querySelectorAll('.pagination-block .page-item');

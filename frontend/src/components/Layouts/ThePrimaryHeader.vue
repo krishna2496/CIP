@@ -82,7 +82,7 @@
                                     {{languageData.label.random}}
                                 </router-link>
                             </li>
-                            <li class="no-dropdown">
+                            <li class="no-dropdown" v-if="isVolunteeringSettingEnabled">
                                 <router-link :to="{ path: '/home/virtual-missions'}" @click.native="menuBarclickHandler">
                                     {{languageData.label.virtual_missions}}
                                 </router-link>
@@ -333,8 +333,7 @@ export default {
             hostUrl: '',
             getEmailNotification: 0,
             getEmailNotificationSelected: [],
-            isVolunteeringSettingEnabled: true,
-            isDonationSettingEnabled: true
+            isVolunteeringSettingEnabled: true
         };
     },
     mounted() {
@@ -503,18 +502,6 @@ export default {
                     this.isNotificationAjaxCall = false;
                     if (response.error == false) {
                         if (response.data) {
-                            if (!this.isVolunteeringSettingEnabled) {
-                                for (let i = 0; i < response.data.length; i++) {
-                                    if (response.data[i].notification_type == "volunteering_hours" ||
-                                        response.data[i].notification_type == "volunteering_goals" ||
-                                        response.data[i].notification_type == "mission_application"
-                                    ) {
-                                        response.data.splice(i, 1)
-                                        i--;
-                                    }
-                                }
-                            }
-
                             this.notificationSettingList = response.data
 
                             this.notificationSettingList.filter((data, index) => {
@@ -646,7 +633,6 @@ export default {
         this.hostUrl = process.env.BASE_URL;
         this.getEmailNotification = store.state.getEmailNotification;
         this.isVolunteeringSettingEnabled = this.settingEnabled(constants.VOLUNTERRING_ENABLED);
-        this.isDonationSettingEnabled = this.settingEnabled(constants.DONATION_ENABLED);
         if (store.state.getEmailNotification == 1) {
             this.getEmailNotificationSelected.push(store.state.getEmailNotification)
         }

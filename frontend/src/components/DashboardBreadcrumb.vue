@@ -108,17 +108,14 @@ export default {
         this.isVolunteeringSettingEnabled = this.settingEnabled(constants.VOLUNTERRING_ENABLED);
         this.isDonationSettingEnabled = this.settingEnabled(constants.DONATION_ENABLED);
 
-		if (!this.isCommentDisplay) {
-            this.items.splice(4, 1)
-        } else {
-            this.items[4].name = this.languageData.label.comment_history
-        }
-
         if (!this.isStoryDisplay) {
             this.items.splice(5, 1)
-        } else {
-            this.items[5].name = this.languageData.label.my_stories
         }
+
+        if (!this.isCommentDisplay) {
+            this.items.splice(4, 1)
+        }
+
         if (!this.isMessageDisplay) {
             this.items.splice(3, 1)
         } else {
