@@ -446,8 +446,7 @@
           country_id: "",
           profile_text: "",
           linked_in_url: "",
-          custom_fields: [],
-          isVolunteeringSettingEnabled: true
+          custom_fields: []
         },
 
       };
@@ -999,9 +998,7 @@
       this.changePhoto = this.languageData.label.edit
       this.languageCode = store.state.defaultLanguage
       this.isQuickAccessFilterDisplay = this.settingEnabled(constants.QUICK_ACCESS_FILTERS);
-      this.isVolunteeringSettingEnabled = this.settingEnabled(constants.SETTING_VOLUNTEERING);
-      this.isSkillDisplay = this.isVolunteeringSettingEnabled && this.settingEnabled(constants.SKILLS_ENABLED);
-
+      this.isSkillDisplay = this.settingEnabled(constants.SKILLS_ENABLED);
       this.getUserProfileDetail();
       if(store.state.isProfileComplete != 1) {
         this.isUserProfileComplete = 0;
