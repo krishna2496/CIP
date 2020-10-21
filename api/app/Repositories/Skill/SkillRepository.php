@@ -61,8 +61,8 @@ class SkillRepository implements SkillInterface
             $searchLanguage = $request->searchLanguage;
 
             $searchLanguage
-                ? $query->orWhere(DB::raw("lower(json_unquote(json_extract(translations, '$.".$searchLanguage."')))"), 'LIKE', strtolower( $request->search ).'%')
-                : $query->orWhere('translations', 'like', $request->search . '%');
+                ? $query->orWhere(DB::raw("lower(json_unquote(json_extract(translations, '$.".$searchLanguage."')))"), 'LIKE', '%'. strtolower( $request->search ).'%')
+                : $query->orWhere('translations', 'like', '%' . $request->search . '%');
 
         })->when($request->has('translations'), function ($query) use ($request) {
             /*
