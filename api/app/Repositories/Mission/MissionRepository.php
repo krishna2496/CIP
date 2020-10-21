@@ -960,6 +960,9 @@ class MissionRepository implements MissionInterface
                     'asc'
                 );
             }
+        } else {
+            // If no order specified, sort missions by last created first
+            $missionQuery->orderBy('mission.created_at', 'desc');
         }
 
         // Explore mission by top favourite
