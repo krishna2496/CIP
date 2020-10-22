@@ -238,8 +238,8 @@ class MissionController extends Controller
                 "mission_tabs.*.translations.*.sections.*.content" =>
                 "required_with:mission_tabs.*.translations.*.sections",
                 'donation_attribute' => 'required_if:mission_type,DONATION,EAF,DISASTER_RELIEF',
-                'donation_attribute.goal_amount_currency' => 'required_with:donation_attribute.goal_amount|string|min:3|max:3',
-                'donation_attribute.goal_amount' => 'sometimes|required_if:mission_type,DISASTER_RELIEF|numeric|min:1|digits_between:1,20',
+                'donation_attribute.goal_amount_currency' => 'required|string|min:3|max:3',
+                'donation_attribute.goal_amount' => 'sometimes|required_if:mission_type,DISASTER_RELIEF|integer|min:1|max:999999999999|nullable',
                 'donation_attribute.show_goal_amount' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean',
                 'donation_attribute.show_donation_percentage' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean',
                 'donation_attribute.show_donation_meter' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean',
@@ -289,9 +289,9 @@ class MissionController extends Controller
 
         // show_donation_count and show_donors_count both can not be true at the same time
         if ((
-            isset($request->get('donation_attribute')['show_donation_count']) && 
-            isset($request->get('donation_attribute')['show_donors_count'])) && 
-            ($request->get('donation_attribute')['show_donation_count'] == true && 
+            isset($request->get('donation_attribute')['show_donation_count']) &&
+            isset($request->get('donation_attribute')['show_donors_count'])) &&
+            ($request->get('donation_attribute')['show_donation_count'] == true &&
             $request->get('donation_attribute')['show_donors_count'] == true)) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
@@ -503,8 +503,8 @@ class MissionController extends Controller
                 "mission_tabs.*.translations.*.sections" =>
                 "required_without:mission_tabs.*.mission_tab_id",
                 'donation_attribute' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF',
-                'donation_attribute.goal_amount_currency' => 'sometimes|required_with:donation_attribute.goal_amount|string|min:3|max:3',
-                'donation_attribute.goal_amount' => 'sometimes|required_if:mission_type,DISASTER_RELIEF|numeric|min:1|digits_between:1,20',
+                'donation_attribute.goal_amount_currency' => 'sometimes|string|min:3|max:3',
+                'donation_attribute.goal_amount' => 'sometimes|required_if:mission_type,DISASTER_RELIEF|integer|min:1|max:999999999999|nullable',
                 'donation_attribute.show_goal_amount' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean',
                 'donation_attribute.show_donation_percentage' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean',
                 'donation_attribute.show_donation_meter' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean',
@@ -538,7 +538,7 @@ class MissionController extends Controller
         }
 
         // Check goal amount currency  set is valid or not
-        if (isset($request->get('donation_attribute')['goal_amount_currency']) && $request->get('donation_attribute')['goal_amount_currency'] != '' && !$this->helpers->validateTenantCurrency($request, $request->get('donation_attribute')['goal_amount_currency'])) {
+        if (isset($request->get('donation_attribute')['goal_amount_currency']) && $request->get('donation_attribute')['goal_amount_currency'] != '' && !$this->helpers->isValidTenantCurrency($request, $request->get('donation_attribute')['goal_amount_currency'])) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
@@ -549,9 +549,9 @@ class MissionController extends Controller
 
         // show_donation_count and show_donors_count both can not be true at the same time
         if ((
-            isset($request->get('donation_attribute')['show_donation_count']) && 
-            isset($request->get('donation_attribute')['show_donors_count'])) && 
-            ($request->get('donation_attribute')['show_donation_count'] == true && 
+            isset($request->get('donation_attribute')['show_donation_count']) &&
+            isset($request->get('donation_attribute')['show_donors_count'])) &&
+            ($request->get('donation_attribute')['show_donation_count'] == true &&
             $request->get('donation_attribute')['show_donors_count'] == true)) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
@@ -692,19 +692,40 @@ class MissionController extends Controller
 
         $language = $this->languageHelper->getDefaultTenantLanguage($request);
         $missionDetails = $this->missionRepository->getMissionDetailsFromId($missionId, $language->language_id);
-        if (isset($request->mission_type) && 
-            ($missionDetails->mission_type === config('constants.mission_type.GOAL') || 
-            $missionDetails->mission_type === config('constants.mission_type.TIME') ||
-            $request->mission_type === config('constants.mission_type.GOAL') || 
-            $request->mission_type === config('constants.mission_type.TIME'))
-        ) {
-            return $this->responseHelper->error(
-                Response::HTTP_UNPROCESSABLE_ENTITY,
-                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
-                config('constants.error_codes.ERROR_INVALID_MISSION_DATA'),
-                trans('messages.custom_error_message.ERROR_CAN_NOT_UPDATE_VOLUNTEERING_MISSION')
-            );
+
+        if (isset($request->mission_type)) {
+            $volunteeringMissionTypes = [
+                config('constants.mission_type.GOAL'),
+                config('constants.mission_type.TIME')
+            ];
+            if (in_array($missionDetails->mission_type, $volunteeringMissionTypes) &&
+                !in_array($request->mission_type, $volunteeringMissionTypes)
+            ) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_INVALID_MISSION_DATA'),
+                    trans('messages.custom_error_message.ERROR_VOLUNTEERING_MISSION_TYPE_UPDATE')
+                );
+            }
+
+            $donationMissionTypes = [
+                config('constants.mission_type.DONATION'),
+                config('constants.mission_type.EAF'),
+                config('constants.mission_type.DISASTER_RELIEF')
+            ];
+            if (in_array($missionDetails->mission_type, $donationMissionTypes) &&
+                !in_array($request->mission_type, $donationMissionTypes)
+            ) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_INVALID_MISSION_DATA'),
+                    trans('messages.custom_error_message.ERROR_DONATION_MISSION_TYPE_UPDATE')
+                );
+            }
         }
+
         // Check for default language delete
         if (isset($request->mission_detail)) {
             foreach ($request->mission_detail as $value) {

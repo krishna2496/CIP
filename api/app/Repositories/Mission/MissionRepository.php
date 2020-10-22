@@ -446,7 +446,7 @@ class MissionRepository implements MissionInterface
                 $donationAttributes['goal_amount_currency'] =
                 $request->donation_attribute['goal_amount_currency'];
             }
-            if (isset($request->donation_attribute['goal_amount'])) {
+            if ($request->exists('donation_attribute.goal_amount')) {
                 $donationAttributes['goal_amount'] = $request->donation_attribute['goal_amount'];
             }
             if (isset($request->donation_attribute['show_goal_amount'])) {
