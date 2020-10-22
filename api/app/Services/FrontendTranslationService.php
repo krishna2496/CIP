@@ -42,7 +42,7 @@ final class FrontendTranslationService
     {
         $cachedTranslationsKey = $this->getCacheKey($tenantName, $isoCode);
         $cachedTranslations = Cache::get($cachedTranslationsKey);
-        if ($cachedTranslations !== null) {
+        if ($cachedTranslations !== null && config('app.env') !== 'local') {
             return $cachedTranslations;
         }
 
