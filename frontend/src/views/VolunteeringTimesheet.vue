@@ -9,7 +9,7 @@
         <b-container v-if="isAllVisible">
           <div class="heading-section">
             <h1>
-              {{labelTranslations.volunteering_timesheet}}
+              {{ labelTranslations.volunteering_timesheet }}
             </h1>
           </div>
           <div class="inner-content-wrap">
@@ -17,7 +17,7 @@
               <!-- TIMESHEET TIME -->
               <div class="table-outer" v-if="isTimeMissionActive">
                 <div class="table-inner">
-                  <h3>{{labelTranslations.volunteering_hours}}</h3>
+                  <h3>{{ labelTranslations.volunteering_hours }}</h3>
                   <VolunteeringTimesheetTableHeader
                     :currentWeek="timesheetTimeCurrentWeek"
                     @updateCall="changeVolunteeringHours"
@@ -47,13 +47,13 @@
                             {{ key+1 }} <span> {{ getTimeSheetWeekName(item,'time') }} </span>
                           </b-th>
                           <b-th class="total-col">
-                            {{labelTranslations.total}}
+                            {{ labelTranslations.total }}
                           </b-th>
                         </b-tr>
                       </b-thead>
                       <b-tbody v-if="timeMissionData.length > 0">
                         <b-tr
-                          v-for="(timeItem,key) in timeMissionData"
+                          v-for="(timeItem, key) in timeMissionData"
                           v-bind:key="key"
                         >
                           <b-td class="mission-col">
@@ -83,7 +83,7 @@
                         <!-- Time Missions total table row -->
                         <b-tr class="total-row">
                           <b-td class="mission-col">
-                            {{labelTranslations.total}}:
+                            {{ labelTranslations.total }}:
                           </b-td>
                           <b-td
                             v-for="(key,item) in volunteeringHoursWeeks"
@@ -99,8 +99,8 @@
                       <b-tbody v-else>
                         <b-tr>
                           <b-td colspan="9" class="disabled">
-                            {{labelTranslations.volunteering_hours | firstLetterCapital}}
-                            {{labelTranslations.not_found}}
+                            {{ labelTranslations.volunteering_hours | firstLetterCapital }}
+                            {{ labelTranslations.not_found }}
                           </b-td>
                         </b-tr>
                       </b-tbody>
@@ -124,7 +124,7 @@
                     v-bind:class="{ disabled : enableSubmitTimeTimeSheet }"
                     @click="submitVolunteerTimeSheet('time')"
                   >
-                    {{labelTranslations.submit}}
+                    {{ labelTranslations.submit }}
                   </b-button>
                 </div>
               </div>
@@ -143,7 +143,7 @@
               <!-- TIMESHEET GOAL -->
               <div class="table-outer timesheet-table-outer" v-if="isGoalMissionActive">
                 <div class="table-inner">
-                  <h3>{{labelTranslations.volunteering_goals}}</h3>
+                  <h3>{{ labelTranslations.volunteering_goals }}</h3>
                   <VolunteeringTimesheetTableHeader
                     :currentWeek="timeSheetGoalCurrentDate"
                     @updateCall="changeVolunteeringGoals"
@@ -163,7 +163,7 @@
                       <b-thead>
                         <b-tr>
                           <b-th class="mission-col">
-                            {{labelTranslations.mission}}
+                            {{ labelTranslations.mission }}
                           </b-th>
                           <b-th
                             v-bind:class="{'currentdate-col' : highLightCurrentDate(key+1,'goal')}"
@@ -173,7 +173,7 @@
                             {{key+1}} <span>{{getTimeSheetWeekName(item,'goal')}}</span>
                           </b-th>
                           <b-th class="total-col">
-                            {{labelTranslations.total}}
+                            {{ labelTranslations.total }}
                           </b-th>
                         </b-tr>
                       </b-thead>
@@ -266,7 +266,7 @@
                   :headerField="timeRequestExportFields"
                   requestType="time"
                   :items="timesheetRequestItems"
-                  :headerLable="timeRequestLabel"
+                  :headerLable="labelTranslations.hours_requests"
                   :currentPage="hourRequestCurrentPage"
                   :totalRow="hourRequestTotalRow"
                   @updateCall="getTimeRequest"
@@ -283,7 +283,7 @@
                 :headerField="goalRequestExportFields"
                 requestType="goal"
                 :items="goalRequestItems"
-                :headerLable="goalRequestLabel"
+                :headerLable="labelTranslations.goals_requests"
                 :currentPage="goalRequestCurrentPage"
                 :totalRow="goalRequestTotalRow"
                 @updateCall="getGoalRequest"
@@ -393,11 +393,9 @@ export default {
     return {
       files: [],
       tableLoaderActive: true,
-      goalTableLoaderActive: true,
       translations: [],
       labelTranslations: {},
       placeholderTranslations: {},
-      VolunteeringRequest: [],
       timeRequestExportFields: [],
       timesheetRequestItems: [],
       hourRequestCurrentPage: 1,
@@ -414,8 +412,6 @@ export default {
           ["WEEKEND", "weekend"],
           ["HOLIDAY", "holiday"],
       ],
-      rows: 25,
-      perPage: 2,
       currentPage: 1,
       volunteeringHoursCurrentMonth: '',
       volunteeringHoursCurrentYear: '',
@@ -431,8 +427,6 @@ export default {
       volunteeringGoalWeekName: [],
       timeMissionData: [],
       goalMissionData: [],
-      timeRequestLabel: "",
-      goalRequestLabel: "",
       currentTimeData: {
         missionId: '',
         hours: '',
@@ -836,7 +830,6 @@ export default {
         /*
          * timeSheetItem is a record of time/goal on given day for a given mission
          */
-        console.log('timeSheetItem', timeSheetItem)
         let currentArrayDate = parseInt(timeSheetItem.date);
         let currentArrayYear = parseInt(timeSheetItem.year);
         let currentArrayMonth = parseInt(timeSheetItem.month);
@@ -865,10 +858,11 @@ export default {
       if (currentDate < disabledPastDates && start_date != null) {
         styleClasses.push("disabled")
       }
-      if (currentDate > disableEndDate) {
 
+      if (currentDate > disableEndDate) {
         styleClasses.push("disabled")
       }
+
       if (now === currentDate) {
         currentDate = moment().tz(this.userTimezone).format(DATETIME_FORMAT)
       }
@@ -1494,8 +1488,6 @@ export default {
     this.defaultWorkday = this.placeholderTranslations.workday
     this.defaultHours = this.placeholderTranslations.spent_hours
     this.defaultMinutes = this.placeholderTranslations.spent_minutes
-    this.timeRequestLabel = this.labelTranslations.hours_requests
-    this.goalRequestLabel = this.labelTranslations.goals_requests
 
     this.userTimezone = store.state.userTimezone
 
