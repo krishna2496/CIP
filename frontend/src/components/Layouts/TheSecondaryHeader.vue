@@ -139,6 +139,10 @@ export default {
     },
     methods: {
         quickAcessFilterChange(val) {
+            if (!val) {
+                return;
+            }
+
             if (val == this.defaultState) {
                 this.isStateClick = true
             }
@@ -629,7 +633,6 @@ export default {
                     this.selectedCity = []
                     this.selectedSkill = []
                     this.selectedTheme = []
-                    this.$parent.removeLoader();
                 }
             });
         },

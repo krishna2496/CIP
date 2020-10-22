@@ -392,11 +392,19 @@ export default {
         }
     },
     created() {
+        this.isVolunteeringSettingEnabled = this.settingEnabled(constants.SETTING_VOLUNTEERING);
+
+        if (this.$route.params.searchParamsType &&
+            this.$route.params.searchParamsType === 'virtual-missions') {
+            if (!this.isVolunteeringSettingEnabled) {
+                this.$router.push('/home');
+            }
+        }
+
         this.languageData = JSON.parse(store.state.languageLabel);
         this.sortByFilterSet = this.settingEnabled(constants.SORTING_MISSIONS)
 
         // hide lowest/highest available seats and deadline filter if volunteering setting is disabled
-        this.isVolunteeringSettingEnabled = this.settingEnabled(constants.SETTING_VOLUNTEERING);
         if (!this.isVolunteeringSettingEnabled) {
             this.sortByOptions.splice(2, 2);
             this.sortByOptions.splice(3, 1);
