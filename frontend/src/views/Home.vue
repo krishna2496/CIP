@@ -24,7 +24,7 @@
                     <span v-for="(item , i) in tags.theme" v-if="isThemeDisplay" :key=i>
                         <AppCustomChip :textVal="item" :tagId="i" type="theme" @updateCall="changeTag" />
                     </span>
-                    <span v-for="(item , i) in tags.skill" v-if="isSkillDisplay" :key=i>
+                    <span v-for="(item , i) in tags.skill" v-if="isSkillDisplay && isVolunteeringSettingEnabled" :key=i>
                         <AppCustomChip :textVal="item" :tagId="i" type="skill" @updateCall="changeTag" />
                     </span>
                     <b-button class="clear-btn" v-if="isCountrySelectionSet || isStateSelectionSet || tags.city || (tags.theme && isThemeDisplay) || (tags.skill && isSkillDisplay)" @click="clearMissionFilterData">{{languageData.label.clear_all}}</b-button>
@@ -197,7 +197,8 @@ export default {
             defaultCountry: 0,
             isAjaxCall: true,
             hideEllipsis: true,
-            isExploreMission: false
+            isExploreMission: false,
+            isVolunteeringSettingEnabled: true
         };
     },
     methods: {
@@ -391,9 +392,23 @@ export default {
         }
     },
     created() {
+        this.isVolunteeringSettingEnabled = this.settingEnabled(constants.SETTING_VOLUNTEERING);
+
+        if (this.$route.params.searchParamsType &&
+            this.$route.params.searchParamsType === 'virtual-missions') {
+            if (!this.isVolunteeringSettingEnabled) {
+                this.$router.push('/home');
+            }
+        }
+
         this.languageData = JSON.parse(store.state.languageLabel);
         this.sortByFilterSet = this.settingEnabled(constants.SORTING_MISSIONS)
 
+        // hide lowest/highest available seats and deadline filter if volunteering setting is disabled
+        if (!this.isVolunteeringSettingEnabled) {
+            this.sortByOptions.splice(2, 2);
+            this.sortByOptions.splice(3, 1);
+        }
         if (this.$route.params.searchParamsType) {
             let filteExplore = {};
             filteExplore.exploreMissionParams = '';
