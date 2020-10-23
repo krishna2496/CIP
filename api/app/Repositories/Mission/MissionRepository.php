@@ -1504,6 +1504,8 @@ class MissionRepository implements MissionInterface
             }, ]);
         $missionQuery->with(['missionRating']);
 
+        $this->filterMissionsBasedOnSettingsEnabled($request, $missionQuery);
+
         return $missionQuery->inRandomOrder()->get();
     }
 
