@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use  App\Models\MissionImpactDonationLanguage;
 use Iatstuti\Database\Support\CascadeSoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class MissionImpactDonation extends Model
 {
@@ -54,8 +55,9 @@ class MissionImpactDonation extends Model
     /**
      * Find the specified resource.
      * 
+     * @return Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function missionImpactDonationDetail()
+    public function missionImpactDonationDetail(): HasMany
     {
         return $this->hasMany(MissionImpactDonationLanguage::class, 'impact_donation_id', 'mission_impact_donation_id');
     }
