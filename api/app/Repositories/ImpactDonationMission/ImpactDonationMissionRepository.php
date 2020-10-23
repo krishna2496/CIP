@@ -2,7 +2,6 @@
 namespace App\Repositories\ImpactDonationMission;
 
 use Illuminate\Http\Request;
-use App\Helpers\ResponseHelper;
 use App\Models\Mission;
 use Carbon\Carbon;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -15,11 +14,6 @@ use App\Models\MissionImpactDonation;
 
 class ImpactDonationMissionRepository
 {
-    /**
-     * @var ResponseHelper
-     */
-    private $responseHelper;
-
     /**
      * @var Mission
      */
@@ -44,7 +38,6 @@ class ImpactDonationMissionRepository
      * Create a new ImpactDonationMission repository instance.
      *
      * @param  Mission $mission
-     * @param  ResponseHelper $responseHelper
      * @param  App\Services\Mission\ModelsService $modelsService
      * @param  App\Models\MissionImpactDonationLanguage $missionImpactDonationLanguage
      * @param  App\Helpers\LanguageHelper $languageHelper
@@ -52,13 +45,11 @@ class ImpactDonationMissionRepository
      */
     public function __construct(
         Mission $mission,
-        ResponseHelper $responseHelper,
         ModelsService $modelsService,
         MissionImpactDonationLanguage $missionImpactDonationLanguage,
         LanguageHelper $languageHelper
     ) {
-        $this->mission = $mission;
-        $this->responseHelper = $responseHelper;
+        $this->mission = $mission;        
         $this->modelsService = $modelsService;
         $this->missionImpactDonationLanguage = $missionImpactDonationLanguage;
         $this->languageHelper = $languageHelper;
@@ -115,6 +106,10 @@ class ImpactDonationMissionRepository
             ->update(['amount'=>$missionDonationValue['amount']]);
         }
 
+        if (!isset($missionDonationValue['translations'])) {
+            return;
+        }
+
         if (isset($missionDonationValue['translations'])) {
             foreach ($missionDonationValue['translations'] as $impactDonationLanguageValue) {
                 $language = $languages->where('code', $impactDonationLanguageValue['language_code'])->first();
@@ -143,6 +138,6 @@ class ImpactDonationMissionRepository
      */
     public function deleteMissionImpactDonation(string $missionImpactDonationId): bool
     {
-        return MissionImpactDonation::findOrFail($missionImpactDonationId)->delete();
+        return $this->modelsService->missionImpactDonation->findOrFail($missionImpactDonationId)->delete();
     }
 }

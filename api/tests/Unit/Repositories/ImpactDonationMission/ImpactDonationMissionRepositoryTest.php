@@ -74,7 +74,6 @@ class ImpactDonationMissionRepositoryTest extends TestCase
         $defaultTenantLanguageId = 1;
 
         $mission = $this->mock(Mission::class);
-        $responseHelper = $this->mock(ResponseHelper::class);
         $modelService = $this->mock(ModelsService::class);
         $missionImpactDonationLanguage = $this->mock(MissionImpactDonationLanguage::class);
         $languageHelper = $this->mock(LanguageHelper::class);
@@ -114,25 +113,24 @@ class ImpactDonationMissionRepositoryTest extends TestCase
         );
 
         $languageHelper->shouldReceive('getLanguages')
-        ->once()
-        ->andReturn($collection);
+            ->once()
+            ->andReturn($collection);
 
         $modelService->missionImpactDonation->shouldReceive('create')
-        ->once()
-        ->andReturn(new MissionImpactDonation());
+            ->once()
+            ->andReturn(new MissionImpactDonation());
 
         $collection->shouldReceive('where')
-        ->once()
-        ->with('code', $data['translations'][0]['language_code'])
-        ->andReturn($collectionLanguageData);
+            ->once()
+            ->with('code', $data['translations'][0]['language_code'])
+            ->andReturn($collectionLanguageData);
 
         $missionImpactDonationLanguage->shouldReceive('create')
-        ->once()
-        ->andReturn($missionImpactDonationLanguage);
+            ->once()
+            ->andReturn($missionImpactDonationLanguage);
         
         $repository = $this->getRepository(
             $mission,
-            $responseHelper,
             $modelService,
             $missionImpactDonationLanguage,
             $languageHelper
@@ -185,7 +183,6 @@ class ImpactDonationMissionRepositoryTest extends TestCase
         $defaultTenantLanguageId = 1;
 
         $mission = $this->mock(Mission::class);
-        $responseHelper = $this->mock(ResponseHelper::class);
         $modelService = $this->mock(ModelsService::class);
         $missionImpactDonationLanguage = $this->mock(MissionImpactDonationLanguage::class);
         $languageHelper = $this->mock(LanguageHelper::class);
@@ -225,31 +222,30 @@ class ImpactDonationMissionRepositoryTest extends TestCase
         );
 
         $languageData = $languageHelper->shouldReceive('getLanguages')
-        ->once()
-        ->andReturn($collection);
+            ->once()
+            ->andReturn($collection);
 
         $modelService->missionImpactDonation->shouldReceive('where')
-        ->once()
-        ->with(['mission_impact_donation_id' => $data['impact_donation_id']])
-        ->andReturn($missionImpactDonation);
+            ->once()
+            ->with(['mission_impact_donation_id' => $data['impact_donation_id']])
+            ->andReturn($missionImpactDonation);
 
         $modelService->missionImpactDonation->shouldReceive('update')
-        ->once()
-        ->with(['amount' => $data['amount']])
-        ->andReturn($missionImpactDonation);
+            ->once()
+            ->with(['amount' => $data['amount']])
+            ->andReturn($missionImpactDonation);
 
         $collection->shouldReceive('where')
-        ->once()
-        ->with('code', $data['translations'][0]['language_code'])
-        ->andReturn($collectionLanguageData);
+            ->once()
+            ->with('code', $data['translations'][0]['language_code'])
+            ->andReturn($collectionLanguageData);
 
         $missionImpactDonationLanguage->shouldReceive('createOrUpdateDonationImpactTranslation')
-        ->once()
-        ->andReturn();
+            ->once()
+            ->andReturn();
 
         $repository = $this->getRepository(
             $mission,
-            $responseHelper,
             $modelService,
             $missionImpactDonationLanguage,
             $languageHelper            
@@ -259,10 +255,76 @@ class ImpactDonationMissionRepositoryTest extends TestCase
     }
 
     /**
+    * @testdox Test delete imapct donation success
+    *
+    * @return void
+    */
+    public function testImpactDonationDeleteSuccess()
+    {
+        $missionImpactDonationId = str_random(36);
+
+        $mission = $this->mock(Mission::class);
+        $modelService = $this->mock(ModelsService::class);
+        $missionImpactDonationLanguage = $this->mock(MissionImpactDonationLanguage::class);
+        $languageHelper = $this->mock(LanguageHelper::class);
+        $collection = $this->mock(Collection::class);
+        $missionImpactDonation = $this->mock(MissionImpactDonation::class);
+
+        $timeMission = $this->mock(TimeMission::class);
+        $missionLanguage = $this->mock(MissionLanguage::class);
+        $missionDocument = $this->mock(MissionDocument::class);
+        $favouriteMission = $this->mock(FavouriteMission::class);
+        $missionSkill = $this->mock(MissionSkill::class);
+        $missionRating = $this->mock(MissionRating::class);
+        $missionApplication = $this->mock(MissionApplication::class);
+        $city = $this->mock(City::class);
+        $organization = $this->mock(Organization::class);
+        $missionTab = $this->mock(MissionTab::class);
+        $missionTabLanguage = $this->mock(MissionTabLanguage::class);
+        $missionImpact = $this->mock(MissionImpact::class);
+        $donationAttribute = $this->mock(DonationAttribute::class);
+
+        $modelService = $this->modelService(
+            $mission,
+            $timeMission,
+            $missionLanguage,
+            $missionDocument,
+            $favouriteMission,
+            $missionSkill,
+            $missionRating,
+            $missionApplication,
+            $city,
+            $missionImpactDonation,
+            $missionImpact,
+            $organization,
+            $missionTab,
+            $missionTabLanguage,
+            $donationAttribute
+        );
+
+        $modelService->missionImpactDonation->shouldReceive('findOrFail')
+            ->once()
+            ->with($missionImpactDonationId)
+            ->andReturn($missionImpactDonation);
+
+        $modelService->missionImpactDonation->shouldReceive('delete')
+            ->once()
+            ->andReturn(true);
+
+        $repository = $this->getRepository(
+            $mission,
+            $modelService,
+            $missionImpactDonationLanguage,
+            $languageHelper            
+        );
+
+        $response = $repository->deleteMissionImpactDonation($missionImpactDonationId);
+    }
+
+    /**
      * Create a new ImpactDonationMission repository instance.
      *
      * @param  Mission $mission
-     * @param  ResponseHelper $responseHelper
      * @param  App\Services\Mission\ModelsService $modelsService
      * @param  App\Models\MissionImpactDonationLanguage $missionImpactDonationLanguage
      * @param  App\Helpers\LanguageHelper $languageHelper
@@ -270,14 +332,12 @@ class ImpactDonationMissionRepositoryTest extends TestCase
      */
     private function getRepository(
         Mission $mission,
-        ResponseHelper $responseHelper,
         ModelsService $modelsService,
         MissionImpactDonationLanguage $missionImpactDonationLanguage,
         LanguageHelper $languageHelper
     ) {
         return new ImpactDonationMissionRepository(
             $mission,
-            $responseHelper,
             $modelsService,
             $missionImpactDonationLanguage,
             $languageHelper

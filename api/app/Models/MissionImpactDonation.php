@@ -37,7 +37,7 @@ class MissionImpactDonation extends Model
      *
      * @var array
      */
-    protected $visible = ['mission_impact_donation_id', 'mission_id,', 'amount', 'getMissionImpactDonationDetail'];
+    protected $visible = ['mission_impact_donation_id', 'mission_id,', 'amount', 'missionImpactDonationDetail'];
 
     /**
      * The attributes that are mass assignable.
@@ -49,14 +49,13 @@ class MissionImpactDonation extends Model
     /*
      * Iatstuti\Database\Support\CascadeSoftDeletes;
      */
-    protected $cascadeDeletes = ['getMissionImpactDonationDetail'];
+    protected $cascadeDeletes = ['missionImpactDonationDetail'];
 
     /**
      * Find the specified resource.
      * 
      */
-
-    public function getMissionImpactDonationDetail()
+    public function missionImpactDonationDetail()
     {
         return $this->hasMany(MissionImpactDonationLanguage::class, 'impact_donation_id', 'mission_impact_donation_id');
     }

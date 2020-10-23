@@ -696,7 +696,7 @@ class MissionRepository implements MissionInterface
             $query->orderBy('sort_order');
         }])->with(['impactDonation' => function ($query) {
             $query->orderBy('amount');
-        }, 'impactDonation.getMissionImpactDonationDetail' => function ($query) {
+        }, 'impactDonation.missionImpactDonationDetail' => function ($query) {
         }])->with(['missionTabs' => function ($query) {
             $query->orderBy('sort_key');
         }, 'missionTabs.getMissionTabDetail' => function ($query) {
@@ -784,7 +784,7 @@ class MissionRepository implements MissionInterface
             $query->orderBy('sort_order');
         }])->with(['impactDonation' => function ($query) {
             $query->orderBy('amount');
-        }, 'impactDonation.getMissionImpactDonationDetail' => function ($query) {
+        }, 'impactDonation.missionImpactDonationDetail' => function ($query) {
         }])->with(['missionTabs' => function ($query) {
             $query->select('mission_tab.sort_key', 'mission_tab.mission_tab_id', 'mission_tab.mission_id')->orderBy('sort_key');
         }, 'missionTabs.getMissionTabDetail' => function ($query) {
@@ -2038,7 +2038,7 @@ class MissionRepository implements MissionInterface
                 $impactDonationLanguageArray['impact_donation_id'] = $impactDonationValue['mission_impact_donation_id'];
                 $impactDonationLanguageArray['amount'] = $impactDonationValue['amount'];
                 $impactDonationLanguageArray["languages"] = [];
-                foreach ($impactDonationValue['get_mission_impact_donation_detail'] as $impactDonationLanguadeValue) {
+                foreach ($impactDonationValue['mission_impact_donation_detail'] as $impactDonationLanguadeValue) {
                     $languageCode = $languages->where('language_id', $impactDonationLanguadeValue['language_id'])->first()->code;
                     $impactDonationLanguage['language_id'] = $impactDonationLanguadeValue['language_id'];
                     $impactDonationLanguage['language_code'] = $languageCode;

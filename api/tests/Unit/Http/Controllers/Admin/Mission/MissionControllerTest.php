@@ -46,8 +46,6 @@ class MissionControllerTest extends TestCase
      */
     public function testUpdateImpactDonationAttributeSuccess()
     {
-        \DB::setDefaultConnection('tenant');
-
         $data = [
             'impact_donation' => [
                 [
@@ -89,6 +87,8 @@ class MissionControllerTest extends TestCase
         $organizationRepository = $this->mock(OrganizationRepository::class);
         $modelService = $this->mock(ModelsService::class);
         $missionController = $this->mock(MissionController::class);
+
+        $this->expectsEvents(UserActivityLogEvent::class);
 
         $defaultLanguage = (object)[
             'language_id' => 1,
@@ -888,8 +888,6 @@ class MissionControllerTest extends TestCase
      */
     public function testImpactDonationMissionNotLinkWithMissionError()
     {
-        \DB::setDefaultConnection('tenant');
-
         $data = [
             'impact_donation' => [
                 [

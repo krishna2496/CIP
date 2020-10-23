@@ -722,7 +722,7 @@ class MissionController extends Controller
 
         // Check for mission impact donation id is valid or not
          try {
-            if (isset($request->impact_donation) && count($request->impact_donation) > 0) {
+            if (isset($request->impact_donation)) {
                 foreach ($request->impact_donation as $impactDonationValue) {
                     if (isset($impactDonationValue['impact_donation_id']) && ($impactDonationValue['impact_donation_id'] !== '')) {
                         $this->missionRepository->isMissionDonationImpactLinkedToMission($missionId, $impactDonationValue['impact_donation_id']);
