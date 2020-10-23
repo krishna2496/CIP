@@ -37,7 +37,7 @@
                     <b-list-group-item v-if="isThemeDisplay">
                         <AppCheckboxDropdown @quickAcessFilterChange="quickAcessFilterChange" v-if="isComponentVisible" :filterTitle="defaultTheme" :selectedItem="selectedTheme" :checkList="themeList" @changeParmas="changeThemeParmas" @updateCall="changeTheme" />
                     </b-list-group-item>
-                    <b-list-group-item v-if="isSkillDisplay">
+                    <b-list-group-item v-if="isSkillDisplay && isVolunteeringSettingEnabled">
                         <AppCheckboxDropdown @quickAcessFilterChange="quickAcessFilterChange" v-if="isComponentVisible" :filterTitle="defaultSkill" :checkList="skillList" :selectedItem="selectedSkill" @changeParmas="changeSkillParmas" @updateCall="changeSkill" />
                     </b-list-group-item>
                 </b-list-group>
@@ -123,7 +123,8 @@ export default {
             isStateClick: false,
             isCityClick: false,
             isThemeClick: false,
-            isSkillClick: false
+            isSkillClick: false,
+            isVolunteeringSettingEnabled: true
         };
     },
     mounted() {
@@ -138,6 +139,10 @@ export default {
     },
     methods: {
         quickAcessFilterChange(val) {
+            if (!val) {
+                return;
+            }
+
             if (val == this.defaultState) {
                 this.isStateClick = true
             }
@@ -322,7 +327,6 @@ export default {
             // this.$router.push({
             //     name: 'home'
             // })
-
             await filterList(this.selectedfilterParams).then(response => {
                 if (response) {
                     if (response.state) {
@@ -629,7 +633,6 @@ export default {
                     this.selectedCity = []
                     this.selectedSkill = []
                     this.selectedTheme = []
-                    this.$parent.removeLoader();
                 }
             });
         },
@@ -696,6 +699,7 @@ export default {
         this.isSkillDisplay = this.settingEnabled(constants.SKILLS_ENABLED);
         this.isCountrySelectionSet = this.settingEnabled(constants.IS_COUNTRY_SELECTION);
         this.isStateSelectionDisplay = this.settingEnabled(constants.STATE_ENABLED);
+        this.isVolunteeringSettingEnabled = this.settingEnabled(constants.SETTING_VOLUNTEERING);
         eventBus.$on('clearAllFilters', () => {
             this.clearFilter();
         });

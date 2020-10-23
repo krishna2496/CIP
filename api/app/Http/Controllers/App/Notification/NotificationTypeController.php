@@ -105,19 +105,25 @@ class NotificationTypeController extends Controller
                     }
                     break;
                 case 'volunteering_hours':
-                    $tenantSetting = config('constants.tenant_settings.VOLUNTEERING_TIME_MISSION');
-                    if (in_array($tenantSetting, $getActivatedTenantSettings)) {
+                    $volunteerSetting = config('constants.tenant_settings.VOLUNTEERING_MISSION');
+                    $timeSetting = config('constants.tenant_settings.VOLUNTEERING_TIME_MISSION');
+                    if (in_array($volunteerSetting, $getActivatedTenantSettings)
+                        && in_array($timeSetting, $getActivatedTenantSettings)
+                    ) {
                         $enabledNotificationSettings[] = $value;
                     }
                     break;
                 case 'volunteering_goals':
-                    $tenantSetting = config('constants.tenant_settings.VOLUNTEERING_GOAL_MISSION');
-                    if (in_array($tenantSetting, $getActivatedTenantSettings)) {
+                    $volunteerSetting = config('constants.tenant_settings.VOLUNTEERING_MISSION');
+                    $goalSetting = config('constants.tenant_settings.VOLUNTEERING_GOAL_MISSION');
+                    if (in_array($volunteerSetting, $getActivatedTenantSettings)
+                        && in_array($goalSetting, $getActivatedTenantSettings)
+                    ) {
                         $enabledNotificationSettings[] = $value;
                     }
                     break;
                 case 'mission_application':
-                    $tenantSetting = config('constants.tenant_settings.VOLUNTEERING');
+                    $tenantSetting = config('constants.tenant_settings.VOLUNTEERING_MISSION');
                     if (in_array($tenantSetting, $getActivatedTenantSettings)) {
                         $enabledNotificationSettings[] = $value;
                     }
