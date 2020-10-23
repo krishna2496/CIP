@@ -22,7 +22,7 @@
 							<div class="heading-section">
 								<h1>{{languageData.label.messages}}</h1>
 								<b-button  class="btn-bordersecondary"
-										   @click="handleModal">{{languageData.label.send_message}}</b-button>
+									@click="handleModal">{{languageData.label.send_message}}</b-button>
 							</div>
 						</div>
 						<div class="inner-content-wrap" v-if="isPageLoaded">

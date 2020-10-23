@@ -36,7 +36,6 @@
 		"all_rights_reserved": "All rights reserved",
 		"add": "Add",
 		"already_volunteered": "Already volunteered",
-		"on_going_opportunities": "Ongoing opportunities",
 		"view_detail": "View details",
 		"no_record_found": "No records found",
 		"oldest": "Oldest",
@@ -110,7 +109,6 @@
 		"language": "Language",
 		"timezone": "Time zone",
 		"address_information": "Address information",
-		"basic_information": "Basic information",
 		"professional_information": "Professional information",
 		"linked_in": "LinkedIn",
 		"custom_field": "Additional information",
@@ -215,7 +213,6 @@
 		"new_line_to_enter_multiple_urls": "One item per line",
 		"start_date": "Start date",
 		"reset": "Reset",
-		"year": "Year",
 		"publish_new_story": "Publish a new story",
 		"draft": "Draft",
 		"pending": "Pending",
@@ -409,7 +406,10 @@
 		"change_currency" : "Change currency",
 		"preferences" : "Preferences",
 		"currency" : "Currency",
-		"current_password" : "Current password"
+		"current_password" : "Current password",
+		"on_going_opportunities": "Ongoing opportunities",
+		"basic_information": "Basic information",
+		"year": "Year"
 	},
 	"placeholder": {
 		"email_address": "Enter email address",
