@@ -39,6 +39,7 @@ api/storage/app/*
 !api/storage/app/default_theme
 !api/storage/app/samlCertificate
 api/vendor
+api/tmp
 
 # API-DOC
 
