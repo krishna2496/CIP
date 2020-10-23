@@ -64,12 +64,8 @@ class MissionSkillRepository implements MissionSkillInterface
         $languageCode = config('app.locale');
         foreach ($hoursPerSkill as $skill) {
             $translations = json_decode($skill->translations, true);
-            $arrayKey = array_search($languageCode, array_column(
-                $translations,
-                'lang'
-            ));
-            if ($arrayKey  !== '') {
-                $skill->skill_name = $translations[$arrayKey]['title'];
+            if (array_key_exists($languageCode, $translations)) {
+                $skill->skill_name = $translations[$languageCode];
             }
             unset($skill->translations);
         }

@@ -7,6 +7,7 @@ use Illuminate\Http\Response;
 use App\Models\MissionTheme;
 use Illuminate\Support\Collection;
 use \Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
 
 class MissionThemeRepository implements MissionThemeInterface
 {
@@ -54,8 +55,12 @@ class MissionThemeRepository implements MissionThemeInterface
         $themeQuery = $this->missionTheme->select('theme_name', 'mission_theme_id', 'translations');
         if ($request->has('search')) {
             $themeQuery->where(function ($query) use ($request) {
-                $query->orWhere('theme_name', 'like', '%' . $request->input('search') . '%');
-                $query->orWhere('translations', 'like', '%' . $request->input('search') . '%');
+                if ($request->has('language')) {
+                    $query->where(DB::raw("lower(json_unquote(json_extract(translations, '$.".$request->get('language')."')))"), 'LIKE', strtolower( $request->input('search') ).'%');
+                } else {
+                    $query->whereNotNull(DB::raw("JSON_SEARCH(lower(translations),'one','".strtolower( $request->input('search') ).'%'."')"));
+                    $query->orWhere(DB::raw("lower(theme_name)"), 'LIKE', strtolower( $request->input('search') ).'%');
+                }
             });
         }
         if ($request->has('order')) {

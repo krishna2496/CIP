@@ -104,23 +104,33 @@ export default {
         this.items[1].name = this.languageData.label.volunteering_history
         this.items[2].name = this.languageData.label.volunteering_timesheet
 
-		if (!this.isCommentDisplay) {
-            this.items.splice(4, 1)
-        } else {
-            this.items[4].name = this.languageData.label.comment_history
-        }
-
         if (!this.isStoryDisplay) {
             this.items.splice(5, 1)
-        } else {
-            this.items[5].name = this.languageData.label.my_stories
         }
+
+        if (!this.isCommentDisplay) {
+            this.items.splice(4, 1)
+        }
+
         if (!this.isMessageDisplay) {
             this.items.splice(3, 1)
-        } else {
-            this.items[3].name = this.languageData.label.messages
-		}
-		if (!this.isVolunteeringMission) {
+        }
+
+        this.items.map(item => {
+            if (item.link === 'my-stories') {
+                item.name = this.languageData.label.my_stories;
+            }
+
+            if (item.link === 'messages') {
+                item.name = this.languageData.label.messages;
+            }
+
+            if (item.link === 'comment-history') {
+                item.name = this.languageData.label.comment_history;
+            }
+        });
+
+        if (!this.isVolunteeringMission) {
             this.items.splice(1, 2)
         }
     }

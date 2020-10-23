@@ -4626,6 +4626,27 @@
         }
       }
     },
+    "/app/tenant-currencies": {
+      "get": {
+        "operationId": "GET-cip-api-get-tenant-currency",
+        "summary": "App - Get tenant currencies",
+        "description": "Get the list of all the tenant activated currencies",
+        "tags": [
+          "Tenant - App"
+        ],
+        "responses": {
+          "200": {
+            "description": "Currencies listed successfully"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid token"
+          },
+          "403": {
+            "description": "Forbidden - Required tenant setting is disabled"
+          }
+        }
+      }
+    },
     "/timesheet/total-hours": {
       "get": {
         "operationId": "GET_team4-cip-api-fetch-timesheet-data-admin",

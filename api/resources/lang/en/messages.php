@@ -205,6 +205,7 @@ return [
         'MESSAGE_ORGANIZATION_LISTING' => 'Organization listed successfully',
         'MESSAGE_TENANT_USER_CONTENT_STATISTICS_SUCCESS' => 'User content statistics retrieved successfully',
         'MESSAGE_TENANT_USER_VOLUNTEER_SUMMARY_SUCCESS' => 'Volunteer summary retrieved successfully',
+        'MESSAGE_TENANT_CURRENCY_LISTING' => 'Currencies listed successfully',
         'MESSAGE_MISSION_TAB_DELETED' => 'Mission tab deleted successfully',
         'MESSAGE_NO_DONATION_IP_WHITELIST_FOUND' => 'No whitelisted IP found',
         'MESSAGE_DONATION_IP_WHITELIST_LISTING' => 'IP whitelists listed successfully',
@@ -302,7 +303,7 @@ return [
 
 
         // Custom error code for common exception
-        'ERROR_INVALID_JSON' => 'Invalid Json format',
+        'ERROR_INVALID_JSON' => 'Invalid JSON format',
         'ERROR_INTERNAL_SERVER_ERROR' => 'Internal server error',
         'ERROR_TENANT_SETTING_DISABLED' => 'Required tenant setting is disabled.',
 
@@ -399,9 +400,13 @@ return [
         'ERROR_DONATION_IP_WHITELIST_NOT_FOUND' => 'IP whitelist not found in system',
         'ERROR_SORT_KEY_ALREADY_EXIST' => 'The sort key has already been taken.',
         'ERROR_IMPACT_SORT_KEY_ALREADY_EXIST' => 'The impact sort key has already been taken.',
+        'ERROR_IP_ADDRESS_NOT_ALLOWED' => 'You are not allowed to proceed with this request.',
 
         // For submitting a story feature
         'ERROR_STORY_MISSION_APPLICATION_NOT_APPROVED' => 'You cannot submit a story, mission application was not approved.',
         'ERROR_STORY_MISSION_APPLICATION_NOT_FOUND' => 'You cannot submit a story, mission application of the user was not found.',
+
+        'ERROR_VOLUNTEERING_TIME_OR_GOAL_SHOULD_BE_ACTIVE' => 'Volunteering time or volunteering goal should be active while volunteering setting is enabled.',
+        'ERROR_VOLUNTEERING_SHOULD_BE_ENABLED' => 'Volunteering setting should be enabled to update volunteering time or volunteering goal setting.'
     ]
 ];

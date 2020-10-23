@@ -77,9 +77,6 @@ class TenantActivatedSettingController extends Controller
                 $index = $getTenantSettings->search(function ($value, $key) use ($tenantSetting) {
                     return $value->tenant_setting_id === $tenantSetting->settings->setting_id;
                 });
-                if ($index === false) {
-                    continue;
-                }
                 $tenantSettingData[$settingKey]['key'] = $getTenantSettings[$index]->key;
                 $tenantSettingData[$settingKey]['tenant_setting_id'] = $getTenantSettings[$index]
                 ->tenant_setting_id;
