@@ -110,23 +110,21 @@ class ImpactDonationMissionRepository
             return;
         }
 
-        if (isset($missionDonationValue['translations'])) {
-            foreach ($missionDonationValue['translations'] as $impactDonationLanguageValue) {
-                $language = $languages->where('code', $impactDonationLanguageValue['language_code'])->first();
-                $impactDonationArray['mission_impact_donation_language_id'] = Uuid::uuid4()->toString();
-                $impactDonationArray['impact_donation_id'] = $missionImpactDonationId;
-                $impactDonationArray['language_id'] = !empty($language)  ? $language->language_id : $defaultTenantLanguageId;
-                                
-                if (isset($impactDonationLanguageValue['content'])) {
-                    $impactDonationArray['content'] = json_encode($impactDonationLanguageValue['content']);
-                }
-
-                $languageId = !empty($language)  ? $language->language_id : $defaultTenantLanguageId;
-                $impactDonationTranslation = $this->missionImpactDonationLanguage
-                    ->createOrUpdateDonationImpactTranslation(['impact_donation_id' => $missionImpactDonationId,
-                    'language_id' => $languageId], $impactDonationArray);
-                unset($impactDonationArray);
+        foreach ($missionDonationValue['translations'] as $impactDonationLanguageValue) {
+            $language = $languages->where('code', $impactDonationLanguageValue['language_code'])->first();
+            $impactDonationArray['mission_impact_donation_language_id'] = Uuid::uuid4()->toString();
+            $impactDonationArray['impact_donation_id'] = $missionImpactDonationId;
+            $impactDonationArray['language_id'] = !empty($language)  ? $language->language_id : $defaultTenantLanguageId;
+                            
+            if (isset($impactDonationLanguageValue['content'])) {
+                $impactDonationArray['content'] = json_encode($impactDonationLanguageValue['content']);
             }
+
+            $languageId = !empty($language)  ? $language->language_id : $defaultTenantLanguageId;
+            $impactDonationTranslation = $this->missionImpactDonationLanguage
+                ->createOrUpdateDonationImpactTranslation(['impact_donation_id' => $missionImpactDonationId,
+                'language_id' => $languageId], $impactDonationArray);
+            unset($impactDonationArray);
         }
     }
 
