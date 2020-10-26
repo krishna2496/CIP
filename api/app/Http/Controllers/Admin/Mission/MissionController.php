@@ -221,9 +221,6 @@ class MissionController extends Controller
                 "impact.*.translations" => 'required',
                 "impact.*.translations.*.language_code" => 'required_with:impact.*.translations|max:2',
                 "impact.*.translations.*.content" => 'required_with:impact.*.translations|max:300',
-                "availability_id" => "integer|required_if:mission_type,TIME,GOAL|required_without:volunteering_attribute|exists:availability,availability_id,deleted_at,NULL",
-                "total_seats" => "integer|min:1",
-                "is_virtual" => "sometimes|required|in:0,1",
                 "mission_tabs" => "sometimes|required|array",
                 "mission_tabs.*.sort_key" => 'required|integer|distinct',
                 "mission_tabs.*.translations"=> 'required',
@@ -238,7 +235,7 @@ class MissionController extends Controller
                 "mission_tabs.*.translations.*.sections.*.content" =>
                 "required_with:mission_tabs.*.translations.*.sections",
                 'donation_attribute' => 'required_if:mission_type,DONATION,EAF,DISASTER_RELIEF',
-                'donation_attribute.goal_amount_currency' => 'required|string|min:3|max:3',
+                'donation_attribute.goal_amount_currency' => 'required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|string|min:3|max:3',
                 'donation_attribute.goal_amount' => 'sometimes|required_if:mission_type,DISASTER_RELIEF|integer|min:1|max:999999999999|nullable',
                 'donation_attribute.show_goal_amount' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean',
                 'donation_attribute.show_donation_percentage' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean',
@@ -447,9 +444,6 @@ class MissionController extends Controller
                 "volunteering_attribute.total_seats" => "integer|min:1",
                 "volunteering_attribute.availability_id" => "sometimes|required_if:mission_type,TIME,GOAL|integer|exists:availability,availability_id,deleted_at,NULL",
                 "skills.*.skill_id" => "integer|exists:skill,skill_id,deleted_at,NULL",
-                "is_virtual" => "sometimes|required|in:0,1",
-                "total_seats" => "integer|min:1",
-                "availability_id" => "sometimes|required_if:mission_type,TIME,GOAL|integer|exists:availability,availability_id,deleted_at,NULL",
                 "theme_id" => "sometimes|integer|exists:mission_theme,mission_theme_id,deleted_at,NULL",
                 "application_deadline" => "date",
                 "mission_detail.*.short_description" => "max:1000",
@@ -694,10 +688,7 @@ class MissionController extends Controller
         $missionDetails = $this->missionRepository->getMissionDetailsFromId($missionId, $language->language_id);
 
         if (isset($request->mission_type)) {
-            $volunteeringMissionTypes = [
-                config('constants.mission_type.GOAL'),
-                config('constants.mission_type.TIME')
-            ];
+            $volunteeringMissionTypes = config('constants.volunteering_mission_types');
             if (in_array($missionDetails->mission_type, $volunteeringMissionTypes) &&
                 !in_array($request->mission_type, $volunteeringMissionTypes)
             ) {
@@ -709,11 +700,7 @@ class MissionController extends Controller
                 );
             }
 
-            $donationMissionTypes = [
-                config('constants.mission_type.DONATION'),
-                config('constants.mission_type.EAF'),
-                config('constants.mission_type.DISASTER_RELIEF')
-            ];
+            $donationMissionTypes = config('constants.donation_mission_types');
             if (in_array($missionDetails->mission_type, $donationMissionTypes) &&
                 !in_array($request->mission_type, $donationMissionTypes)
             ) {

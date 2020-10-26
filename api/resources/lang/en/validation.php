@@ -258,6 +258,7 @@ return [
         'mission_tabs.*.translations.*.sections.*.title' => 'section title',
         'mission_tabs.*.translations.*.sections.*.content' => 'section content',
         'mission_tabs.*.mission_tab_id' => 'mission tab id',
+        'donation_attribute' => 'donation_attribute',
         'donation_attribute.goal_amount_currency' => 'goal_amount_currency',
         'donation_attribute.goal_amount' => 'goal_amount',
         'donation_attribute.show_goal_amount' => 'show_goal_amount',
