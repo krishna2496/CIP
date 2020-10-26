@@ -1,6 +1,6 @@
 <template>
     <div class="row custom-field" v-if="CustomFieldList != null && CustomFieldList.length > 0">
-        <b-col :md="getColumn(item.type)" v-for="(item,key) in optionList" :key=key>
+        <b-col md="12" v-for="(item,key) in optionList" :key=key>
             <b-form-group v-if="item.type == 'drop-down'">
                 <label>{{item.translations.name}}
                     <span v-if="item.is_mandatory == 1">*</span>
@@ -19,26 +19,32 @@
                   <span v-if="item.is_mandatory == 1">*</span>
                 </label>
                 <b-form-radio-group
-                  v-model="customFeildData[item.field_id]" :id='`radio-${item.field_id}`'
+                  class="container custom-group"
+                  :id='`radio-${item.field_id}`'
+                  v-model="customFeildData[item.field_id]"
                   :class="{ 'is-invalid': getErrorClass(item.field_id)}"
                   :validstate="getErrorState(item.field_id)"
                   @change="updateChanges" :name="item.translations.name"
                 >
-                <div
-                  class="custom-group"
-                  :class="getCustomGroupClass(item.translations.values.length)"
-                >
-                  <div
-                    v-for="(option, index) in getRadioArrayValue(item.translations.values)"
-                    :key="index"
-                  >
-                    <label class="d-inline-block p-1">
-                      <b-form-radio :value="option.value">
-                        {{ option.text }}
-                      </b-form-radio>
-                    </label>
-                  </div>
-                </div>
+                  <b-row>
+                    <b-col
+                      :md="getOptionColumn(item.translations.values.length)"
+                      :sm="item.translations.values.length > 5 ? 6 : 12"
+                      v-for="(option, index) in getRadioArrayValue(item.translations.values)"
+                      :key="index"
+                    >
+                      <label
+                        class="option-label d-inline-block p-1"
+                        v-b-tooltip="getTooltipText(item.translations.values.length, option.text)"
+                      >
+                        <b-form-radio :value="option.value">
+                          <div class="option-text" :class="{'truncate' : item.translations.values.length > 5}">
+                              {{ option.text }}
+                          </div>
+                        </b-form-radio>
+                      </label>
+                    </b-col>
+                  </b-row>
                 </b-form-radio-group>
                 <div v-if="getErrorClass(item.field_id)" class="invalid-feedback">
                     {{item.translations.name}} {{ languageData.errors.field_required }}
@@ -50,27 +56,33 @@
                   <span v-if="item.is_mandatory == 1">*</span>
                 </label>
                 <b-form-checkbox-group
-                  :id='`checkbox-id-${item.field_id}`' v-model="customFeildData[item.field_id]"
+                  class="container custom-group"
+                  :id='`checkbox-id-${item.field_id}`'
+                  v-model="customFeildData[item.field_id]"
                   name="checkbox-custom"
                   :class="{ 'is-invalid': getErrorClass(item.field_id)}"
                   :validstate="getErrorState(item.field_id)"
                   @input="updateChanges"
                 >
-                  <div
-                    class="custom-group"
-                    :class="getCustomGroupClass(item.translations.values.length)"
-                  >
-                    <div
+                  <b-row>
+                    <b-col
+                      :md="getOptionColumn(item.translations.values.length)"
+                      :sm="item.translations.values.length > 5 ? 6 : 12"
                       v-for="(option, index) in getRadioArrayValue(item.translations.values)"
                       :key="index"
                     >
-                      <label class="d-inline-block p-1">
+                      <label
+                        class="option-label d-inline-block p-1"
+                        v-b-tooltip="getTooltipText(item.translations.values.length, option.text)"
+                      >
                         <b-form-checkbox :value="option.value">
-                          {{ option.text }}
+                          <div class="option-text" :class="{'truncate' : item.translations.values.length > 5}">
+                            {{ option.text }} 
+                          </div>
                         </b-form-checkbox>
                       </label>
-                    </div>
-                  </div>
+                    </b-col>
+                  </b-row>
                 </b-form-checkbox-group>
                 <div v-if="getErrorClass(item.field_id)" class="invalid-feedback">
                     {{item.translations.name}} {{ languageData.errors.field_required }}
@@ -361,13 +373,6 @@
         });
         return selectedItems;
       },
-      getColumn(type) {
-        if (type == "radio" || type == "checkbox") {
-          return 6
-        } else {
-          return 12
-        }
-      },
       updateCustomDropDown(value) {
         this.customFeildData[value.fieldId] = value.selectedId
         this.defaultValue[value.fieldId] = value.selectedVal
@@ -464,11 +469,21 @@
         const pattern = /^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$/;
         return pattern.test(value);
       },
-      getCustomGroupClass (length) {
-        if (!length) return '';
-        
-        const count = Math.min(3, Math.ceil(length / 5));
-        return `custom-group--col-${count}`;
+      getTooltipText(itemLength, text) {
+        if (!!text) {
+          let max = text.length;
+          if (itemLength > 10) max = 25;
+          else if (itemLength > 5) max = 35;
+
+          if (text.length > max) return text;
+        }
+
+        return;
+      },
+      getOptionColumn (length) {
+        if (length > 10) return 4;
+        if (length > 5) return 6;
+        return 12
       }
     },
     updated() {},
