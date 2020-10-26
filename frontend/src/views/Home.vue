@@ -242,12 +242,12 @@ export default {
 
             filter.addLoader = parmas
             await missionListing(filter).then(response => {
-                if (response.data) {
+                if (response && response.data) {
                     this.missionList = response.data;
                 } else {
                     this.missionList = [];
                 }
-                if (response.pagination) {
+                if (response && response.pagination) {
                     this.rows = response.pagination.total;
                     this.perPage = response.pagination.per_page;
                     this.currentPage = response.pagination.current_page;
