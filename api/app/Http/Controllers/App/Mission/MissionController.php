@@ -781,19 +781,47 @@ class MissionController extends Controller
         string $missionType
     ) : bool {
 
-        $tenantSetting = null;
+        $requiredSettings = [];
         switch ($missionType) {
             case config('constants.mission_type.GOAL'):
-                $tenantSetting = config('constants.tenant_settings.VOLUNTEERING_GOAL_MISSION');
+                $requiredSettings = [
+                    config('constants.tenant_settings.VOLUNTEERING'),
+                    config('constants.tenant_settings.VOLUNTEERING_GOAL_MISSION')
+                ];
                 break;
             case config('constants.mission_type.TIME'):
-                $tenantSetting = config('constants.tenant_settings.VOLUNTEERING_TIME_MISSION');
+                $requiredSettings = [
+                    config('constants.tenant_settings.VOLUNTEERING'),
+                    config('constants.tenant_settings.VOLUNTEERING_TIME_MISSION'),
+                ];
+                break;
+            case config('constants.mission_type.DONATION'):
+                $requiredSettings = [
+                    config('constants.tenant_settings.DONATION_MISSION')
+                ];
+                break;
+            case config('constants.mission_type.EAF'):
+                $requiredSettings = [
+                    config('constants.tenant_settings.DONATION_MISSION'),
+                    config('constants.tenant_settings.EAF')
+                ];
+                break;
+            case config('constants.mission_type.DISASTER_RELIEF'):
+                $requiredSettings = [
+                    config('constants.tenant_settings.DONATION_MISSION'),
+                    config('constants.tenant_settings.DISASTER_RELIEF')
+                ];
                 break;
         }
 
-        return $this->tenantActivatedSettingRepository->checkTenantSettingStatus(
-            $tenantSetting,
-            $request
-        );
+        $activatedTenantSettings = $this->tenantActivatedSettingRepository
+            ->getAllTenantActivatedSetting($request);
+        foreach ($requiredSettings as $setting) {
+            if (!in_array($setting, $activatedTenantSettings)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
