@@ -35,7 +35,7 @@
                     >
                       <label
                         class="option-label d-inline-block p-1"
-                        v-b-tooltip="getTooltipText(item.translations.values.length, option.text)"
+                        v-b-tooltip.hover="getTooltipText(item.translations.values.length, option.text)"
                       >
                         <b-form-radio :value="option.value">
                           <div
@@ -76,7 +76,7 @@
                     >
                       <label
                         class="option-label d-inline-block p-1"
-                        v-b-tooltip="getTooltipText(item.translations.values.length, option.text)"
+                        v-b-tooltip.hover="getTooltipText(item.translations.values.length, option.text)"
                       >
                         <b-form-checkbox :value="option.value">
                           <div
