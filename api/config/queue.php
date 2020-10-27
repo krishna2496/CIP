@@ -57,6 +57,15 @@ return [
             'region' => env('SQS_REGION', 'us-east-1'),
         ],
 
+        'sqs-raw' => [
+           'driver' => 'sqs-plain',
+           'key' => env('AWS_ACCESS_KEY_ID', 'your-public-key'),
+           'secret' => env('AWS_SECRET_ACCESS_KEY', 'your-secret-key'),
+           'prefix' => env('SQS_PREFIX', 'https://sqs.us-east-1.amazonaws.com/your-account-id'),
+           'queue' => env('SQS_STRIPE_WEBHOOK_QUEUE', 'your-queue-name'),
+           'region' => env('AWS_REGION', 'us-east-1'),
+        ],
+
         'redis' => [
             'driver' => 'redis',
             'connection' => env('QUEUE_REDIS_CONNECTION', 'default'),

@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
+use App\Models\City;
+use App\Models\Country;
+use App\Models\PaymentGateway\PaymentGatewayAccount;
+use Iatstuti\Database\Support\CascadeSoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Iatstuti\Database\Support\CascadeSoftDeletes;
-use App\Models\Country;
-use App\Models\City;
 
 class Organization extends Model
 {
@@ -64,7 +65,8 @@ class Organization extends Model
         'address_line_2',
         'city_id',
         'country_id',
-        'postal_code'
+        'postal_code',
+        'paymentGatewayAccount'
     ];
 
     /**
@@ -83,5 +85,13 @@ class Organization extends Model
     public function getCountryIdAttribute($value)
     {
         return (!empty(Country::find($value))) ? Country::find($value)->country_id : null;
+    }
+
+    /**
+     * Get the payment gateway account record associated with the organization.
+     */
+    public function paymentGatewayAccount()
+    {
+        return $this->hasOne(PaymentGatewayAccount::class, 'organization_id', 'organization_id');
     }
 }

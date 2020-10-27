@@ -215,6 +215,13 @@ return [
         'MESSAGE_MISSION_IMPACT_DELETED' => 'Mission impact deleted successfully',
         'MESSAGE_TENANT_ACTIVATED_CURRENCIES_FOUND' => 'Tenant activated currencies listed successfully',
         'MESSAGE_TENANT_ACTIVATED_CURRENCIES_EMPTY' => 'Tenant has no activated currencies',
+        'MESSAGE_PAYMENT_METHOD_RETRIEVED' => 'Payment method retrieved successfully',
+        'MESSAGE_PAYMENT_METHOD_CREATED' => 'Payment method created successfully',
+        'MESSAGE_PAYMENT_METHOD_UPDATED' => 'Payment method updated successfully',
+        'MESSAGE_PAYMENT_METHOD_DELETED' => 'Payment method deleted successfully',
+        'MESSAGE_PAYMENT_SUCCESSFULLY_CREATED' => 'Payment successfully created',
+        'MISSION_ELIGIBLE_FOR_DONATION' => 'Mission is eligible for donation',
+        'MISSION_NOT_ELIGIBLE_FOR_DONATION' => 'Mission is not eligible for donation'
     ],
 
 
@@ -407,6 +414,26 @@ return [
         'ERROR_STORY_MISSION_APPLICATION_NOT_FOUND' => 'You cannot submit a story, mission application of the user was not found.',
 
         'ERROR_VOLUNTEERING_TIME_OR_GOAL_SHOULD_BE_ACTIVE' => 'Volunteering time or volunteering goal should be active while volunteering setting is enabled.',
-        'ERROR_VOLUNTEERING_SHOULD_BE_ENABLED' => 'Volunteering setting should be enabled to update volunteering time or volunteering goal setting.'
+        'ERROR_VOLUNTEERING_SHOULD_BE_ENABLED' => 'Volunteering setting should be enabled to update volunteering time or volunteering goal setting.',
+
+        // Payment gateway
+        'MESSAGE_PAYMENT_GATEWAY_CARD_DECLINED' => 'Payment gateway card declined',
+        'MESSAGE_PAYMENT_GATEWAY_CONNECTION_FAILED' => 'Payment gateway connection failed',
+        'MESSAGE_PAYMENT_GATEWAY_INTERNAL_FAILURE' => 'Payment gateway internal error',
+        'MESSAGE_PAYMENT_GATEWAY_INVALID_REQUEST' => 'Payment gateway invalid request',
+        'MESSAGE_PAYMENT_GATEWAY_RATE_LIMITED' => 'Payment gateway rate limited',
+        'MESSAGE_PAYMENT_GATEWAY_UNAUTHORIZED' => 'Payment gateway unauthorized',
+        'MESSAGE_PAYMENT_GATEWAY_UNKNOWN_FAILURE' => 'Payment gateway unknown failure',
+
+        // Payment gateway payment method
+        'MESSAGE_PAYMENT_METHOD_NOT_FOUND' => 'Payment method does not exist',
+
+        // Payment creation (donation)
+        'ERROR_FAILED_CREATING_PAYMENT_OBJECT' => 'Failed creating payment intent object',
+        'ERROR_FAILED_SAVING_PAYMENT_RECORD' => 'Failed creating payment',
+        'ERROR_PAYMENT_NOT_FOUND' => 'Payment does not exist',
+        'ERROR_PAYMENT_METHOD_NOT_FOUND' => 'Payment method does not exist',
+        'ERROR_PAYMENT_ORGANIZATION_DOES_NOT_SUPPORT_DONATION' => 'This mission\'s organization does not support donation',
+        'ERROR_PAYMENT_MISSION_NOT_ELIGIBLE_FOR_DONATION' => 'This mission is not eligible for donation'
     ]
 ];

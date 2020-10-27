@@ -5,21 +5,25 @@ namespace App\Http\Controllers\Admin\Mission;
 use App\Events\Mission\MissionDeletedEvent;
 use App\Events\User\UserActivityLogEvent;
 use App\Events\User\UserNotificationEvent;
+use App\Exceptions\PaymentGateway\PaymentGatewayException;
 use App\Helpers\Helpers;
 use App\Helpers\LanguageHelper;
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
+use App\Libraries\PaymentGateway\PaymentGatewayFactory;
+use App\Models\PaymentGateway\PaymentGatewayAccount;
 use App\Repositories\Mission\MissionRepository;
 use App\Repositories\MissionMedia\MissionMediaRepository;
 use App\Repositories\Notification\NotificationRepository;
 use App\Repositories\Organization\OrganizationRepository;
 use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
 use App\Services\Mission\ModelsService;
+use App\Services\PaymentGateway\AccountService;
 use App\Traits\RestExceptionHandlerTrait;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Validation\Rule;
 use InvalidArgumentException;
@@ -83,6 +87,21 @@ class MissionController extends Controller
     private $helpers;
 
     /**
+     * @var AccountService
+     */
+    private $accountService;
+
+    /**
+     * @var APaymentGatewayFactory
+     */
+    private $paymentGatewayFactory;
+
+    /**
+     * @var array
+     */
+    private $paymentGateways;
+
+    /**
      * Create a new controller instance.
      *
      * @param App\Repositories\Mission\MissionRepository $missionRepository
@@ -107,7 +126,9 @@ class MissionController extends Controller
         NotificationRepository $notificationRepository,
         OrganizationRepository $organizationRepository,
         ModelsService $modelsService,
-        Helpers $helpers
+        Helpers $helpers,
+        AccountService $accountService,
+        PaymentGatewayFactory $paymentGatewayFactory
     ) {
         $this->missionRepository = $missionRepository;
         $this->responseHelper = $responseHelper;
@@ -119,6 +140,11 @@ class MissionController extends Controller
         $this->organizationRepository = $organizationRepository;
         $this->modelsService = $modelsService;
         $this->helpers = $helpers;
+        $this->accountService = $accountService;
+        $this->paymentGatewayFactory = $paymentGatewayFactory;
+
+        // Register all supported payment gateways
+        $this->paymentGateways = array_keys(config('constants.payment_gateway_types'));
     }
 
     /**
@@ -167,6 +193,8 @@ class MissionController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
+        $paymentGateways = implode(',', $this->paymentGateways);
+
         // Server side validataions
         $validator = Validator::make(
             $request->all(),
@@ -185,6 +213,9 @@ class MissionController extends Controller
                 "required_with:mission_detail.*.section",
                 "organization" => "required",
                 "organization.organization_id" => "required|uuid",
+                'organization.payment_gateway_account' => 'sometimes|required',
+                'organization.payment_gateway_account.payment_gateway' => "required_with:organization.payment_gateway_account.payment_gateway_account_id|in:$paymentGateways",
+                'organization.payment_gateway_account.payment_gateway_account_id' => 'required_with:organization.payment_gateway_account.payment_gateway',
                 "organization.name" => "max:255",
                 "organization.legal_number" => "max:255",
                 "organization.phone_number" => "max:120",
@@ -317,6 +348,25 @@ class MissionController extends Controller
             );
         }
 
+        // Update or Create organization
+        $orgSave = $this->missionRepository->saveOrganization($request);
+        if (!empty($orgSave)) {
+            $request->request->add([
+                'organization_id' => $orgSave->organization_id
+            ]);
+        }
+
+        // Check if mission is for donation save the payment gateway account if valid.
+        if ($request->has('donation_attribute') && !empty($request->get('donation_attribute'))) {
+            $processAccount = $this->processPaymentGatewayAccount(
+                $request,
+                $organizationId
+            );
+            if (!($processAccount instanceof PaymentGatewayAccount)) {
+                return $processAccount;
+            }
+        }
+
         $mission = $this->missionRepository->store($request);
 
         // Set response data
@@ -402,6 +452,8 @@ class MissionController extends Controller
      */
     public function update(Request $request, int $missionId): JsonResponse
     {
+        $paymentGateways = implode(',', $this->paymentGateways);
+
         try {
             $mission = $this->missionRepository->find($missionId);
 
@@ -463,6 +515,9 @@ class MissionController extends Controller
                 "un_sdg" => "sometimes|required|array",
                 "un_sdg.*" => "sometimes|required|integer|distinct|min:1|max:17",
                 "organization.organization_id" => "required_with:organization|uuid",
+                'organization.payment_gateway_account' => 'sometimes|required',
+                'organization.payment_gateway_account.payment_gateway' => "required_with:organization.payment_gateway_account.payment_gateway_account_id|in:$paymentGateways",
+                'organization.payment_gateway_account.payment_gateway_account_id' => 'required_with:organization.payment_gateway_account.payment_gateway',
                 "organization.name" => "max:255",
                 "organization.legal_number" => "max:255",
                 "organization.phone_number" => "max:120",
@@ -524,7 +579,7 @@ class MissionController extends Controller
         }
 
         // Check goal amount currency  set is valid or not
-        if (isset($request->get('donation_attribute')['goal_amount_currency']) && $request->get('donation_attribute')['goal_amount_currency'] != '' && !$this->helpers->validateTenantCurrency($request, $request->get('donation_attribute')['goal_amount_currency'])) {
+        if (isset($request->get('donation_attribute')['goal_amount_currency']) && $request->get('donation_attribute')['goal_amount_currency'] != '' && !$this->helpers->isValidTenantCurrency($request, $request->get('donation_attribute')['goal_amount_currency'])) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
@@ -729,6 +784,30 @@ class MissionController extends Controller
             $organization = $request->get('organization');
             $organization['country_id'] = null;
             $request->merge(['organization' => $organization]);
+        }
+
+        // Update or Create organization
+        if (isset($request->organization)) {
+            $organization = $this->missionRepository->saveOrganization($request);
+            if (!empty($organization)) {
+                $request->request->add([
+                    'organization_id' => $organization->organization_id
+                ]);
+            }
+        }
+
+        // Check if mission is for donation save the payment gateway account if valid.
+        if (($request->has('donation_attribute') && !empty($request->get('donation_attribute'))) || $mission->donationAttribute !== null) {
+            if (!isset($organizationId)) {
+                $organizationId = $mission->organization_id;
+            }
+            $processAccount = $this->processPaymentGatewayAccount(
+                $request,
+                $organizationId
+            );
+            if (!($processAccount instanceof PaymentGatewayAccount)) {
+                return $processAccount;
+            }
         }
 
         $this->missionRepository->update($request, $missionId);
@@ -992,5 +1071,110 @@ class MissionController extends Controller
         }
 
         return true;
+    }
+
+    /**
+     * Process organization payment gateway account
+     *
+     * @param Request $request
+     * @param string $organizationId
+     *
+     * @return PaymentGatewayAccount|JsonResponse
+     */
+    private function processPaymentGatewayAccount(Request $request, string $organizationId)
+    {
+        // Check for donation tenant setting if enabled
+        $eligible = $this->tenantActivatedSettingRepository->checkTenantSettingStatus(
+            config('constants.tenant_settings.DONATION'),
+            $request
+        );
+        if (!$eligible) {
+            return $this->responseHelper->error(
+                Response::HTTP_FORBIDDEN,
+                Response::$statusTexts[Response::HTTP_FORBIDDEN],
+                config('constants.error_codes.ERROR_TENANT_SETTING_DISABLED'),
+                trans('messages.custom_error_message.ERROR_TENANT_SETTING_DISABLED')
+            );
+        }
+
+        $gatewayAccount = $request->input('organization.payment_gateway_account');
+        // Check for organization payment gateway account id if exists
+        if (isset($gatewayAccount['payment_gateway_account_id'])) {
+            $account = $this->validatePaymentGatewayAccount(
+                $gatewayAccount['payment_gateway_account_id']
+            );
+            if (!$account['valid']) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_PAYMENT_GATEWAY_ACCOUNT_INVALID'),
+                    $account['error']
+                );
+            }
+            return $this->savePaymentGatewayAccount($organizationId, $gatewayAccount);
+        }
+
+        $account = $this->accountService->getByOrgId($organizationId);
+        if (!$account) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_ORGANIZATION_PAYMENT_GATEWAY_ACCOUNT'),
+                'Organization payment_gateway and payment_gateway_account_id is required'
+            );
+        }
+        return $account;
+    }
+
+    /**
+     * Save organization payment gateway account
+     *
+     * @param string $organizationId
+     * @param array $gatewayAccount
+     *
+     * @return PaymentGatewayAccount
+     */
+    public function savePaymentGatewayAccount(string $organizationId, array $gatewayAccount): PaymentGatewayAccount
+    {
+        $paymentGatewayAccount = new PaymentGatewayAccount();
+        $paymentGatewayAccount
+            ->setAttribute('organization_id', $organizationId)
+            ->setAttribute('payment_gateway_account_id', $gatewayAccount['payment_gateway_account_id'])
+            ->setAttribute('payment_gateway', config('constants.payment_gateway_types.'.$gatewayAccount['payment_gateway']));
+
+        // Create or Update Payment Gateway Account
+        return $this->accountService->save($paymentGatewayAccount);
+    }
+
+    /**
+     * Validates provided payment gateway account if valid or not
+     *
+     * @param string $accountId
+     * @return array
+     */
+    private function validatePaymentGatewayAccount(string $accountId): array
+    {
+        $paymentGateway = $this->paymentGatewayFactory->getPaymentGateway(
+            config('constants.payment_gateway_types.STRIPE')
+        );
+
+        try {
+            $account = $paymentGateway->getAccount($accountId);
+
+            if (!$account->getPayoutsEnabled()) {
+                return [
+                    'valid' => false,
+                    'error' => 'Account payouts is not enabled'
+                ];
+            }
+            return [
+                'valid' => true
+            ];
+        } catch (PaymentGatewayException $e) {
+            return [
+                'valid' => false,
+                'error' => 'Invalid payment gateway account id'
+            ];
+        }
     }
 }

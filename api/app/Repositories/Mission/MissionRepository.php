@@ -6,6 +6,7 @@ use App\Events\Mission\MissionDeletedEvent;
 use App\Helpers\Helpers;
 use App\Helpers\LanguageHelper;
 use App\Helpers\S3Helper;
+use App\Libraries\Amount;
 use App\Models\FavouriteMission;
 use App\Models\Mission;
 use App\Models\MissionApplication;
@@ -18,14 +19,15 @@ use App\Repositories\MissionMedia\MissionMediaRepository;
 use App\Repositories\MissionTab\MissionTabRepository;
 use App\Repositories\MissionUnitedNationSDG\MissionUnitedNationSDGRepository;
 use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
+use App\Services\Donation\DonationService;
 use App\Services\Mission\ModelsService;
 use App\Transformations\AdminMissionTransformable;
 use Carbon\Carbon;
 use DB;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 use Validator;
 
@@ -84,6 +86,11 @@ class MissionRepository implements MissionInterface
     private $missionTabRepository;
 
     /**
+     * @var App\Services\Donation\DonationService
+     */
+    private $donationService;
+
+    /**
      * Create a new Mission repository instance.
      *
      * @param  App\Helpers\LanguageHelper $languageHelper
@@ -108,7 +115,8 @@ class MissionRepository implements MissionInterface
         MissionImpactRepository $missionImpactRepository,
         TenantActivatedSettingRepository $tenantActivatedSettingRepository,
         MissionUnitedNationSDGRepository $missionUnitedNationSDGRepository,
-        MissionTabRepository $missionTabRepository
+        MissionTabRepository $missionTabRepository,
+        DonationService $donationService
     ) {
         $this->languageHelper = $languageHelper;
         $this->helpers = $helpers;
@@ -120,6 +128,7 @@ class MissionRepository implements MissionInterface
         $this->tenantActivatedSettingRepository = $tenantActivatedSettingRepository;
         $this->missionUnitedNationSDGRepository = $missionUnitedNationSDGRepository;
         $this->missionTabRepository = $missionTabRepository;
+        $this->donationService = $donationService;
     }
 
     /**
@@ -131,14 +140,6 @@ class MissionRepository implements MissionInterface
      */
     public function store(Request $request): Mission
     {
-        // Create or update organization
-        if (isset($request->organization)) {
-            $organization = $this->modelsService->organization->updateOrCreate(
-                ['organization_id'=>$request->organization['organization_id']],
-                $request->organization
-            );
-        }
-
         $languages = $this->languageHelper->getLanguages();
         $defaultTenantLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
         $defaultTenantLanguageId = $defaultTenantLanguage->language_id;
@@ -162,7 +163,7 @@ class MissionRepository implements MissionInterface
             'start_date' => (isset($request->start_date)) ? $request->start_date : null,
             'end_date' => (isset($request->end_date)) ? $request->end_date : null,
             'publication_status' => $request->publication_status,
-            'organization_id' => (isset($organization)) ? $organization->organization_id : null,
+            'organization_id' => $request->get('organization_id', null),
             'organisation_detail' => $organizationDetail,
             'mission_type' => $request->mission_type
         ];
@@ -355,17 +356,6 @@ class MissionRepository implements MissionInterface
 
         if (isset($request->theme_id) && ($request->theme_id === '')) {
             $request->request->set('theme_id', null);
-        }
-
-        // Create or update organization
-        if (!empty($request->organization)) {
-            $organization = $this->modelsService->organization->updateOrCreate(
-                ['organization_id' => $request->organization['organization_id']],
-                $request->organization
-            );
-        }
-        if (!empty($organization)) {
-            $request->request->add(['organization_id' => $organization->organization_id]);
         }
 
         $mission = $this->modelsService->mission->findOrFail($id);
@@ -621,6 +611,22 @@ class MissionRepository implements MissionInterface
         }
 
         return $mission;
+    }
+
+    /**
+     * Update or create organization
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return App\Models\Organization|null
+     */
+    public function saveOrganization(Request $request)
+    {
+        return $this->modelsService
+            ->organization
+            ->updateOrCreate([
+                'organization_id' => $request->organization['organization_id']
+            ], $request->organization);
     }
 
     /**
@@ -2054,6 +2060,55 @@ class MissionRepository implements MissionInterface
             $missionId,
             $missionImpact
         );
+    }
+
+    /**
+     * Check if mission is eligible / still eligible for donations
+     *
+     * @param Request $request
+     * @param int $missionId
+     *
+     * @return bool
+     */
+    public function isEligibleForDonation(Request $request, int $missionId): bool
+    {
+        $donationSetting = $this->tenantActivatedSettingRepository->checkTenantSettingStatus(
+            'donation',
+            $request
+        );
+
+        if (!$donationSetting) {
+            return false;
+        }
+
+        $mission = $this->modelsService->mission->findOrFail($missionId);
+
+        // mission is closed.
+        $now = Carbon::now()->toDateTimeString();
+        if ($mission->start_date >= $now || $mission->end_date < $now) {
+            return false;
+        }
+
+        $donationAttribute = $mission->donationAttribute;
+        // if mission has no donation attribute or has, but disabled.
+        if (!$donationAttribute || ($donationAttribute && $donationAttribute->is_disabled)) {
+            return false;
+        }
+
+        if ($donationAttribute->disable_when_funded) {
+            $donationGoalAmount = new Amount($donationAttribute->goal_amount);
+            $totalDonations = $this->donationService->getMissionTotalDonationAmount(
+                $missionId
+            );
+
+            // donation goal amount is already reached and thus disabled.
+            if ($donationGoalAmount->isLessThan($totalDonations)
+                || $donationGoalAmount->isEqualTo($totalDonations)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**

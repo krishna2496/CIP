@@ -8550,6 +8550,20 @@
                 },
                 "postal_code": {
                   "type": "string"
+                },
+                "payment_gateway_account": {
+                  "type": "object",
+                  "properties": {
+                    "payment_gateway": {
+                      "type": "string",
+                      "enum": [
+                        "STRIPE"
+                      ]
+                    },
+                    "payment_gateway_account_id": {
+                      "type": "string"
+                    }
+                  }
                 }
               }
             }
@@ -8626,6 +8640,20 @@
                 },
                 "postal_code": {
                   "type": "string"
+                },
+                "payment_gateway_account": {
+                  "type": "object",
+                  "properties": {
+                    "payment_gateway": {
+                      "type": "string",
+                      "enum": [
+                        "STRIPE"
+                      ]
+                    },
+                    "payment_gateway_account_id": {
+                      "type": "string"
+                    }
+                  }
                 }
               }
             }
@@ -9350,6 +9378,20 @@
             "postal_code": {
               "type": "string",
               "description": "Organization postal code"
+            },
+            "payment_gateway_account": {
+              "type": "object",
+              "properties": {
+                "payment_gateway": {
+                  "type": "string",
+                  "enum": [
+                    "STRIPE"
+                  ]
+                },
+                "payment_gateway_account_id": {
+                  "type": "string"
+                }
+              }
             }
           }
         },
@@ -9798,6 +9840,20 @@
             "postal_code": {
               "type": "string",
               "description": "Organization postal code"
+            },
+            "payment_gateway_account": {
+              "type": "object",
+              "properties": {
+                "payment_gateway": {
+                  "type": "string",
+                  "enum": [
+                    "STRIPE"
+                  ]
+                },
+                "payment_gateway_account_id": {
+                  "type": "string"
+                }
+              }
             }
           }
         },

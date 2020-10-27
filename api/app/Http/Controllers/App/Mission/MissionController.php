@@ -770,6 +770,31 @@ class MissionController extends Controller
     }
 
     /**
+     * Determine if mission is eligible for donation
+     *
+     * @param Request $request
+     * @param int $missionId
+     *
+     * @return JsonResponse
+     */
+    public function isEligibleForDonation(Request $request, int $missionId): JsonResponse
+    {
+        try {
+            $eligible = $this->missionRepository->isEligibleForDonation($request, $missionId);
+            return $this->responseHelper->success(
+                Response::HTTP_OK,
+                $eligible ? trans('messages.success.MISSION_ELIGIBLE_FOR_DONATION') : trans('messages.success.MISSION_NOT_ELIGIBLE_FOR_DONATION'),
+                ['eligible' => $eligible]
+            );
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.ERROR_MISSION_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_MISSION_NOT_FOUND')
+            );
+        }
+    }
+
+    /**
      * Check if required tenant setting based on mission type is enabled
      *
      * @param Request $request
