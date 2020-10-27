@@ -949,7 +949,7 @@ export default {
         type: "hour"
       }
       await volunteerTimesheetHours(hourRequest).then(response => {
-        if (response.data) {
+        if (response && response.data) {
           this.timeMissionData = response.data
           if(response.pagination) {
             this.timeTotalPages = response.pagination.total_pages;
@@ -971,21 +971,18 @@ export default {
         type: TIMESHEET_GOAL
       }
       await volunteerTimesheetHours(goalRequest).then(response => {
+        if(response && response.data) {
+          this.goalMissionData = response.data
 
-        if (response) {
-          if(response.data) {
-            this.goalMissionData = response.data
-            if(response.pagination) {
-              this.goalTotalPages = response.pagination.total_pages;
-                this.goalPage = response.pagination.current_page;
-                this.goalTotalRow = response.pagination.total;
-                this.goalPerPage = response.pagination.per_page;
-            }
+          if(response.pagination) {
+            this.goalTotalPages = response.pagination.total_pages;
+              this.goalPage = response.pagination.current_page;
+              this.goalTotalRow = response.pagination.total;
+              this.goalPerPage = response.pagination.per_page;
           }
-
-          this.isAllVisible = this.timeMissionData.length > 0 || this.goalMissionData.length > 0
-
         }
+
+        this.isAllVisible = this.timeMissionData.length > 0 || this.goalMissionData.length > 0
         this.isComponentLoaded = true
         this.goalsTableLoaderActive = false
       })
@@ -993,8 +990,8 @@ export default {
     getTime(date, timeArray, timeSheetType) {
       let returnData = '';
       let dates = date + 1;
-      let currentValueYear = ''
-      let currentValueMonth = ''
+      let currentValueYear;
+      let currentValueMonth;
       let currentDataArray = []
       if (timeSheetType === TIMESHEET_TIME) {
         currentDataArray = this.volunteeringHoursWeeks
@@ -1019,16 +1016,16 @@ export default {
         let currentArrayYear = parseInt(timeSheetItem.year)
         let currentArrayMonth = parseInt(timeSheetItem.month)
         if (timeSheetType === TIMESHEET_TIME) {
-          if (currentValueYear == currentArrayYear) {
-            if (currentValueMonth == currentArrayMonth) {
+          if (currentValueYear === currentArrayYear) {
+            if (currentValueMonth === currentArrayMonth) {
               if (dates == currentArrayDate) {
                 returnData = timeSheetItem.time
               }
             }
           }
         } else {
-          if (currentValueYear == currentArrayYear) {
-            if (currentValueMonth == currentArrayMonth) {
+          if (currentValueYear === currentArrayYear) {
+            if (currentValueMonth === currentArrayMonth) {
               if (dates == currentArrayDate) {
                 returnData = timeSheetItem.action
               }
