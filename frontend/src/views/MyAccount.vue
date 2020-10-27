@@ -167,7 +167,7 @@
                                 <MultiSelect v-if="isShownComponent" :fromList="skillListing" :toList="userSkillList" @resetData="resetSkillListingData" @saveSkillData="saveSkillData" @resetPreviousData="resetPreviousData" />
                             </b-col>
                         </b-row>
-                        <b-row class="row-form">
+                        <b-row class="row-form" v-if="isDonationSettingEnable">
                             <b-col cols="12">
                                 <h2 class="title-with-border">
                                     <span>{{languageData.label.donations}}</span>
@@ -203,6 +203,8 @@
                             <b-col cols="12">
                                 <CustomField :optionList="CustomFieldList" :optionListValue="CustomFieldValue" :isSubmit="isCustomFieldSubmit" @detectChangeInCustomFeild="detectChangeInCustomFeild" />
                             </b-col>
+                        </b-row>
+                        <b-row class="row-form">
                             <b-col cols="12">
                                 <div class="btn-wrapper">
                                     <b-button class="btn-bordersecondary btn-save" @click="handleSubmit">
@@ -360,7 +362,8 @@ export default {
                 ["02", "2022"],
                 ["03", "2023"],
                 ["04", "2024"],
-            ]
+            ],
+            isDonationSettingEnable : false
         };
     },
     validations: {
@@ -749,6 +752,7 @@ export default {
         this.changePhoto = this.languageData.label.edit
         this.isQuickAccessFilterDisplay = this.settingEnabled(constants.QUICK_ACCESS_FILTERS);
         this.isSkillDisplay = this.settingEnabled(constants.SKILLS_ENABLED);
+        this.isDonationSettingEnable = this.settingEnabled(constants.DONATION);
         this.languageCode = store.state.defaultLanguage.toLowerCase();
         this.profile.year = this.yearDefault = moment().format('Y')
         for (let index = (this.yearDefault - 5); index > this.yearDefault; index++) {

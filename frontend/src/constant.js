@@ -59,5 +59,7 @@ export default Object.freeze({
     MISSION_RATING_VOLUNTEER :"mission_rating_volunteer",
     STATE_ENABLED : "state_selection",
     VOLUNTEERING_GOAL_MISSION : 'volunteering_goal_mission',
-    VOLUNTEERING_TIME_MISSION : 'volunteering_time_mission'
+    VOLUNTEERING_TIME_MISSION : 'volunteering_time_mission',
+    DONATION : "donation",
+    VOLUNTEERING : "volunteering"
 });

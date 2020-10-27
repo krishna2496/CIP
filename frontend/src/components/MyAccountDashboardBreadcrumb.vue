@@ -24,7 +24,7 @@
                     </svg> </i>{{languageData.label.settings}}
             </b-link>
         </li>
-        <li v-bind:class="{ active: isPaymentActive }">
+        <!-- <li v-bind:class="{ active: isPaymentActive }">
             <b-link href="#" :title="languageData.label.payment_method" @click="redirectToPage('payment')">
                 <i class="payment-icon">
                     <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 300.346 300.346" style="enable-background:new 0 0 300.346 300.346;" xml:space="preserve">
@@ -60,8 +60,8 @@
                         </g>
                     </svg> </i>{{languageData.label.payment_method}}
             </b-link>
-        </li>
-        <li v-bind:class="{ active: isRecurringPaymentActive }">
+        </li> -->
+        <!-- <li v-bind:class="{ active: isRecurringPaymentActive }">
             <b-link href="#" :title="languageData.label.recurring_payments" @click="redirectToPage('recurring-payment')">
                 <i class="recurrence-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 17" width="18" height="17">
@@ -76,7 +76,7 @@
                 </i>
                 {{languageData.label.recurring_payments}}
             </b-link>
-        </li>
+        </li> -->
         <!-- <li v-bind:class="{ active: isPreviewProfileActive }">
             <b-link href="#" :title="languageData.label.preview_profile">
                 <i class="preview-icon">
@@ -88,39 +88,6 @@
             </b-link>
         </li> -->
     </ul>
-    <b-modal ref="settingsModal" :modal-class="'settings-modal'" centered hide-footer @hide="closeSetting()">
-        <template slot="modal-header" slot-scope="{ close }">
-            <i class="close" @click="close()" v-b-tooltip.hover :title="languageData.label.close"></i>
-            <h5 class="modal-title">
-                {{languageData.label.settings}}
-            </h5>
-        </template>
-        <h2 class="title-with-border">
-            <span>{{languageData.label.privacy}}</span>
-        </h2>
-        <form action class="form-wrap">
-            <div class="checkbox-group-wrap">
-                <b-form-group class="site-checkbox">
-                    <b-form-checkbox class="custom-control-input">{{languageData.label.allow_all_my}} <strong>{{languageData.label.co_workers}} </strong>{{languageData.label.to_see_my_profile}}
-                    </b-form-checkbox>
-                </b-form-group>
-                <b-form-group class="site-checkbox">
-                    <b-form-checkbox class="custom-control-input">{{languageData.label.allow}} <strong>{{languageData.label.public}} </strong>
-                        {{languageData.label.fundraisers_and_funds_to_view_avatar_and_my_linkedin}}
-                    </b-form-checkbox>
-                </b-form-group>
-            </div>
-            <b-form-group class="preference-block">
-                <label>{{languageData.label.preferred_currency}}</label>
-                <model-select class="search-dropdown" :options="timeList" v-model="selectTimeZone" :placeholder="'USA - US Dollars'" @input="updateTime">
-                </model-select>
-            </b-form-group>
-            <div class="btn-row">
-                <b-button class="gray-btn cancel-btn" :title="languageData.label.cancel">{{languageData.label.cancel}}</b-button>
-                <b-button class="btn-fillsecondary save-btn" :title="languageData.label.save">{{languageData.label.save}}</b-button>
-            </div>
-        </form>
-    </b-modal>
 </div>
 </template>
 
