@@ -209,7 +209,7 @@
 			getVolunteerMissionsHours(currentPage) {
 				VolunteerMissionHours(currentPage).then(response => {
 					this.timeMissionTimesheetItems = [];
-					if (response.data) {
+					if (response && response.data) {
 						let data = response.data;
 						let mission = this.languageData.label.mission;
 						let time = this.languageData.label.time;
@@ -243,7 +243,7 @@
 			getVolunteerMissionsGoals(currentPage) {
 				VolunteerMissionGoals(currentPage).then(response => {
 					this.goalMissionTimesheetItems = [];
-					if (response.data) {
+					if (response && response.data) {
 						let data = response.data;
 						let mission = this.languageData.label.mission;
 						let action = this.languageData.label.actions;
