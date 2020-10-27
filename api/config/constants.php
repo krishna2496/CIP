@@ -348,6 +348,7 @@ return [
         'MISSION_IMPACT' => 'mission_impact',
         'VOLUNTEERING_GOAL_MISSION' => 'volunteering_goal_mission',
         'VOLUNTEERING_TIME_MISSION' => 'volunteering_time_mission',
+        'VOLUNTEERING' => 'volunteering',
         'DONATION_MISSION' => 'donation',
         'VOLUNTEERING_MISSION' => 'volunteering',
         'EAF' => 'eaf',
@@ -539,15 +540,17 @@ return [
         'ERROR_ORGANIZATION_NOT_FOUND' => '800044',
         'ERROR_ORGANIZATION_LINKED_TO_MISSION' => '80045',
         'MISSION_TAB_NOT_FOUND' => '80046',
-        'ERROR_RETRIEVING_TENANT_ACTIVATED_CURRENCIES' => '80047',
+        'ERROR_IMPACT_SORT_KEY_ALREADY_EXIST' => '80047',
+        'ERROR_RETRIEVING_TENANT_ACTIVATED_CURRENCIES' => '80048',
+        'ERROR_INVALID_CURRENCY' => '80049',
+        'ERROR_SORT_KEY_ALREADY_EXIST' => '80050',
+        'ERROR_VOLUNTEERING_TIME_OR_GOAL_SHOULD_BE_ACTIVE' => '80051',
+        'ERROR_VOLUNTEERING_SHOULD_BE_ENABLED' => '80052',
 
         // Donation error codes: 900100 - 900199
         'ERROR_DONATION_IP_WHITELIST_INVALID_DATA' => '900100',
         'ERROR_DONATION_IP_WHITELIST_NOT_FOUND' => '900101',
-        'ERROR_SORT_KEY_ALREADY_EXIST' => '900102',
-        'ERROR_IMPACT_SORT_KEY_ALREADY_EXIST' => '900103',
-        'ERROR_INVALID_CURRENCY' => '900104',
-        'ERROR_IP_ADDRESS_NOT_ALLOWED' => '900104',
+        'ERROR_IP_ADDRESS_NOT_ALLOWED' => '900102',
     ],
 
     /**

@@ -1013,6 +1013,9 @@ class MissionRepository implements MissionInterface
                     'asc'
                 );
             }
+        } else {
+            // If no order specified, sort missions by last created first
+            $missionQuery->orderBy('mission.created_at', 'desc');
         }
 
         // Explore mission by top favourite
@@ -1556,6 +1559,8 @@ class MissionRepository implements MissionInterface
                 config('constants.timesheet_status.AUTOMATICALLY_APPROVED'), ));
             }, ]);
         $missionQuery->with(['missionRating']);
+
+        $this->filterMissionsBasedOnSettingsEnabled($request, $missionQuery);
 
         return $missionQuery->inRandomOrder()->get();
     }
@@ -2160,16 +2165,30 @@ class MissionRepository implements MissionInterface
             ->getAllTenantActivatedSetting($request);
 
         $missionTypeSettingsMap = [
-            config('constants.mission_type.GOAL') => config('constants.tenant_settings.VOLUNTEERING_GOAL_MISSION'),
-            config('constants.mission_type.TIME') => config('constants.tenant_settings.VOLUNTEERING_TIME_MISSION'),
-            config('constants.mission_type.DONATION') => config('constants.tenant_settings.DONATION_MISSION'),
-            config('constants.mission_type.EAF') => config('constants.tenant_settings.EAF'),
-            config('constants.mission_type.DISASTER_RELIEF') => config('constants.tenant_settings.DISASTER_RELIEF'),
+            config('constants.mission_type.GOAL') => [
+                config('constants.tenant_settings.VOLUNTEERING_MISSION'),
+                config('constants.tenant_settings.VOLUNTEERING_GOAL_MISSION')
+            ],
+            config('constants.mission_type.TIME') => [
+                config('constants.tenant_settings.VOLUNTEERING_MISSION'),
+                config('constants.tenant_settings.VOLUNTEERING_TIME_MISSION')
+            ],
+            config('constants.mission_type.DONATION') => [
+                config('constants.tenant_settings.DONATION_MISSION')
+            ],
+            config('constants.mission_type.EAF') => [
+                config('constants.tenant_settings.DONATION_MISSION'),
+                config('constants.tenant_settings.EAF')
+            ],
+            config('constants.mission_type.DISASTER_RELIEF') => [
+                config('constants.tenant_settings.DONATION_MISSION'),
+                config('constants.tenant_settings.DISASTER_RELIEF')
+            ],
         ];
 
         $missionTypes = [];
-        foreach ($missionTypeSettingsMap as $missionType => $setting) {
-            if (in_array($setting, $activatedTenantSettings)) {
+        foreach ($missionTypeSettingsMap as $missionType => $requiredSettings) {
+            if (count(array_diff($requiredSettings, $activatedTenantSettings)) === 0) {
                 $missionTypes[] = $missionType;
             }
         }

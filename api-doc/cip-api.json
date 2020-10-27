@@ -10065,6 +10065,21 @@
         "linked_in_url": {
           "type": "string"
         },
+        "custom_fields": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "field_id": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "value": {
+                "type": "string"
+              }
+            }
+          }
+        },
         "status": {
           "type": "integer",
           "description": "1 => Active, 0 => Inactive",

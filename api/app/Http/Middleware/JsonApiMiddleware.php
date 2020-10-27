@@ -22,10 +22,12 @@ class JsonApiMiddleware
      */
     public function handle($request, Closure $next)
     {
-        // disable check for unit testing
-        if (env('APP_ENV') !== 'testing' && in_array($request->getMethod(), self::PARSED_METHODS)) {
+        if (in_array($request->getMethod(), self::PARSED_METHODS)) {
             if (json_decode($request->getContent(), true) === null) {
-                return $this->internalServerError(trans('messages.custom_error_message.ERROR_INVALID_JSON'));
+                return $this->invalidArgument(
+                    config('constants.error_codes.ERROR_INVALID_ARGUMENT'),
+                    trans('messages.custom_error_message.ERROR_INVALID_JSON')
+                );
             }
         }
         return $next($request);
