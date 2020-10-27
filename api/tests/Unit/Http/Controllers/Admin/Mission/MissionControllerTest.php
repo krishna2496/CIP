@@ -258,13 +258,13 @@ class MissionControllerTest extends TestCase
             ->once()
             ->andReturn();
 
-        $tenantActivatedSettingRepository->shouldReceive('checkTenantSettingStatus')
+        $tenantActivatedSettingRepository->shouldReceive('getAllTenantActivatedSetting')
             ->once()
-            ->with(
-                config('constants.tenant_settings.VOLUNTEERING_GOAL_MISSION'),
-                $requestData
-            )
-            ->andReturn(true);
+            ->with($requestData)
+            ->andReturn([
+                config('constants.tenant_settings.VOLUNTEERING_MISSION'),
+                config('constants.tenant_settings.VOLUNTEERING_GOAL_MISSION')
+            ]);
 
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_MISSION_UPDATED');
@@ -380,13 +380,13 @@ class MissionControllerTest extends TestCase
             ->with($missionId, $data['impact'][0]['mission_impact_id'])
             ->andThrow($modelNotFoundException);
 
-        $tenantActivatedSettingRepository->shouldReceive('checkTenantSettingStatus')
+        $tenantActivatedSettingRepository->shouldReceive('getAllTenantActivatedSetting')
             ->once()
-            ->with(
-                config('constants.tenant_settings.VOLUNTEERING_TIME_MISSION'),
-                $requestData
-            )
-            ->andReturn(true);
+            ->with($requestData)
+            ->andReturn([
+                config('constants.tenant_settings.VOLUNTEERING_MISSION'),
+                config('constants.tenant_settings.VOLUNTEERING_TIME_MISSION')
+            ]);
 
         $methodResponse = [
             'errors'=> [
@@ -717,13 +717,13 @@ class MissionControllerTest extends TestCase
             ->once()
             ->andReturn(false);
 
-        $tenantActivatedSettingRepository->shouldReceive('checkTenantSettingStatus')
+        $tenantActivatedSettingRepository->shouldReceive('getAllTenantActivatedSetting')
             ->once()
-            ->with(
-                config('constants.tenant_settings.VOLUNTEERING_GOAL_MISSION'),
-                $requestData
-            )
-            ->andReturn(true);
+            ->with($requestData)
+            ->andReturn([
+                config('constants.tenant_settings.VOLUNTEERING_MISSION'),
+                config('constants.tenant_settings.VOLUNTEERING_GOAL_MISSION')
+            ]);
 
         $responseHelper->shouldReceive('error')
             ->once()
@@ -870,13 +870,13 @@ class MissionControllerTest extends TestCase
 
         $jsonResponse = new JsonResponse();
 
-        $tenantActivatedSettingRepository->shouldReceive('checkTenantSettingStatus')
+        $tenantActivatedSettingRepository->shouldReceive('getAllTenantActivatedSetting')
             ->once()
-            ->with(
-                config('constants.tenant_settings.VOLUNTEERING_GOAL_MISSION'),
-                $requestData
-            )
-            ->andReturn(true);
+            ->with($requestData)
+            ->andReturn([
+                config('constants.tenant_settings.VOLUNTEERING_MISSION'),
+                config('constants.tenant_settings.VOLUNTEERING_GOAL_MISSION')
+            ]);
 
         $organizationRepository->shouldReceive('find')
             ->once()
@@ -1070,13 +1070,13 @@ class MissionControllerTest extends TestCase
             ->with($missionId, $requestData->mission_tabs)
             ->andReturn(false);
 
-        $tenantActivatedSettingRepository->shouldReceive('checkTenantSettingStatus')
+        $tenantActivatedSettingRepository->shouldReceive('getAllTenantActivatedSetting')
             ->once()
-            ->with(
-                config('constants.tenant_settings.VOLUNTEERING_GOAL_MISSION'),
-                $requestData
-            )
-            ->andReturn(true);
+            ->with($requestData)
+            ->andReturn([
+                config('constants.tenant_settings.VOLUNTEERING_MISSION'),
+                config('constants.tenant_settings.VOLUNTEERING_GOAL_MISSION')
+            ]);
 
         $methodResponse = [
             'errors'=> [
@@ -1179,13 +1179,13 @@ class MissionControllerTest extends TestCase
             ->with($missionId, $requestData->impact)
             ->andReturn(false);
 
-        $tenantActivatedSettingRepository->shouldReceive('checkTenantSettingStatus')
+        $tenantActivatedSettingRepository->shouldReceive('getAllTenantActivatedSetting')
             ->once()
-            ->with(
-                config('constants.tenant_settings.VOLUNTEERING_GOAL_MISSION'),
-                $requestData
-            )
-            ->andReturn(true);
+            ->with($requestData)
+            ->andReturn([
+                config('constants.tenant_settings.VOLUNTEERING_MISSION'),
+                config('constants.tenant_settings.VOLUNTEERING_GOAL_MISSION')
+            ]);
 
         $methodResponse = [
             'errors'=> [

@@ -358,7 +358,7 @@ class TimesheetQuery implements QueryableInterface
     private function getLimit(array $limit): array
     {
         if (!array_key_exists('limit', $limit)) {
-            $limit['limit'] = 25;
+            $limit['limit'] = config('constants.PER_PAGE_ALL'); // we get all the results
         }
 
         if (!array_key_exists('offset', $limit)) {
