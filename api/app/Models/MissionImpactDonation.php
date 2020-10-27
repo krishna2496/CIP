@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
+use App\Models\MissionImpactDonationLanguage;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use  App\Models\MissionImpactDonationLanguage;
-use Iatstuti\Database\Support\CascadeSoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Iatstuti\Database\Support\CascadeSoftDeletes;
 
 class MissionImpactDonation extends Model
 {

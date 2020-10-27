@@ -216,7 +216,7 @@ class MissionController extends Controller
                 "mission_detail.*.label_goal_achieved" => 'sometimes|required_if:mission_type,GOAL|max:255',
                 "mission_detail.*.label_goal_objective" => 'sometimes|required_if:mission_type,GOAL|max:255',
                 "impact_donation" => "sometimes|required|array",
-                "impact_donation.*.amount" => 'required|integer|min:1',
+                "impact_donation.*.amount" => 'required|integer|min:1|max:999999999999',
                 "impact_donation.*.translations" => 'required',
                 "impact_donation.*.translations.*.language_code" =>
                 'required_with:impact_donation.*.translations|max:2',
@@ -462,7 +462,7 @@ class MissionController extends Controller
                 "impact_donation.*.impact_donation_id" =>
                 'sometimes|required|exists:mission_impact_donation,mission_impact_donation_id,deleted_at,NULL',
                 "impact_donation.*.amount" =>
-                "required_without:impact_donation.*.impact_donation_id|integer|min:1",
+                "required_without:impact_donation.*.impact_donation_id|integer|min:1|max:999999999999",
                 "impact_donation.*.translations" =>
                 "required_without:impact_donation.*.impact_donation_id",
                 "impact_donation.*.translations.*.language_code" =>

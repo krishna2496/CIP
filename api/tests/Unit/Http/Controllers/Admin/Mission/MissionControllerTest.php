@@ -111,11 +111,16 @@ class MissionControllerTest extends TestCase
             ->once()
             ->with($missionId)
             ->andReturn($missionModel);
-
-        $tenantActivatedSettingRepository->shouldReceive('checkTenantSettingStatus')
+        
+        $tenantActivatedSettingRepository->shouldReceive('getAllTenantActivatedSetting')
             ->once()
-            ->with(config('constants.tenant_settings.VOLUNTEERING_TIME_MISSION'), $requestData)
-            ->andReturn(true);
+            ->with($requestData)
+            ->andReturn(
+                [
+                    config('constants.tenant_settings.VOLUNTEERING'),
+                    config('constants.tenant_settings.VOLUNTEERING_TIME_MISSION'),
+                ]
+            );
 
         $languageHelper->shouldReceive('getDefaultTenantLanguage')
             ->once()
@@ -943,10 +948,15 @@ class MissionControllerTest extends TestCase
             ->with($missionId)
             ->andReturn($missionModel);
 
-        $tenantActivatedSettingRepository->shouldReceive('checkTenantSettingStatus')
+        $tenantActivatedSettingRepository->shouldReceive('getAllTenantActivatedSetting')
             ->once()
-            ->with(config('constants.tenant_settings.VOLUNTEERING_TIME_MISSION'), $requestData)
-            ->andReturn(true);
+            ->with($requestData)
+            ->andReturn(
+                [
+                    config('constants.tenant_settings.VOLUNTEERING'),
+                    config('constants.tenant_settings.VOLUNTEERING_TIME_MISSION'),
+                ]
+            );
 
         $languageHelper->shouldReceive('getDefaultTenantLanguage')
             ->once()
