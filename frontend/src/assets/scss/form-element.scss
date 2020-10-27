@@ -1242,6 +1242,26 @@ label {
   }
 }
 
+/** style to tooltip use in custom field radio/checkbox **/
+.option-tooltip {
+  pointer-events: none;
+  width: 300px;
+  // opacity: 1 !important;
+
+  .arrow::before {
+    border-top-color: $primary;
+  }
+
+  .tooltip-inner {
+    max-width: 100%;
+    width: 100%;
+    background-color: $primary;
+  }
+
+  /** hide tooltip in xm since text content is wrap **/
+  @include xs-max { display: none !important; }
+}
+
 .vue-star-rating-star {
   line-height: 0;
 }

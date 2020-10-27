@@ -38,8 +38,11 @@
                         v-b-tooltip="getTooltipText(item.translations.values.length, option.text)"
                       >
                         <b-form-radio :value="option.value">
-                          <div class="option-text" :class="{'truncate' : item.translations.values.length > 5}">
-                              {{ option.text }}
+                          <div
+                            class="option-text"
+                            :class="{'truncate' : item.translations.values.length > 5}"
+                          >
+                            {{ option.text }}
                           </div>
                         </b-form-radio>
                       </label>
@@ -76,7 +79,10 @@
                         v-b-tooltip="getTooltipText(item.translations.values.length, option.text)"
                       >
                         <b-form-checkbox :value="option.value">
-                          <div class="option-text" :class="{'truncate' : item.translations.values.length > 5}">
+                          <div
+                            class="option-text"
+                            :class="{'truncate' : item.translations.values.length > 5}"
+                          >
                             {{ option.text }} 
                           </div>
                         </b-form-checkbox>
@@ -474,11 +480,14 @@
           let max = text.length;
           if (itemLength > 10) max = 25;
           else if (itemLength > 5) max = 35;
-
-          if (text.length > max) return text;
+          if (text.length > max) {
+            return {
+              title: text,
+              customClass: 'option-tooltip'
+            };
+          }
         }
-
-        return;
+        return null;
       },
       getOptionColumn (length) {
         if (length > 10) return 4;
