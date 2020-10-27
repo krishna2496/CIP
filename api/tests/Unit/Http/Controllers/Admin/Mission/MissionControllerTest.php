@@ -1105,13 +1105,14 @@ class MissionControllerTest extends TestCase
         $jsonResponse = new JsonResponse();
 
         $this->tenantActivatedSettingRepository
-            ->shouldReceive('checkTenantSettingStatus')
-            ->twice()
+            ->shouldReceive('getAllTenantActivatedSetting')
+            ->once()
             ->with(
-                config('constants.tenant_settings.DONATION_MISSION'),
                 $requestData
             )
-            ->andReturn(true);
+            ->andReturn([
+                config('constants.tenant_settings.DONATION')
+            ]);
 
         $this->helpers
             ->shouldReceive('isValidTenantCurrency')
@@ -1131,6 +1132,15 @@ class MissionControllerTest extends TestCase
 
         $paymentAccount = new PaymentGatewayDetailedAccount();
         $paymentAccount->setPayoutsEnabled(true);
+
+        $this->tenantActivatedSettingRepository
+            ->shouldReceive('checkTenantSettingStatus')
+            ->once()
+            ->with(
+                config('constants.tenant_settings.DONATION'),
+                $requestData
+            )
+            ->andReturn(true);
 
         $paymentGatewayAccount = new PaymentGatewayAccount();
         $paymentGatewayAccount
@@ -1304,13 +1314,14 @@ class MissionControllerTest extends TestCase
         $jsonResponse = new JsonResponse();
 
         $this->tenantActivatedSettingRepository
-            ->shouldReceive('checkTenantSettingStatus')
-            ->twice()
+            ->shouldReceive('getAllTenantActivatedSetting')
+            ->once()
             ->with(
-                config('constants.tenant_settings.DONATION_MISSION'),
                 $requestData
             )
-            ->andReturn(true);
+            ->andReturn([
+                config('constants.tenant_settings.DONATION')
+            ]);
 
         $this->helpers
             ->shouldReceive('isValidTenantCurrency')
@@ -1335,6 +1346,15 @@ class MissionControllerTest extends TestCase
 
         $paymentAccount = new PaymentGatewayDetailedAccount();
         $paymentAccount->setPayoutsEnabled(false);
+
+        $this->tenantActivatedSettingRepository
+            ->shouldReceive('checkTenantSettingStatus')
+            ->once()
+            ->with(
+                config('constants.tenant_settings.DONATION'),
+                $requestData
+            )
+            ->andReturn(true);
 
         $this->stripePaymentGateway
             ->shouldReceive('getAccount')
@@ -1495,13 +1515,14 @@ class MissionControllerTest extends TestCase
         $jsonResponse = new JsonResponse();
 
         $this->tenantActivatedSettingRepository
-            ->shouldReceive('checkTenantSettingStatus')
-            ->twice()
+            ->shouldReceive('getAllTenantActivatedSetting')
+            ->once()
             ->with(
-                config('constants.tenant_settings.DONATION_MISSION'),
                 $requestData
             )
-            ->andReturn(true);
+            ->andReturn([
+                config('constants.tenant_settings.DONATION')
+            ]);
 
         $this->helpers
             ->shouldReceive('isValidTenantCurrency')
@@ -1526,6 +1547,15 @@ class MissionControllerTest extends TestCase
 
         $paymentAccount = new PaymentGatewayDetailedAccount();
         $paymentAccount->setPayoutsEnabled(false);
+
+        $this->tenantActivatedSettingRepository
+            ->shouldReceive('checkTenantSettingStatus')
+            ->once()
+            ->with(
+                config('constants.tenant_settings.DONATION'),
+                $requestData
+            )
+            ->andReturn(true);
 
         $this->stripePaymentGateway
             ->shouldReceive('getAccount')
@@ -1682,14 +1712,29 @@ class MissionControllerTest extends TestCase
         $jsonResponse = new JsonResponse();
 
         $this->tenantActivatedSettingRepository
-            ->shouldReceive('checkTenantSettingStatus')
-            ->twice()
-            ->andReturn(true);
+            ->shouldReceive('getAllTenantActivatedSetting')
+            ->once()
+            ->with(
+                $requestData
+            )
+            ->andReturn([
+                config('constants.tenant_settings.VOLUNTEERING_MISSION'),
+                config('constants.tenant_settings.VOLUNTEERING_TIME_MISSION')
+            ]);
 
         $this->helpers
             ->shouldReceive('isValidTenantCurrency')
             ->once()
             ->with($requestData, $requestData->get('donation_attribute')['goal_amount_currency'])
+            ->andReturn(true);
+
+        $this->tenantActivatedSettingRepository
+            ->shouldReceive('checkTenantSettingStatus')
+            ->once()
+            ->with(
+                config('constants.tenant_settings.DONATION'),
+                $requestData
+            )
             ->andReturn(true);
 
         $organizationObject = factory(Organization::class)->make([
@@ -1864,9 +1909,13 @@ class MissionControllerTest extends TestCase
         $jsonResponse = new JsonResponse();
 
         $this->tenantActivatedSettingRepository
-            ->shouldReceive('checkTenantSettingStatus')
-            ->twice()
-            ->andReturn(true);
+            ->shouldReceive('getAllTenantActivatedSetting')
+            ->once()
+            ->with($requestData)
+            ->andReturn([
+                config('constants.tenant_settings.VOLUNTEERING_MISSION'),
+                config('constants.tenant_settings.VOLUNTEERING_TIME_MISSION')
+            ]);
 
         $this->helpers
             ->shouldReceive('isValidTenantCurrency')
@@ -1878,6 +1927,16 @@ class MissionControllerTest extends TestCase
             'organization_id' => $requestData->organization['organization_id'],
             'name' => $requestData->organization['name']
         ]);
+
+        $this->tenantActivatedSettingRepository
+            ->shouldReceive('checkTenantSettingStatus')
+            ->once()
+            ->with(
+                config('constants.tenant_settings.DONATION'),
+                $requestData
+            )
+            ->andReturn(true);
+
         $this->missionRepository
             ->shouldReceive('saveOrganization')
             ->once()
@@ -2034,9 +2093,13 @@ class MissionControllerTest extends TestCase
         $jsonResponse = new JsonResponse();
 
         $this->tenantActivatedSettingRepository
-            ->shouldReceive('checkTenantSettingStatus')
-            ->times(3)
-            ->andReturn(true);
+            ->shouldReceive('getAllTenantActivatedSetting')
+            ->twice()
+            ->with($requestData)
+            ->andReturn([
+                config('constants.tenant_settings.VOLUNTEERING_MISSION'),
+                config('constants.tenant_settings.VOLUNTEERING_TIME_MISSION')
+            ]);
 
         $this->helpers
             ->shouldReceive('isValidTenantCurrency')
@@ -2048,6 +2111,16 @@ class MissionControllerTest extends TestCase
             'organization_id' => $requestData->organization['organization_id'],
             'name' => $requestData->organization['name']
         ]);
+
+        $this->tenantActivatedSettingRepository
+            ->shouldReceive('checkTenantSettingStatus')
+            ->once()
+            ->with(
+                config('constants.tenant_settings.DONATION'),
+                $requestData
+            )
+            ->andReturn(true);
+
         $this->missionRepository
             ->shouldReceive('saveOrganization')
             ->once()
@@ -2244,8 +2317,20 @@ class MissionControllerTest extends TestCase
         $jsonResponse = new JsonResponse();
 
         $this->tenantActivatedSettingRepository
+            ->shouldReceive('getAllTenantActivatedSetting')
+            ->twice()
+            ->with($requestData)
+            ->andReturn([
+                config('constants.tenant_settings.DONATION')
+            ]);
+
+        $this->tenantActivatedSettingRepository
             ->shouldReceive('checkTenantSettingStatus')
-            ->times(3)
+            ->once()
+            ->with(
+                config('constants.tenant_settings.DONATION'),
+                $requestData
+            )
             ->andReturn(true);
 
         $this->helpers
@@ -2436,8 +2521,20 @@ class MissionControllerTest extends TestCase
         $jsonResponse = new JsonResponse();
 
         $this->tenantActivatedSettingRepository
+            ->shouldReceive('getAllTenantActivatedSetting')
+            ->twice()
+            ->with($requestData)
+            ->andReturn([
+                config('constants.tenant_settings.DONATION')
+            ]);
+
+        $this->tenantActivatedSettingRepository
             ->shouldReceive('checkTenantSettingStatus')
-            ->times(3)
+            ->once()
+            ->with(
+                config('constants.tenant_settings.DONATION'),
+                $requestData
+            )
             ->andReturn(true);
 
         $this->helpers
@@ -2628,8 +2725,21 @@ class MissionControllerTest extends TestCase
         $jsonResponse = new JsonResponse();
 
         $this->tenantActivatedSettingRepository
+            ->shouldReceive('getAllTenantActivatedSetting')
+            ->twice()
+            ->with($requestData)
+            ->andReturn([
+                config('constants.tenant_settings.VOLUNTEERING_MISSION'),
+                config('constants.tenant_settings.VOLUNTEERING_TIME_MISSION')
+            ]);
+
+        $this->tenantActivatedSettingRepository
             ->shouldReceive('checkTenantSettingStatus')
-            ->times(3)
+            ->once()
+            ->with(
+                config('constants.tenant_settings.DONATION'),
+                $requestData
+            )
             ->andReturn(true);
 
         $this->helpers
@@ -2642,6 +2752,7 @@ class MissionControllerTest extends TestCase
             'organization_id' => $requestData->organization['organization_id'],
             'name' => $requestData->organization['name']
         ]);
+
         $this->missionRepository
             ->shouldReceive('saveOrganization')
             ->once()
@@ -2824,12 +2935,25 @@ class MissionControllerTest extends TestCase
         $organizationModel = new Organization();
         $missionModel = new Mission();
         $missionModel->mission_id = $missionId;
+        $missionModel->mission_type = config('constants.tenant_settings.DONATION');
 
         $jsonResponse = new JsonResponse();
 
         $this->tenantActivatedSettingRepository
+            ->shouldReceive('getAllTenantActivatedSetting')
+            ->twice()
+            ->with($requestData)
+            ->andReturn([
+                config('constants.tenant_settings.DONATION')
+            ]);
+
+        $this->tenantActivatedSettingRepository
             ->shouldReceive('checkTenantSettingStatus')
-            ->times(3)
+            ->once()
+            ->with(
+                config('constants.tenant_settings.DONATION'),
+                $requestData
+            )
             ->andReturn(true);
 
         $this->helpers
