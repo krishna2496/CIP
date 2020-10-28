@@ -35,14 +35,23 @@ class MissionImpactDonationLanguage extends Model
      *
      * @var array
      */
-    protected $visible = ['impact_donation_id,', 'language_id', 'content'];
+    protected $visible = [
+        'impact_donation_id,',
+        'language_id',
+        'content'
+    ];
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = ['mission_impact_donation_language_id', 'impact_donation_id', 'language_id', 'content'];
+    protected $fillable = [
+        'mission_impact_donation_language_id',
+        'impact_donation_id',
+        'language_id',
+        'content'
+    ];
 
     /**
      * Store/update specified resource for mission impact donation translations.
@@ -51,8 +60,10 @@ class MissionImpactDonationLanguage extends Model
      * @param  array $data
      * @return App\Models\MissionImpactDonationLanguage
      */
-    public function createOrUpdateDonationImpactTranslation(array $condition, array $data): MissionImpactDonationLanguage
-    {
+    public function createOrUpdateDonationImpactTranslation(
+        array $condition,
+        array $data
+    ): MissionImpactDonationLanguage {
         return static::updateOrCreate($condition, $data);
     }
 }

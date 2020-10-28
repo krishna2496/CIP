@@ -38,14 +38,23 @@ class MissionImpactDonation extends Model
      *
      * @var array
      */
-    protected $visible = ['mission_impact_donation_id', 'mission_id,', 'amount', 'missionImpactDonationDetail'];
+    protected $visible = [
+        'mission_impact_donation_id',
+        'mission_id,',
+        'amount',
+        'missionImpactDonationDetail'
+    ];
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = ['mission_impact_donation_id', 'mission_id', 'amount'];
+    protected $fillable = [
+        'mission_impact_donation_id',
+        'mission_id',
+        'amount'
+    ];
 
     /*
      * Iatstuti\Database\Support\CascadeSoftDeletes;
@@ -54,11 +63,15 @@ class MissionImpactDonation extends Model
 
     /**
      * Find the specified resource.
-     * 
+     *
      * @return Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function missionImpactDonationDetail(): HasMany
     {
-        return $this->hasMany(MissionImpactDonationLanguage::class, 'impact_donation_id', 'mission_impact_donation_id');
+        return $this->hasMany(
+            MissionImpactDonationLanguage::class,
+            'impact_donation_id',
+            'mission_impact_donation_id'
+        );
     }
 }

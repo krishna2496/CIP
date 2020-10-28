@@ -9268,7 +9268,7 @@
             "properties": {
               "amount": {
                 "type": "integer",
-                "description": "amount for impact donation mission. It must be numeric value. Example: 10, 15, 30…"
+                "description": "Impact donation amount"
               },
               "translations": {
                 "type": "array",
@@ -9281,7 +9281,7 @@
                     },
                     "content": {
                       "type": "string",
-                      "description": "Mission impact_donation description"
+                      "description": "Impact donation description"
                     }
                   }
                 }
@@ -9747,11 +9747,11 @@
             "properties": {
               "impact_donation_id": {
                 "type": "string",
-                "description": "Its “Required“ if you are updating existing impact donation mission"
+                "description": "Required only when updating an existing impact donation"
               },
               "amount": {
                 "type": "integer",
-                "description": "amount for impact donation mission. It must be numeric value. Example: 10, 15, 30…"
+                "description": "Impact donation amount"
               },
               "translations": {
                 "type": "array",
@@ -9764,7 +9764,7 @@
                     },
                     "content": {
                       "type": "string",
-                      "description": "Mission impact_donation description"
+                      "description": "Impact donation description"
                     }
                   }
                 }

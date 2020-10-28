@@ -21,7 +21,11 @@ class CreateTableMissionDonationImpact extends Migration
             $table->softDeletes();
 
             // Set references with mission table
-            $table->foreign('mission_id')->references('mission_id')->on('mission')->onDelete('CASCADE')->onUpdate('CASCADE');
+            $table->foreign('mission_id')
+                ->references('mission_id')
+                ->on('mission')
+                ->onDelete('CASCADE')
+                ->onUpdate('CASCADE');
         });
     }
 

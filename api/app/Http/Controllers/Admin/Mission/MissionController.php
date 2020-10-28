@@ -215,13 +215,11 @@ class MissionController extends Controller
                 "volunteering_attribute.availability_id" => "integer|required_if:mission_type,TIME,GOAL|exists:availability,availability_id,deleted_at,NULL",
                 "mission_detail.*.label_goal_achieved" => 'sometimes|required_if:mission_type,GOAL|max:255',
                 "mission_detail.*.label_goal_objective" => 'sometimes|required_if:mission_type,GOAL|max:255',
-                "impact_donation" => "sometimes|required|array",
-                "impact_donation.*.amount" => 'required|integer|min:1|max:999999999999',
-                "impact_donation.*.translations" => 'required',
-                "impact_donation.*.translations.*.language_code" =>
-                'required_with:impact_donation.*.translations|max:2',
-                "impact_donation.*.translations.*.content" =>
-                'required_with:impact_donation.*.translations|max:160',
+                'impact_donation' => 'sometimes|required|array',
+                'impact_donation.*.amount' => 'required|integer|min:1|max:999999999999',
+                'impact_donation.*.translations' => 'required',
+                'impact_donation.*.translations.*.language_code' => 'required_with:impact_donation.*.translations|max:2',
+                'impact_donation.*.translations.*.content' => 'required_with:impact_donation.*.translations|max:160',
                 "impact" => "sometimes|required|array",
                 "impact.*.icon_path" => 'valid_icon_path',
                 "impact.*.sort_key" => 'required|integer|min:0|distinct',
@@ -467,16 +465,11 @@ class MissionController extends Controller
                 "documents.*.sort_order" => "sometimes|required|numeric|min:0|not_in:0",
                 "mission_detail.*.label_goal_achieved" => 'sometimes|required_if:mission_type,GOAL|max:255',
                 "mission_detail.*.label_goal_objective" => 'sometimes|required_if:mission_type,GOAL|max:255',
-                "impact_donation.*.impact_donation_id" =>
-                'sometimes|required|exists:mission_impact_donation,mission_impact_donation_id,deleted_at,NULL',
-                "impact_donation.*.amount" =>
-                "required_without:impact_donation.*.impact_donation_id|integer|min:1|max:999999999999",
-                "impact_donation.*.translations" =>
-                "required_without:impact_donation.*.impact_donation_id",
-                "impact_donation.*.translations.*.language_code" =>
-                "required_with:impact_donation.*.translations|max:2",
-                "impact_donation.*.translations.*.content" =>
-                "required_with:impact_donation.*.translations|max:160",
+                'impact_donation.*.impact_donation_id' => 'sometimes|required|exists:mission_impact_donation,mission_impact_donation_id,deleted_at,NULL',
+                'impact_donation.*.amount' => 'required_without:impact_donation.*.impact_donation_id|integer|min:1|max:999999999999',
+                'impact_donation.*.translations' => 'required_without:impact_donation.*.impact_donation_id',
+                'impact_donation.*.translations.*.language_code' => 'required_with:impact_donation.*.translations|max:2',
+                'impact_donation.*.translations.*.content' => 'required_with:impact_donation.*.translations|max:160',
                 "impact.*.mission_impact_id" =>
                 "sometimes|required|exists:mission_impact,mission_impact_id,deleted_at,NULL",
                 "impact" => "sometimes|required|array",

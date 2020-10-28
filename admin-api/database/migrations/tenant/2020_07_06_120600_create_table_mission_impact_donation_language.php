@@ -23,7 +23,11 @@ class CreateTableMissionImpactDonationLanguage extends Migration
             $table->primary('mission_impact_donation_language_id', 'pk_id');
 
             // Set references with mission table
-            $table->foreign('impact_donation_id')->references('mission_impact_donation_id')->on('mission_impact_donation')->onDelete('CASCADE')->onUpdate('CASCADE');
+            $table->foreign('impact_donation_id')
+                ->references('mission_impact_donation_id')
+                ->on('mission_impact_donation')
+                ->onDelete('CASCADE')
+                ->onUpdate('CASCADE');
         });
     }
 
