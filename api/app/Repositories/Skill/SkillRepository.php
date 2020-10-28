@@ -50,7 +50,7 @@ class SkillRepository implements SkillInterface
      */
     public function skillDetails(Request $request): LengthAwarePaginator
     {
-        $skillQuery = $this->skill->select('skill_id', 'skill_name', 'translations', 'parent_skill');
+        $skillQuery = $this->skill->select('skill_id', 'skill_name', 'translations', 'parent_skill', 'created_at', 'updated_at');
 
         if ($request->has('id')) {
             $skillQuery = $skillQuery->whereIn('skill_id', $request->get('id'));
