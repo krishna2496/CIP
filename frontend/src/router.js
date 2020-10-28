@@ -1,7 +1,8 @@
-import Vue from 'vue'
-import Router from 'vue-router'
+import Vue from 'vue';
+import Router from 'vue-router';
+import constants from './constant';
 
-Vue.use(Router)
+Vue.use(Router);
 
 let routes = [
     {
@@ -42,7 +43,7 @@ let routes = [
         path: '/home',
         name: 'home',
         meta: {
-            requiresAuth: true
+            requiresAuth: true,
         },
         component: () =>
           import ('./views/Home.vue')
@@ -51,7 +52,10 @@ let routes = [
         path: '/volunteering-timesheet',
         name: 'Volunteering timesheet ',
         meta: {
-            requiresAuth: true
+            requiresAuth: true,
+            requiredSettings: [
+                constants.SETTING_VOLUNTEERING
+            ]
         },
         component: () =>
           import ('./views/VolunteeringTimesheet.vue')
@@ -60,7 +64,10 @@ let routes = [
         path: '/volunteering-history',
         name: 'Volunteering history ',
         meta: {
-            requiresAuth: true
+            requiresAuth: true,
+            requiredSettings: [
+                constants.SETTING_VOLUNTEERING
+            ]
         },
         component: () =>
           import ('./views/VolunteeringHistory.vue')

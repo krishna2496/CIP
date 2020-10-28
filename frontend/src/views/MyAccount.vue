@@ -23,7 +23,7 @@
                     <b-col xl="3" lg="4" md="12" class="profile-left-col">
                         <div class="profile-details">
                             <div class="profile-block">
-                                <div v-bind:class="{ 'content-loader-wrap': true, 'loader-active ': isPrefilLoaded}">
+                                <div v-bind:class="{ 'content-loader-wrap': true, 'loader-active ': isPrefilLoaded || imageLoader}">
                                     <div class="content-loader"></div>
                                 </div>
                                 <picture-input :title="changePhoto" ref="pictureInput" @change="changeImage"
@@ -541,9 +541,15 @@
           } else {
             this.makeToast("success", response.message);
             store.commit("changeAvatar", response.data)
+            if (response.data && response.data.avatar) {
+              const img = new Image();
+              this.newUrl = response.data.avatar;
+              img.src = this.newUrl;
+              img.onload = () => {
+                this.imageLoader = false;
+              }
+            }
           }
-          this.imageLoader = false;
-
         })
       },
       saveSkillData() {

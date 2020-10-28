@@ -9237,7 +9237,10 @@
           "type": "string",
           "enum": [
             "TIME",
-            "GOAL"
+            "GOAL",
+            "DONATION",
+            "DISASTER_RELIEF",
+            "EAF"
           ]
         },
         "goal_objective": {
@@ -9685,7 +9688,10 @@
           "type": "string",
           "enum": [
             "TIME",
-            "GOAL"
+            "GOAL",
+            "DONATION",
+            "DISASTER_RELIEF",
+            "EAF"
           ]
         },
         "goal_objective": {
@@ -9966,6 +9972,21 @@
         },
         "linked_in_url": {
           "type": "string"
+        },
+        "custom_fields": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "field_id": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "value": {
+                "type": "string"
+              }
+            }
+          }
         },
         "status": {
           "type": "integer",
