@@ -1181,40 +1181,25 @@ label {
   }
   .form-group {
     /** style for custom-field radio/checkbox group **/
-      .custom-group {
-        label {
-          cursor: pointer;
-        }
+    .custom-group {
+      label {
+        cursor: pointer;
+        max-width: 100%;
+      }
+      
+      .custom-control {
+        cursor: inherit;
 
-        .option-label {
-          max-width: 100%;
-        }
-
-        .option-text {
+        .custom-control-label {
+          cursor: inherit;
+          word-break: break-word;
           word-wrap: break-word;
+          overflow-wrap: break-word;
           white-space: normal;
-
-          &.truncate {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            word-wrap: keep-all;
-            white-space: nowrap;
-
-            @include xs-max {
-              word-wrap: break-word;
-              white-space: normal;
-            }
-          }
-        }
-
-        .custom-control {
-          width: 100%;
-          .custom-control-label {
-            display: inline-block;
-            width: 100%;
-          }
+          display: inline-block;
         }
       }
+    }
     /**/ 
     .is-invalid {
       .custom-control {
@@ -1239,26 +1224,6 @@ label {
       }
     }
   }
-}
-
-/** style to tooltip use in custom field radio/checkbox **/
-.option-tooltip {
-  pointer-events: none;
-  width: 300px;
-  // opacity: 1 !important;
-
-  .arrow::before {
-    border-top-color: $primary;
-  }
-
-  .tooltip-inner {
-    max-width: 100%;
-    width: 100%;
-    background-color: $primary;
-  }
-
-  /** hide tooltip in xm since text content is wrap **/
-  @include xs-max { display: none !important; }
 }
 
 .vue-star-rating-star {

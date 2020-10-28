@@ -26,24 +26,17 @@
                   :validstate="getErrorState(item.field_id)"
                   @change="updateChanges" :name="item.translations.name"
                 >
-                  <b-row>
+                  <b-row
+                    cols-sm="1"
+                    :cols-md="getOptionColumnCount(item.translations.values)"
+                  >
                     <b-col
-                      :md="getOptionColumn(item.translations.values.length)"
-                      :sm="item.translations.values.length > 5 ? 6 : 12"
                       v-for="(option, index) in getRadioArrayValue(item.translations.values)"
                       :key="index"
                     >
-                      <label
-                        class="option-label d-inline-block p-1"
-                        v-b-tooltip.hover="getTooltipText(item.translations.values.length, option.text)"
-                      >
+                      <label class="d-inline-block p-1">
                         <b-form-radio :value="option.value">
-                          <div
-                            class="option-text"
-                            :class="{'truncate' : item.translations.values.length > 5}"
-                          >
-                            {{ option.text }}
-                          </div>
+                          {{ option.text }}
                         </b-form-radio>
                       </label>
                     </b-col>
@@ -67,24 +60,17 @@
                   :validstate="getErrorState(item.field_id)"
                   @input="updateChanges"
                 >
-                  <b-row>
+                  <b-row
+                    cols-sm="1"
+                    :cols-md="getOptionColumnCount(item.translations.values)"
+                  >
                     <b-col
-                      :md="getOptionColumn(item.translations.values.length)"
-                      :sm="item.translations.values.length > 5 ? 6 : 12"
                       v-for="(option, index) in getRadioArrayValue(item.translations.values)"
                       :key="index"
                     >
-                      <label
-                        class="option-label d-inline-block p-1"
-                        v-b-tooltip.hover="getTooltipText(item.translations.values.length, option.text)"
-                      >
+                      <label class="d-inline-block p-1">
                         <b-form-checkbox :value="option.value">
-                          <div
-                            class="option-text"
-                            :class="{'truncate' : item.translations.values.length > 5}"
-                          >
-                            {{ option.text }} 
-                          </div>
+                          {{ option.text }}
                         </b-form-checkbox>
                       </label>
                     </b-col>
@@ -475,24 +461,17 @@
         const pattern = /^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$/;
         return pattern.test(value);
       },
-      getTooltipText(itemLength, text) {
-        if (!!text) {
-          let max = text.length;
-          if (itemLength > 10) max = 25;
-          else if (itemLength > 5) max = 35;
-          if (text.length > max) {
-            return {
-              title: text,
-              customClass: 'option-tooltip'
-            };
-          }
+      getOptionColumnCount (options) {
+        if (options.length > 5) {
+          const max = 35;
+          const withLongText = options.some(option => {
+            const text = option[Object.keys(option)];
+            return text && text.length > max;
+          })
+          if (!withLongText) return 2;
         }
-        return null;
-      },
-      getOptionColumn (length) {
-        if (length > 10) return 4;
-        if (length > 5) return 6;
-        return 12
+
+        return 1;
       }
     },
     updated() {},
