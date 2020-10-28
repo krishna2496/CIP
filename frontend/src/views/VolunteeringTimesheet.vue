@@ -5,6 +5,9 @@
     </header>
     <main>
       <DashboardBreadcrumb />
+      <div v-bind:class="{ 'content-loader-wrap': true, 'loader-active': !isComponentLoaded}">
+        <div class="content-loader"></div>
+      </div>
       <div class="dashboard-tab-content" v-if="isComponentLoaded">
         <b-container v-if="isAllVisible">
           <div class="heading-section">
@@ -943,7 +946,7 @@ export default {
     },
     async getVolunteerHoursData() {
       this.tableLoaderActive = true
-      this.isComponentLoaded = false
+
       let hourRequest = {
         page : this.timePage,
         type: "hour"
@@ -958,9 +961,7 @@ export default {
               this.timePerPage = response.pagination.per_page;
           }
         }
-        this.isAllVisible = this.timeMissionData.length > 0 || this.goalMissionData.length > 0
-        this.isComponentLoaded = true
-        this.tableLoaderActive = false
+        this.tableLoaderActive = false;
       })
     },
     async getVolunteerGoalsData() {
@@ -981,10 +982,7 @@ export default {
               this.goalPerPage = response.pagination.per_page;
           }
         }
-
-        this.isAllVisible = this.timeMissionData.length > 0 || this.goalMissionData.length > 0
-        this.isComponentLoaded = true
-        this.goalsTableLoaderActive = false
+        this.goalsTableLoaderActive = false;
       })
     },
     getTime(date, timeArray, timeSheetType) {
@@ -1383,11 +1381,6 @@ export default {
             this.timesheetRequestItems = currentData;
           })
         }
-
-        if (!this.isGoalMissionActive) {
-          this.isComponentLoaded = true;
-          this.isAllVisible = this.timeMissionData.length;
-        }
       })
     },
     getGoalRequest(currentPage) {
@@ -1493,15 +1486,26 @@ export default {
 
     this.isShownComponent = true;
 
+
+    let promises = [];
     if (this.isTimeMissionActive) {
-      this.getVolunteerHoursData();
-      this.getTimeRequestData(this.hourRequestCurrentPage);
+      promises.push(
+        this.getVolunteerHoursData(),
+        this.getTimeRequestData(this.hourRequestCurrentPage)
+      );
     }
 
     if (this.isGoalMissionActive) {
-      this.getVolunteerGoalsData();
-      this.getGoalRequestData(this.goalRequestCurrentPage);
+      promises.push(
+        this.getVolunteerGoalsData(),
+        this.getGoalRequestData(this.goalRequestCurrentPage)
+      );
     }
+
+    Promise.all(promises).then(() => {
+      this.isAllVisible = this.timeMissionData.length > 0 || this.goalMissionData.length > 0;
+      this.isComponentLoaded = true;
+    });
 
     this.buildHeadersForExport();
   }
