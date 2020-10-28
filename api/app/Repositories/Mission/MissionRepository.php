@@ -2042,13 +2042,13 @@ class MissionRepository implements MissionInterface
             foreach ($impactDonationMissionInfo as $impactDonationKey => $impactDonationValue) {
                 $impactDonationLanguageArray['impact_donation_id'] = $impactDonationValue['mission_impact_donation_id'];
                 $impactDonationLanguageArray['amount'] = $impactDonationValue['amount'];
-                $impactDonationLanguageArray["languages"] = [];
+                $impactDonationLanguageArray["translations"] = [];
                 foreach ($impactDonationValue['mission_impact_donation_detail'] as $impactDonationLanguadeValue) {
                     $languageCode = $languages->where('language_id', $impactDonationLanguadeValue['language_id'])->first()->code;
                     $impactDonationLanguage['language_id'] = $impactDonationLanguadeValue['language_id'];
                     $impactDonationLanguage['language_code'] = $languageCode;
                     $impactDonationLanguage['content'] = json_decode($impactDonationLanguadeValue['content']);
-                    array_push($impactDonationLanguageArray["languages"], $impactDonationLanguage);
+                    array_push($impactDonationLanguageArray["translations"], $impactDonationLanguage);
                 }
 
                 $value['impactDonation'][$impactDonationKey] = $impactDonationLanguageArray;
