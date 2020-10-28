@@ -8946,7 +8946,93 @@
           }
         }
       }
-    }
+    },
+    "/app/setting": {
+      "post": {
+        "operationId": "POST-cip-api-user-setting",
+        "summary": "App - Post user settings",
+        "description": "Logged in user can save user privacy and preference settings",
+        "tags": [
+          "Setting"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "password": {
+                  "type": "string"
+                },
+                "confirm_password": {
+                  "type": "string"
+                },
+                "old_password": {
+                  "type": "string"
+                },
+                "language_id": {
+                  "type": "integer"
+                },
+                "timezone_id": {
+                  "type": "integer"
+                },
+                "currency": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid token"
+          }
+        }
+      },
+      "get": {
+        "operationId": "GET-cip-api-user-setting",
+        "summary": "App - Get user settings",
+        "description": "Logged in user can get user privacy and preference settings",
+        "tags": [
+          "Setting"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid token"
+          }
+        }
+      }
+    }  
   },
   "definitions": {
     "Mission": {
@@ -10094,6 +10180,12 @@
               }
             }
           }
+        },
+        "donation_goal": {
+          "type": "integer"
+        },
+        "donation_goal_year": {
+          "type": "integer"
         }
       }
     },
