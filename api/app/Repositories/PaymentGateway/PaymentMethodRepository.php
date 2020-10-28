@@ -89,33 +89,19 @@ class PaymentMethodRepository
     }
 
     /**
-     * @param App\Libraries\PaymentGateway\PaymentGatewayDetailedPaymentMethod
-     * @return void
-     */
-    public function update(PaymentGatewayDetailedPaymentMethod $detailedPaymentMethod): void
-    {
-        $where = [
-            'user_id' => $detailedPaymentMethod->getUserId(),
-            'id' => $detailedPaymentMethod->getId(),
-            'deleted_at' => null,
-        ];
-        $paymentMethods = $this->paymentGatewayPaymentMethod->where($where)->get()->keyBy('id');
-        // we can't simply update / replace locally stored payment method information
-    }
-
-    /**
      * @param int
      * @param string
      * @return void
      */
     public function delete(int $userId, string $id): void
     {
-        $where = [
+        $conditions = [
             'user_id' => $userId,
             'id' => $id,
             'deleted_at' => null,
         ];
-        $paymentMethods = $this->paymentGatewayPaymentMethod->where($where)->get()->keyBy('id');
-        $paymentMethods->first()->delete();
+        $paymentMethods = $this->paymentGatewayPaymentMethod
+            ->where($conditions)
+            ->delete();
     }
 }

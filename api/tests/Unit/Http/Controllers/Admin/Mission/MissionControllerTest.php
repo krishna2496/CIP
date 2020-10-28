@@ -900,7 +900,7 @@ class MissionControllerTest extends TestCase
             'publication_status' => 'APPROVED',
             'availability_id' => 1,
             'is_virtual' => false,
-            'un_sdg' => [1,2,3]
+            'un_sdg' => [1, 2, 3]
         ];
 
         $validator = $this->mock(\Illuminate\Validation\Validator::class);
@@ -1004,15 +1004,9 @@ class MissionControllerTest extends TestCase
                 'show_goal_amount' => false,
                 'show_donation_percentage' => false,
                 'show_donation_meter' => false,
-                'show_donation_count' => true,
-                'show_donors_count' => true,
+                'show_donation_count' => false,
+                'show_donors_count' => false,
                 'disable_when_funded' => true
-            ],
-            'organisation_detail' => [
-                [
-                'lang' => 'en',
-                'detail' => 'test oraganization detail3333333333'
-                ]
             ],
             'location' => [
                 'city_id' => '1',
@@ -1023,71 +1017,12 @@ class MissionControllerTest extends TestCase
                     'lang' => 'en',
                     'title' => 'testing api mission details',
                     'short_description' => 'this is testing api with all mission details',
-                    'objective' => 'To test and check',
-                    'label_goal_achieved' => 'test percentage',
-                    'label_goal_objective' => 'check test percentage',
-                    'section' => [
-                        [
-                            'title' => 'string',
-                            'description' => 'string'
-                        ]
-                    ],
-                    'custom_information' => [
-                        [
-                            'title' => 'string',
-                            'description' => 'string'
-                        ]
-                    ]
                 ]
-            ],
-            'impact' => [
-                [
-                    'icon_path' => 'filepath available',
-                    'sort_key' => 1525,
-                    'translations' => [
-                        [
-                            'language_code' => 'tr',
-                            'content' => 'mission impact content other lang.'
-                        ],
-                        [
-                            'language_code' => 'es',
-                            'content' => 'mission impact content es lang.'
-                        ]
-                    ]
-                ],
-                [
-                    'sort_key' => 2,
-                    'translations' => [
-                        [
-                            'language_code' => 'fr',
-                            'content' => 'mission impact content fr lang.'
-                        ]
-                    ]
-                ]
-            ],
-            'skills' => [
-                [
-                    'skill_id' => 2
-                ]
-            ],
-            'volunteering_attribute' => [
-                'availability_id' => 1,
-                'total_seats' => 25,
-                'is_virtual' => 1
             ],
             'start_date' => '2020-05-13T06 =>07 =>47.115Z',
             'end_date' => '2020-05-21T06 =>07 =>47.115Z',
             'mission_type' => config('constants.mission_type.DONATION'),
-            'goal_objective' => '535',
-            'application_deadline' => '2020-05-16T06 =>07 =>47.115Z',
-            'application_start_date' => '2020-05-18T06 =>07 =>47.115Z',
-            'application_start_time' => '2020-05-18T06 =>07 =>47.115Z',
-            'application_end_date' => '2020-05-20T06 =>07 =>47.115Z',
-            'application_end_time' => '2020-05-20T06 =>07 =>47.115Z',
-            'publication_status' => 'APPROVED',
-            'availability_id' => 1,
-            'is_virtual' => false,
-            'un_sdg' => [1,2,3]
+            'publication_status' => 'APPROVED'
         ];
 
         $validator = $this->mock(\Illuminate\Validation\Validator::class);
@@ -1214,14 +1149,8 @@ class MissionControllerTest extends TestCase
                 'show_donation_percentage' => false,
                 'show_donation_meter' => false,
                 'show_donation_count' => true,
-                'show_donors_count' => true,
+                'show_donors_count' => false,
                 'disable_when_funded' => true
-            ],
-            'organisation_detail' => [
-                [
-                'lang' => 'en',
-                'detail' => 'test oraganization detail3333333333'
-                ]
             ],
             'location' => [
                 'city_id' => '1',
@@ -1231,72 +1160,13 @@ class MissionControllerTest extends TestCase
                 [
                     'lang' => 'en',
                     'title' => 'testing api mission details',
-                    'short_description' => 'this is testing api with all mission details',
-                    'objective' => 'To test and check',
-                    'label_goal_achieved' => 'test percentage',
-                    'label_goal_objective' => 'check test percentage',
-                    'section' => [
-                        [
-                            'title' => 'string',
-                            'description' => 'string'
-                        ]
-                    ],
-                    'custom_information' => [
-                        [
-                            'title' => 'string',
-                            'description' => 'string'
-                        ]
-                    ]
+                    'short_description' => 'this is testing api with all mission details'
                 ]
-            ],
-            'impact' => [
-                [
-                    'icon_path' => 'filepath available',
-                    'sort_key' => 1525,
-                    'translations' => [
-                        [
-                            'language_code' => 'tr',
-                            'content' => 'mission impact content other lang.'
-                        ],
-                        [
-                            'language_code' => 'es',
-                            'content' => 'mission impact content es lang.'
-                        ]
-                    ]
-                ],
-                [
-                    'sort_key' => 2,
-                    'translations' => [
-                        [
-                            'language_code' => 'fr',
-                            'content' => 'mission impact content fr lang.'
-                        ]
-                    ]
-                ]
-            ],
-            'skills' => [
-                [
-                    'skill_id' => 2
-                ]
-            ],
-            'volunteering_attribute' => [
-                'availability_id' => 1,
-                'total_seats' => 25,
-                'is_virtual' => 1
             ],
             'start_date' => '2020-05-13T06 =>07 =>47.115Z',
             'end_date' => '2020-05-21T06 =>07 =>47.115Z',
             'mission_type' => config('constants.mission_type.DONATION'),
-            'goal_objective' => '535',
-            'application_deadline' => '2020-05-16T06 =>07 =>47.115Z',
-            'application_start_date' => '2020-05-18T06 =>07 =>47.115Z',
-            'application_start_time' => '2020-05-18T06 =>07 =>47.115Z',
-            'application_end_date' => '2020-05-20T06 =>07 =>47.115Z',
-            'application_end_time' => '2020-05-20T06 =>07 =>47.115Z',
-            'publication_status' => 'APPROVED',
-            'availability_id' => 1,
-            'is_virtual' => false,
-            'un_sdg' => [1,2,3]
+            'publication_status' => 'APPROVED'
         ];
 
         $validator = $this->mock(\Illuminate\Validation\Validator::class);
@@ -1414,15 +1284,9 @@ class MissionControllerTest extends TestCase
                 'show_goal_amount' => false,
                 'show_donation_percentage' => false,
                 'show_donation_meter' => false,
-                'show_donation_count' => true,
+                'show_donation_count' => false,
                 'show_donors_count' => true,
                 'disable_when_funded' => true
-            ],
-            'organisation_detail' => [
-                [
-                'lang' => 'en',
-                'detail' => 'test oraganization detail3333333333'
-                ]
             ],
             'location' => [
                 'city_id' => '1',
@@ -1432,72 +1296,13 @@ class MissionControllerTest extends TestCase
                 [
                     'lang' => 'en',
                     'title' => 'testing api mission details',
-                    'short_description' => 'this is testing api with all mission details',
-                    'objective' => 'To test and check',
-                    'label_goal_achieved' => 'test percentage',
-                    'label_goal_objective' => 'check test percentage',
-                    'section' => [
-                        [
-                            'title' => 'string',
-                            'description' => 'string'
-                        ]
-                    ],
-                    'custom_information' => [
-                        [
-                            'title' => 'string',
-                            'description' => 'string'
-                        ]
-                    ]
+                    'short_description' => 'this is testing api with all mission details'
                 ]
-            ],
-            'impact' => [
-                [
-                    'icon_path' => 'filepath available',
-                    'sort_key' => 1525,
-                    'translations' => [
-                        [
-                            'language_code' => 'tr',
-                            'content' => 'mission impact content other lang.'
-                        ],
-                        [
-                            'language_code' => 'es',
-                            'content' => 'mission impact content es lang.'
-                        ]
-                    ]
-                ],
-                [
-                    'sort_key' => 2,
-                    'translations' => [
-                        [
-                            'language_code' => 'fr',
-                            'content' => 'mission impact content fr lang.'
-                        ]
-                    ]
-                ]
-            ],
-            'skills' => [
-                [
-                    'skill_id' => 2
-                ]
-            ],
-            'volunteering_attribute' => [
-                'availability_id' => 1,
-                'total_seats' => 25,
-                'is_virtual' => 1
             ],
             'start_date' => '2020-05-13T06 =>07 =>47.115Z',
             'end_date' => '2020-05-21T06 =>07 =>47.115Z',
             'mission_type' => config('constants.mission_type.DONATION'),
-            'goal_objective' => '535',
-            'application_deadline' => '2020-05-16T06 =>07 =>47.115Z',
-            'application_start_date' => '2020-05-18T06 =>07 =>47.115Z',
-            'application_start_time' => '2020-05-18T06 =>07 =>47.115Z',
-            'application_end_date' => '2020-05-20T06 =>07 =>47.115Z',
-            'application_end_time' => '2020-05-20T06 =>07 =>47.115Z',
-            'publication_status' => 'APPROVED',
-            'availability_id' => 1,
-            'is_virtual' => false,
-            'un_sdg' => [1,2,3]
+            'publication_status' => 'APPROVED'
         ];
 
         $validator = $this->mock(\Illuminate\Validation\Validator::class);
@@ -1612,14 +1417,8 @@ class MissionControllerTest extends TestCase
                 'show_donation_percentage' => false,
                 'show_donation_meter' => false,
                 'show_donation_count' => true,
-                'show_donors_count' => true,
+                'show_donors_count' => false,
                 'disable_when_funded' => true
-            ],
-            'organisation_detail' => [
-                [
-                'lang' => 'en',
-                'detail' => 'test oraganization detail3333333333'
-                ]
             ],
             'location' => [
                 'city_id' => '1',
@@ -1647,54 +1446,10 @@ class MissionControllerTest extends TestCase
                     ]
                 ]
             ],
-            'impact' => [
-                [
-                    'icon_path' => 'filepath available',
-                    'sort_key' => 1525,
-                    'translations' => [
-                        [
-                            'language_code' => 'tr',
-                            'content' => 'mission impact content other lang.'
-                        ],
-                        [
-                            'language_code' => 'es',
-                            'content' => 'mission impact content es lang.'
-                        ]
-                    ]
-                ],
-                [
-                    'sort_key' => 2,
-                    'translations' => [
-                        [
-                            'language_code' => 'fr',
-                            'content' => 'mission impact content fr lang.'
-                        ]
-                    ]
-                ]
-            ],
-            'skills' => [
-                [
-                    'skill_id' => 2
-                ]
-            ],
-            'volunteering_attribute' => [
-                'availability_id' => 1,
-                'total_seats' => 25,
-                'is_virtual' => 1
-            ],
             'start_date' => '2020-05-13T06 =>07 =>47.115Z',
             'end_date' => '2020-05-21T06 =>07 =>47.115Z',
             'mission_type' => config('constants.mission_type.TIME'),
-            'goal_objective' => '535',
-            'application_deadline' => '2020-05-16T06 =>07 =>47.115Z',
-            'application_start_date' => '2020-05-18T06 =>07 =>47.115Z',
-            'application_start_time' => '2020-05-18T06 =>07 =>47.115Z',
-            'application_end_date' => '2020-05-20T06 =>07 =>47.115Z',
-            'application_end_time' => '2020-05-20T06 =>07 =>47.115Z',
-            'publication_status' => 'APPROVED',
-            'availability_id' => 1,
-            'is_virtual' => false,
-            'un_sdg' => [1,2,3]
+            'publication_status' => 'APPROVED'
         ];
 
         $validator = $this->mock(\Illuminate\Validation\Validator::class);
@@ -1809,14 +1564,8 @@ class MissionControllerTest extends TestCase
                 'show_donation_percentage' => false,
                 'show_donation_meter' => false,
                 'show_donation_count' => true,
-                'show_donors_count' => true,
+                'show_donors_count' => false,
                 'disable_when_funded' => true
-            ],
-            'organisation_detail' => [
-                [
-                'lang' => 'en',
-                'detail' => 'test oraganization detail3333333333'
-                ]
             ],
             'location' => [
                 'city_id' => '1',
@@ -1826,72 +1575,13 @@ class MissionControllerTest extends TestCase
                 [
                     'lang' => 'en',
                     'title' => 'testing api mission details',
-                    'short_description' => 'this is testing api with all mission details',
-                    'objective' => 'To test and check',
-                    'label_goal_achieved' => 'test percentage',
-                    'label_goal_objective' => 'check test percentage',
-                    'section' => [
-                        [
-                            'title' => 'string',
-                            'description' => 'string'
-                        ]
-                    ],
-                    'custom_information' => [
-                        [
-                            'title' => 'string',
-                            'description' => 'string'
-                        ]
-                    ]
+                    'short_description' => 'this is testing api with all mission details'
                 ]
-            ],
-            'impact' => [
-                [
-                    'icon_path' => 'filepath available',
-                    'sort_key' => 1525,
-                    'translations' => [
-                        [
-                            'language_code' => 'tr',
-                            'content' => 'mission impact content other lang.'
-                        ],
-                        [
-                            'language_code' => 'es',
-                            'content' => 'mission impact content es lang.'
-                        ]
-                    ]
-                ],
-                [
-                    'sort_key' => 2,
-                    'translations' => [
-                        [
-                            'language_code' => 'fr',
-                            'content' => 'mission impact content fr lang.'
-                        ]
-                    ]
-                ]
-            ],
-            'skills' => [
-                [
-                    'skill_id' => 2
-                ]
-            ],
-            'volunteering_attribute' => [
-                'availability_id' => 1,
-                'total_seats' => 25,
-                'is_virtual' => 1
             ],
             'start_date' => '2020-05-13T06 =>07 =>47.115Z',
             'end_date' => '2020-05-21T06 =>07 =>47.115Z',
             'mission_type' => config('constants.mission_type.TIME'),
-            'goal_objective' => '535',
-            'application_deadline' => '2020-05-16T06 =>07 =>47.115Z',
-            'application_start_date' => '2020-05-18T06 =>07 =>47.115Z',
-            'application_start_time' => '2020-05-18T06 =>07 =>47.115Z',
-            'application_end_date' => '2020-05-20T06 =>07 =>47.115Z',
-            'application_end_time' => '2020-05-20T06 =>07 =>47.115Z',
-            'publication_status' => 'APPROVED',
-            'availability_id' => 1,
-            'is_virtual' => false,
-            'un_sdg' => [1,2,3]
+            'publication_status' => 'APPROVED'
         ];
 
         $validator = $this->mock(\Illuminate\Validation\Validator::class);
@@ -2018,14 +1708,8 @@ class MissionControllerTest extends TestCase
                 'show_donation_percentage' => false,
                 'show_donation_meter' => false,
                 'show_donation_count' => true,
-                'show_donors_count' => true,
+                'show_donors_count' => false,
                 'disable_when_funded' => true
-            ],
-            'organisation_detail' => [
-                [
-                'lang' => 'en',
-                'detail' => 'test oraganization detail3333333333'
-                ]
             ],
             'location' => [
                 'city_id' => '1',
@@ -2035,47 +1719,13 @@ class MissionControllerTest extends TestCase
                 [
                     'lang' => 'en',
                     'title' => 'testing api mission details',
-                    'short_description' => 'this is testing api with all mission details',
-                    'objective' => 'To test and check',
-                    'label_goal_achieved' => 'test percentage',
-                    'label_goal_objective' => 'check test percentage',
-                    'section' => [
-                        [
-                            'title' => 'string',
-                            'description' => 'string'
-                        ]
-                    ],
-                    'custom_information' => [
-                        [
-                            'title' => 'string',
-                            'description' => 'string'
-                        ]
-                    ]
+                    'short_description' => 'this is testing api with all mission details'
                 ]
-            ],
-            'skills' => [
-                [
-                    'skill_id' => 2
-                ]
-            ],
-            'volunteering_attribute' => [
-                'availability_id' => 1,
-                'total_seats' => 25,
-                'is_virtual' => 1
             ],
             'start_date' => '2020-05-13T06 =>07 =>47.115Z',
             'end_date' => '2020-05-21T06 =>07 =>47.115Z',
             'mission_type' => config('constants.mission_type.TIME'),
-            'goal_objective' => '535',
-            'application_deadline' => '2020-05-16T06 =>07 =>47.115Z',
-            'application_start_date' => '2020-05-18T06 =>07 =>47.115Z',
-            'application_start_time' => '2020-05-18T06 =>07 =>47.115Z',
-            'application_end_date' => '2020-05-20T06 =>07 =>47.115Z',
-            'application_end_time' => '2020-05-20T06 =>07 =>47.115Z',
-            'publication_status' => 'APPROVED',
-            'availability_id' => 1,
-            'is_virtual' => false,
-            'un_sdg' => [1,2,3]
+            'publication_status' => 'APPROVED'
         ];
 
         $validator = $this->mock(\Illuminate\Validation\Validator::class);
@@ -2223,13 +1873,6 @@ class MissionControllerTest extends TestCase
             'organization' => [
                 'organization_id' => rand(),
                 'name' => 'test name',
-                'legal_number' =>1,
-                'phone_number' =>123,
-                'address_line_1' =>'test',
-                'address_line_2' =>'2323',
-                'city_id' =>'',
-                'country_id' =>'',
-                'postal_code' =>1,
                 'payment_gateway_account' => [
                     'payment_gateway' => 'STRIPE',
                     'payment_gateway_account_id' => 'acc_xxxxxxxxxxxx'
@@ -2237,69 +1880,8 @@ class MissionControllerTest extends TestCase
             ],
             'donation_attribute' => [
                 'goal_amount_currency' => 'EUR',
-                'goal_amount' => '1000',
-                'show_goal_amount' => false,
-                'show_donation_percentage' => false,
-                'show_donation_meter' => false,
-                'show_donation_count' => true,
-                'show_donors_count' => true,
-                'disable_when_funded' => true
-            ],
-            'organisation_detail' => [
-                [
-                'lang' => 'en',
-                'detail' => 'test oraganization detail3333333333'
-                ]
-            ],
-            'location' => [
-                'city_id' => '1',
-                'country_code' => 'US'
-            ],
-            'mission_detail' => [
-                [
-                    'lang' => 'en',
-                    'title' => 'testing api mission details',
-                    'short_description' => 'this is testing api with all mission details',
-                    'objective' => 'To test and check',
-                    'label_goal_achieved' => 'test percentage',
-                    'label_goal_objective' => 'check test percentage',
-                    'section' => [
-                        [
-                            'title' => 'string',
-                            'description' => 'string'
-                        ]
-                    ],
-                    'custom_information' => [
-                        [
-                            'title' => 'string',
-                            'description' => 'string'
-                        ]
-                    ]
-                ]
-            ],
-            'skills' => [
-                [
-                    'skill_id' => 2
-                ]
-            ],
-            'volunteering_attribute' => [
-                'availability_id' => 1,
-                'total_seats' => 25,
-                'is_virtual' => 1
-            ],
-            'start_date' => '2020-05-13T06 =>07 =>47.115Z',
-            'end_date' => '2020-05-21T06 =>07 =>47.115Z',
-            'mission_type' => config('constants.mission_type.DONATION'),
-            'goal_objective' => '535',
-            'application_deadline' => '2020-05-16T06 =>07 =>47.115Z',
-            'application_start_date' => '2020-05-18T06 =>07 =>47.115Z',
-            'application_start_time' => '2020-05-18T06 =>07 =>47.115Z',
-            'application_end_date' => '2020-05-20T06 =>07 =>47.115Z',
-            'application_end_time' => '2020-05-20T06 =>07 =>47.115Z',
-            'publication_status' => 'APPROVED',
-            'availability_id' => 1,
-            'is_virtual' => false,
-            'un_sdg' => [1,2,3]
+                'goal_amount' => '1000'
+            ]
         ];
 
         $validator = $this->mock(\Illuminate\Validation\Validator::class);
@@ -2318,7 +1900,7 @@ class MissionControllerTest extends TestCase
 
         $this->tenantActivatedSettingRepository
             ->shouldReceive('getAllTenantActivatedSetting')
-            ->twice()
+            ->once()
             ->with($requestData)
             ->andReturn([
                 config('constants.tenant_settings.DONATION')
@@ -2427,13 +2009,6 @@ class MissionControllerTest extends TestCase
             'organization' => [
                 'organization_id' => rand(),
                 'name' => 'test name',
-                'legal_number' =>1,
-                'phone_number' =>123,
-                'address_line_1' =>'test',
-                'address_line_2' =>'2323',
-                'city_id' =>'',
-                'country_id' =>'',
-                'postal_code' =>1,
                 'payment_gateway_account' => [
                     'payment_gateway' => 'STRIPE',
                     'payment_gateway_account_id' => 'acc_xxxxxxxxxxxx'
@@ -2441,69 +2016,8 @@ class MissionControllerTest extends TestCase
             ],
             'donation_attribute' => [
                 'goal_amount_currency' => 'EUR',
-                'goal_amount' => '1000',
-                'show_goal_amount' => false,
-                'show_donation_percentage' => false,
-                'show_donation_meter' => false,
-                'show_donation_count' => true,
-                'show_donors_count' => true,
-                'disable_when_funded' => true
-            ],
-            'organisation_detail' => [
-                [
-                'lang' => 'en',
-                'detail' => 'test oraganization detail3333333333'
-                ]
-            ],
-            'location' => [
-                'city_id' => '1',
-                'country_code' => 'US'
-            ],
-            'mission_detail' => [
-                [
-                    'lang' => 'en',
-                    'title' => 'testing api mission details',
-                    'short_description' => 'this is testing api with all mission details',
-                    'objective' => 'To test and check',
-                    'label_goal_achieved' => 'test percentage',
-                    'label_goal_objective' => 'check test percentage',
-                    'section' => [
-                        [
-                            'title' => 'string',
-                            'description' => 'string'
-                        ]
-                    ],
-                    'custom_information' => [
-                        [
-                            'title' => 'string',
-                            'description' => 'string'
-                        ]
-                    ]
-                ]
-            ],
-            'skills' => [
-                [
-                    'skill_id' => 2
-                ]
-            ],
-            'volunteering_attribute' => [
-                'availability_id' => 1,
-                'total_seats' => 25,
-                'is_virtual' => 1
-            ],
-            'start_date' => '2020-05-13T06 =>07 =>47.115Z',
-            'end_date' => '2020-05-21T06 =>07 =>47.115Z',
-            'mission_type' => config('constants.mission_type.DONATION'),
-            'goal_objective' => '535',
-            'application_deadline' => '2020-05-16T06 =>07 =>47.115Z',
-            'application_start_date' => '2020-05-18T06 =>07 =>47.115Z',
-            'application_start_time' => '2020-05-18T06 =>07 =>47.115Z',
-            'application_end_date' => '2020-05-20T06 =>07 =>47.115Z',
-            'application_end_time' => '2020-05-20T06 =>07 =>47.115Z',
-            'publication_status' => 'APPROVED',
-            'availability_id' => 1,
-            'is_virtual' => false,
-            'un_sdg' => [1,2,3]
+                'goal_amount' => '1000'
+            ]
         ];
 
         $validator = $this->mock(\Illuminate\Validation\Validator::class);
@@ -2522,7 +2036,7 @@ class MissionControllerTest extends TestCase
 
         $this->tenantActivatedSettingRepository
             ->shouldReceive('getAllTenantActivatedSetting')
-            ->twice()
+            ->once()
             ->with($requestData)
             ->andReturn([
                 config('constants.tenant_settings.DONATION')
@@ -2635,79 +2149,11 @@ class MissionControllerTest extends TestCase
             'organization' => [
                 'organization_id' => rand(),
                 'name' => 'test name',
-                'legal_number' =>1,
-                'phone_number' =>123,
-                'address_line_1' =>'test',
-                'address_line_2' =>'2323',
-                'city_id' =>'',
-                'country_id' =>'',
-                'postal_code' =>1
             ],
             'donation_attribute' => [
                 'goal_amount_currency' => 'EUR',
-                'goal_amount' => '1000',
-                'show_goal_amount' => false,
-                'show_donation_percentage' => false,
-                'show_donation_meter' => false,
-                'show_donation_count' => true,
-                'show_donors_count' => true,
-                'disable_when_funded' => true
-            ],
-            'organisation_detail' => [
-                [
-                'lang' => 'en',
-                'detail' => 'test oraganization detail3333333333'
-                ]
-            ],
-            'location' => [
-                'city_id' => '1',
-                'country_code' => 'US'
-            ],
-            'mission_detail' => [
-                [
-                    'lang' => 'en',
-                    'title' => 'testing api mission details',
-                    'short_description' => 'this is testing api with all mission details',
-                    'objective' => 'To test and check',
-                    'label_goal_achieved' => 'test percentage',
-                    'label_goal_objective' => 'check test percentage',
-                    'section' => [
-                        [
-                            'title' => 'string',
-                            'description' => 'string'
-                        ]
-                    ],
-                    'custom_information' => [
-                        [
-                            'title' => 'string',
-                            'description' => 'string'
-                        ]
-                    ]
-                ]
-            ],
-            'skills' => [
-                [
-                    'skill_id' => 2
-                ]
-            ],
-            'volunteering_attribute' => [
-                'availability_id' => 1,
-                'total_seats' => 25,
-                'is_virtual' => 1
-            ],
-            'start_date' => '2020-05-13T06 =>07 =>47.115Z',
-            'end_date' => '2020-05-21T06 =>07 =>47.115Z',
-            'mission_type' => config('constants.mission_type.TIME'),
-            'goal_objective' => '535',
-            'application_deadline' => '2020-05-16T06 =>07 =>47.115Z',
-            'application_start_date' => '2020-05-18T06 =>07 =>47.115Z',
-            'application_start_time' => '2020-05-18T06 =>07 =>47.115Z',
-            'application_end_date' => '2020-05-20T06 =>07 =>47.115Z',
-            'application_end_time' => '2020-05-20T06 =>07 =>47.115Z',
-            'publication_status' => 'APPROVED',
-            'availability_id' => 1,
-            'is_virtual' => false,
-            'un_sdg' => [1,2,3]
+                'goal_amount' => '1000'
+            ]
         ];
 
         $validator = $this->mock(\Illuminate\Validation\Validator::class);
@@ -2726,7 +2172,7 @@ class MissionControllerTest extends TestCase
 
         $this->tenantActivatedSettingRepository
             ->shouldReceive('getAllTenantActivatedSetting')
-            ->twice()
+            ->once()
             ->with($requestData)
             ->andReturn([
                 config('constants.tenant_settings.VOLUNTEERING_MISSION'),
@@ -2848,80 +2294,12 @@ class MissionControllerTest extends TestCase
         $input = [
             'organization' => [
                 'organization_id' => rand(),
-                'name' => 'test name',
-                'legal_number' =>1,
-                'phone_number' =>123,
-                'address_line_1' =>'test',
-                'address_line_2' =>'2323',
-                'city_id' =>'',
-                'country_id' =>'',
-                'postal_code' =>1
+                'name' => 'test name'
             ],
             'donation_attribute' => [
                 'goal_amount_currency' => 'EUR',
-                'goal_amount' => '1000',
-                'show_goal_amount' => false,
-                'show_donation_percentage' => false,
-                'show_donation_meter' => false,
-                'show_donation_count' => true,
-                'show_donors_count' => true,
-                'disable_when_funded' => true
-            ],
-            'organisation_detail' => [
-                [
-                'lang' => 'en',
-                'detail' => 'test oraganization detail3333333333'
-                ]
-            ],
-            'location' => [
-                'city_id' => '1',
-                'country_code' => 'US'
-            ],
-            'mission_detail' => [
-                [
-                    'lang' => 'en',
-                    'title' => 'testing api mission details',
-                    'short_description' => 'this is testing api with all mission details',
-                    'objective' => 'To test and check',
-                    'label_goal_achieved' => 'test percentage',
-                    'label_goal_objective' => 'check test percentage',
-                    'section' => [
-                        [
-                            'title' => 'string',
-                            'description' => 'string'
-                        ]
-                    ],
-                    'custom_information' => [
-                        [
-                            'title' => 'string',
-                            'description' => 'string'
-                        ]
-                    ]
-                ]
-            ],
-            'skills' => [
-                [
-                    'skill_id' => 2
-                ]
-            ],
-            'volunteering_attribute' => [
-                'availability_id' => 1,
-                'total_seats' => 25,
-                'is_virtual' => 1
-            ],
-            'start_date' => '2020-05-13T06 =>07 =>47.115Z',
-            'end_date' => '2020-05-21T06 =>07 =>47.115Z',
-            'mission_type' => config('constants.mission_type.DONATION'),
-            'goal_objective' => '535',
-            'application_deadline' => '2020-05-16T06 =>07 =>47.115Z',
-            'application_start_date' => '2020-05-18T06 =>07 =>47.115Z',
-            'application_start_time' => '2020-05-18T06 =>07 =>47.115Z',
-            'application_end_date' => '2020-05-20T06 =>07 =>47.115Z',
-            'application_end_time' => '2020-05-20T06 =>07 =>47.115Z',
-            'publication_status' => 'APPROVED',
-            'availability_id' => 1,
-            'is_virtual' => false,
-            'un_sdg' => [1,2,3]
+                'goal_amount' => '1000'
+            ]
         ];
 
         $validator = $this->mock(\Illuminate\Validation\Validator::class);
@@ -2941,7 +2319,7 @@ class MissionControllerTest extends TestCase
 
         $this->tenantActivatedSettingRepository
             ->shouldReceive('getAllTenantActivatedSetting')
-            ->twice()
+            ->once()
             ->with($requestData)
             ->andReturn([
                 config('constants.tenant_settings.DONATION')

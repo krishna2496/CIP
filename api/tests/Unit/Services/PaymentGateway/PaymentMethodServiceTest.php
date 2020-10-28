@@ -221,10 +221,6 @@ class PaymentMethodServiceTest extends TestCase
             ->method('updateCustomerPaymentMethod')
             ->with($detailedPaymentMethod);
 
-        $this->paymentMethodRepositoryMock
-            ->expects($this->never())
-            ->method('update');
-
         $paymentMethodService = $this->getPaymentMethodService();
         $paymentMethods = $paymentMethodService->update($detailedPaymentMethod);
     }
