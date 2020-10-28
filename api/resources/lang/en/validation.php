@@ -260,14 +260,15 @@ return [
         'mission_tabs.*.translations.*.sections.*.title' => 'section title',
         'mission_tabs.*.translations.*.sections.*.content' => 'section content',
         'mission_tabs.*.mission_tab_id' => 'mission tab id',
-        'donation_attribute.goal_amount_currency' => 'goal amount currency',
-        'donation_attribute.goal_amount' => 'goal amount',
-        'donation_attribute.show_goal_amount' => 'show goal amount',
-        'donation_attribute.show_donation_percentage' => 'show donation percentage',
-        'donation_attribute.show_donation_meter' => 'show donation meter',
-        'donation_attribute.show_donation_count' => 'show donation count',
-        'donation_attribute.show_donors_count' => 'show donors count',
-        'donation_attribute.disable_when_funded' => 'disable when funded',
-        'donation_attribute.is_disabled' => 'is disabled'
+        'donation_attribute' => 'donation_attribute',
+        'donation_attribute.goal_amount_currency' => 'goal_amount_currency',
+        'donation_attribute.goal_amount' => 'goal_amount',
+        'donation_attribute.show_goal_amount' => 'show_goal_amount',
+        'donation_attribute.show_donation_percentage' => 'show_donation_percentage',
+        'donation_attribute.show_donation_meter' => 'show_donation_meter',
+        'donation_attribute.show_donation_count' => 'show_donation_count',
+        'donation_attribute.show_donors_count' => 'show_donors_count',
+        'donation_attribute.disable_when_funded' => 'disable_when_funded',
+        'donation_attribute.is_disabled' => 'is_disabled'
 	]
 ];

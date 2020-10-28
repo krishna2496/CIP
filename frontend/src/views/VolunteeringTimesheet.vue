@@ -808,7 +808,7 @@
         }
         await volunteerTimesheetHours(hourRequest).then(response => {
 
-          if (response.data) {
+          if (response && response.data) {
             this.timeMissionData = response.data
             if(response.pagination) {
               this.timeTotalPages = response.pagination.total_pages,
@@ -828,21 +828,19 @@
         }
         await volunteerTimesheetHours(goalRequest).then(response => {
 
-          if (response) {
-            if(response.data) {
-              this.goalMissionData = response.data
-              if(response.pagination) {
-                this.goalTotalPages = response.pagination.total_pages,
-                  this.goalPage = response.pagination.current_page,
-                  this.goalTotalRow = response.pagination.total,
-                  this.goalPerPage = response.pagination.per_page
-              }
+          if (response && response.data) {
+            this.goalMissionData = response.data
+            if(response.pagination) {
+              this.goalTotalPages = response.pagination.total_pages,
+                this.goalPage = response.pagination.current_page,
+                this.goalTotalRow = response.pagination.total,
+                this.goalPerPage = response.pagination.per_page
             }
-            if (this.timeMissionData.length > 0 || this.goalMissionData.length > 0) {
-              this.isAllVisible = true
-            } else {
-              this.isAllVisible = false
-            }
+          }
+          if (this.timeMissionData.length > 0 || this.goalMissionData.length > 0) {
+            this.isAllVisible = true
+          } else {
+            this.isAllVisible = false
           }
           this.isComponentLoaded = true
           this.goalsTableLoaderActive = false

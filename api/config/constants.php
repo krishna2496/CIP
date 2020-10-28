@@ -91,6 +91,17 @@ return [
         'DISASTER_RELIEF' => 'DISASTER_RELIEF'
     ],
 
+    'volunteering_mission_types' => [
+        'TIME',
+        'GOAL'
+    ],
+
+    'donation_mission_types' => [
+        'DONATION',
+        'EAF',
+        'DISASTER_RELIEF'
+    ],
+
     /*
      * Publication status
      */
