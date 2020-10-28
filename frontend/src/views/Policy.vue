@@ -1,6 +1,6 @@
 <template>
     <div class="cms-page inner-pages">
-        <header @scroll="handleScroll">
+        <header>
             <ThePrimaryHeader></ThePrimaryHeader>
         </header>
 
