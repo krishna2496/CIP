@@ -1030,13 +1030,13 @@ class MissionController extends Controller
     /**
      * Remove mission impact donation
      *
-     * @param string $missionImpactDonationId
+     * @param string $id
      * @return Illuminate\Http\JsonResponse
      */
-    public function removeMissionImpactDonation($missionImpactDonationId): JsonResponse
+    public function removeMissionImpactDonation(string $id): JsonResponse
     {
         try {
-            $this->missionRepository->deleteMissionImpactDonation($missionImpactDonationId);
+            $this->missionRepository->deleteMissionImpactDonation($id);
 
             $apiStatus = Response::HTTP_NO_CONTENT;
             $apiMessage = trans('messages.success.MESSAGE_MISSION_IMPACT_DONATION_DELETED');
@@ -1050,7 +1050,7 @@ class MissionController extends Controller
                 get_class($this),
                 null,
                 null,
-                $missionImpactDonationId
+                $id
             ));
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {

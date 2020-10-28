@@ -294,9 +294,16 @@ class MissionRepository implements MissionInterface
             $request->mission_type === config('constants.mission_type.EAF') ||
             $request->mission_type === config('constants.mission_type.DISASTER_RELIEF')
         ) {
-            if (isset($request->impact_donation) && count($request->impact_donation) > 0) {
-                foreach ($request->impact_donation as $impactDonationValue) {
-                    $this->impactDonationMissionRepository->store($impactDonationValue, $mission->mission_id, $defaultTenantLanguageId);
+            $missionImpactDonationSettingActivated = in_array(
+                config('constants.tenant_settings.IMPACT_DONATION'),
+                $activatedTenantSettings
+            );
+
+            if ($missionImpactDonationSettingActivated) {
+                if (isset($request->impact_donation) && count($request->impact_donation) > 0) {
+                    foreach ($request->impact_donation as $impactDonationValue) {
+                        $this->impactDonationMissionRepository->store($impactDonationValue, $mission->mission_id, $defaultTenantLanguageId);
+                    }
                 }
             }
         }
@@ -607,14 +614,20 @@ class MissionRepository implements MissionInterface
             $missionType === config('constants.mission_type.EAF') ||
             $missionType === config('constants.mission_type.DISASTER_RELIEF')
         ) {
-            if (isset($request->impact_donation) && count($request->impact_donation)) {
-                foreach ($request->impact_donation as $impactDonationValue) {
-                    if (isset($impactDonationValue['impact_donation_id'])) {
-                        $this->impactDonationMissionRepository->update($impactDonationValue, $id, $defaultTenantLanguageId);
-                    } else {
-    
-                        //Impact donation id is not available and create the impact donation and details
-                        $this->impactDonationMissionRepository->store($impactDonationValue, $id, $defaultTenantLanguageId);
+            $missionImpactDonationSettingActivated = in_array(
+                config('constants.tenant_settings.IMPACT_DONATION'),
+                $activatedTenantSettings
+            );
+            if ($missionImpactDonationSettingActivated) {
+                if (isset($request->impact_donation) && count($request->impact_donation)) {
+                    foreach ($request->impact_donation as $impactDonationValue) {
+                        if (isset($impactDonationValue['impact_donation_id'])) {
+                            $this->impactDonationMissionRepository->update($impactDonationValue, $id, $defaultTenantLanguageId);
+                        } else {
+        
+                            //Impact donation id is not available and create the impact donation and details
+                            $this->impactDonationMissionRepository->store($impactDonationValue, $id, $defaultTenantLanguageId);
+                        }
                     }
                 }
             }

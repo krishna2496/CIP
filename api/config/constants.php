@@ -352,7 +352,8 @@ return [
         'DONATION_MISSION' => 'donation',
         'VOLUNTEERING_MISSION' => 'volunteering',
         'EAF' => 'eaf',
-        'DISASTER_RELIEF' => 'disaster_relief'
+        'DISASTER_RELIEF' => 'disaster_relief',
+        'IMPACT_DONATION' => 'impact_donation'
     ],
 
     'TOP_THEME' => "top_themes",
