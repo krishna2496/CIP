@@ -66,6 +66,8 @@
       // left menu sticky function
       handleScroll() {
         let nav_ = document.querySelector(".cms-nav");
+        if (!nav_) return;
+        
         let navTop = nav_.offsetTop;
         let screenHeight = document.body.clientHeight;
         let headerHeight = document.querySelector("header").offsetHeight;
