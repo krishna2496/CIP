@@ -471,11 +471,11 @@ class MissionRepository implements MissionInterface
         // Add/update donation attribute
         if (isset($request->donation_attribute) && !empty($request->donation_attribute) && $isDonationSettingEnabled) {
             $donationAttributes = [];
-            if ($request->donation_attribute['goal_amount_currency']) {
+            if (isset($request->donation_attribute['goal_amount_currency'])) {
                 $donationAttributes['goal_amount_currency'] =
                 $request->donation_attribute['goal_amount_currency'];
             }
-            if ($request->donation_attribute['goal_amount']) {
+            if ($request->exists('donation_attribute.goal_amount')) {
                 $donationAttributes['goal_amount'] = $request->donation_attribute['goal_amount'];
             }
             if (isset($request->donation_attribute['show_goal_amount'])) {

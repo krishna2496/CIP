@@ -58,7 +58,17 @@ class DonationAttribute extends Model
         'disable_when_funded',
         'is_disabled'
     ];
-    
+
+    protected $casts = [
+        'show_goal_amount' => 'boolean',
+        'show_donation_percentage' => 'boolean',
+        'show_donation_meter' => 'boolean',
+        'show_donation_count' => 'boolean',
+        'show_donors_count' => 'boolean',
+        'disable_when_funded' => 'boolean',
+        'is_disabled' => 'boolean'
+    ];
+
     /**
      * listen for any Eloquent events
      *
