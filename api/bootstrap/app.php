@@ -74,7 +74,7 @@ $app->routeMiddleware([
     'JsonApiMiddleware' => App\Http\Middleware\JsonApiMiddleware::class,
     'PaginationMiddleware' => App\Http\Middleware\PaginationMiddleware::class,
     'user.profile.complete' => App\Http\Middleware\UserProfileCompleteMiddleware::class,
-    'TenantHasSettings' => App\Http\Middleware\TenantHasSettings::class,
+    'TenantHasSettingsMiddleware' => App\Http\Middleware\TenantHasSettingsMiddleware::class,
     'throttle' => \App\Http\Middleware\ThrottleRequestsMiddleware::class,
     'DonationIpWhitelistMiddleware' => App\Http\Middleware\DonationIpWhitelistMiddleware::class,
 ]);
