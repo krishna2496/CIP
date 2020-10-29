@@ -196,24 +196,6 @@ let routes = [
           import ('./views/Auth/ResetPassword.vue')
     },
     {
-        path: '/payment',
-        name: 'donationAccountPaymentMethod',
-        meta: {
-            requiresAuth: true
-        },
-        component: () =>
-          import ('./views/DonationAccountPaymentMethod.vue')
-    },
-    {
-        path: '/recurring-payment',
-        name: 'donationAccountRecurringPayment',
-        meta: {
-            requiresAuth: true
-        },
-        component: () =>
-          import ('./views/DonationAccountRecurringPayment.vue')
-    },
-    {
         path: '/my-account',
         name: 'myAccount',
         meta: {
