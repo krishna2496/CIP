@@ -9,7 +9,6 @@ export default async(data) => {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
     let url = process.env.VUE_APP_API_ENDPOINT + "app/timesheet?page=" + data.page + "&type=" + data.type;
-
     await axios({
         url: url,
         method: 'get',
@@ -17,12 +16,12 @@ export default async(data) => {
             'X-localization': defaultLanguage,
         }
     })
-      .then((response) => {
+      .then(({data}) => {
 
-          if (response.data.data) {
+          if (data.data) {
 
-              if (response.data.data) {
-                  let timeData = response.data.data
+              if (data.data) {
+                  let timeData = data.data
                   timeData.filter((toItem, toIndex) => {
                       let timeSheet = timeData[toIndex].timesheet;
 
@@ -30,15 +29,15 @@ export default async(data) => {
 
                           let momentObj = moment(timeData[toIndex].timesheet[timeSheetIndex].date_volunteered, 'MM-DD-YYYY');
                           let dateVolunteered = momentObj.format('YYYY-MM-DD');
-                          response.data.data[toIndex].timesheet[timeSheetIndex]['date'] = moment(dateVolunteered).format('D')
-                          response.data.data[toIndex].timesheet[timeSheetIndex]['year'] = moment(dateVolunteered).format('YYYY')
-                          response.data.data[toIndex].timesheet[timeSheetIndex]['month'] = moment(dateVolunteered).format('M')
+                          data.data[toIndex].timesheet[timeSheetIndex]['date'] = moment(dateVolunteered).format('D')
+                          data.data[toIndex].timesheet[timeSheetIndex]['year'] = moment(dateVolunteered).format('YYYY')
+                          data.data[toIndex].timesheet[timeSheetIndex]['month'] = moment(dateVolunteered).format('M')
                       });
                   });
               }
           }
 
-          responseData = response.data
+          responseData = data
       })
       .catch(function() {});
     return responseData;
