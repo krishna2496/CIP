@@ -87,6 +87,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'expiry',
         'invitation_sent_at',
         'pseudonymize_at',
+        'currency',
         'is_admin',
     ];
 
@@ -138,7 +139,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'hours_goal',
         'expiry',
         'invitation_sent_at',
-        'pseudonymize_at'
+        'pseudonymize_at',
+        'currency'
     ];
 
      /*

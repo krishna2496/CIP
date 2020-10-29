@@ -23,7 +23,6 @@ return [
         'MESSAGE_USER_LOGGED_IN' => 'You are successfully logged in',
         'MESSAGE_PASSWORD_RESET_LINK_SEND_SUCCESS' => 'Reset password link is sent to your email account. Link will expire in ' . config('constants.FORGOT_PASSWORD_EXPIRY_TIME') . ' hours.',
         'MESSAGE_USER_INVITE_LINK_SEND_SUCCESS' => 'Invite link is sent to the email account.',
-        'MESSAGE_PASSWORD_CHANGE_SUCCESS' => 'Your password has been changed successfully.',
         'MESSAGE_CUSTOM_FIELD_ADDED' => 'User custom field added successfully',
         'MESSAGE_CUSTOM_FIELD_UPDATED' => 'User custom field updated successfully',
         'MESSAGE_CUSTOM_FIELD_FOUND' => 'User custom field found successfully',
@@ -205,6 +204,8 @@ return [
         'MESSAGE_ORGANIZATION_LISTING' => 'Organization listed successfully',
         'MESSAGE_TENANT_USER_CONTENT_STATISTICS_SUCCESS' => 'User content statistics retrieved successfully',
         'MESSAGE_TENANT_USER_VOLUNTEER_SUMMARY_SUCCESS' => 'Volunteer summary retrieved successfully',
+        'MESSAGE_SETTING_UPDATE_SUCCESS' => 'User setting updated successfully',
+        'MESSAGE_SETTING_LISTING' => 'User setting listed successfully',
         'MESSAGE_TENANT_CURRENCY_LISTING' => 'Currencies listed successfully',
         'MESSAGE_MISSION_TAB_DELETED' => 'Mission tab deleted successfully',
         'MESSAGE_NO_DONATION_IP_WHITELIST_FOUND' => 'No whitelisted IP found',
@@ -406,7 +407,10 @@ return [
         'ERROR_STORY_MISSION_APPLICATION_NOT_APPROVED' => 'You cannot submit a story, mission application was not approved.',
         'ERROR_STORY_MISSION_APPLICATION_NOT_FOUND' => 'You cannot submit a story, mission application of the user was not found.',
 
+        'SHOW_DONATION_COUNT_AND_DONORS_COUNT_ERROR' => 'The parameter show_donation_count and show_donors_count cannot be both true at the same time.',
         'ERROR_VOLUNTEERING_TIME_OR_GOAL_SHOULD_BE_ACTIVE' => 'Volunteering time or volunteering goal should be active while volunteering setting is enabled.',
-        'ERROR_VOLUNTEERING_SHOULD_BE_ENABLED' => 'Volunteering setting should be enabled to update volunteering time or volunteering goal setting.'
+        'ERROR_VOLUNTEERING_SHOULD_BE_ENABLED' => 'Volunteering setting should be enabled to update volunteering time or volunteering goal setting.',
+        'ERROR_VOLUNTEERING_MISSION_TYPE_UPDATE' => 'You cannot convert a volunteering mission to a donation mission.',
+        'ERROR_DONATION_MISSION_TYPE_UPDATE' => 'You cannot convert a donation mission to a volunteering mission.'
     ]
 ];
