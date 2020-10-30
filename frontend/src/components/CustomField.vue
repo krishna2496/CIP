@@ -27,7 +27,7 @@
                   @change="updateChanges" :name="item.translations.name"
                 >
                   <b-row
-                    cols-sm="1"
+                    cols="1"
                     :cols-md="getOptionColumnCount(item.translations.values)"
                   >
                     <b-col
@@ -61,7 +61,7 @@
                   @input="updateChanges"
                 >
                   <b-row
-                    cols-sm="1"
+                    cols="1"
                     :cols-md="getOptionColumnCount(item.translations.values)"
                   >
                     <b-col
