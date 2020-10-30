@@ -246,6 +246,11 @@ class MissionController extends Controller
                 "volunteering_attribute.availability_id" => "integer|required_if:mission_type,TIME,GOAL|exists:availability,availability_id,deleted_at,NULL",
                 "mission_detail.*.label_goal_achieved" => 'sometimes|required_if:mission_type,GOAL|max:255',
                 "mission_detail.*.label_goal_objective" => 'sometimes|required_if:mission_type,GOAL|max:255',
+                'impact_donation' => 'sometimes|required|array',
+                'impact_donation.*.amount' => 'required|integer|min:1|max:999999999999',
+                'impact_donation.*.translations' => 'required',
+                'impact_donation.*.translations.*.language_code' => 'required_with:impact_donation.*.translations|max:2',
+                'impact_donation.*.translations.*.content' => 'required_with:impact_donation.*.translations|max:160',
                 "impact" => "sometimes|required|array",
                 "impact.*.icon_path" => 'valid_icon_path',
                 "impact.*.sort_key" => 'required|integer|min:0|distinct',
@@ -512,6 +517,11 @@ class MissionController extends Controller
                 "documents.*.sort_order" => "sometimes|required|numeric|min:0|not_in:0",
                 "mission_detail.*.label_goal_achieved" => 'sometimes|required_if:mission_type,GOAL|max:255',
                 "mission_detail.*.label_goal_objective" => 'sometimes|required_if:mission_type,GOAL|max:255',
+                'impact_donation.*.impact_donation_id' => 'sometimes|required|exists:mission_impact_donation,mission_impact_donation_id,deleted_at,NULL',
+                'impact_donation.*.amount' => 'required_without:impact_donation.*.impact_donation_id|integer|min:1|max:999999999999',
+                'impact_donation.*.translations' => 'required_without:impact_donation.*.impact_donation_id',
+                'impact_donation.*.translations.*.language_code' => 'required_with:impact_donation.*.translations|max:2',
+                'impact_donation.*.translations.*.content' => 'required_with:impact_donation.*.translations|max:160',
                 "impact.*.mission_impact_id" =>
                 "sometimes|required|exists:mission_impact,mission_impact_id,deleted_at,NULL",
                 "impact" => "sometimes|required|array",
@@ -803,6 +813,22 @@ class MissionController extends Controller
             return $this->modelNotFound(
                 config('constants.error_codes.IMPACT_MISSION_NOT_FOUND'),
                 trans('messages.custom_error_message.ERROR_IMPACT_MISSION_NOT_FOUND')
+            );
+        }
+
+        // Check for mission impact donation id is valid or not
+         try {
+            if (isset($request->impact_donation)) {
+                foreach ($request->impact_donation as $impactDonationValue) {
+                    if (isset($impactDonationValue['impact_donation_id']) && ($impactDonationValue['impact_donation_id'] !== '')) {
+                        $this->missionRepository->isMissionDonationImpactLinkedToMission($missionId, $impactDonationValue['impact_donation_id']);
+                    }
+                }
+            }
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.IMPACT_DONATION_MISSION_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_IMPACT_DONATION_MISSION_NOT_FOUND')
             );
         }
 
@@ -1182,7 +1208,7 @@ class MissionController extends Controller
      *
      * @return PaymentGatewayAccount
      */
-    public function savePaymentGatewayAccount(string $organizationId, array $gatewayAccount): PaymentGatewayAccount
+    private function savePaymentGatewayAccount(string $organizationId, array $gatewayAccount): PaymentGatewayAccount
     {
         $paymentGatewayAccount = new PaymentGatewayAccount();
         $paymentGatewayAccount
@@ -1223,6 +1249,40 @@ class MissionController extends Controller
                 'valid' => false,
                 'error' => 'Invalid payment gateway account id'
             ];
+        }
+    }
+
+    /**
+     * Remove mission impact donation
+     *
+     * @param string $id
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function removeMissionImpactDonation(string $id): JsonResponse
+    {
+        try {
+            $this->missionRepository->deleteMissionImpactDonation($id);
+
+            $apiStatus = Response::HTTP_NO_CONTENT;
+            $apiMessage = trans('messages.success.MESSAGE_MISSION_IMPACT_DONATION_DELETED');
+
+            // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.MISSION_IMPACT_DONATION'),
+                config('constants.activity_log_actions.DELETED'),
+                config('constants.activity_log_user_types.API'),
+                $this->userApiKey,
+                get_class($this),
+                null,
+                null,
+                $id
+            ));
+            return $this->responseHelper->success($apiStatus, $apiMessage);
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.IMPACT_DONATION_MISSION_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_IMPACT_DONATION_MISSION_NOT_FOUND')
+            );
         }
     }
 }

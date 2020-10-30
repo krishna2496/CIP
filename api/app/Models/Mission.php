@@ -12,6 +12,7 @@ use App\Models\GoalMission;
 use App\Models\MissionApplication;
 use App\Models\MissionDocument;
 use App\Models\MissionImpact;
+use App\Models\MissionImpactDonation;
 use App\Models\MissionInvite;
 use App\Models\MissionLanguage;
 use App\Models\MissionMedia;
@@ -92,14 +93,14 @@ class Mission extends Model
     'availability_id', 'availability_type', 'average_rating', 'timesheet', 'total_hours', 'time',
     'hours', 'action', 'ISO', 'total_minutes', 'custom_information', 'total_timesheet_time', 'total_timesheet_action', 'total_timesheet',
     'mission_title', 'mission_objective', 'label_goal_achieved', 'label_goal_objective', 'state', 'state_name', 'organization', 'organization_name', 'missionTabs', 'volunteeringAttribute',
-    'unSdg', 'is_virtual', 'total_seats', 'impact', 'donationAttribute'];
+    'unSdg', 'is_virtual', 'total_seats', 'impact', 'donationAttribute', 'impactDonation'];
 
     /*
      * Iatstuti\Database\Support\CascadeSoftDeletes;
      */
     protected $cascadeDeletes = ['missionDocument','missionMedia','missionLanguage',
         'favouriteMission','missionInvite','missionRating','missionApplication','missionSkill',
-        'goalMission','timeMission','comment','timesheet', 'missionTabs', 'volunteeringAttribute', 'impact', 'donationAttribute'
+        'goalMission','timeMission','comment','timesheet', 'missionTabs', 'volunteeringAttribute', 'impact', 'donationAttribute', 'impactDonation'
     ];
 
     /**
@@ -379,6 +380,16 @@ class Mission extends Model
     public function organization(): HasOne
     {
         return $this->hasOne(Organization::class, 'organization_id', 'organization_id');
+    }
+
+    /**
+     * Get mission donation impact with the mission
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function impactDonation(): HasMany
+    {
+        return $this->hasMany(MissionImpactDonation::class, 'mission_id', 'mission_id');
     }
 
     /**
