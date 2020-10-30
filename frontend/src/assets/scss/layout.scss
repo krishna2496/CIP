@@ -2747,9 +2747,7 @@ main {
 	  padding-top: 20px;
 	}
 	main {
-	  .container {
-		max-width: 1170px;
-  
+	  .container {  
 		@include lg-max {
 		  max-width: 100%;
 		}
