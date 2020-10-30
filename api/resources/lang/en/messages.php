@@ -215,6 +215,7 @@ return [
         'MESSAGE_MISSION_IMPACT_DELETED' => 'Mission impact deleted successfully',
         'MESSAGE_TENANT_ACTIVATED_CURRENCIES_FOUND' => 'Tenant activated currencies listed successfully',
         'MESSAGE_TENANT_ACTIVATED_CURRENCIES_EMPTY' => 'Tenant has no activated currencies',
+        'MESSAGE_MISSION_IMPACT_DONATION_DELETED' => 'Mission impact donation deleted successfully',
     ],
 
 
@@ -389,6 +390,7 @@ return [
         'ERROR_ORGANIZATION_NOT_FOUND' => 'Organization not found in the system',
         'ERROR_UNAUTHORIZED_LOGIN_METHOD' => 'Unauthorized login method.',
 
+        'ERROR_IMPACT_DONATION_MISSION_NOT_FOUND' => 'Impact donation not found.',
         'ERROR_IMPACT_MISSION_NOT_FOUND' => 'Mission impact not found in the system.',
         'ERROR_ORGANIZATION_NAME_REQUIRED' => 'Organization name is required when organization id does not exist.',
         'ERROR_ORGANIZATION_LINKED_TO_MISSION' => 'Cannot delete this organization as it is linked to a mission.',
