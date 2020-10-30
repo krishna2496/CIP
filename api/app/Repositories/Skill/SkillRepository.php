@@ -6,7 +6,6 @@ use App\Models\Skill;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class SkillRepository implements SkillInterface
 {
@@ -29,7 +28,7 @@ class SkillRepository implements SkillInterface
     /**
      * Display a listing of the resource.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param Request $request
      * @param string $skill_id
      * @return \Illuminate\Http\Response
      */
@@ -46,8 +45,8 @@ class SkillRepository implements SkillInterface
     /**
      * Display a listing of the resource.
      *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Pagination\LengthAwarePaginator
+     * @param Request $request
+     * @return LengthAwarePaginator
      */
     public function skillDetails(Request $request): LengthAwarePaginator
     {
@@ -81,7 +80,8 @@ class SkillRepository implements SkillInterface
             $query->where(function ($query) use ($request) {
                 foreach ($request->translations as $languageCode) {
                     // Regex searches in translations column if the translation in the $languageCode exists and its length is greater than 0
-                    $query->whereNotNull('translations->' . $languageCode);
+                    $query->whereNotNull('translations->' . $languageCode)
+                        ->where('translations->' . $languageCode , '!=', '');
                 }
             });
         });
