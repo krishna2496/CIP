@@ -6,6 +6,7 @@ use App\Models\Skill;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class SkillRepository implements SkillInterface
 {
@@ -50,15 +51,22 @@ class SkillRepository implements SkillInterface
      */
     public function skillDetails(Request $request): LengthAwarePaginator
     {
-        $skillQuery = $this->skill->select('skill_id', 'skill_name', 'translations', 'parent_skill', 'created_at', 'updated_at');
+        $searchLanguage = $request->searchLanguage;
+        $sortBy = $request->get('sortBy');
+
+        if ($sortBy && $sortBy === 'translations' && $searchLanguage) {
+            $skillQuery = $this->skill->select('skill_id', 'skill_name', 'translations', 'parent_skill', 'created_at', 'updated_at', DB::raw("JSON_EXTRACT(translations, '$." . $searchLanguage . "') AS translated"));
+            $sortBy = 'translated';
+        } else {
+            $skillQuery = $this->skill->select('skill_id', 'skill_name', 'translations', 'parent_skill', 'created_at', 'updated_at');
+        }
 
         if ($request->has('id')) {
             $skillQuery = $skillQuery->whereIn('skill_id', $request->get('id'));
         }
 
-        $skillQuery->when($request->has('search'), function ($query) use ($request) {
+        $skillQuery->when($request->has('search'), function ($query) use ($request, $searchLanguage) {
             $query->where('skill_name', 'like', $request->search.'%');
-            $searchLanguage = $request->searchLanguage;
 
             $searchLanguage
                 ? $query->orWhere(DB::raw("lower(json_unquote(json_extract(translations, '$.".$searchLanguage."')))"), 'LIKE', '%'. strtolower( $request->search ).'%')
@@ -81,6 +89,9 @@ class SkillRepository implements SkillInterface
         if ($request->has('order')) {
             $orderDirection = $request->input('order', 'asc');
             $skillQuery = $skillQuery->orderBy('skill_id', $orderDirection);
+        } elseif ($request->has('sortBy') && $request->has('sortDir')) {
+            $sortDir = $request->get('sortDir');
+            $skillQuery = $skillQuery->orderBy($sortBy, $sortDir);
         }
 
         if ($request->has('limit') && $request->has('offset')) {
