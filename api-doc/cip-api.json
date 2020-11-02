@@ -452,6 +452,44 @@
         }
       }
     },
+    "/missions/impact-donation/{missionImpactDonationId}/": {
+      "delete": {
+        "operationId": "delete_cip-api-delete-mission-impact-donation",
+        "summary": "Admin - Delete mission impact donation",
+        "description": "Delete mission impact donation by missionImpactDonationId",
+        "tags": [
+          "Mission"
+        ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+          {
+            "name": "missionImpactDonationId",
+            "in": "path",
+            "description": "mission_impact_donation_id to delete",
+            "type": "string",
+            "default": "",
+            "required": true
+          }
+        ],
+        "responses": {
+          "403": {
+            "description": "Forbidden - mission impact donation deletion failed"
+          },
+          "404": {
+            "description": "Not Found - Requested mission impact donation id does not exist"
+          }
+        }
+      }
+    },
     "/app/missions?country_id={country_id}&city_id={city_id}&theme_id={theme_id}&skill_id={skill_id}&sort_by={sort_by}": {
       "get": {
         "operationId": "GET_team4-cip-api-app-missions-listing",
@@ -9223,6 +9261,34 @@
             }
           }
         },
+        "impact_donation": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "amount": {
+                "type": "integer",
+                "description": "Impact donation amount"
+              },
+              "translations": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "language_code": {
+                      "type": "string",
+                      "description": "Language ISO code (e.g. en, fr)"
+                    },
+                    "content": {
+                      "type": "string",
+                      "description": "Impact donation description"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
         "start_date": {
           "type": "string",
           "format": "date-time",
@@ -9667,6 +9733,38 @@
                     "content": {
                       "type": "string",
                       "description": "Mission impact description"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "impact_donation": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "impact_donation_id": {
+                "type": "string",
+                "description": "Required only when updating an existing impact donation"
+              },
+              "amount": {
+                "type": "integer",
+                "description": "Impact donation amount"
+              },
+              "translations": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "language_code": {
+                      "type": "string",
+                      "description": "Language ISO code (e.g. en, fr)"
+                    },
+                    "content": {
+                      "type": "string",
+                      "description": "Impact donation description"
                     }
                   }
                 }

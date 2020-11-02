@@ -600,6 +600,11 @@ $router->group(
             'uses' => 'Admin\Mission\MissionController@removeMissionTab']);
         $router->delete('/mission-impact/{missionImpactId}', ['middleware' => ['TenantHasSettingsMiddleware:mission_impact'], 'as' => 'missions.missionimpact.delete',
             'uses' => 'Admin\Mission\MissionController@removeMissionImpact']);
+        $router->delete('/impact-donation/{id}',
+            ['middleware' => ['TenantHasSettings:donation,impact_donation'],
+            'as' => 'missions.missionimpactdonation.delete',
+            'uses' => 'Admin\Mission\MissionController@removeMissionImpactDonation']
+        );
     }
 );
 

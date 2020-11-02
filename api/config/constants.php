@@ -363,7 +363,8 @@ return [
         'DONATION_MISSION' => 'donation',
         'VOLUNTEERING_MISSION' => 'volunteering',
         'EAF' => 'eaf',
-        'DISASTER_RELIEF' => 'disaster_relief'
+        'DISASTER_RELIEF' => 'disaster_relief',
+        'IMPACT_DONATION' => 'impact_donation'
     ],
 
     'TOP_THEME' => "top_themes",
@@ -545,6 +546,7 @@ return [
         'ERROR_SKILL_UNABLE_TO_DELETE' => '800041',
         'ERROR_AVAILABILITY_UNABLE_TO_DELETE' => '800042',
 
+        'IMPACT_DONATION_MISSION_NOT_FOUND' => '400051',
         'IMPACT_MISSION_NOT_FOUND' => '400060',
         'ERROR_ORGANIZATION_REQUIRED_FIELDS_EMPTY' => '800043',
         'ERROR_ORGANIZATION_NOT_FOUND' => '800044',
@@ -661,7 +663,8 @@ return [
         'ORGANIZATION' => 'ORGANIZATION',
         'MISSION_TAB' => 'MISSION_TAB',
         'DONATION_IP_WHITELIST' => 'DONATION_IP_WHITELIST',
-        'MISSION_IMPACT' => 'MISSION_IMPACT'
+        'MISSION_IMPACT' => 'MISSION_IMPACT',
+        'MISSION_IMPACT_DONATION' => 'MISSION_IMPACT_DONATION'
     ],
 
     'activity_log_actions' => [
