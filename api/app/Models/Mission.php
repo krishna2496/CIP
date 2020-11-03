@@ -2,34 +2,36 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
-use App\Models\State;
+use App\Libraries\Amount;
+use App\Models\Availability;
 use App\Models\Comment;
 use App\Models\Country;
-use App\Models\Timesheet;
+use App\Models\DonationAttribute;
+use App\Models\FavouriteMission;
 use App\Models\GoalMission;
-use App\Models\TimeMission;
-use App\Models\Availability;
 use App\Models\MissionApplication;
 use App\Models\MissionDocument;
+use App\Models\MissionImpact;
+use App\Models\MissionImpactDonation;
 use App\Models\MissionInvite;
 use App\Models\MissionLanguage;
 use App\Models\MissionMedia;
 use App\Models\MissionRating;
 use App\Models\MissionTab;
-use App\Models\Organization;
-use App\Models\FavouriteMission;
-use App\Models\VolunteeringAttribute;
-use App\Models\DonationAttribute;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Iatstuti\Database\Support\CascadeSoftDeletes;
-use App\Models\MissionImpact;
 use App\Models\MissionUnSdg;
+use App\Models\Organization;
+use App\Models\State;
+use App\Models\TimeMission;
+use App\Models\Timesheet;
+use App\Models\VolunteeringAttribute;
+use Carbon\Carbon;
+use Iatstuti\Database\Support\CascadeSoftDeletes;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Notifications\Notifiable;
 
 class Mission extends Model
 {
@@ -91,14 +93,14 @@ class Mission extends Model
     'availability_id', 'availability_type', 'average_rating', 'timesheet', 'total_hours', 'time',
     'hours', 'action', 'ISO', 'total_minutes', 'custom_information', 'total_timesheet_time', 'total_timesheet_action', 'total_timesheet',
     'mission_title', 'mission_objective', 'label_goal_achieved', 'label_goal_objective', 'state', 'state_name', 'organization', 'organization_name', 'missionTabs', 'volunteeringAttribute',
-    'unSdg', 'is_virtual', 'total_seats', 'impact', 'donationAttribute'];
+    'unSdg', 'is_virtual', 'total_seats', 'impact', 'donationAttribute', 'impactDonation'];
 
     /*
      * Iatstuti\Database\Support\CascadeSoftDeletes;
      */
     protected $cascadeDeletes = ['missionDocument','missionMedia','missionLanguage',
         'favouriteMission','missionInvite','missionRating','missionApplication','missionSkill',
-        'goalMission','timeMission','comment','timesheet', 'missionTabs', 'volunteeringAttribute', 'impact', 'donationAttribute'
+        'goalMission','timeMission','comment','timesheet', 'missionTabs', 'volunteeringAttribute', 'impact', 'donationAttribute', 'impactDonation'
     ];
 
     /**
@@ -381,6 +383,16 @@ class Mission extends Model
     }
 
     /**
+     * Get mission donation impact with the mission
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function impactDonation(): HasMany
+    {
+        return $this->hasMany(MissionImpactDonation::class, 'mission_id', 'mission_id');
+    }
+
+    /**
     * Get volunteering attribute associated with the mission.
     *
     * @return \Illuminate\Database\Eloquent\Relations\HasOne
@@ -399,8 +411,8 @@ class Mission extends Model
     {
         return $this->hasMany(MissionImpact::class, 'mission_id', 'mission_id')->orderBy('sort_key');
     }
-    
-    /** 
+
+    /**
      * Get mission-tab associated with the mission.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany

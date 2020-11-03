@@ -71,10 +71,14 @@
             'seeder' => 'seeder'
         ],
         'EMAIL_TEMPLATE_MIGRATION_NOTIFICATION' => 'migration-notification',
-    
+
         'tenant_settings' => [
             'VOLUNTEERING' => 'volunteering',
             'VOLUNTEERING_GOAL_MISSION' => 'volunteering_goal_mission',
             'VOLUNTEERING_TIME_MISSION' => 'volunteering_time_mission'
-        ]
+        ],
+
+        'payment_gateway_types' => [
+            'STRIPE' => 1,
+        ],
     ];

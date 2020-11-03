@@ -311,3 +311,12 @@ $factory->define(App\Models\MissionDocument::class, function (Faker\Generator $f
         'mission_document_id' => $faker->randomDigit
     ];
 });
+
+$factory->define(App\Models\PaymentGateway\PaymentGatewayAccount::class, function (Faker\Generator $faker) {
+    return [
+        'id' => $faker->uuid,
+        'organization_id' => $faker->uuid,
+        'payment_gateway_account_id' => $faker->uuid,
+        'payment_gateway_type' => $faker->randomDigit
+    ];
+});
