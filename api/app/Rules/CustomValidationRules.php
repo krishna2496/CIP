@@ -139,6 +139,27 @@ class CustomValidationRules
             }
         });
 
+        Validator::extend('within_range', function ($attribute, $value, $parameters) {
+            $parameters = array_map('intval', $parameters);
+            return $value >= min($parameters) && $value <= max($parameters);
+        });
+
+        Validator::replacer('within_range', function($message, $attribute, $rule, $parameters) {
+            $parameters = array_map('intval', $parameters);
+            $message = str_replace(':minvalue', min($parameters), $message);
+            $message = str_replace(':maxvalue', max($parameters), $message);
+            return $message;
+        });
+
+        Validator::extend('prefix_with', function ($attribute, $value, $parameters) {
+            $prefix = $parameters[0];
+            return $prefix == substr($value, 0, strlen($prefix));
+        });
+
+        Validator::replacer('prefix_with', function($message, $attribute, $rule, $parameters) {
+            return str_replace(':prefix_with', $parameters[0], $message);
+        });
+
         Validator::extend('max_html_stripped', function($attribute, $value, $params) {
             return strlen(strip_tags($value)) <= $params[0];
         });

@@ -347,16 +347,17 @@ return [
      * Tenant settings
      */
     'tenant_settings' => [
+        'DONATION' => 'donation',
         'EMAIL_NOTIFICATION_INVITE_COLLEAGUE' => 'email_notification_invite_colleague',
-        'MISSION_COMMENT_AUTO_APPROVED' => 'mission_comment_auto_approved',
-        'MISSION_RATING_VOLUNTEER' => 'mission_rating_volunteer',
-        'STORIES_ENABLED' => 'stories_enabled',
         'INVITE_COLLEAGUE' => 'invite_colleague',
-        'NEWS_ENABLED' => 'news_enabled',
         'MESSAGE_ENABLED' => 'message_enabled',
+        'MISSION_COMMENT_AUTO_APPROVED' => 'mission_comment_auto_approved',
         'MISSION_COMMENTS' => 'mission_comments',
-        'STATE_ENABLED' => 'state_selection',
         'MISSION_IMPACT' => 'mission_impact',
+        'MISSION_RATING_VOLUNTEER' => 'mission_rating_volunteer',
+        'NEWS_ENABLED' => 'news_enabled',
+        'STATE_ENABLED' => 'state_selection',
+        'STORIES_ENABLED' => 'stories_enabled',
         'VOLUNTEERING_GOAL_MISSION' => 'volunteering_goal_mission',
         'VOLUNTEERING_TIME_MISSION' => 'volunteering_time_mission',
         'VOLUNTEERING' => 'volunteering',
@@ -558,11 +559,34 @@ return [
         'ERROR_SORT_KEY_ALREADY_EXIST' => '80050',
         'ERROR_VOLUNTEERING_TIME_OR_GOAL_SHOULD_BE_ACTIVE' => '80051',
         'ERROR_VOLUNTEERING_SHOULD_BE_ENABLED' => '80052',
+        'ERROR_ORGANIZATION_UPDATE_WITHOUT_ACCOUNT' => '80053',
 
-        // Donation error codes: 900100 - 900199
+        // Donation / Payment Gateway error codes: 900100 - 900199
         'ERROR_DONATION_IP_WHITELIST_INVALID_DATA' => '900100',
         'ERROR_DONATION_IP_WHITELIST_NOT_FOUND' => '900101',
         'ERROR_IP_ADDRESS_NOT_ALLOWED' => '900102',
+        'ERROR_PAYMENT_GATEWAY_ACCOUNT_INVALID' => '900103',
+
+        'ERROR_PAYMENT_GATEWAY_CARD_DECLINED' => '900104',
+        'ERROR_PAYMENT_GATEWAY_CONNECTION_FAILED' => '900105',
+        'ERROR_PAYMENT_GATEWAY_INTERNAL_FAILURE' => '900106',
+        'ERROR_PAYMENT_GATEWAY_INVALID_REQUEST' => '900107',
+        'ERROR_PAYMENT_GATEWAY_RATE_LIMITED' => '900108',
+        'ERROR_PAYMENT_GATEWAY_UNAUTHORIZED' => '900109',
+        'ERROR_PAYMENT_GATEWAY_UNKNOWN_FAILURE' => '900110',
+
+        'ERROR_PAYMENT_METHOD_NOT_FOUND' => '900111',
+        'ERROR_PAYMENT_METHOD_INVALID_DATA' => '900112',
+        'ERROR_PAYMENT_METHOD_UNKNOWN_ERROR' => '900113',
+
+        'ERROR_INVALID_PAYMENT_DATA' => '900114',
+        'ERROR_FAILED_CREATING_PAYMENT_OBJECT' =>  '900115',
+        'ERROR_FAILED_SAVING_PAYMENT_RECORD' => '900116',
+        'ERROR_PAYMENT_NOT_FOUND' => '900117',
+        'ERROR_PAYMENT_METHOD_NOT_FOUND' => '900118',
+        'ERROR_PAYMENT_ORGANIZATION_DOES_NOT_SUPPORT_DONATION' => '900119',
+        'ERROR_ORGANIZATION_PAYMENT_GATEWAY_ACCOUNT' => '900120',
+        'ERROR_PAYMENT_MISSION_NOT_ELIGIBLE_FOR_DONATION' => '900120',
     ],
 
     /**
@@ -664,7 +688,8 @@ return [
         'MISSION_TAB' => 'MISSION_TAB',
         'DONATION_IP_WHITELIST' => 'DONATION_IP_WHITELIST',
         'MISSION_IMPACT' => 'MISSION_IMPACT',
-        'MISSION_IMPACT_DONATION' => 'MISSION_IMPACT_DONATION'
+        'MISSION_IMPACT_DONATION' => 'MISSION_IMPACT_DONATION',
+        'PAYMENT_GATEWAY' => 'PAYMENT_GATEWAY'
     ],
 
     'activity_log_actions' => [
@@ -697,7 +722,10 @@ return [
         'ACTIVATED' => 'ACTIVATED',
         'DEACTIVATED' => 'DEACTIVATED',
         'CLEAR_ALL' => 'CLEAR_ALL',
-        'PASSWORD_UPDATED' => 'PASSWORD_UPDATED'
+        'PASSWORD_UPDATED' => 'PASSWORD_UPDATED',
+        'ATTACHED' => 'ATTACHED',
+        'DETACHED' => 'DETACHED',
+        'RETRIEVED' => 'RETRIEVED',
     ],
 
     'activity_log_user_types' => [
@@ -728,4 +756,19 @@ return [
         'image/jpg',
         'image/svg+xml'
     ],
+
+    'payment_gateway_types' => [
+        'STRIPE' => 1
+    ],
+
+    'payment_statuses' => [
+        'PENDING' => 0,
+        'SUCCESS' => 1,
+        'FAILED' => 2,
+        'CANCELED' => 3
+    ],
+
+    'payment_method_types' => [
+        'CARD' => 1
+    ]
 ];

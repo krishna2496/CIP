@@ -13,7 +13,7 @@ class ResponseHelper
      * @param string $apiMessage
      * @param array $apiData
      * @param bool $convertNumeric - To specify whether to transform number strings into int type
-     * @return JsonResponse
+     * @return Illuminate\Http\JsonResponse
      */
     public function success(
         string $apiStatus = '',
@@ -91,7 +91,9 @@ class ResponseHelper
         string $statusCode = '',
         string $statusType = '',
         string $customErrorCode = '',
-        string $customErrorMessage = ''
+        string $customErrorMessage = '',
+        string $externalErrorCode = null,
+        string $externalErrorMessage = null
     ): JsonResponse {
         $response['status'] = $statusCode;
         $response['type'] = $statusType;
@@ -99,6 +101,12 @@ class ResponseHelper
             $response['code'] = $customErrorCode;
         }
         $response['message'] = $customErrorMessage;
+        if ($externalErrorCode) {
+            $response['external_code'] = $externalErrorCode;
+        }
+        if ($externalErrorMessage) {
+            $response['external_message'] = $externalErrorMessage;
+        }
         $data["errors"][] = $response;
 
         return response()->json($data, $statusCode, [], JSON_NUMERIC_CHECK);

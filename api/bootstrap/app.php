@@ -58,6 +58,8 @@ $app->singleton(
 */
 $app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
 $app->register(Laravel\Lumen\Providers\EventServiceProvider::class);
+$app->register(Dusterio\PlainSqs\Integrations\LumenServiceProvider::class);
+$app->register(Torann\GeoIP\GeoIPServiceProvider::class);
 
 $app->middleware([
     \App\Http\Middleware\CorsMiddleware::class, //cross origin support
@@ -94,6 +96,8 @@ $app->configure('mail');  //Mail Constants config
 $app->configure('filesystems');
 $app->configure('services');
 $app->configure('queue');
+$app->configure('sqs-plain');
+$app->configure('geoip');
 
 /**
  * mailer package registration
