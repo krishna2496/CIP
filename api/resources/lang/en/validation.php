@@ -78,6 +78,8 @@ return [
     'uuid'                 => 'Please use valid UUID string for :attribute',
     'ip_whitelist_pattern' => 'The :attribute field is in invalid format. Example: (216.109.112.0-135, 216.109.112.0/24, 216.109.*.*)',
     'max_item'             => 'The record count may not be greater than :max_item.',
+    'within_range'         => 'The :attribute field must have a value between :minvalue and :maxvalue.',
+    'prefix_with'        => 'The :attribute field must start with ":prefix_with".',
     'max_html_stripped'    => 'The :attribute may not be greater than :max characters.',
 
     /*

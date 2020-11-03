@@ -2,45 +2,97 @@
 
 namespace Tests\Unit\Http\Controllers\Admin\Mission;
 
+use App\Events\User\UserActivityLogEvent;
+use App\Exceptions\PaymentGateway\PaymentGatewayException;
 use App\Helpers\Helpers;
 use App\Helpers\LanguageHelper;
 use App\Helpers\ResponseHelper;
-use Illuminate\Http\JsonResponse;
-use App\Events\User\UserActivityLogEvent;
-use App\Events\User\UserNotificationEvent;
-use Laravel\Lumen\Testing\DatabaseMigrations;
-use Laravel\Lumen\Testing\DatabaseTransactions;
+use App\Http\Controllers\Admin\Mission\MissionController;
+use App\Libraries\PaymentGateway\PaymentGatewayDetailedAccount;
+use App\Libraries\PaymentGateway\PaymentGatewayFactory;
+use App\Libraries\PaymentGateway\Stripe\StripePaymentGateway;
+use App\Models\City;
+use App\Models\FavouriteMission;
+use App\Models\Mission;
+use App\Models\MissionApplication;
+use App\Models\MissionDocument;
+use App\Models\MissionLanguage;
+use App\Models\MissionRating;
+use App\Models\MissionSkill;
+use App\Models\MissionTab;
+use App\Models\MissionTabLanguage;
+use App\Models\NotificationType;
+use App\Models\Organization;
+use App\Models\PaymentGateway\PaymentGatewayAccount;
+use App\Models\TimeMission;
 use App\Repositories\Mission\MissionRepository;
 use App\Repositories\MissionMedia\MissionMediaRepository;
 use App\Repositories\Notification\NotificationRepository;
-use App\Http\Controllers\Admin\Mission\MissionController;
-use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
-use DB;
-use Validator;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Ramsey\Uuid\Uuid;
-use App\Services\Mission\ModelsService;
-use App\Models\TimeMission;
-use App\Models\MissionLanguage;
-use App\Models\MissionDocument;
-use App\Models\FavouriteMission;
-use App\Models\MissionSkill;
-use App\Models\MissionRating;
-use App\Models\MissionApplication;
-use App\Models\City;
-use App\Models\MissionTab;
-use App\Models\MissionTabLanguage;
-use App\Models\Organization;
 use App\Repositories\Organization\OrganizationRepository;
+use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
+use App\Services\Mission\ModelsService;
+use App\Services\PaymentGateway\AccountService;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Mockery;
+use Ramsey\Uuid\Uuid;
 use TestCase;
-use App\Models\Mission;
+use Validator;
 
 class MissionControllerTest extends TestCase
 {
+    private $paymentGatewayFactory;
+    private $accountService;
+    private $missionController;
+    private $missionRepository;
+    private $responseHelper;
+    private $request;
+    private $languageHelper;
+    private $missionMediaRepository;
+    private $tenantActivatedSettingRepository;
+    private $notificationRepository;
+    private $modelService;
+    private $organizationRepository;
+    private $helpers;
+    private $stripePaymentGateway;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->missionRepository = $this->mock(MissionRepository::class);
+        $this->responseHelper = $this->mock(ResponseHelper::class);
+        $this->request = new Request();
+        $this->languageHelper = $this->mock(LanguageHelper::class);
+        $this->missionMediaRepository = $this->mock(MissionMediaRepository::class);
+        $this->tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
+        $this->notificationRepository = $this->mock(NotificationRepository::class);
+        $this->modelService = $this->mock(ModelsService::class);
+        $this->organizationRepository = $this->mock(OrganizationRepository::class);
+        $this->helpers = $this->mock(Helpers::class);
+        $this->accountService = $this->mock(AccountService::class);
+        $this->paymentGatewayFactory = $this->mock(PaymentGatewayFactory::class);
+        $this->stripePaymentGateway = $this->mock(StripePaymentGateway::class);
+
+        $this->missionController = new MissionController(
+            $this->missionRepository,
+            $this->responseHelper,
+            $this->request,
+            $this->languageHelper,
+            $this->missionMediaRepository,
+            $this->tenantActivatedSettingRepository,
+            $this->notificationRepository,
+            $this->organizationRepository,
+            $this->modelService,
+            $this->helpers,
+            $this->accountService,
+            $this->paymentGatewayFactory
+        );
+    }
+
     /**
      * @testdox Test udpate mission with impact donation attribute with success status
      */
@@ -111,7 +163,7 @@ class MissionControllerTest extends TestCase
             ->once()
             ->with($missionId)
             ->andReturn($missionModel);
-        
+
         $tenantActivatedSettingRepository->shouldReceive('getAllTenantActivatedSetting')
             ->once()
             ->with($requestData)
@@ -1014,7 +1066,7 @@ class MissionControllerTest extends TestCase
         $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertEquals($methodResponse, json_decode($response->getContent(), true));
     }
-    
+
     public function testMissionStoreSuccess()
     {
         $input = [
@@ -1108,7 +1160,7 @@ class MissionControllerTest extends TestCase
             'publication_status' => 'APPROVED',
             'availability_id' => 1,
             'is_virtual' => false,
-            'un_sdg' => [1,2,3]
+            'un_sdg' => [1, 2, 3]
         ];
 
         $validator = $this->mock(\Illuminate\Validation\Validator::class);
@@ -1146,6 +1198,16 @@ class MissionControllerTest extends TestCase
         $organizationRepository->shouldReceive('find')
             ->once()
             ->andReturn($organizationModel);
+
+        $organizationObject = factory(Organization::class)->make([
+            'organization_id' => $requestData->organization['organization_id'],
+            'name' => $requestData->organization['name']
+        ]);
+        $missionRepository
+            ->shouldReceive('saveOrganization')
+            ->once()
+            ->with($requestData)
+            ->andReturn($organizationObject);
 
         $missionRepository->shouldReceive('store')
             ->once()
@@ -1619,6 +1681,1440 @@ class MissionControllerTest extends TestCase
         $this->assertEquals($methodResponse, json_decode($response->getContent(), true));
     }
 
+        public function testStoreOrganizationGatewayAccount()
+    {
+        $input = [
+            'organization' => [
+                'organization_id' => rand(),
+                'name' => 'test name',
+                'legal_number' =>1,
+                'phone_number' =>123,
+                'address_line_1' =>'test',
+                'address_line_2' =>'2323',
+                'city_id' =>'',
+                'country_id' =>'',
+                'postal_code' =>1,
+                'payment_gateway_account' => [
+                    'payment_gateway' => 'STRIPE',
+                    'payment_gateway_account_id' => 'acc_xxxxxxxxxxxx'
+                ]
+            ],
+            'donation_attribute' => [
+                'goal_amount_currency' => 'EUR',
+                'goal_amount' => '1000',
+                'show_goal_amount' => false,
+                'show_donation_percentage' => false,
+                'show_donation_meter' => false,
+                'show_donation_count' => false,
+                'show_donors_count' => false,
+                'disable_when_funded' => true
+            ],
+            'location' => [
+                'city_id' => '1',
+                'country_code' => 'US'
+            ],
+            'mission_detail' => [
+                [
+                    'lang' => 'en',
+                    'title' => 'testing api mission details',
+                    'short_description' => 'this is testing api with all mission details',
+                ]
+            ],
+            'start_date' => '2020-05-13T06 =>07 =>47.115Z',
+            'end_date' => '2020-05-21T06 =>07 =>47.115Z',
+            'mission_type' => config('constants.mission_type.DONATION'),
+            'publication_status' => 'APPROVED'
+        ];
+
+        $validator = $this->mock(\Illuminate\Validation\Validator::class);
+        $validator->shouldReceive('fails')
+            ->andReturn(false);
+
+        Validator::shouldReceive('make')
+            ->andReturn($validator);
+
+        $requestData = new Request($input);
+        $organizationModel = new Organization();
+        $missionModel = new Mission();
+        $missionModel->mission_id = rand();
+
+        $jsonResponse = new JsonResponse();
+
+        $this->tenantActivatedSettingRepository
+            ->shouldReceive('getAllTenantActivatedSetting')
+            ->once()
+            ->with(
+                $requestData
+            )
+            ->andReturn([
+                config('constants.tenant_settings.DONATION')
+            ]);
+
+        $this->helpers
+            ->shouldReceive('isValidTenantCurrency')
+            ->once()
+            ->with($requestData, $requestData->get('donation_attribute')['goal_amount_currency'])
+            ->andReturn(true);
+
+        $organizationObject = factory(Organization::class)->make([
+            'organization_id' => $requestData->organization['organization_id'],
+            'name' => $requestData->organization['name']
+        ]);
+        $this->missionRepository
+            ->shouldReceive('saveOrganization')
+            ->once()
+            ->with($requestData)
+            ->andReturn($organizationObject);
+
+        $paymentAccount = new PaymentGatewayDetailedAccount();
+        $paymentAccount->setPayoutsEnabled(true);
+
+        $this->tenantActivatedSettingRepository
+            ->shouldReceive('checkTenantSettingStatus')
+            ->once()
+            ->with(
+                config('constants.tenant_settings.DONATION'),
+                $requestData
+            )
+            ->andReturn(true);
+
+        $paymentGatewayAccount = new PaymentGatewayAccount();
+        $paymentGatewayAccount
+            ->setAttribute('organization_id', (string) $input['organization']['organization_id'])
+            ->setAttribute('payment_gateway_account_id', $input['organization']['payment_gateway_account']['payment_gateway_account_id'])
+            ->setAttribute('payment_gateway', config('constants.payment_gateway_types.'.$input['organization']['payment_gateway_account']['payment_gateway']));
+
+        $this->stripePaymentGateway
+            ->shouldReceive('getAccount')
+            ->once()
+            ->with($input['organization']['payment_gateway_account']['payment_gateway_account_id'])
+            ->andReturn($paymentAccount);
+
+        $this->paymentGatewayFactory
+            ->shouldReceive('getPaymentGateway')
+            ->once()
+            ->with(config('constants.payment_gateway_types.STRIPE'))
+            ->andReturn($this->stripePaymentGateway);
+
+        $this->accountService
+            ->shouldReceive('save')
+            ->once()
+            ->andReturn($paymentGatewayAccount);
+
+        $this->organizationRepository->shouldReceive('find')
+            ->once()
+            ->andReturn($organizationModel);
+
+        $this->missionRepository->shouldReceive('store')
+            ->once()
+            ->andReturn($missionModel);
+
+        // Set response data
+        $apiStatus = Response::HTTP_CREATED;
+        $apiMessage = trans('messages.success.MESSAGE_MISSION_ADDED');
+        $apiData = ['mission_id' => $missionModel->mission_id];
+
+        $this->responseHelper->shouldReceive('success')
+            ->once()
+            ->with($apiStatus, $apiMessage, $apiData)
+            ->andReturn($jsonResponse);
+
+        $this->expectsEvents(UserActivityLogEvent::class);
+
+        $response = $this->missionController->store($requestData);
+        $this->assertInstanceOf(JsonResponse::class, $response);
+    }
+
+    public function testStoreOrganizationGatewayAccountPayoutDisabled()
+    {
+        $input = [
+            'organization' => [
+                'organization_id' => rand(),
+                'name' => 'test name',
+                'legal_number' =>1,
+                'phone_number' =>123,
+                'address_line_1' =>'test',
+                'address_line_2' =>'2323',
+                'city_id' =>'',
+                'country_id' =>'',
+                'postal_code' =>1,
+                'payment_gateway_account' => [
+                    'payment_gateway' => 'STRIPE',
+                    'payment_gateway_account_id' => 'acc_xxxxxxxxxxxx'
+                ]
+            ],
+            'donation_attribute' => [
+                'goal_amount_currency' => 'EUR',
+                'goal_amount' => '1000',
+                'show_goal_amount' => false,
+                'show_donation_percentage' => false,
+                'show_donation_meter' => false,
+                'show_donation_count' => true,
+                'show_donors_count' => false,
+                'disable_when_funded' => true
+            ],
+            'location' => [
+                'city_id' => '1',
+                'country_code' => 'US'
+            ],
+            'mission_detail' => [
+                [
+                    'lang' => 'en',
+                    'title' => 'testing api mission details',
+                    'short_description' => 'this is testing api with all mission details'
+                ]
+            ],
+            'start_date' => '2020-05-13T06 =>07 =>47.115Z',
+            'end_date' => '2020-05-21T06 =>07 =>47.115Z',
+            'mission_type' => config('constants.mission_type.DONATION'),
+            'publication_status' => 'APPROVED'
+        ];
+
+        $validator = $this->mock(\Illuminate\Validation\Validator::class);
+        $validator->shouldReceive('fails')
+            ->andReturn(false);
+
+        Validator::shouldReceive('make')
+            ->andReturn($validator);
+
+        $requestData = new Request($input);
+        $organizationModel = new Organization();
+        $missionModel = new Mission();
+        $missionModel->mission_id = rand();
+
+        $jsonResponse = new JsonResponse();
+
+        $this->tenantActivatedSettingRepository
+            ->shouldReceive('getAllTenantActivatedSetting')
+            ->once()
+            ->with(
+                $requestData
+            )
+            ->andReturn([
+                config('constants.tenant_settings.DONATION')
+            ]);
+
+        $this->helpers
+            ->shouldReceive('isValidTenantCurrency')
+            ->once()
+            ->with($requestData, $requestData->get('donation_attribute')['goal_amount_currency'])
+            ->andReturn(true);
+
+        $organizationObject = factory(Organization::class)->make([
+            'organization_id' => $requestData->organization['organization_id'],
+            'name' => $requestData->organization['name']
+        ]);
+        $this->missionRepository
+            ->shouldReceive('saveOrganization')
+            ->once()
+            ->with($requestData)
+            ->andReturn($organizationObject);
+
+        $this->organizationRepository
+            ->shouldReceive('find')
+            ->once()
+            ->andReturn($organizationModel);
+
+        $paymentAccount = new PaymentGatewayDetailedAccount();
+        $paymentAccount->setPayoutsEnabled(false);
+
+        $this->tenantActivatedSettingRepository
+            ->shouldReceive('checkTenantSettingStatus')
+            ->once()
+            ->with(
+                config('constants.tenant_settings.DONATION'),
+                $requestData
+            )
+            ->andReturn(true);
+
+        $this->stripePaymentGateway
+            ->shouldReceive('getAccount')
+            ->once()
+            ->with($input['organization']['payment_gateway_account']['payment_gateway_account_id'])
+            ->andReturn($paymentAccount);
+
+        $this->paymentGatewayFactory
+            ->shouldReceive('getPaymentGateway')
+            ->once()
+            ->with(config('constants.payment_gateway_types.STRIPE'))
+            ->andReturn($this->stripePaymentGateway);
+
+        $this->accountService
+            ->shouldReceive('save')
+            ->never();
+
+        $this->missionRepository
+            ->shouldReceive('store')
+            ->never();
+
+        // Set response data
+        $this->responseHelper->shouldReceive('error')
+            ->once()
+            ->with(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_PAYMENT_GATEWAY_ACCOUNT_INVALID'),
+                'Account payouts is not enabled'
+            );
+
+        $response = $this->missionController->store($requestData);
+        $this->assertInstanceOf(JsonResponse::class, $response);
+    }
+
+    public function testStoreOrganizationGatewayAccountInvalid()
+    {
+        $input = [
+            'organization' => [
+                'organization_id' => rand(),
+                'name' => 'test name',
+                'legal_number' =>1,
+                'phone_number' =>123,
+                'address_line_1' =>'test',
+                'address_line_2' =>'2323',
+                'city_id' =>'',
+                'country_id' =>'',
+                'postal_code' =>1,
+                'payment_gateway_account' => [
+                    'payment_gateway' => 'STRIPE',
+                    'payment_gateway_account_id' => 'acc_xxxxxxxxxxxx'
+                ]
+            ],
+            'donation_attribute' => [
+                'goal_amount_currency' => 'EUR',
+                'goal_amount' => '1000',
+                'show_goal_amount' => false,
+                'show_donation_percentage' => false,
+                'show_donation_meter' => false,
+                'show_donation_count' => false,
+                'show_donors_count' => true,
+                'disable_when_funded' => true
+            ],
+            'location' => [
+                'city_id' => '1',
+                'country_code' => 'US'
+            ],
+            'mission_detail' => [
+                [
+                    'lang' => 'en',
+                    'title' => 'testing api mission details',
+                    'short_description' => 'this is testing api with all mission details'
+                ]
+            ],
+            'start_date' => '2020-05-13T06 =>07 =>47.115Z',
+            'end_date' => '2020-05-21T06 =>07 =>47.115Z',
+            'mission_type' => config('constants.mission_type.DONATION'),
+            'publication_status' => 'APPROVED'
+        ];
+
+        $validator = $this->mock(\Illuminate\Validation\Validator::class);
+        $validator->shouldReceive('fails')
+            ->andReturn(false);
+
+        Validator::shouldReceive('make')
+            ->andReturn($validator);
+
+        $requestData = new Request($input);
+        $organizationModel = new Organization();
+        $missionModel = new Mission();
+        $missionModel->mission_id = rand();
+
+        $jsonResponse = new JsonResponse();
+
+        $this->tenantActivatedSettingRepository
+            ->shouldReceive('getAllTenantActivatedSetting')
+            ->once()
+            ->with(
+                $requestData
+            )
+            ->andReturn([
+                config('constants.tenant_settings.DONATION')
+            ]);
+
+        $this->helpers
+            ->shouldReceive('isValidTenantCurrency')
+            ->once()
+            ->with($requestData, $requestData->get('donation_attribute')['goal_amount_currency'])
+            ->andReturn(true);
+
+        $organizationObject = factory(Organization::class)->make([
+            'organization_id' => $requestData->organization['organization_id'],
+            'name' => $requestData->organization['name']
+        ]);
+        $this->missionRepository
+            ->shouldReceive('saveOrganization')
+            ->once()
+            ->with($requestData)
+            ->andReturn($organizationObject);
+
+        $this->organizationRepository
+            ->shouldReceive('find')
+            ->once()
+            ->andReturn($organizationModel);
+
+        $paymentAccount = new PaymentGatewayDetailedAccount();
+        $paymentAccount->setPayoutsEnabled(false);
+
+        $this->tenantActivatedSettingRepository
+            ->shouldReceive('checkTenantSettingStatus')
+            ->once()
+            ->with(
+                config('constants.tenant_settings.DONATION'),
+                $requestData
+            )
+            ->andReturn(true);
+
+        $this->stripePaymentGateway
+            ->shouldReceive('getAccount')
+            ->once()
+            ->with($input['organization']['payment_gateway_account']['payment_gateway_account_id'])
+            ->andThrow(new PaymentGatewayException);
+
+        $this->paymentGatewayFactory
+            ->shouldReceive('getPaymentGateway')
+            ->once()
+            ->with(config('constants.payment_gateway_types.STRIPE'))
+            ->andReturn($this->stripePaymentGateway);
+
+        $this->accountService
+            ->shouldReceive('save')
+            ->never();
+
+        $this->missionRepository
+            ->shouldReceive('store')
+            ->never();
+
+        // Set response data
+        $this->responseHelper->shouldReceive('error')
+            ->once()
+            ->with(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_PAYMENT_GATEWAY_ACCOUNT_INVALID'),
+                'Invalid payment gateway account id'
+            );
+
+        $response = $this->missionController->store($requestData);
+        $this->assertInstanceOf(JsonResponse::class, $response);
+    }
+
+    public function testStoreOrganizationGatewayAccountMissingButNoDb()
+    {
+        $input = [
+            'organization' => [
+                'organization_id' => rand(),
+                'name' => 'test name',
+                'legal_number' =>1,
+                'phone_number' =>123,
+                'address_line_1' =>'test',
+                'address_line_2' =>'2323',
+                'city_id' =>'',
+                'country_id' =>'',
+                'postal_code' =>1
+            ],
+            'donation_attribute' => [
+                'goal_amount_currency' => 'EUR',
+                'goal_amount' => '1000',
+                'show_goal_amount' => false,
+                'show_donation_percentage' => false,
+                'show_donation_meter' => false,
+                'show_donation_count' => true,
+                'show_donors_count' => false,
+                'disable_when_funded' => true
+            ],
+            'location' => [
+                'city_id' => '1',
+                'country_code' => 'US'
+            ],
+            'mission_detail' => [
+                [
+                    'lang' => 'en',
+                    'title' => 'testing api mission details',
+                    'short_description' => 'this is testing api with all mission details',
+                    'objective' => 'To test and check',
+                    'label_goal_achieved' => 'test percentage',
+                    'label_goal_objective' => 'check test percentage',
+                    'section' => [
+                        [
+                            'title' => 'string',
+                            'description' => 'string'
+                        ]
+                    ],
+                    'custom_information' => [
+                        [
+                            'title' => 'string',
+                            'description' => 'string'
+                        ]
+                    ]
+                ]
+            ],
+            'start_date' => '2020-05-13T06 =>07 =>47.115Z',
+            'end_date' => '2020-05-21T06 =>07 =>47.115Z',
+            'mission_type' => config('constants.mission_type.TIME'),
+            'publication_status' => 'APPROVED'
+        ];
+
+        $validator = $this->mock(\Illuminate\Validation\Validator::class);
+        $validator->shouldReceive('fails')
+            ->andReturn(false);
+
+        Validator::shouldReceive('make')
+            ->andReturn($validator);
+
+        $requestData = new Request($input);
+        $organizationModel = new Organization();
+        $missionModel = new Mission();
+        $missionModel->mission_id = rand();
+
+        $jsonResponse = new JsonResponse();
+
+        $this->tenantActivatedSettingRepository
+            ->shouldReceive('getAllTenantActivatedSetting')
+            ->once()
+            ->with(
+                $requestData
+            )
+            ->andReturn([
+                config('constants.tenant_settings.VOLUNTEERING_MISSION'),
+                config('constants.tenant_settings.VOLUNTEERING_TIME_MISSION')
+            ]);
+
+        $this->helpers
+            ->shouldReceive('isValidTenantCurrency')
+            ->once()
+            ->with($requestData, $requestData->get('donation_attribute')['goal_amount_currency'])
+            ->andReturn(true);
+
+        $this->tenantActivatedSettingRepository
+            ->shouldReceive('checkTenantSettingStatus')
+            ->once()
+            ->with(
+                config('constants.tenant_settings.DONATION'),
+                $requestData
+            )
+            ->andReturn(true);
+
+        $organizationObject = factory(Organization::class)->make([
+            'organization_id' => $requestData->organization['organization_id'],
+            'name' => $requestData->organization['name']
+        ]);
+        $this->missionRepository
+            ->shouldReceive('saveOrganization')
+            ->once()
+            ->with($requestData)
+            ->andReturn($organizationObject);
+
+        $this->organizationRepository
+            ->shouldReceive('find')
+            ->once()
+            ->andReturn($organizationModel);
+
+        $this->accountService
+            ->shouldReceive('getByOrgId')
+            ->once()
+            ->with($requestData->input('organization.organization_id'))
+            ->andReturn(null);
+
+        $this->stripePaymentGateway
+            ->shouldReceive('getAccount')
+            ->never();
+
+        $this->paymentGatewayFactory
+            ->shouldReceive('getPaymentGateway')
+            ->never();
+
+        $this->accountService
+            ->shouldReceive('save')
+            ->never();
+
+        $this->missionRepository
+            ->shouldReceive('store')
+            ->never();
+
+        // Set response data
+        $this->responseHelper->shouldReceive('error')
+            ->once()
+            ->with(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_ORGANIZATION_PAYMENT_GATEWAY_ACCOUNT'),
+                'Organization payment_gateway and payment_gateway_account_id is required'
+            );
+
+        $response = $this->missionController->store($requestData);
+        $this->assertInstanceOf(JsonResponse::class, $response);
+    }
+
+    public function testStoreOrganizationGatewayAccountMissingButInDb()
+    {
+        $input = [
+            'organization' => [
+                'organization_id' => rand(),
+                'name' => 'test name',
+                'legal_number' =>1,
+                'phone_number' =>123,
+                'address_line_1' =>'test',
+                'address_line_2' =>'2323',
+                'city_id' =>'',
+                'country_id' =>'',
+                'postal_code' =>1
+            ],
+            'donation_attribute' => [
+                'goal_amount_currency' => 'EUR',
+                'goal_amount' => '1000',
+                'show_goal_amount' => false,
+                'show_donation_percentage' => false,
+                'show_donation_meter' => false,
+                'show_donation_count' => true,
+                'show_donors_count' => false,
+                'disable_when_funded' => true
+            ],
+            'location' => [
+                'city_id' => '1',
+                'country_code' => 'US'
+            ],
+            'mission_detail' => [
+                [
+                    'lang' => 'en',
+                    'title' => 'testing api mission details',
+                    'short_description' => 'this is testing api with all mission details'
+                ]
+            ],
+            'start_date' => '2020-05-13T06 =>07 =>47.115Z',
+            'end_date' => '2020-05-21T06 =>07 =>47.115Z',
+            'mission_type' => config('constants.mission_type.TIME'),
+            'publication_status' => 'APPROVED'
+        ];
+
+        $validator = $this->mock(\Illuminate\Validation\Validator::class);
+        $validator->shouldReceive('fails')
+            ->andReturn(false);
+
+        Validator::shouldReceive('make')
+            ->andReturn($validator);
+
+        $requestData = new Request($input);
+        $organizationModel = new Organization();
+        $missionModel = new Mission();
+        $missionModel->mission_id = rand();
+
+        $jsonResponse = new JsonResponse();
+
+        $this->tenantActivatedSettingRepository
+            ->shouldReceive('getAllTenantActivatedSetting')
+            ->once()
+            ->with($requestData)
+            ->andReturn([
+                config('constants.tenant_settings.VOLUNTEERING_MISSION'),
+                config('constants.tenant_settings.VOLUNTEERING_TIME_MISSION')
+            ]);
+
+        $this->helpers
+            ->shouldReceive('isValidTenantCurrency')
+            ->once()
+            ->with($requestData, $requestData->get('donation_attribute')['goal_amount_currency'])
+            ->andReturn(true);
+
+        $organizationObject = factory(Organization::class)->make([
+            'organization_id' => $requestData->organization['organization_id'],
+            'name' => $requestData->organization['name']
+        ]);
+
+        $this->tenantActivatedSettingRepository
+            ->shouldReceive('checkTenantSettingStatus')
+            ->once()
+            ->with(
+                config('constants.tenant_settings.DONATION'),
+                $requestData
+            )
+            ->andReturn(true);
+
+        $this->missionRepository
+            ->shouldReceive('saveOrganization')
+            ->once()
+            ->with($requestData)
+            ->andReturn($organizationObject);
+
+        $this->organizationRepository
+            ->shouldReceive('find')
+            ->once()
+            ->andReturn($organizationModel);
+
+        $paymentGatewayAccount = new PaymentGatewayAccount();
+
+        $this->accountService
+            ->shouldReceive('getByOrgId')
+            ->once()
+            ->with($requestData->input('organization.organization_id'))
+            ->andReturn($paymentGatewayAccount);
+
+        $this->stripePaymentGateway
+            ->shouldReceive('getAccount')
+            ->never();
+
+        $this->paymentGatewayFactory
+            ->shouldReceive('getPaymentGateway')
+            ->never();
+
+        $this->accountService
+            ->shouldReceive('save')
+            ->never();
+
+        $this->missionRepository->shouldReceive('store')
+            ->once()
+            ->andReturn($missionModel);
+
+        // Set response data
+        $apiStatus = Response::HTTP_CREATED;
+        $apiMessage = trans('messages.success.MESSAGE_MISSION_ADDED');
+        $apiData = ['mission_id' => $missionModel->mission_id];
+
+        $this->responseHelper->shouldReceive('success')
+            ->once()
+            ->with($apiStatus, $apiMessage, $apiData)
+            ->andReturn($jsonResponse);
+
+        $this->expectsEvents(UserActivityLogEvent::class);
+
+        $response = $this->missionController->store($requestData);
+        $this->assertInstanceOf(JsonResponse::class, $response);
+    }
+
+    /**
+     * @runTestsInSeparateProcesses
+     * @preserveGlobalState disabled
+     */
+    public function testUpdateOrganizationGatewayAccount()
+    {
+        $missionId = '1';
+        $input = [
+            'organization' => [
+                'organization_id' => rand(),
+                'name' => 'test name',
+                'legal_number' =>1,
+                'phone_number' =>123,
+                'address_line_1' =>'test',
+                'address_line_2' =>'2323',
+                'city_id' =>'',
+                'country_id' =>'',
+                'postal_code' =>1,
+                'payment_gateway_account' => [
+                    'payment_gateway' => 'STRIPE',
+                    'payment_gateway_account_id' => 'acc_xxxxxxxxxxxx'
+                ]
+            ],
+            'donation_attribute' => [
+                'goal_amount_currency' => 'EUR',
+                'goal_amount' => '1000',
+                'show_goal_amount' => false,
+                'show_donation_percentage' => false,
+                'show_donation_meter' => false,
+                'show_donation_count' => true,
+                'show_donors_count' => false,
+                'disable_when_funded' => true
+            ],
+            'location' => [
+                'city_id' => '1',
+                'country_code' => 'US'
+            ],
+            'mission_detail' => [
+                [
+                    'lang' => 'en',
+                    'title' => 'testing api mission details',
+                    'short_description' => 'this is testing api with all mission details'
+                ]
+            ],
+            'start_date' => '2020-05-13T06 =>07 =>47.115Z',
+            'end_date' => '2020-05-21T06 =>07 =>47.115Z',
+            'mission_type' => config('constants.mission_type.TIME'),
+            'publication_status' => 'APPROVED'
+        ];
+
+        $validator = $this->mock(\Illuminate\Validation\Validator::class);
+        $validator->shouldReceive('fails')
+            ->andReturn(false);
+
+        Validator::shouldReceive('make')
+            ->andReturn($validator);
+
+        $requestData = new Request($input);
+        $organizationModel = new Organization();
+        $missionModel = new Mission();
+        $missionModel->mission_id = $missionId;
+
+        $jsonResponse = new JsonResponse();
+
+        $this->tenantActivatedSettingRepository
+            ->shouldReceive('getAllTenantActivatedSetting')
+            ->twice()
+            ->with($requestData)
+            ->andReturn([
+                config('constants.tenant_settings.VOLUNTEERING_MISSION'),
+                config('constants.tenant_settings.VOLUNTEERING_TIME_MISSION')
+            ]);
+
+        $this->helpers
+            ->shouldReceive('isValidTenantCurrency')
+            ->once()
+            ->with($requestData, $requestData->get('donation_attribute')['goal_amount_currency'])
+            ->andReturn(true);
+
+        $organizationObject = factory(Organization::class)->make([
+            'organization_id' => $requestData->organization['organization_id'],
+            'name' => $requestData->organization['name']
+        ]);
+
+        $this->tenantActivatedSettingRepository
+            ->shouldReceive('checkTenantSettingStatus')
+            ->once()
+            ->with(
+                config('constants.tenant_settings.DONATION'),
+                $requestData
+            )
+            ->andReturn(true);
+
+        $this->missionRepository
+            ->shouldReceive('saveOrganization')
+            ->once()
+            ->with($requestData)
+            ->andReturn($organizationObject);
+
+        $this->organizationRepository
+            ->shouldReceive('find')
+            ->once()
+            ->andReturn($organizationModel);
+
+        $this->languageHelper
+            ->shouldReceive('getDefaultTenantLanguage')
+            ->once()
+            ->with($requestData)
+            ->andReturn((object) [
+                'language_id' => 1,
+                'code' => 'en',
+                'name' => 'English',
+                'default' => '1'
+            ]);
+
+        $this->missionRepository
+            ->shouldReceive('find')
+            ->once()
+            ->with($missionId)
+            ->andReturn($missionModel);
+
+        $this->missionRepository
+            ->shouldReceive('getMissionDetailsFromId')
+            ->once()
+            ->with($missionId, 1)
+            ->andReturn($missionModel);
+
+        $paymentAccount = new PaymentGatewayDetailedAccount();
+        $paymentAccount->setPayoutsEnabled(true);
+
+        $paymentGatewayAccount = new PaymentGatewayAccount();
+        $paymentGatewayAccount
+            ->setAttribute('organization_id', (string) $input['organization']['organization_id'])
+            ->setAttribute('payment_gateway_account_id', $input['organization']['payment_gateway_account']['payment_gateway_account_id'])
+            ->setAttribute('payment_gateway', config('constants.payment_gateway_types.'.$input['organization']['payment_gateway_account']['payment_gateway']));
+
+        $this->stripePaymentGateway
+            ->shouldReceive('getAccount')
+            ->once()
+            ->with($input['organization']['payment_gateway_account']['payment_gateway_account_id'])
+            ->andReturn($paymentAccount);
+
+        $this->paymentGatewayFactory
+            ->shouldReceive('getPaymentGateway')
+            ->once()
+            ->with(config('constants.payment_gateway_types.STRIPE'))
+            ->andReturn($this->stripePaymentGateway);
+
+        $this->accountService
+            ->shouldReceive('save')
+            ->once()
+            ->andReturn($paymentGatewayAccount);
+
+        $this->missionRepository
+            ->shouldReceive('update')
+            ->once()
+            ->andReturn($missionModel);
+
+        // Set response data
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage = trans('messages.success.MESSAGE_MISSION_UPDATED');
+
+        $this->responseHelper
+            ->shouldReceive('success')
+            ->once()
+            ->with($apiStatus, $apiMessage)
+            ->andReturn($jsonResponse);
+
+        $this->expectsEvents(UserActivityLogEvent::class);
+
+        $externalMock = $this->mock('overload:App\Models\NotificationType');
+        $externalMock
+            ->shouldReceive('where')
+            ->once()
+            ->with('notification_type', config('constants.notification_type_keys.NEW_MISSIONS'))
+            ->andReturnSelf();
+
+        $externalMock
+            ->shouldReceive('first')
+            ->once()
+            ->andReturn((object) [
+                'notification_type_id' => 'type'
+            ]);
+
+        $response = $this->missionController->update($requestData, $missionId);
+        $this->assertInstanceOf(JsonResponse::class, $response);
+    }
+
+    public function testUpdateOrganizationGatewayAccountPayoutDisabled()
+    {
+        $missionId = '1';
+        $input = [
+            'organization' => [
+                'organization_id' => rand(),
+                'name' => 'test name',
+                'payment_gateway_account' => [
+                    'payment_gateway' => 'STRIPE',
+                    'payment_gateway_account_id' => 'acc_xxxxxxxxxxxx'
+                ]
+            ],
+            'donation_attribute' => [
+                'goal_amount_currency' => 'EUR',
+                'goal_amount' => '1000'
+            ]
+        ];
+
+        $validator = $this->mock(\Illuminate\Validation\Validator::class);
+        $validator->shouldReceive('fails')
+            ->andReturn(false);
+
+        Validator::shouldReceive('make')
+            ->andReturn($validator);
+
+        $requestData = new Request($input);
+        $organizationModel = new Organization();
+        $missionModel = new Mission();
+        $missionModel->mission_id = $missionId;
+
+        $jsonResponse = new JsonResponse();
+
+        $this->tenantActivatedSettingRepository
+            ->shouldReceive('getAllTenantActivatedSetting')
+            ->once()
+            ->with($requestData)
+            ->andReturn([
+                config('constants.tenant_settings.DONATION')
+            ]);
+
+        $this->tenantActivatedSettingRepository
+            ->shouldReceive('checkTenantSettingStatus')
+            ->once()
+            ->with(
+                config('constants.tenant_settings.DONATION'),
+                $requestData
+            )
+            ->andReturn(true);
+
+        $this->helpers
+            ->shouldReceive('isValidTenantCurrency')
+            ->once()
+            ->with($requestData, $requestData->get('donation_attribute')['goal_amount_currency'])
+            ->andReturn(true);
+
+        $organizationObject = factory(Organization::class)->make([
+            'organization_id' => $requestData->organization['organization_id'],
+            'name' => $requestData->organization['name']
+        ]);
+        $this->missionRepository
+            ->shouldReceive('saveOrganization')
+            ->once()
+            ->with($requestData)
+            ->andReturn($organizationObject);
+
+        $this->organizationRepository
+            ->shouldReceive('find')
+            ->once()
+            ->andReturn($organizationModel);
+
+        $this->languageHelper
+            ->shouldReceive('getDefaultTenantLanguage')
+            ->once()
+            ->with($requestData)
+            ->andReturn((object) [
+                'language_id' => 1,
+                'code' => 'en',
+                'name' => 'English',
+                'default' => '1'
+            ]);
+
+        $this->missionRepository
+            ->shouldReceive('find')
+            ->once()
+            ->with($missionId)
+            ->andReturn($missionModel);
+
+        $this->missionRepository
+            ->shouldReceive('getMissionDetailsFromId')
+            ->once()
+            ->with($missionId, 1)
+            ->andReturn($missionModel);
+
+        $paymentAccount = new PaymentGatewayDetailedAccount();
+        $paymentAccount->setPayoutsEnabled(false);
+
+        $paymentGatewayAccount = new PaymentGatewayAccount();
+        $paymentGatewayAccount
+            ->setAttribute('organization_id', (string) $input['organization']['organization_id'])
+            ->setAttribute('payment_gateway_account_id', $input['organization']['payment_gateway_account']['payment_gateway_account_id'])
+            ->setAttribute('payment_gateway', config('constants.payment_gateway_types.'.$input['organization']['payment_gateway_account']['payment_gateway']));
+
+        $this->stripePaymentGateway
+            ->shouldReceive('getAccount')
+            ->once()
+            ->with($input['organization']['payment_gateway_account']['payment_gateway_account_id'])
+            ->andReturn($paymentAccount);
+
+        $this->paymentGatewayFactory
+            ->shouldReceive('getPaymentGateway')
+            ->once()
+            ->with(config('constants.payment_gateway_types.STRIPE'))
+            ->andReturn($this->stripePaymentGateway);
+
+        $this->accountService
+            ->shouldReceive('save')
+            ->never();
+
+        $this->missionRepository
+            ->shouldReceive('update')
+            ->never();
+
+        // Set response data
+        $this->responseHelper->shouldReceive('error')
+            ->once()
+            ->with(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_PAYMENT_GATEWAY_ACCOUNT_INVALID'),
+                'Account payouts is not enabled'
+            );
+
+        $response = $this->missionController->update($requestData, $missionId);
+        $this->assertInstanceOf(JsonResponse::class, $response);
+    }
+
+    public function testUpdateOrganizationGatewayAccountInvalid()
+    {
+        $missionId = '1';
+        $input = [
+            'organization' => [
+                'organization_id' => rand(),
+                'name' => 'test name',
+                'payment_gateway_account' => [
+                    'payment_gateway' => 'STRIPE',
+                    'payment_gateway_account_id' => 'acc_xxxxxxxxxxxx'
+                ]
+            ],
+            'donation_attribute' => [
+                'goal_amount_currency' => 'EUR',
+                'goal_amount' => '1000'
+            ]
+        ];
+
+        $validator = $this->mock(\Illuminate\Validation\Validator::class);
+        $validator->shouldReceive('fails')
+            ->andReturn(false);
+
+        Validator::shouldReceive('make')
+            ->andReturn($validator);
+
+        $requestData = new Request($input);
+        $organizationModel = new Organization();
+        $missionModel = new Mission();
+        $missionModel->mission_id = $missionId;
+
+        $jsonResponse = new JsonResponse();
+
+        $this->tenantActivatedSettingRepository
+            ->shouldReceive('getAllTenantActivatedSetting')
+            ->once()
+            ->with($requestData)
+            ->andReturn([
+                config('constants.tenant_settings.DONATION')
+            ]);
+
+        $this->tenantActivatedSettingRepository
+            ->shouldReceive('checkTenantSettingStatus')
+            ->once()
+            ->with(
+                config('constants.tenant_settings.DONATION'),
+                $requestData
+            )
+            ->andReturn(true);
+
+        $this->helpers
+            ->shouldReceive('isValidTenantCurrency')
+            ->once()
+            ->with($requestData, $requestData->get('donation_attribute')['goal_amount_currency'])
+            ->andReturn(true);
+
+        $organizationObject = factory(Organization::class)->make([
+            'organization_id' => $requestData->organization['organization_id'],
+            'name' => $requestData->organization['name']
+        ]);
+        $this->missionRepository
+            ->shouldReceive('saveOrganization')
+            ->once()
+            ->with($requestData)
+            ->andReturn($organizationObject);
+
+        $this->organizationRepository
+            ->shouldReceive('find')
+            ->once()
+            ->andReturn($organizationModel);
+
+        $this->languageHelper
+            ->shouldReceive('getDefaultTenantLanguage')
+            ->once()
+            ->with($requestData)
+            ->andReturn((object) [
+                'language_id' => 1,
+                'code' => 'en',
+                'name' => 'English',
+                'default' => '1'
+            ]);
+
+        $this->missionRepository
+            ->shouldReceive('find')
+            ->once()
+            ->with($missionId)
+            ->andReturn($missionModel);
+
+        $this->missionRepository
+            ->shouldReceive('getMissionDetailsFromId')
+            ->once()
+            ->with($missionId, 1)
+            ->andReturn($missionModel);
+
+        $paymentAccount = new PaymentGatewayDetailedAccount();
+        $paymentAccount->setPayoutsEnabled(false);
+
+        $paymentGatewayAccount = new PaymentGatewayAccount();
+        $paymentGatewayAccount
+            ->setAttribute('organization_id', (string) $input['organization']['organization_id'])
+            ->setAttribute('payment_gateway_account_id', $input['organization']['payment_gateway_account']['payment_gateway_account_id'])
+            ->setAttribute('payment_gateway', config('constants.payment_gateway_types.'.$input['organization']['payment_gateway_account']['payment_gateway']));
+
+        $this->stripePaymentGateway
+            ->shouldReceive('getAccount')
+            ->once()
+            ->with($input['organization']['payment_gateway_account']['payment_gateway_account_id'])
+            ->andThrow(new PaymentGatewayException);
+
+        $this->paymentGatewayFactory
+            ->shouldReceive('getPaymentGateway')
+            ->once()
+            ->with(config('constants.payment_gateway_types.STRIPE'))
+            ->andReturn($this->stripePaymentGateway);
+
+        $this->accountService
+            ->shouldReceive('save')
+            ->never();
+
+        $this->missionRepository
+            ->shouldReceive('update')
+            ->never();
+
+        // Set response data
+        $this->responseHelper->shouldReceive('error')
+            ->once()
+            ->with(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_PAYMENT_GATEWAY_ACCOUNT_INVALID'),
+                'Invalid payment gateway account id'
+            );
+
+        $response = $this->missionController->update($requestData, $missionId);
+        $this->assertInstanceOf(JsonResponse::class, $response);
+    }
+
+    /**
+     * @runTestsInSeparateProcesses
+     * @preserveGlobalState disabled
+     */
+    public function testUpdateOrganizationGatewayAccountMissionButInDb()
+    {
+        $missionId = '1';
+        $input = [
+            'organization' => [
+                'organization_id' => rand(),
+                'name' => 'test name',
+            ],
+            'donation_attribute' => [
+                'goal_amount_currency' => 'EUR',
+                'goal_amount' => '1000'
+            ]
+        ];
+
+        $validator = $this->mock(\Illuminate\Validation\Validator::class);
+        $validator->shouldReceive('fails')
+            ->andReturn(false);
+
+        Validator::shouldReceive('make')
+            ->andReturn($validator);
+
+        $requestData = new Request($input);
+        $organizationModel = new Organization();
+        $missionModel = new Mission();
+        $missionModel->mission_id = $missionId;
+
+        $jsonResponse = new JsonResponse();
+
+        $this->tenantActivatedSettingRepository
+            ->shouldReceive('getAllTenantActivatedSetting')
+            ->once()
+            ->with($requestData)
+            ->andReturn([
+                config('constants.tenant_settings.VOLUNTEERING_MISSION'),
+                config('constants.tenant_settings.VOLUNTEERING_TIME_MISSION')
+            ]);
+
+        $this->tenantActivatedSettingRepository
+            ->shouldReceive('checkTenantSettingStatus')
+            ->once()
+            ->with(
+                config('constants.tenant_settings.DONATION'),
+                $requestData
+            )
+            ->andReturn(true);
+
+        $this->helpers
+            ->shouldReceive('isValidTenantCurrency')
+            ->once()
+            ->with($requestData, $requestData->get('donation_attribute')['goal_amount_currency'])
+            ->andReturn(true);
+
+        $organizationObject = factory(Organization::class)->make([
+            'organization_id' => $requestData->organization['organization_id'],
+            'name' => $requestData->organization['name']
+        ]);
+
+        $this->missionRepository
+            ->shouldReceive('saveOrganization')
+            ->once()
+            ->with($requestData)
+            ->andReturn($organizationObject);
+
+        $this->organizationRepository
+            ->shouldReceive('find')
+            ->once()
+            ->andReturn($organizationModel);
+
+        $this->languageHelper
+            ->shouldReceive('getDefaultTenantLanguage')
+            ->once()
+            ->with($requestData)
+            ->andReturn((object) [
+                'language_id' => 1,
+                'code' => 'en',
+                'name' => 'English',
+                'default' => '1'
+            ]);
+
+        $this->missionRepository
+            ->shouldReceive('find')
+            ->once()
+            ->with($missionId)
+            ->andReturn($missionModel);
+
+        $this->missionRepository
+            ->shouldReceive('getMissionDetailsFromId')
+            ->once()
+            ->with($missionId, 1)
+            ->andReturn($missionModel);
+
+        $paymentGatewayAccount = new PaymentGatewayAccount();
+
+        $this->accountService
+            ->shouldReceive('getByOrgId')
+            ->once()
+            ->with($requestData->input('organization.organization_id'))
+            ->andReturn($paymentGatewayAccount);
+
+        $this->stripePaymentGateway
+            ->shouldReceive('getAccount')
+            ->never();
+
+        $this->paymentGatewayFactory
+            ->shouldReceive('getPaymentGateway')
+            ->never();
+
+        $this->accountService
+            ->shouldReceive('save')
+            ->never();
+
+        $this->missionRepository
+            ->shouldReceive('update')
+            ->once()
+            ->andReturn($missionModel);
+
+        // Set response data
+        $apiStatus = Response::HTTP_OK;
+        $apiMessage = trans('messages.success.MESSAGE_MISSION_UPDATED');
+
+        $this->responseHelper
+            ->shouldReceive('success')
+            ->once()
+            ->with($apiStatus, $apiMessage)
+            ->andReturn($jsonResponse);
+
+        $this->expectsEvents(UserActivityLogEvent::class);
+
+        $externalMock = $this->mock('overload:App\Models\NotificationType');
+        $externalMock
+            ->shouldReceive('where')
+            ->once()
+            ->with('notification_type', config('constants.notification_type_keys.NEW_MISSIONS'))
+            ->andReturnSelf();
+
+        $externalMock
+            ->shouldReceive('first')
+            ->once()
+            ->andReturn((object) [
+                'notification_type_id' => 'type'
+            ]);
+
+        $response = $this->missionController->update($requestData, $missionId);
+        $this->assertInstanceOf(JsonResponse::class, $response);
+    }
+
+    public function testUpdateOrganizationGatewayAccountMissionButNoDb()
+    {
+        $missionId = '1';
+        $input = [
+            'organization' => [
+                'organization_id' => rand(),
+                'name' => 'test name'
+            ],
+            'donation_attribute' => [
+                'goal_amount_currency' => 'EUR',
+                'goal_amount' => '1000'
+            ]
+        ];
+
+        $validator = $this->mock(\Illuminate\Validation\Validator::class);
+        $validator->shouldReceive('fails')
+            ->andReturn(false);
+
+        Validator::shouldReceive('make')
+            ->andReturn($validator);
+
+        $requestData = new Request($input);
+        $organizationModel = new Organization();
+        $missionModel = new Mission();
+        $missionModel->mission_id = $missionId;
+        $missionModel->mission_type = config('constants.tenant_settings.DONATION');
+
+        $jsonResponse = new JsonResponse();
+
+        $this->tenantActivatedSettingRepository
+            ->shouldReceive('getAllTenantActivatedSetting')
+            ->once()
+            ->with($requestData)
+            ->andReturn([
+                config('constants.tenant_settings.DONATION')
+            ]);
+
+        $this->tenantActivatedSettingRepository
+            ->shouldReceive('checkTenantSettingStatus')
+            ->once()
+            ->with(
+                config('constants.tenant_settings.DONATION'),
+                $requestData
+            )
+            ->andReturn(true);
+
+        $this->helpers
+            ->shouldReceive('isValidTenantCurrency')
+            ->once()
+            ->with($requestData, $requestData->get('donation_attribute')['goal_amount_currency'])
+            ->andReturn(true);
+
+        $organizationObject = factory(Organization::class)->make([
+            'organization_id' => $requestData->organization['organization_id'],
+            'name' => $requestData->organization['name']
+        ]);
+        $this->missionRepository
+            ->shouldReceive('saveOrganization')
+            ->once()
+            ->with($requestData)
+            ->andReturn($organizationObject);
+
+        $this->organizationRepository
+            ->shouldReceive('find')
+            ->once()
+            ->andReturn($organizationModel);
+
+        $this->languageHelper
+            ->shouldReceive('getDefaultTenantLanguage')
+            ->once()
+            ->with($requestData)
+            ->andReturn((object) [
+                'language_id' => 1,
+                'code' => 'en',
+                'name' => 'English',
+                'default' => '1'
+            ]);
+
+        $this->missionRepository
+            ->shouldReceive('find')
+            ->once()
+            ->with($missionId)
+            ->andReturn($missionModel);
+
+        $this->missionRepository
+            ->shouldReceive('getMissionDetailsFromId')
+            ->once()
+            ->with($missionId, 1)
+            ->andReturn($missionModel);
+
+        $this->accountService
+            ->shouldReceive('getByOrgId')
+            ->once()
+            ->with($requestData->input('organization.organization_id'))
+            ->andReturn(null);
+
+        $this->stripePaymentGateway
+            ->shouldReceive('getAccount')
+            ->never();
+
+        $this->paymentGatewayFactory
+            ->shouldReceive('getPaymentGateway')
+            ->never();
+
+        $this->accountService
+            ->shouldReceive('save')
+            ->never();
+
+        $this->missionRepository
+            ->shouldReceive('update')
+            ->never();
+
+        // Set response data
+        $this->responseHelper->shouldReceive('error')
+            ->once()
+            ->with(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_ORGANIZATION_PAYMENT_GATEWAY_ACCOUNT'),
+                'Organization payment_gateway and payment_gateway_account_id is required'
+            );
+
+        $response = $this->missionController->update($requestData, $missionId);
+        $this->assertInstanceOf(JsonResponse::class, $response);
+    }
+
     /**
      * Create a new service instance.
      *
@@ -1656,7 +3152,9 @@ class MissionControllerTest extends TestCase
             $notificationRepository,
             $organizationRepository,
             $modelService,
-            $helpers ?? $this->mock(Helpers::class)
+            $helpers ?? $this->mock(Helpers::class),
+            $this->accountService,
+            $this->paymentGatewayFactory
         );
     }
 
@@ -1683,7 +3181,7 @@ class MissionControllerTest extends TestCase
     {
         return new JsonResponse($class);
     }
-    
+
     /**
      * Create a new service instance.
      *

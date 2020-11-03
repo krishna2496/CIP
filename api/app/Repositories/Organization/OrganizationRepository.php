@@ -84,7 +84,9 @@ class OrganizationRepository implements OrganizationInterface
      */
     public function getOrganizationDetails($organizationId)
     {
-        return $this->organization->findOrfail($organizationId);
+        return $this->organization
+            ->with('paymentGatewayAccount')
+            ->findOrfail($organizationId);
     }
 
     /**
@@ -95,19 +97,19 @@ class OrganizationRepository implements OrganizationInterface
      */
     public function getOrganizationList(Request $request): LengthAwarePaginator
     {
-        $organizationData = $this->organization;
-
         // Search filters
         if ($request->has('search')) {
-            $organizationData = $organizationData->where('name', 'like', '%' . $request->input('search') . '%');
+            $this->organization->where('name', 'like', '%' . $request->input('search') . '%');
         }
 
         if ($request->has('order')) {
             $orderDirection = $request->input('order', 'asc');
-            $organizationData = $organizationData->orderBy('created_at', $orderDirection);
+            $this->organization->orderBy('created_at', $orderDirection);
         }
 
-        return $organizationData->paginate($request->perPage);
+        return $this->organization
+            ->with('paymentGatewayAccount')
+            ->paginate($request->perPage);
     }
 
     /**
@@ -130,5 +132,21 @@ class OrganizationRepository implements OrganizationInterface
     public function isOrganizationLinkedtoMission($organizationId)
     {
         return $this->mission->where('organization_id', $organizationId)->count();
+    }
+
+    /**
+     * Check organization linked to mission with donation_attributes
+     *
+     * @param string $organizationId
+     * @return bool
+     */
+    public function isLinkedToMissionWithDonationAttribute($organizationId)
+    {
+        $mission = $this->mission
+            ->join('donation_attribute', 'donation_attribute.mission_id', '=', 'mission.mission_id')
+            ->where('mission.organization_id', $organizationId)
+            ->count();
+
+        return $mission >= 1;
     }
 }
