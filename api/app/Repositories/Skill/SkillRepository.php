@@ -54,7 +54,7 @@ class SkillRepository implements SkillInterface
         $sortBy = $request->get('sortBy');
 
         if ($sortBy && $sortBy === 'translations' && $searchLanguage) {
-            $skillQuery = $this->skill->select('skill_id', 'skill_name', 'translations', 'parent_skill', 'created_at', 'updated_at', DB::raw("JSON_EXTRACT(translations, '$." . $searchLanguage . "') AS translated"));
+            $skillQuery = $this->skill->select('skill_id', 'skill_name', 'translations', 'parent_skill', 'created_at', 'updated_at', DB::raw("JSON_EXTRACT(translations, '$." . $searchLanguage . "') COLLATE utf8mb4_unicode_ci AS translated"));
             $sortBy = 'translated';
         } else {
             $skillQuery = $this->skill->select('skill_id', 'skill_name', 'translations', 'parent_skill', 'created_at', 'updated_at');
