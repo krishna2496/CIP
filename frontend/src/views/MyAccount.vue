@@ -356,14 +356,8 @@ export default {
                 donation_goal: "",
                 donation_goal_year: ""
             },
-            yearDefault: "2020",
-            yearList: [
-                ["0", "2020"],
-                ["01", "2021"],
-                ["02", "2022"],
-                ["03", "2023"],
-                ["04", "2024"],
-            ],
+            yearDefault: "",
+            yearList: [],
             isDonationSettingEnable : false
         };
     },
@@ -482,11 +476,16 @@ export default {
                         });
                     }
                     this.profile.firstName = this.userData.first_name,
-                        this.profile.lastName = this.userData.last_name,
-                        this.profile.employeeId = this.userData.employee_id,
-                        this.profile.profileText = this.userData.profile_text,
-                        this.profile.title = this.userData.title,
-                        this.profile.whyiVolunteer = this.userData.why_i_volunteer
+                    this.profile.lastName = this.userData.last_name,
+                    this.profile.employeeId = this.userData.employee_id,
+                    this.profile.profileText = this.userData.profile_text,
+                    this.profile.title = this.userData.title,
+                    this.profile.whyiVolunteer = this.userData.why_i_volunteer
+                    if (this.userData.user_donation_goal) {
+                        // this.profile.amount = String(this.userData.user_donation_goal[0].donation_goal);
+                        // this.profile.year = this.userData.user_donation_goal[0].donation_goal_year
+                        // this.yearDefault = this.userData.user_donation_goal[0].donation_goal_year
+                    }
                     if (this.userData.linked_in_url != null) {
                         this.profile.linkedInUrl = this.userData.linked_in_url
                     }
@@ -670,8 +669,7 @@ export default {
             this.saveProfileData.custom_fields = [];
             this.saveProfileData.skills = [];
             this.saveProfileData.donation_goal = this.profile.amount,
-                this.saveProfileData.donation_goal_year = this.profile.year
-            console.log(this.saveProfileData);
+            this.saveProfileData.donation_goal_year = this.profile.year
             Object.keys(this.returnCustomFeildData).map((key) => {
                 let customValue = this.returnCustomFeildData[key];
                 if (Array.isArray(customValue)) {
@@ -756,9 +754,11 @@ export default {
         this.isDonationSettingEnable = this.settingEnabled(constants.DONATION);
         this.languageCode = store.state.defaultLanguage.toLowerCase();
         this.profile.year = this.yearDefault = moment().format('Y')
+        
         for (let index = (this.yearDefault - 5); index > this.yearDefault; index++) {
-            this.yearsList.push([index, index]);
+            this.yearList.push([index, index]);
         }
+        console.log(this.yearList);
         this.getUserProfileDetail();
         if (store.state.isProfileComplete != 1) {
             this.isUserProfileComplete = 0;
