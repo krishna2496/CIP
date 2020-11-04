@@ -167,6 +167,10 @@ export default new Vuex.Store({
         },
         // User filter data
         userFilter(state, filters) {
+            //todo temp fix CIP-938; remove me when filters + tags will work
+            if (filters.cityId === "") {
+                delete filters.tags.city;
+            }
             localStorage.setItem('search', filters.search)
             localStorage.setItem('countryId', filters.countryId)
             if (filters.stateId) {
