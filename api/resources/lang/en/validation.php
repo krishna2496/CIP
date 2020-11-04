@@ -78,6 +78,8 @@ return [
     'uuid'                 => 'Please use valid UUID string for :attribute',
     'ip_whitelist_pattern' => 'The :attribute field is in invalid format. Example: (216.109.112.0-135, 216.109.112.0/24, 216.109.*.*)',
     'max_item'             => 'The record count may not be greater than :max_item.',
+    'within_range'         => 'The :attribute field must have a value between :minvalue and :maxvalue.',
+    'prefix_with'        => 'The :attribute field must start with ":prefix_with".',
     'max_html_stripped'    => 'The :attribute may not be greater than :max characters.',
 
     /*
@@ -228,6 +230,11 @@ return [
         'states.*.translations' => 'translations',
         'mission_detail.*.label_goal_objective' => 'label goal objective',
         'mission_detail.*.label_goal_achieved' => 'label goal achieved',
+        'impact_donation.*.amount' => 'impact_donation amount',
+        'impact_donation.*.translations' => 'impact_donation translations',
+        'impact_donation.*.translations.*.language_code' => 'impact_donation language_code',
+        'impact_donation.*.translations.*.content' => 'impact_donation content',
+        'impact_donation.*.impact_donation_id' => 'impact_donation_id',
         'impact.*.icon_path' => 'icon path',
         'impact.*.sort_key' => 'impact sort key',
         'impact.*.translations' => 'translations',
