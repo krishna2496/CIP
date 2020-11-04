@@ -399,6 +399,21 @@ export default {
         updateYear(value) {
             this.yearDefault = value.selectedVal;
             this.profile.year = value.selectedVal.replace(/[\s\/]/g, '')
+
+            let usergoaldata = this.userData.user_donation_goal;
+            let datagoalAmount = usergoaldata.filter((data, index) => {
+                if (parseInt(this.profile.year) == parseInt(data.donation_goal_year)) {
+                    return parseInt(data.donation_goal)
+                }
+            })
+            if (datagoalAmount.length > 0 && datagoalAmount[0].donation_goal) {
+                this.profile.amount = String(datagoalAmount[0].donation_goal)
+                this.profile.year = parseInt(datagoalAmount[0].donation_goal_year)
+                this.yearDefault = parseInt(datagoalAmount[0].donation_goal_year)
+            }
+            else {
+                this.profile.amount = ''
+            } 
         },
         updateCountry(value) {
             this.countryDefault = value.selectedVal;
@@ -482,9 +497,21 @@ export default {
                     this.profile.title = this.userData.title,
                     this.profile.whyiVolunteer = this.userData.why_i_volunteer
                     if (this.userData.user_donation_goal) {
-                        // this.profile.amount = String(this.userData.user_donation_goal[0].donation_goal);
-                        // this.profile.year = this.userData.user_donation_goal[0].donation_goal_year
-                        // this.yearDefault = this.userData.user_donation_goal[0].donation_goal_year
+                        let usergoaldata = this.userData.user_donation_goal;
+                        let datagoalAmount = usergoaldata.filter((data, index) => {
+                            if (parseInt(this.profile.year) == parseInt(data.donation_goal_year)) {
+                                return parseInt(data.donation_goal)
+                            }
+                        })
+                        if (datagoalAmount.length > 0 && datagoalAmount[0].donation_goal) {
+                            this.profile.amount = String(datagoalAmount[0].donation_goal)
+                            this.profile.year = parseInt(datagoalAmount[0].donation_goal_year)
+                            this.yearDefault = parseInt(datagoalAmount[0].donation_goal_year)
+                        }
+                        else {
+                            this.profile.amount = ''
+                        } 
+                        
                     }
                     if (this.userData.linked_in_url != null) {
                         this.profile.linkedInUrl = this.userData.linked_in_url
@@ -755,10 +782,10 @@ export default {
         this.languageCode = store.state.defaultLanguage.toLowerCase();
         this.profile.year = this.yearDefault = moment().format('Y')
         
-        for (let index = (this.yearDefault - 5); index > this.yearDefault; index++) {
+        for (let index = this.yearDefault; index < parseInt(this.yearDefault)  + 5 ; index++) {
             this.yearList.push([index, index]);
         }
-        console.log(this.yearList);
+        
         this.getUserProfileDetail();
         if (store.state.isProfileComplete != 1) {
             this.isUserProfileComplete = 0;
