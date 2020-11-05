@@ -7,7 +7,7 @@ use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
 use Illuminate\Http\Response;
 use App\Helpers\ResponseHelper;
 
-class TenantHasSettings
+class TenantHasSettingsMiddleware
 {
     /**
      * @var App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository
