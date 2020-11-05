@@ -6,7 +6,7 @@ use App\Helpers\ResponseHelper;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Http\Middleware\TenantHasSettings;
+use App\Http\Middleware\TenantHasSettingsMiddleware;
 use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
 use Mockery;
 use TestCase;
@@ -42,7 +42,7 @@ class TenantHasSettingsTest extends TestCase
                 trans('messages.custom_error_message.ERROR_TENANT_SETTING_DISABLED')
             );
 
-        $middleware = new TenantHasSettings(
+        $middleware = new TenantHasSettingsMiddleware(
             $tenantActivatedSettingRepository,
             $responseHelper
         );
@@ -71,7 +71,7 @@ class TenantHasSettingsTest extends TestCase
             ->once()
             ->andReturn(true);
 
-        $middleware = new TenantHasSettings(
+        $middleware = new TenantHasSettingsMiddleware(
             $tenantActivatedSettingRepository,
             $responseHelper
         );
