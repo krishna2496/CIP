@@ -145,6 +145,7 @@ class Helpers
      */
     public function createConnection(int $tenantId)
     {
+        $this->db->purge('tenant');
         Config::set('database.connections.tenant', array(
             'driver' => 'mysql',
             'host' => env('DB_HOST'),
