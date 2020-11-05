@@ -177,7 +177,7 @@
                             <b-col md="6">
                                 <b-form-group>
                                     <label for class="has-help-text">{{languageData.label.personal_donation_goal}}
-                                        <b-button class="help-text" v-b-modal.helpModal>{{languageData.label.help}}</b-button>
+                                        <!-- <b-button class="help-text" v-b-modal.helpModal>{{languageData.label.help}}</b-button> -->
                                     </label>
                                     <b-form-input id type="text" v-model.trim="profile.amount" :class="{ 'is-invalid': submitted && $v.profile.amount.$error }" :placeholder="languageData.label.amount"></b-form-input>
                                     <div v-if="submitted && !$v.profile.amount.required" class="invalid-feedback">

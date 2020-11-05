@@ -136,7 +136,7 @@
                                 </b-form-group>
                             </b-col>
                             <b-col md="6"></b-col>
-                            <b-col md="6">
+                            <b-col md="6" v-if="isDonationSettingEnable">
                                 <b-form-group>
                                     <label>{{languageData.label.currency}}*</label>
                                     <model-select class="search-dropdown" v-bind:class="{'is-invalid' :submitted && $v.currency.$error}" :options="currencyList" v-model="currency" :placeholder="currencyDefault" @input="updateCurrency">
@@ -270,7 +270,8 @@ export default {
             languageListing : [],
             componentKey : 0,
             linkedInUrl : '',
-            isSubmitBtnClick : false
+            isSubmitBtnClick : false,
+            isDonationSettingEnable : false
         };
     },
     validations: {
@@ -480,7 +481,8 @@ export default {
         this.currencyDefault = this.languageData.placeholder.currency
         this.isQuickAccessFilterDisplay = this.settingEnabled(constants.QUICK_ACCESS_FILTERS);
         this.imageLoader = false;
-        this.isPrefilLoaded = true
+        this.isPrefilLoaded = true;
+        this.isDonationSettingEnable = this.settingEnabled(constants.DONATION);
         const img = new Image();
         if (store.state.avatar != '' && store.state.avatar != null) {
             img.src = store.state.avatar;
