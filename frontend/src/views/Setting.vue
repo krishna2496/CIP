@@ -99,7 +99,7 @@
                             <b-col md="6">
                                 <b-form-group>
                                     <label for>
-                                        {{languageData.label.confirm_password}}
+                                        {{ languageData.label.confirm_new_password }}
                                     </label>
                                     <b-form-input id v-model.trim="confirmPassword" :class="{ 'is-invalid': $v.confirmPassword.$error }" :placeholder="languageData.placeholder.confirm_password" @keypress.enter.prevent="changePassword" type="password">
                                     </b-form-input>
@@ -324,7 +324,7 @@ export default {
 
             this.changeCityData(value.selectedId);
         },
-        
+
         changeImage(image) {
             this.imageLoader = true;
             let imageData = {}
@@ -341,7 +341,7 @@ export default {
 
             })
         },
-       
+
         //submit form
         handleSubmit() {
 
@@ -424,7 +424,7 @@ export default {
                             if (data[0] == response.data.preference.timezone_id) {
                                 this.timeDefault = data[1]
                             }
-                            
+
                             timezoneArray.push({
                                 'text': data[1],
                                 'value': data[0]

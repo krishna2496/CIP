@@ -109,6 +109,7 @@
 		"language": "Language",
 		"timezone": "Time zone",
 		"address_information": "Address information",
+		"basic_information": "Basic information",
 		"professional_information": "Professional information",
 		"linked_in": "LinkedIn",
 		"custom_field": "Additional information",
@@ -302,12 +303,14 @@
 		"and": "&",
 		"for": "For",
 		"sort_deadline": "Sort by deadline",
-		"no_image_available": "No image available",	
-		"personal_donation_goal" : "Personal Donation Goal",
-		"preferences" : "Preferences",
-		"currency" : "Currency",
-		"current_password" : "Current password",
-		"basic_information": "Basic information"
+		"no_image_available": "No image available",
+		"profile": "Profile",
+		"settings": "Settings",
+		"donations": "Donations",
+		"personal_donation_goal": "Personal donation goal",
+		"preferences": "Preferences",
+		"currency": "Currency",
+		"current_password": "Current password"
 	},
 	"placeholder": {
 		"email_address": "Enter email address",
@@ -401,9 +404,9 @@
 		"password_should_contain_uppercase": "At least 1 uppercase letter",
 		"password_should_contain_lowercase": "At least 1 lowercase letter",
 		"password_should_contain_numbers": "At least 1 digit",
-		"currency_required" : "Currency is required",
-		"donation_goal_required" : "Donation goal amount is required",
-		"valid_donation_goal" : "Please enter valid donation goal amount"
+		"currency_required": "Currency is required",
+		"donation_goal_required": "Donation goal amount is required.",
+		"valid_donation_goal": "Please enter valid donation goal amount."
 	},
 	"export_timesheet_file_names": {
 		"PENDING_TIME_MISSION_ENTRIES_XLSX": "Pending_Time_Mission_Entries.xls",

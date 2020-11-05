@@ -594,7 +594,7 @@
                     </div>
                 </b-container>
             </div>
-            <invite-co-worker ref="userDetailModal" entity-type="MISSION" :entity-id="currentMissionId"></invite-co-worker>
+          <invite-co-worker ref="userDetailModal" entity-type="MISSION" :entity-id="currentMissionId"></invite-co-worker>
         </main>
         <footer v-if="isShownComponent">
             <TheSecondaryFooter v-if="isShownComponent"></TheSecondaryFooter>
