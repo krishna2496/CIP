@@ -97,13 +97,13 @@ class TimeSheetRepositoryTest extends TestCase
             ->once()
             ->andReturn($totalMinutes[0]);
 
-        $instance = $this->getIntance($timeSheet);
+        $instance = $this->getInstance($timeSheet);
         $originalTotalMinutes = $instance->getSumOfUsersTotalMinutes();
 
         $this->assertSame($originalTotalMinutes, $userTotalMinutes);
     }
 
-    private function getIntance($timeSheet)
+    private function getInstance($timeSheet)
     {
         return new TimesheetRepository(
             $timeSheet,

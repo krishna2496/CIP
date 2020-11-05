@@ -117,7 +117,6 @@
                                                         {{ mission.end_date | formatDate }}
                                                     </template>
                                                     <template v-else>
-                                                        {{ languageData.label.on }}
                                                         {{ mission.start_date | formatDate }}
                                                     </template>
                                                 </template>

@@ -67,7 +67,7 @@
 
     .lang-drodown-wrap {
       display: flex;
-      flex: 0 0 100%;
+      flex:0 0 100%;
       max-width: 100%;
       justify-content: flex-end;
 
@@ -104,8 +104,7 @@
       margin: 0 0 22px;
     }
 
-    .btn-bordersecondary,
-    .btn-borderprimary {
+    .btn-bordersecondary, .btn-borderprimary {
       display: flex;
       justify-content: center;
       flex: 1;
@@ -331,14 +330,14 @@
   }
 }
 
-.alert-danger {
+.alert-danger{
   line-height: 18px;
   padding-left: 12px;
   padding-right: 40px;
-  &.alert-dismissible {
-    .close {
+  &.alert-dismissible{
+    .close{
       line-height: 18px;
-      padding: 10px;
+      padding:10px;
       top: 3px;
     }
   }
@@ -354,8 +353,9 @@
   }
 }
 .custom-text-block {
-  text-align: center;
   margin-top: 24px;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
   h1,
   h2,
   h3,

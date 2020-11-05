@@ -54,7 +54,7 @@
 
     .close {
       font-size: 0;
-      background: url($assetUrl+"/cross-ic.svg") no-repeat;
+      background: url($assetUrl + "/cross-ic.svg") no-repeat;
       padding: 0;
       margin: 0;
       width: 30px;
@@ -172,95 +172,6 @@
   }
 }
 
-.payment-modal {
-  .modal-dialog {
-    @include sm-min {
-      max-width: 950px;
-    }
-    .title-with-border {
-      font-size: 18px;
-      line-height: 24px;
-      margin-bottom: 25px;
-      span {
-        padding-bottom: 9px;
-        &:after {
-          width: 230px;
-          @include sm-max {
-            width: 100%;
-          }
-        }
-      }
-    }
-    .form-wrap {
-      label {
-        margin-bottom: 4px;
-      }
-      .info-icon {
-        cursor: pointer;
-        span {
-          color: $primary;
-        }
-        .cvv-tooltip {
-          background: transparent;
-          border: none;
-          padding: 0;
-          color: $black-primary;
-          display: inline-block !important;
-          margin: 0;
-          font-size: 15px;
-          min-width: auto;
-          min-height: auto;
-          color: $primary;
-          position: relative;
-          top: -2px;
-        }
-      }
-      .form-group {
-        margin-bottom: 24px;
-        &.has-img {
-          position: relative;
-          input.form-control {
-            padding-left: 64px;
-          }
-          .card-img {
-            position: absolute;
-            left: 0.75rem;
-            top: 40px;
-            width: 38px;
-            line-height: 0;
-            img {
-              max-width: 100%;
-              height: auto;
-            }
-          }
-        }
-      }
-      > .btn-row {
-        display: flex;
-        justify-content: flex-end;
-        margin-top: 8px;
-        align-items: flex-start;
-        .btn {
-          margin-right: 10px;
-          &:last-child {
-            margin-right: 0;
-          }
-        }
-        .cancel-btn {
-          min-width: 119px;
-        }
-        .save-btn {
-          min-width: 108px;
-          margin: 0;
-        }
-      }
-    }
-    .ui.selection.dropdown.search-dropdown .menu {
-      max-height: 150px;
-    }
-  }
-}
-
 /** send message modal style **/
 .send-message-modal {
   .modal-dialog {
@@ -271,16 +182,16 @@
 
     .form-group {
       &.d-flex {
-        > div {
+        >div {
           display: flex;
           margin-bottom: 8px;
 
-          > label {
+          >label {
             margin: 0 10px 0 0;
             min-width: 50px;
           }
 
-          > p {
+          >p {
             margin: 0;
             word-break: break-all;
           }
@@ -337,7 +248,7 @@
   }
 
   .custom-dropdown {
-    > span {
+    >span {
       padding-top: 9px;
       padding-bottom: 9px;
     }
@@ -373,6 +284,8 @@ body {
     max-width: 800px;
   }
 }
+
+
 
 .badge {
   &.status-label {

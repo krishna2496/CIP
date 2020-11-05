@@ -196,6 +196,17 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->patch('/users/password', ['middleware' => 'auth.tenant.admin|JsonApiMiddleware',
         'uses' => 'App\User\UserController@createPassword']);
 
+    // TODO: CIP-758
+    /* Payment creation  */
+    // $router->post('/app/payments/', ['as' => 'app.payment',
+    //     'middleware' => 'localization|tenant.connection|jwt.auth|user.profile.complete|TenantHasSettings:donation|DonationIpWhitelistMiddleware',
+    //     'uses' => 'App\PaymentGateway\PaymentController@store']);
+
+    /* Check if mission is eligible for donation */
+    // $router->get('/app/mission/{missionId}/donation-eligible', [
+    //     'middleware' => 'tenant.connection|jwt.auth|user.profile.complete|JsonApiMiddleware',
+    //     'uses' => 'App\Mission\MissionController@isEligibleForDonation']);
+
 });
 
 /* SAML */
@@ -606,6 +617,11 @@ $router->group(
             'uses' => 'Admin\Mission\MissionController@removeMissionTab']);
             $router->delete('/mission-impact/{missionImpactId}', ['middleware' => ['TenantHasSettings:mission_impact'], 'as' => 'missions.missionimpact.delete',
             'uses' => 'Admin\Mission\MissionController@removeMissionImpact']);
+            $router->delete('/impact-donation/{id}',
+                ['middleware' => ['TenantHasSettings:donation,impact_donation'],
+                'as' => 'missions.missionimpactdonation.delete',
+                'uses' => 'Admin\Mission\MissionController@removeMissionImpactDonation']
+            );
         }
     );
 
@@ -929,3 +945,39 @@ $router->group(
             $router->delete('/{id}', ['uses' => 'Admin\DonationIp\WhitelistController@delete']);
         }
     );
+
+    /* Payment methods management */
+    // TODO: CIP-758
+    // $router->group([
+    //         'prefix' => '/app/user/payment-methods',
+    //         'middleware' => implode('|', [
+    //             'localization',
+    //             'tenant.connection',
+    //             'jwt.auth',
+    //             'JsonApiMiddleware',
+    //             'TenantHasSettings:donation',
+    //         ]),
+    //     ],
+    //     function ($router) {
+    //         $router->get('/', [
+    //             'as' => 'payment-method.get',
+    //             'uses' => 'App\PaymentGateway\PaymentMethodController@get',
+    //         ]);
+    //         $router->get('/{id}', [
+    //             'as' => 'payment-method.get-by-id',
+    //             'uses' => 'App\PaymentGateway\PaymentMethodController@getById',
+    //         ]);
+    //         $router->post('/', [
+    //             'as' => 'payment-method.create',
+    //             'uses' => 'App\PaymentGateway\PaymentMethodController@create',
+    //         ]);
+    //         $router->patch('/{id}', [
+    //             'as' => 'payment-method.update-by-id',
+    //             'uses' => 'App\PaymentGateway\PaymentMethodController@update',
+    //         ]);
+    //         $router->delete('/{id}', [
+    //             'as' => 'payment-method.delete-by-id',
+    //             'uses' => 'App\PaymentGateway\PaymentMethodController@delete',
+    //         ]);
+    //     }
+    // );
