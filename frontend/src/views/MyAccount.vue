@@ -102,7 +102,14 @@
                                     </div>
                                 </b-form-group>
                             </b-col>
-                            <!-- <b-col md="6">		                                <b-form-group>		                                    <label>{{languageData.label.city}}</label>		                                    <CustomFieldDropdown v-model="profile.city"		                                    :defaultText="cityDefault"		                                    :optionList="cityList" @updateCall="updateCity" translationEnable="false" />		                                </b-form-group>		                            </b-col>	 -->
+                            <!-- <b-col md="6">		                                
+                                <b-form-group>		                                    
+                                    <label>{{languageData.label.city}}</label>
+                                    <CustomFieldDropdown v-model="profile.city" 
+                                        :defaultText="cityDefault"
+                                        :optionList="cityList" 
+                                        @updateCall="updateCity" 
+                                        translationEnable="false" />		                                </b-form-group>		                            </b-col>	 -->
                             <b-col md="6">
                                 <b-form-group>
                                     <label for>{{languageData.label.department}}</label>
