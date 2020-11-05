@@ -54,7 +54,7 @@ class IPValidationHelperTest extends TestCase
         }
     }
 
-	/**
+    /**
      * @testdox Test byDirect method on IPValidationHelper Class
      */
     public function testByDirect()
@@ -272,13 +272,13 @@ class IPValidationHelperTest extends TestCase
         ];
 
         foreach ($testData as $cidr => $expectedIpRange) {
-            // Will test 192.168.0-255.0-255 IPS with expected CIDR range 
-            for ($max = 0; $max < 255; $max++) { 
+            // Will test 192.168.0-255.0-255 IPS with expected CIDR range
+            for ($max = 0; $max < 255; $max++) {
                 $ip = "192.168.$max.$max";
                 $this->assertSame(
                     $this->ipValidator->byRange($ip, $expectedIpRange),
                     $this->ipValidator->byCidr($ip, $cidr)
-                );   
+                );
             }
         }
 
