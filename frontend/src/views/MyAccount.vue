@@ -1,33 +1,32 @@
 <template>
-    <div class="profile-page inner-pages">
-        <header>
-            <ThePrimaryHeader v-if="isShownComponent"></ThePrimaryHeader>
-        </header>
-        <main>
-            <b-container>
-                <b-row class="dashboard-tab-content" v-if="errorPage && pageLoaded">
-                    <b-col xl="12" lg="12" md="12">
-                        <b-alert show variant="danger">
-                            {{errorPageMessage}}
-                        </b-alert>
-                    </b-col>
-                </b-row>
-                <b-row class="is-profile-complete" v-if="isUserProfileComplete != 1">
-                    <b-col xl="12" lg="12" md="12">
-                        <b-alert show variant="warning" >
-                            {{languageData.label.fill_up_mandatory_fields_to_access_platform}}
-                        </b-alert>
-                    </b-col>
-                </b-row>
-                <b-row class="profile-content" v-if="showPage && (!errorPage) && pageLoaded">
-                    <b-col xl="3" lg="4" md="12" class="profile-left-col">
-                        <div class="profile-details">
-                            <div class="profile-block">
-                                <div v-bind:class="{ 'content-loader-wrap': true, 'loader-active ': isPrefilLoaded || imageLoader}">
-                                    <div class="content-loader"></div>
-                                </div>
-                                <picture-input :title="changePhoto" ref="pictureInput" @change="changeImage"
-                                               accept="image/jpeg,image/png" :prefill="newUrl" buttonClass="btn" :customStrings="{
+<div class="profile-page inner-pages">
+    <header>
+        <ThePrimaryHeader v-if="isShownComponent"></ThePrimaryHeader>
+    </header>
+    <main>
+        <b-container>
+            <b-row class="dashboard-tab-content" v-if="errorPage && pageLoaded">
+                <b-col xl="12" lg="12" md="12">
+                    <b-alert show variant="danger">
+                        {{errorPageMessage}}
+                    </b-alert>
+                </b-col>
+            </b-row>
+            <b-row class="is-profile-complete" v-if="isUserProfileComplete != 1">
+                <b-col xl="12" lg="12" md="12">
+                    <b-alert show variant="warning">
+                        {{languageData.label.fill_up_mandatory_fields_to_access_platform}}
+                    </b-alert>
+                </b-col>
+            </b-row>
+            <b-row class="profile-content" v-if="showPage && (!errorPage) && pageLoaded">
+                <b-col xl="3" lg="4" md="12" class="profile-left-col">
+                    <div class="profile-details">
+                        <div class="profile-block">
+                            <div v-bind:class="{ 'content-loader-wrap': true, 'loader-active ': isPrefilLoaded || imageLoader}">
+                                <div class="content-loader"></div>
+                            </div>
+                            <picture-input :title="changePhoto" ref="pictureInput" @change="changeImage" accept="image/jpeg,image/png" :prefill="newUrl" buttonClass="btn" :customStrings="{
                                         upload: '<h1>Bummer!</h1>',
                                         drag: 'Drag a 😺 GIF or GTFO'
                                     }">
@@ -94,23 +93,16 @@
                                     </b-form-input>
                                 </b-form-group>
                             </b-col>
-                            <b-col md="6">	
-                                <b-form-group>	
-                                    <label>{{languageData.label.country}}*</label>	
-                                    <CustomFieldDropdown v-model="profile.country" :errorClass="submitted && $v.profile.country.$error" :defaultText="countryDefault" :optionList="countryList" @updateCall="updateCountry" translationEnable="false" />	
-                                    <div v-if="submitted && !$v.profile.country.required" class="invalid-feedback">	
-                                        {{ languageData.errors.country_required }}	
-                                    </div>	
-                                </b-form-group>	
-                            </b-col>	
-                            <b-col md="6">	
-                                <b-form-group>	
-                                    <label>{{languageData.label.city}}</label>	
-                                    <CustomFieldDropdown v-model="profile.city"	
-                                    :defaultText="cityDefault"	
-                                    :optionList="cityList" @updateCall="updateCity" translationEnable="false" />	
-                                </b-form-group>	
-                            </b-col>	
+                            <b-col md="6">
+                                <b-form-group>
+                                    <label>{{languageData.label.country}}*</label>
+                                    <CustomFieldDropdown v-model="profile.country" :errorClass="submitted && $v.profile.country.$error" :defaultText="countryDefault" :optionList="countryList" @updateCall="updateCountry" translationEnable="false" />
+                                    <div v-if="submitted && !$v.profile.country.required" class="invalid-feedback">
+                                        {{ languageData.errors.country_required }}
+                                    </div>
+                                </b-form-group>
+                            </b-col>
+                            <!-- <b-col md="6">		                                <b-form-group>		                                    <label>{{languageData.label.city}}</label>		                                    <CustomFieldDropdown v-model="profile.city"		                                    :defaultText="cityDefault"		                                    :optionList="cityList" @updateCall="updateCity" translationEnable="false" />		                                </b-form-group>		                            </b-col>	 -->
                             <b-col md="6">
                                 <b-form-group>
                                     <label for>{{languageData.label.department}}</label>
@@ -177,7 +169,6 @@
                             <b-col md="6">
                                 <b-form-group>
                                     <label for class="has-help-text">{{languageData.label.personal_donation_goal}}
-                                        <!-- <b-button class="help-text" v-b-modal.helpModal>{{languageData.label.help}}</b-button> -->
                                     </label>
                                     <b-form-input id type="text" v-model.trim="profile.amount" :class="{ 'is-invalid': submitted && $v.profile.amount.$error }" :placeholder="languageData.label.amount"></b-form-input>
                                     <div v-if="submitted && !$v.profile.amount.required" class="invalid-feedback">
@@ -217,18 +208,6 @@
                     </b-form>
                 </b-col>
             </b-row>
-            <b-modal id="helpModal" hide-footer>
-                <template slot="modal-header" slot-scope="{ close }">
-                    <i class="close" @click="close()" v-b-tooltip.hover :title="languageData.label.close"></i>
-                    <h5 class="modal-title">{{languageData.label.personal_donation_goal}}</h5>
-                </template>
-                <template v-slot:modal-title>
-                    {{languageData.label.personal_donation_goal}}
-                </template>
-                <div class="d-block">
-                    <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
-                </div>
-            </b-modal>
         </b-container>
     </main>
     <footer>
@@ -358,7 +337,7 @@ export default {
             },
             yearDefault: "",
             yearList: [],
-            isDonationSettingEnable : false
+            isDonationSettingEnable: false
         };
     },
     validations: {
@@ -410,10 +389,9 @@ export default {
                 this.profile.amount = String(datagoalAmount[0].donation_goal)
                 this.profile.year = parseInt(datagoalAmount[0].donation_goal_year)
                 this.yearDefault = parseInt(datagoalAmount[0].donation_goal_year)
-            }
-            else {
+            } else {
                 this.profile.amount = ''
-            } 
+            }
         },
         updateCountry(value) {
             this.countryDefault = value.selectedVal;
@@ -427,6 +405,7 @@ export default {
         changeImage(image) {
             this.imageLoader = true;
             let imageData = {}
+
             imageData.avatar = image;
             changeProfilePicture(imageData).then(response => {
                 if (response.error == true) {
@@ -434,8 +413,15 @@ export default {
                 } else {
                     this.makeToast("success", response.message);
                     store.commit("changeAvatar", response.data)
+                    if (response.data && response.data.avatar) {
+                        const img = new Image();
+                        this.newUrl = response.data.avatar;
+                        img.src = this.newUrl;
+                        img.onload = () => {
+                            this.imageLoader = false;
+                        }
+                    }
                 }
-                this.imageLoader = false;
             })
         },
         saveSkillData() {
@@ -491,11 +477,11 @@ export default {
                         });
                     }
                     this.profile.firstName = this.userData.first_name,
-                    this.profile.lastName = this.userData.last_name,
-                    this.profile.employeeId = this.userData.employee_id,
-                    this.profile.profileText = this.userData.profile_text,
-                    this.profile.title = this.userData.title,
-                    this.profile.whyiVolunteer = this.userData.why_i_volunteer
+                        this.profile.lastName = this.userData.last_name,
+                        this.profile.employeeId = this.userData.employee_id,
+                        this.profile.profileText = this.userData.profile_text,
+                        this.profile.title = this.userData.title,
+                        this.profile.whyiVolunteer = this.userData.why_i_volunteer
                     if (this.userData.user_donation_goal) {
                         let usergoaldata = this.userData.user_donation_goal;
                         let datagoalAmount = usergoaldata.filter((data, index) => {
@@ -507,11 +493,10 @@ export default {
                             this.profile.amount = String(datagoalAmount[0].donation_goal)
                             this.profile.year = parseInt(datagoalAmount[0].donation_goal_year)
                             this.yearDefault = parseInt(datagoalAmount[0].donation_goal_year)
-                        }
-                        else {
+                        } else {
                             this.profile.amount = ''
-                        } 
-                        
+                        }
+
                     }
                     if (this.userData.linked_in_url != null) {
                         this.profile.linkedInUrl = this.userData.linked_in_url
@@ -696,7 +681,7 @@ export default {
             this.saveProfileData.custom_fields = [];
             this.saveProfileData.skills = [];
             this.saveProfileData.donation_goal = this.profile.amount,
-            this.saveProfileData.donation_goal_year = this.profile.year
+                this.saveProfileData.donation_goal_year = this.profile.year
             Object.keys(this.returnCustomFeildData).map((key) => {
                 let customValue = this.returnCustomFeildData[key];
                 if (Array.isArray(customValue)) {
@@ -781,11 +766,11 @@ export default {
         this.isDonationSettingEnable = this.settingEnabled(constants.DONATION);
         this.languageCode = store.state.defaultLanguage.toLowerCase();
         this.profile.year = this.yearDefault = moment().format('Y')
-        
-        for (let index = this.yearDefault; index < parseInt(this.yearDefault)  + 5 ; index++) {
+
+        for (let index = this.yearDefault; index < parseInt(this.yearDefault) + 5; index++) {
             this.yearList.push([index, index]);
         }
-        
+
         this.getUserProfileDetail();
         if (store.state.isProfileComplete != 1) {
             this.isUserProfileComplete = 0;
