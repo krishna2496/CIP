@@ -4318,6 +4318,16 @@
             "required": true,
             "type": "string",
             "default": ""
+          },
+          {
+            "name": "keys[]",
+            "in": "path",
+            "description": "List of all tenant setting keys",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
         ],
         "responses": {

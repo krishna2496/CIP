@@ -65,32 +65,29 @@ class TenantSettingsController extends Controller
     public function index(Request $request): JsonResponse
     {
         // Fetch all tenant settings details from super admin
-        $adminTenantSettings = $this->helpers->getAllTenantSetting($request);
+        $adminTenantSettings = $this->helpers->getAllTenantSetting($request)->keyBy('tenant_setting_id');
+        $keys = $adminTenantSettings
+            ->keys()
+            ->toArray();
 
         // Fetch all tenant settings data
-        $tenantSettings = $this->tenantSettingRepository->fetchAllTenantSettings();
-        $tenantSettingData = array();
+        $tenantSettings = $this->tenantSettingRepository->fetchAllTenantSettings(
+            $keys
+        );
 
-        if ($tenantSettings->count() &&  $adminTenantSettings->count()) {
-            foreach ($tenantSettings as $settingKey => $tenantSetting) {
-                $index = $adminTenantSettings->search(function ($value, $key) use ($tenantSetting) {
-                    return $value->tenant_setting_id === $tenantSetting->setting_id;
-                });
-                $tenantSettingData[] = [
-                    'tenant_setting_id' => $tenantSetting->tenant_setting_id,
-                    'key' => $adminTenantSettings[$index]->key,
-                    'description' => $adminTenantSettings[$index]->description,
-                    'title' => $adminTenantSettings[$index]->title
-                ];
+        $settings = $tenantSettings->map(function ($setting) use ($adminTenantSettings) {
+            $info = $adminTenantSettings->get($setting->setting_id);
+            if (!$info) {
+                return null;
             }
-        }
-        $apiData = $tenantSettingData;
+            $info->tenant_setting_id = $setting->tenant_setting_id;
+            return $info;
+        })->filter();
 
         // Set response data
+        $apiData = $settings->isEmpty() ? [] : $settings->toArray();
         $apiStatus = Response::HTTP_OK;
-        $apiMessage = ($tenantSettings->isEmpty() || $adminTenantSettings->isEmpty()) ?
-        trans('messages.success.MESSAGE_NO_RECORD_FOUND'):
-        trans('messages.success.MESSAGE_TENANT_SETTINGS_LISTING');
+        $apiMessage = $settings->isEmpty() ? trans('messages.success.MESSAGE_NO_RECORD_FOUND') : trans('messages.success.MESSAGE_TENANT_SETTINGS_LISTING');
 
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
@@ -121,7 +118,7 @@ class TenantSettingsController extends Controller
                     $validator->errors()->first()
                 );
             }
-            
+
             $setting = $this->tenantSettingRepository->updateSetting($request->toArray(), $settingId);
 
             $apiStatus = Response::HTTP_OK;

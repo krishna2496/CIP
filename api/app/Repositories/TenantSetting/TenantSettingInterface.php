@@ -20,7 +20,9 @@ interface TenantSettingInterface
     /**
      * Get all tenant's settings data
      *
+     * @param array $ids
+     *
      * @return Illuminate\Database\Eloquent\Collection
      */
-    public function fetchAllTenantSettings(): Collection;
+    public function fetchAllTenantSettings(array $ids = []): Collection;
 }
