@@ -102,9 +102,7 @@
                                     </div>
                                 </b-form-group>
                             </b-col>
-                            <!-- <b-col md="6">		                                
-                                <b-form-group>		                                    
-                                    <label>{{languageData.label.city}}</label>
+                            <!-- <b-col md="6">		                                <b-form-group>		                                    <label>{{languageData.label.city}}</label>
                                     <CustomFieldDropdown v-model="profile.city" 
                                         :defaultText="cityDefault"
                                         :optionList="cityList" 
@@ -241,7 +239,8 @@ import {
     loadLocaleMessages,
     country,
     skill,
-    timezone
+    timezone,
+    policy
 } from "../services/service";
 import {
     required,
@@ -713,14 +712,27 @@ export default {
                 if (response.error == true) {
                     this.makeToast("danger", response.message);
                 } else {
+                    const redirect = !this.isUserProfileComplete && response.data.is_profile_complete;
                     this.isUserProfileComplete = response.data.is_profile_complete;
                     store.commit('changeProfileSetFlag', response.data.is_profile_complete);
+                    store.commit('setDefaultLanguageCode', this.languageCode);
                     this.showPage = false;
+                    this.setPolicyPage();
+                    this.isShownComponent = false;
                     this.getUserProfileDetail().then(() => {
                         this.showPage = true;
-                        setSiteTitle();
-                        store.commit("changeUserDetail", this.profile)
+                        loadLocaleMessages(this.profile.languageCode).then(() => {
+                            this.languageData = JSON.parse(store.state.languageLabel);
+                            setSiteTitle();
+                            this.makeToast("success", response.message);
+                            this.isShownComponent = true;
+                            store.commit("changeUserDetail", this.profile)
+                            if (redirect) {
+                                this.$router.push('/home');
+                            }
+                        });
                     });
+
                 }
             });
         },
@@ -762,6 +774,17 @@ export default {
                 keyCode != 8 && keyCode != 32) {
                 evt.preventDefault();
             }
+        },
+        setPolicyPage() {
+            policy().then(response => {
+                if (response.error == false) {
+                    if (response.data.length > 0) {
+                        store.commit('policyPage', response.data);
+                        return;
+                    }
+                }
+                store.commit('policyPage', null);
+            });
         }
     },
     created() {
