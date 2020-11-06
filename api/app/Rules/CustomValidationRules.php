@@ -52,8 +52,9 @@ class CustomValidationRules
         });
 
         Validator::extend('valid_linkedin_url', function ($attribute, $value) {
+            // Be sure to update the validation in the MyAccount vue file as well
             return (preg_match(
-                '/^https:\/\/www\.linkedin\.com\/[a-z0-9]+/',
+                '/^https:\/\/(|[a-z]{2,3}\.)linkedin\.com\/(in|company)\/[-a-z0-9]+(|[\/#\?][^\n\r]*)$/Ds',
                 $value
             ))
             ? true : false;
