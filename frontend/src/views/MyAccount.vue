@@ -491,7 +491,9 @@ export default {
                         this.profile.whyiVolunteer = this.userData.why_i_volunteer
                     if (this.userData.user_donation_goal) {
                         let usergoaldata = this.userData.user_donation_goal;
+                        this.yearList = [];
                         let datagoalAmount = usergoaldata.filter((data, index) => {
+                            this.yearList.push([data.donation_goal_year, data.donation_goal_year]);
                             if (parseInt(this.profile.year) == parseInt(data.donation_goal_year)) {
                                 return parseInt(data.donation_goal)
                             }
@@ -773,11 +775,7 @@ export default {
         this.isDonationSettingEnable = this.settingEnabled(constants.DONATION);
         this.languageCode = store.state.defaultLanguage.toLowerCase();
         this.profile.year = this.yearDefault = moment().format('Y')
-
-        for (let index = this.yearDefault; index < parseInt(this.yearDefault) + 5; index++) {
-            this.yearList.push([index, index]);
-        }
-
+        this.yearList.push([this.yearDefault, this.yearDefault]);
         this.getUserProfileDetail();
         if (store.state.isProfileComplete != 1) {
             this.isUserProfileComplete = 0;
