@@ -504,8 +504,22 @@ class StoryController extends Controller
             trans("general.export_story_headings.PUBLISHED_DATE")
         ];
 
+        $defaultLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
+
         $excel->setHeadlines($headings);
         foreach ($stories as $story) {
+
+            if (!isset($story->mission->missionLanguage[0])) {
+                $storyDefaultLanguage = $this->storyRepository->getUserStories(
+                    $defaultLanguage->language_id,
+                    $request->auth->user_id,
+                    $this->tenantSettingHelper->getAvailableMissionTypes($request),
+                    $story->story_id
+                );
+
+                $story = $storyDefaultLanguage[0];
+            }
+
             $excel->appendRow([
                 strip_tags(preg_replace('~[\r\n]+~', '', $story->title)),
                 strip_tags(preg_replace('~[\r\n]+~', '', $story->description)),
