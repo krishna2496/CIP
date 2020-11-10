@@ -109,7 +109,6 @@
 		"language": "Language",
 		"timezone": "Time zone",
 		"address_information": "Address information",
-		"basic_information": "Basic information",
 		"professional_information": "Professional information",
 		"linked_in": "LinkedIn",
 		"custom_field": "Additional information",
@@ -310,7 +309,8 @@
 		"personal_donation_goal": "Personal donation goal",
 		"preferences": "Preferences",
 		"currency": "Currency",
-		"current_password": "Current password"
+		"current_password": "Current password",
+		"basic_information": "Basic information"
 	},
 	"placeholder": {
 		"email_address": "Enter email address",
