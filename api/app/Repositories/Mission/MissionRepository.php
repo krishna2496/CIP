@@ -1070,7 +1070,7 @@ class MissionRepository implements MissionInterface
         // Explore mission by random
         if ($request->has('explore_mission_type') &&
         ($request->input('explore_mission_type') === config('constants.RANDOM'))) {
-            $missionQuery->inRandomOrder();
+            $missionQuery->inRandomOrder(date('Y-m-d'));
         }
 
         if ($request->has('explore_mission_type') && $request->input('explore_mission_type') === config('constants.VIRTUAL')) {
