@@ -500,7 +500,7 @@ export default {
                         if (datagoalAmount.length > 0 && datagoalAmount[0].donation_goal) {
                             this.profile.amount = String(datagoalAmount[0].donation_goal)
                             this.profile.year = parseInt(datagoalAmount[0].donation_goal_year)
-                            this.yearDefault = parseInt(datagoalAmount[0].donation_goal_year)
+                            this.yearDefault = (datagoalAmount[0].donation_goal_year).toString();
                         } else {
                             this.profile.amount = ''
                         }
@@ -715,22 +715,17 @@ export default {
                     const redirect = !this.isUserProfileComplete && response.data.is_profile_complete;
                     this.isUserProfileComplete = response.data.is_profile_complete;
                     store.commit('changeProfileSetFlag', response.data.is_profile_complete);
-                    store.commit('setDefaultLanguageCode', this.languageCode);
                     this.showPage = false;
                     this.setPolicyPage();
                     this.isShownComponent = false;
                     this.getUserProfileDetail().then(() => {
                         this.showPage = true;
-                        loadLocaleMessages(this.profile.languageCode).then(() => {
-                            this.languageData = JSON.parse(store.state.languageLabel);
-                            setSiteTitle();
-                            this.makeToast("success", response.message);
-                            this.isShownComponent = true;
-                            store.commit("changeUserDetail", this.profile)
-                            if (redirect) {
-                                this.$router.push('/home');
-                            }
-                        });
+                        setSiteTitle();
+                        this.makeToast("success", response.message);
+                        store.commit("changeUserDetail", this.profile)
+                        if (redirect) {
+                            this.$router.push('/home');
+                        }
                     });
 
                 }
