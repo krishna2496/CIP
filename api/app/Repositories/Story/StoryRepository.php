@@ -333,7 +333,8 @@ class StoryRepository implements StoryInterface
     public function getUserStories(
         int $languageId,
         int $userId,
-        array $missionTypes = null
+        array $missionTypes = null,
+        $storyId = null
     ): Object {
         $userStoryQuery = $this->story->select(
             'story_id',
@@ -353,6 +354,10 @@ class StoryRepository implements StoryInterface
             $query->select('mission_language_id', 'mission_id', 'title')
                     ->where('language_id', $languageId);
         }])->where('user_id', $userId);
+
+        if ($storyId !== null) {
+            $userStoryQuery->where('story_id', $storyId);
+        }
 
         return $userStoryQuery->get();
     }

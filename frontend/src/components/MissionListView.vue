@@ -81,8 +81,9 @@
                                                 {{ mission.end_date | formatDate }}</span>
                                         </template>
                                         <template v-else>
-                                            <span class="title-text"><em>{{ languageData.label.on }}</em>
-                                                {{mission.start_date | formatDate }}</span>
+                                            <span class="title-text">
+                                                {{mission.start_date | formatDate }}
+                                            </span>
                                         </template>
                                     </div>
                                     <div class="text-wrap" v-else>

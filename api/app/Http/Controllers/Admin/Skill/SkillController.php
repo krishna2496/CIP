@@ -14,10 +14,6 @@ use Validator;
 use Illuminate\Validation\Rule;
 use App\Events\User\UserActivityLogEvent;
 
-//!  Skill controller
-/*!
-This controller is responsible for handling skill listing, show, store, update and delete operations.
- */
 class SkillController extends Controller
 {
     use RestExceptionHandlerTrait;
@@ -39,10 +35,9 @@ class SkillController extends Controller
     /**
      * Create a new controller instance.
      *
-     * @param App\Repositories\User\SkillRepository $skillRepository
-     * @param Illuminate\Http\ResponseHelper $responseHelper
-     * @param Illuminate\Http\Request $request
-     * @return void
+     * @param SkillRepository $skillRepository
+     * @param ResponseHelper $responseHelper
+     * @param Request $request
      */
     public function __construct(SkillRepository $skillRepository, ResponseHelper $responseHelper, Request $request)
     {
@@ -62,9 +57,12 @@ class SkillController extends Controller
         try {
             $skills = $this->skillRepository->skillDetails($request);
 
-            $apiMessage = ($skills->isEmpty()) ? trans('messages.success.MESSAGE_NO_RECORD_FOUND')
-             : trans('messages.success.MESSAGE_SKILL_LISTING');
+            $apiMessage = $skills->isEmpty()
+                ? trans('messages.success.MESSAGE_NO_RECORD_FOUND')
+                : trans('messages.success.MESSAGE_SKILL_LISTING');
+
             return $this->responseHelper->successWithPagination(Response::HTTP_OK, $apiMessage, $skills);
+
         } catch (InvalidArgumentException $e) {
             return $this->invalidArgument(
                 config('constants.error_codes.ERROR_INVALID_ARGUMENT'),

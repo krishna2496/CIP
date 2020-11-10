@@ -486,7 +486,8 @@
             if (linkedInUrl == '') {
               return true
             }
-            const regexp = /^https:\/\/www\.linkedin\.com\/[a-z0-9]+/;
+            // Be sure to match this with the validation in the PHP class CustomValidationRules
+            const regexp = /^https:\/\/(|[a-z]{2,3}\.)linkedin\.com\/(in|company)\/[-a-z0-9]+(|[\/#\?][^\n]*)$/s;
             return (regexp.test(linkedInUrl));
           }
         },
