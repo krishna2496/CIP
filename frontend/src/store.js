@@ -258,11 +258,11 @@ export default new Vuex.Store({
             let langaugeCode = data.languageCode;
             localStorage.setItem('firstName', data.firstName)
             localStorage.setItem('lastName', data.lastName)
-            localStorage.setItem('defaultLanguage', langaugeCode.toUpperCase())
-            localStorage.setItem('defaultLanguageId', data.language);
+            // localStorage.setItem('defaultLanguage', langaugeCode.toUpperCase())
+            // localStorage.setItem('defaultLanguageId', data.language);
             localStorage.setItem('countryId', data.country)
-            state.defaultLanguage = langaugeCode.toUpperCase()
-            state.defaultLanguageId = data.language;
+            // state.defaultLanguage = langaugeCode.toUpperCase()
+            // state.defaultLanguageId = data.language;
             state.firstName = data.firstName;
             state.lastName = data.lastName;
             state.countryId = data.country
