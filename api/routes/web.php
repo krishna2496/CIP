@@ -97,14 +97,14 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Fetch tenant currency */
     $router->get('/app/tenant-currencies', ['as' => 'app.tenant-currency',
-        'middleware' => 'tenant.connection|jwt.auth|TenantHasSettings:donation',
+        'middleware' => 'tenant.connection|jwt.auth|TenantHasSettingsMiddleware:donation',
         'uses' => 'App\Tenant\TenantCurrencyController@index']);
 
     /* Apply to a mission */
     $router->post(
         'app/mission/application',
         ['middleware' =>
-        'tenant.connection|jwt.auth|user.profile.complete|JsonApiMiddleware|TenantHasSettings:volunteering',
+        'tenant.connection|jwt.auth|user.profile.complete|JsonApiMiddleware|TenantHasSettingsMiddleware:volunteering',
             'uses' => 'App\Mission\MissionApplicationController@missionApplication']
     );
 
@@ -138,7 +138,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
     /* Fetch recent volunteers */
     $router->get('/app/mission/{missionId}/volunteers', [
         'middleware' =>
-        'tenant.connection|jwt.auth|user.profile.complete|PaginationMiddleware|TenantHasSettings:volunteering',
+        'tenant.connection|jwt.auth|user.profile.complete|PaginationMiddleware|TenantHasSettingsMiddleware:volunteering',
         'uses' => 'App\Mission\MissionApplicationController@getVolunteers']);
 
     /* Get mission related listing  */
@@ -199,7 +199,7 @@ $router->group(['middleware' => 'localization'], function ($router) {
     // TODO: CIP-758
     /* Payment creation  */
     // $router->post('/app/payments/', ['as' => 'app.payment',
-    //     'middleware' => 'localization|tenant.connection|jwt.auth|user.profile.complete|TenantHasSettings:donation|DonationIpWhitelistMiddleware',
+    //     'middleware' => 'localization|tenant.connection|jwt.auth|user.profile.complete|TenantHasSettingsMiddleware:donation|DonationIpWhitelistMiddleware',
     //     'uses' => 'App\PaymentGateway\PaymentController@store']);
 
     /* Check if mission is eligible for donation */
@@ -251,7 +251,7 @@ $router->patch('/app/user', [
 
 /* Create user skill */
 $router->post('/app/user/skills', ['as' => 'user.skills',
-    'middleware' => 'tenant.connection|localization|jwt.auth|TenantHasSettings:volunteering,skills_enabled',
+    'middleware' => 'tenant.connection|localization|jwt.auth|TenantHasSettingsMiddleware:volunteering,skills_enabled',
     'uses' => 'App\User\UserController@linkSkill']);
 
 /* Fetch Language json file */
@@ -266,82 +266,82 @@ $router->patch('/app/user/upload-profile-image', ['as' => 'upload.profile.image'
 /* Fetch pending goal requests */
 $router->get('/app/timesheet/goal-requests', ['as' => 'app.timesheet.goal-requests',
     'middleware' =>
-    'localization|tenant.connection|jwt.auth|user.profile.complete|PaginationMiddleware|TenantHasSettings:volunteering,volunteering_goal_mission',
+    'localization|tenant.connection|jwt.auth|user.profile.complete|PaginationMiddleware|TenantHasSettingsMiddleware:volunteering,volunteering_goal_mission',
     'uses' => 'App\Timesheet\TimesheetController@getPendingGoalRequests']);
 
 /* Export pending goal requests */
 $router->get('/app/timesheet/goal-requests/export', ['as' => 'app.timesheet.goal-requests.export',
-    'middleware' => 'localization|tenant.connection|jwt.auth|user.profile.complete|TenantHasSettings:volunteering,volunteering_goal_mission',
+    'middleware' => 'localization|tenant.connection|jwt.auth|user.profile.complete|TenantHasSettingsMiddleware:volunteering,volunteering_goal_mission',
     'uses' => 'App\Timesheet\TimesheetController@exportPendingGoalRequests']);
 
 /* Store timesheet data */
 $router->post('/app/timesheet', ['as' => 'app.timesheet',
     'middleware' =>
-    'localization|tenant.connection|jwt.auth|user.profile.complete|TenantHasSettings:volunteering',
+    'localization|tenant.connection|jwt.auth|user.profile.complete|TenantHasSettingsMiddleware:volunteering',
     'uses' => 'App\Timesheet\TimesheetController@store']);
 
 /* Submit timesheet data */
 $router->post('/app/timesheet/submit', ['as' => 'app.timesheet.submit',
     'middleware' =>
-    'localization|tenant.connection|jwt.auth|user.profile.complete|TenantHasSettings:volunteering',
+    'localization|tenant.connection|jwt.auth|user.profile.complete|TenantHasSettingsMiddleware:volunteering',
     'uses' => 'App\Timesheet\TimesheetController@submitTimesheet']);
 
 /* Fetch pending time requests */
 $router->get('/app/timesheet/time-requests', ['as' => 'app.timesheet.time-requests',
-    'middleware' => 'tenant.connection|jwt.auth|user.profile.complete|PaginationMiddleware|TenantHasSettings:volunteering,volunteering_time_mission',
+    'middleware' => 'tenant.connection|jwt.auth|user.profile.complete|PaginationMiddleware|TenantHasSettingsMiddleware:volunteering,volunteering_time_mission',
     'uses' => 'App\Timesheet\TimesheetController@getPendingTimeRequests']);
 
 /* Export pending time requests */
 $router->get('/app/timesheet/time-requests/export', ['as' => 'app.timesheet.time-requests.export',
-    'middleware' => 'tenant.connection|jwt.auth|user.profile.complete|TenantHasSettings:volunteering,volunteering_time_mission',
+    'middleware' => 'tenant.connection|jwt.auth|user.profile.complete|TenantHasSettingsMiddleware:volunteering,volunteering_time_mission',
     'uses' => 'App\Timesheet\TimesheetController@exportPendingTimeRequests']);
 
 /* Get timesheet data */
 $router->get('/app/timesheet', ['as' => 'app.timesheet',
     'middleware' =>
-    'localization|tenant.connection|jwt.auth|user.profile.complete|TenantHasSettings:volunteering',
+    'localization|tenant.connection|jwt.auth|user.profile.complete|TenantHasSettingsMiddleware:volunteering',
     'uses' => 'App\Timesheet\TimesheetController@index']);
 
 /* Get timesheet data */
 $router->get('/app/timesheet/{timesheetId}', ['as' => 'app.timesheet.show',
-    'middleware' => 'localization|tenant.connection|jwt.auth|user.profile.complete|TenantHasSettings:volunteering',
+    'middleware' => 'localization|tenant.connection|jwt.auth|user.profile.complete|TenantHasSettingsMiddleware:volunteering',
     'uses' => 'App\Timesheet\TimesheetController@show']);
 
 /* Delete timesheet document data */
 $router->delete('/app/timesheet/{timesheetId}/document/{documentId}', ['as' => 'app.timesheet.destroy',
-    'middleware' => 'localization|tenant.connection|jwt.auth|user.profile.complete|TenantHasSettings:volunteering',
+    'middleware' => 'localization|tenant.connection|jwt.auth|user.profile.complete|TenantHasSettingsMiddleware:volunteering',
     'uses' => 'App\Timesheet\TimesheetController@destroy']);
 
 $router->group(['middleware' => 'localization'], function ($router) {
 
     /* Get volunteering history for theme */
     $router->get('/app/volunteer/history/theme', ['as' => 'app.volunteer.history.theme',
-        'middleware' => 'tenant.connection|jwt.auth|user.profile.complete|TenantHasSettings:volunteering,volunteering_time_mission',
+        'middleware' => 'tenant.connection|jwt.auth|user.profile.complete|TenantHasSettingsMiddleware:volunteering,volunteering_time_mission',
         'uses' => 'App\VolunteerHistory\VolunteerHistoryController@themeHistory']);
 
     /* Get volunteering history for skill */
     $router->get('/app/volunteer/history/skill', ['as' => 'app.volunteer.history.skill',
-        'middleware' => 'tenant.connection|jwt.auth|user.profile.complete|TenantHasSettings:volunteering,volunteering_time_mission',
+        'middleware' => 'tenant.connection|jwt.auth|user.profile.complete|TenantHasSettingsMiddleware:volunteering,volunteering_time_mission',
         'uses' => 'App\VolunteerHistory\VolunteerHistoryController@skillHistory']);
 
     /* Get volunteering  history for time missions */
     $router->get('/app/volunteer/history/time-mission', ['as' => 'app.volunteer.history.time-mission',
-        'middleware' => 'tenant.connection|jwt.auth|user.profile.complete|PaginationMiddleware|TenantHasSettings:volunteering,volunteering_time_mission',
+        'middleware' => 'tenant.connection|jwt.auth|user.profile.complete|PaginationMiddleware|TenantHasSettingsMiddleware:volunteering,volunteering_time_mission',
         'uses' => 'App\VolunteerHistory\VolunteerHistoryController@timeMissionHistory']);
 
     /* Export volunteering  history for time missions */
     $router->get('/app/volunteer/history/time-mission/export', ['as' => 'app.volunteer.history.time-mission.export',
-        'middleware' => 'tenant.connection|jwt.auth|user.profile.complete|TenantHasSettings:volunteering,volunteering_time_mission',
+        'middleware' => 'tenant.connection|jwt.auth|user.profile.complete|TenantHasSettingsMiddleware:volunteering,volunteering_time_mission',
         'uses' => 'App\VolunteerHistory\VolunteerHistoryController@exportTimeMissionHistory']);
 
     /* Get volunteering  history for goal missions */
     $router->get('/app/volunteer/history/goal-mission', ['as' => 'app.volunteer.history.goal-mission',
-        'middleware' => 'tenant.connection|jwt.auth|user.profile.complete|PaginationMiddleware|TenantHasSettings:volunteering,volunteering_goal_mission',
+        'middleware' => 'tenant.connection|jwt.auth|user.profile.complete|PaginationMiddleware|TenantHasSettingsMiddleware:volunteering,volunteering_goal_mission',
         'uses' => 'App\VolunteerHistory\VolunteerHistoryController@goalMissionHistory']);
 
     /* Export volunteering  history for goal missions */
     $router->get('/app/volunteer/history/goal-mission/export', ['as' => 'app.volunteer.history.goal-mission.export',
-        'middleware' => 'tenant.connection|jwt.auth|user.profile.complete|TenantHasSettings:volunteering,volunteering_goal_mission',
+        'middleware' => 'tenant.connection|jwt.auth|user.profile.complete|TenantHasSettingsMiddleware:volunteering,volunteering_goal_mission',
         'uses' => 'App\VolunteerHistory\VolunteerHistoryController@exportGoalMissionHistory']);
 
     /* News listing */
@@ -496,17 +496,17 @@ $router->group(['middleware' => 'localization'], function ($router) {
 
 });
 
-/* health check */
-$router->group(
-    ['prefix' => '/health'],
-    function ($router) {
+    /* health check */
+    $router->group(
+        ['prefix' => '/health'],
+        function ($router) {
 
-        $router->get(
-            '/',
-            ['uses' => 'App\HealthCheck\HealthCheckController@index']
-        );
-    }
-);
+            $router->get(
+                '/',
+                ['uses' => 'App\HealthCheck\HealthCheckController@index']
+            );
+        }
+    );
 
 
 /*
@@ -610,15 +610,15 @@ $router->group(
                 ['uses' => 'Admin\Mission\MissionApplicationController@updateApplication']
             );
             $router->delete('/media/{mediaId}', ['as' => 'missions.media.delete',
-               'uses' => 'Admin\Mission\MissionController@removeMissionMedia']);
+                'uses' => 'Admin\Mission\MissionController@removeMissionMedia']);
             $router->delete('/document/{documentId}', ['as' => 'missions.document.delete',
-            'uses' => 'Admin\Mission\MissionController@removeMissionDocument']);
+                'uses' => 'Admin\Mission\MissionController@removeMissionDocument']);
             $router->delete('/mission-tabs/{missionTabId}', ['as' => 'missions.missiontab.delete',
-            'uses' => 'Admin\Mission\MissionController@removeMissionTab']);
-            $router->delete('/mission-impact/{missionImpactId}', ['middleware' => ['TenantHasSettings:mission_impact'], 'as' => 'missions.missionimpact.delete',
-            'uses' => 'Admin\Mission\MissionController@removeMissionImpact']);
+                'uses' => 'Admin\Mission\MissionController@removeMissionTab']);
+            $router->delete('/mission-impact/{missionImpactId}', ['middleware' => ['TenantHasSettingsMiddleware:mission_impact'], 'as' => 'missions.missionimpact.delete',
+                'uses' => 'Admin\Mission\MissionController@removeMissionImpact']);
             $router->delete('/impact-donation/{id}',
-                ['middleware' => ['TenantHasSettings:donation,impact_donation'],
+                ['middleware' => ['TenantHasSettingsMiddleware:donation,impact_donation'],
                 'as' => 'missions.missionimpactdonation.delete',
                 'uses' => 'Admin\Mission\MissionController@removeMissionImpactDonation']
             );
@@ -630,8 +630,8 @@ $router->group(
         ['prefix' => 'users', 'middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware'],
         function ($router) {
             $router->get('/{userId}/skills', ['middleware' => ['PaginationMiddleware'], 'uses' => 'Admin\User\UserController@userSkills']);
-            $router->post('/{id}/skills', ['uses' => 'Admin\User\UserController@linkSkill']);
-            $router->delete('/{userId}/skills', ['uses' => 'Admin\User\UserController@unlinkSkill']);
+            $router->post('/{id}/skills', ['middleware' => ['TenantHasSettingsMiddleware:skills_enabled'], 'uses' => 'Admin\User\UserController@linkSkill']);
+            $router->delete('/{userId}/skills', ['middleware' => ['TenantHasSettingsMiddleware:skills_enabled'], 'uses' => 'Admin\User\UserController@unlinkSkill']);
         }
     );
 
@@ -672,9 +672,9 @@ $router->group(
             $router->get('/', ['middleware' => ['PaginationMiddleware'],
                 'uses' => 'Admin\MissionTheme\MissionThemeController@index']);
             $router->get('/{id}', ['uses' => 'Admin\MissionTheme\MissionThemeController@show']);
-            $router->post('/', ['uses' => 'Admin\MissionTheme\MissionThemeController@store']);
-            $router->patch('/{id}', ['uses' => 'Admin\MissionTheme\MissionThemeController@update']);
-            $router->delete('/{id}', ['uses' => 'Admin\MissionTheme\MissionThemeController@destroy']);
+            $router->post('/', ['middleware' => ['TenantHasSettingsMiddleware:themes_enabled'], 'uses' => 'Admin\MissionTheme\MissionThemeController@store']);
+            $router->patch('/{id}', ['middleware' => ['TenantHasSettingsMiddleware:themes_enabled'], 'uses' => 'Admin\MissionTheme\MissionThemeController@update']);
+            $router->delete('/{id}', ['middleware' => ['TenantHasSettingsMiddleware:themes_enabled'], 'uses' => 'Admin\MissionTheme\MissionThemeController@destroy']);
         }
     );
 
@@ -690,14 +690,14 @@ $router->group(
     /* Set skills data for tenant specific */
     $router->group(
         ['prefix' => '/entities/skills', 'middleware' =>
-        'localization|auth.tenant.admin|JsonApiMiddleware|TenantHasSettings:volunteering,skills_enabled'],
+            'localization|auth.tenant.admin|JsonApiMiddleware|TenantHasSettingsMiddleware:volunteering'],
         function ($router) {
             $router->get('/', ['middleware' => ['PaginationMiddleware'],
                 'uses' => 'Admin\Skill\SkillController@index']);
             $router->get('/{id}', ['uses' => 'Admin\Skill\SkillController@show']);
-            $router->post('/', ['uses' => 'Admin\Skill\SkillController@store']);
-            $router->patch('/{id}', ['uses' => 'Admin\Skill\SkillController@update']);
-            $router->delete('/{id}', ['uses' => 'Admin\Skill\SkillController@destroy']);
+            $router->post('/', ['middleware' => ['TenantHasSettingsMiddleware:skills_enabled'], 'uses' => 'Admin\Skill\SkillController@store']);
+            $router->patch('/{id}', ['middleware' => ['TenantHasSettingsMiddleware:skills_enabled'], 'uses' => 'Admin\Skill\SkillController@update']);
+            $router->delete('/{id}', ['middleware' => ['TenantHasSettingsMiddleware:skills_enabled'], 'uses' => 'Admin\Skill\SkillController@destroy']);
         }
     );
     $router->get('/social-sharing/{fqdn}/{missionId}/{langId}', ['as' => 'social-sharing',
@@ -710,11 +710,30 @@ $router->group(
             $router->get('/', ['as' => 'policy', 'middleware' => ['PaginationMiddleware'],
                 'uses' => 'Admin\PolicyPage\PolicyPageController@index']);
             $router->get('/{id}', ['as' => 'policy.show', 'uses' => 'Admin\PolicyPage\PolicyPageController@show']);
-            $router->post('/', ['as' => 'policy.store', 'uses' => 'Admin\PolicyPage\PolicyPageController@store']);
-            $router->patch('/{id}', ['as' => 'policy.update',
-                'uses' => 'Admin\PolicyPage\PolicyPageController@update']);
-            $router->delete('/{id}', ['as' => 'policy.delete',
-                'uses' => 'Admin\PolicyPage\PolicyPageController@destroy']);
+            $router->post(
+                '/',
+                [
+                    'as' => 'policy.store',
+                    'middleware' => ['TenantHasSettingsMiddleware:policies_enabled'],
+                    'uses' => 'Admin\PolicyPage\PolicyPageController@store'
+                ]
+            );
+            $router->patch(
+                '/{id}',
+                [
+                    'as' => 'policy.update',
+                    'middleware' => ['TenantHasSettingsMiddleware:policies_enabled'],
+                    'uses' => 'Admin\PolicyPage\PolicyPageController@update'
+                ]
+            );
+            $router->delete(
+                '/{id}',
+                [
+                    'as' => 'policy.delete',
+                    'middleware' => ['TenantHasSettingsMiddleware:policies_enabled'],
+                    'uses' => 'Admin\PolicyPage\PolicyPageController@destroy'
+                ]
+            );
         }
     );
 
@@ -733,11 +752,11 @@ $router->group(
     /* Timesheet management */
     $router->group(
         ['prefix' => 'timesheet', 'middleware' =>
-        'localization|auth.tenant.admin|JsonApiMiddleware|TenantHasSettings:volunteering'],
+            'localization|auth.tenant.admin|JsonApiMiddleware|TenantHasSettingsMiddleware:volunteering'],
         function ($router) {
             $router->get('/total-minutes', ['uses' => 'Admin\Timesheet\TimesheetController@getSumOfUsersTotalMinutes']);
             $router->get('/details', ['middleware' => ['PaginationMiddleware'],
-                    'uses' => 'Admin\Timesheet\TimesheetController@getTimesheetsDetails']);
+                'uses' => 'Admin\Timesheet\TimesheetController@getTimesheetsDetails']);
             $router->get('/{userId}', ['as' => 'user.timesheet', 'middleware' => ['PaginationMiddleware'],
                 'uses' => 'Admin\Timesheet\TimesheetController@index']);
             $router->patch('/{timesheetId}', ['as' => 'update.user.timesheet',
@@ -756,7 +775,7 @@ $router->group(
             $router->patch('/{id}', ['uses' => 'Admin\Country\CountryController@update']);
             $router->delete('/{id}', ['uses' => 'Admin\Country\CountryController@destroy']);
             $router->get('/{countryId}/states', ['uses' => 'Admin\State\StateController@fetchState',
-            'middleware' => ['PaginationMiddleware']]);
+                'middleware' => ['PaginationMiddleware']]);
         }
     );
 
@@ -780,9 +799,27 @@ $router->group(
             $router->get('/', ['middleware' => ['PaginationMiddleware'],
                 'uses' => 'Admin\NewsCategory\NewsCategoryController@index']);
             $router->get('/{newsCategoryId}', ['uses' => 'Admin\NewsCategory\NewsCategoryController@show']);
-            $router->post('/', ['uses' => 'Admin\NewsCategory\NewsCategoryController@store']);
-            $router->patch('/{newsCategoryId}', ['uses' => 'Admin\NewsCategory\NewsCategoryController@update']);
-            $router->delete('/{newsCategoryId}', ['uses' => 'Admin\NewsCategory\NewsCategoryController@destroy']);
+            $router->post(
+                '/',
+                [
+                    'middleware' => ['TenantHasSettingsMiddleware:news_enabled'],
+                    'uses' => 'Admin\NewsCategory\NewsCategoryController@store'
+                ]
+            );
+            $router->patch(
+                '/{newsCategoryId}',
+                [
+                    'middleware' => ['TenantHasSettingsMiddleware:news_enabled'],
+                    'uses' => 'Admin\NewsCategory\NewsCategoryController@update'
+                ]
+            );
+            $router->delete(
+                '/{newsCategoryId}',
+                [
+                    'middleware' => ['TenantHasSettingsMiddleware:news_enabled'],
+                    'uses' => 'Admin\NewsCategory\NewsCategoryController@destroy'
+                ]
+            );
         }
     );
 
@@ -793,9 +830,27 @@ $router->group(
             $router->get('/', ['middleware' => ['PaginationMiddleware'],
                 'uses' => 'Admin\News\NewsController@index']);
             $router->get('/{newsId}', ['uses' => 'Admin\News\NewsController@show']);
-            $router->post('/', ['uses' => 'Admin\News\NewsController@store']);
-            $router->patch('/{newsId}', ['uses' => 'Admin\News\NewsController@update']);
-            $router->delete('/{newsId}', ['uses' => 'Admin\News\NewsController@destroy']);
+            $router->post(
+                '/',
+                [
+                    'middleware' => ['TenantHasSettingsMiddleware:news_enabled'],
+                    'uses' => 'Admin\News\NewsController@store'
+                ]
+            );
+            $router->patch(
+                '/{newsId}',
+                [
+                    'middleware' => ['TenantHasSettingsMiddleware:news_enabled'],
+                    'uses' => 'Admin\News\NewsController@update'
+                ]
+            );
+            $router->delete(
+                '/{newsId}',
+                [
+                    'middleware' => ['TenantHasSettingsMiddleware:news_enabled'],
+                    'uses' => 'Admin\News\NewsController@destroy'
+                ]
+            );
         }
     );
 
@@ -806,8 +861,14 @@ $router->group(
             /* Get user stories */
             $router->get('/user/{userId}/stories', ['middleware' => ['PaginationMiddleware'],
                 'uses' => 'Admin\Story\StoryController@index']);
-            $router->patch('/stories/{storyId}', ['as' => 'update.story.status',
-                'uses' => 'Admin\Story\StoryController@update']);
+            $router->patch(
+                '/stories/{storyId}',
+                [
+                    'as' => 'update.story.status',
+                    'middleware' => ['TenantHasSettingsMiddleware:stories_enabled'],
+                    'uses' => 'Admin\Story\StoryController@update'
+                ]
+            );
         }
     );
 
@@ -815,17 +876,41 @@ $router->group(
     $router->group(
         ['prefix' => '/message', 'middleware' => 'localization|auth.tenant.admin'],
         function ($router) {
-            $router->post('/send', ['as' => 'message.send','middleware' => ['JsonApiMiddleware'],
-            'uses' => 'Admin\Message\MessageController@sendMessage']);
+            $router->get(
+                '/list',
+                [
+                    'as' => 'message.list',
+                    'middleware' => 'PaginationMiddleware',
+                    'uses' => 'Admin\Message\MessageController@getUserMessages'
+                ]
+            );
 
-            $router->delete('/{messageId}', ['as' => 'message.destroy',
-                'uses' => 'Admin\Message\MessageController@destroy']);
+            $router->post(
+                '/send',
+                [
+                    'as' => 'message.send',
+                    'middleware' => 'TenantHasSettingsMiddleware:message_enabled|JsonApiMiddleware',
+                    'uses' => 'Admin\Message\MessageController@sendMessage',
+                ]
+            );
 
-            $router->get('/list', ['as' => 'message.list', 'middleware' => 'PaginationMiddleware',
-                'uses' => 'Admin\Message\MessageController@getUserMessages']);
+            $router->post(
+                '/read/{messageId}',
+                [
+                    'as' => 'message.read',
+                    'middleware' => 'TenantHasSettingsMiddleware:message_enabled',
+                    'uses' => 'Admin\Message\MessageController@readMessage',
+                ]
+            );
 
-            $router->post('/read/{messageId}', ['as' => 'message.read',
-                'uses' => 'Admin\Message\MessageController@readMessage']);
+            $router->delete(
+                '/{messageId}',
+                [
+                    'as' => 'message.destroy',
+                    'middleware' => 'TenantHasSettingsMiddleware:message_enabled',
+                    'uses' => 'Admin\Message\MessageController@destroy',
+                ]
+            );
         }
     );
 
@@ -841,10 +926,10 @@ $router->group(
 
     /* Availability management */
     $router->group(
-        ['middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware|TenantHasSettings:volunteering'],
+        ['middleware' => 'localization|auth.tenant.admin|JsonApiMiddleware|TenantHasSettingsMiddleware:volunteering'],
         function ($router) {
             /* Get availability */
-        $router->get('/entities/availability', ['middleware' => ['PaginationMiddleware'],
+            $router->get('/entities/availability', ['middleware' => ['PaginationMiddleware'],
                 'uses' => 'Admin\Availability\AvailabilityController@index']);
 
             /* Store availability */
@@ -904,7 +989,7 @@ $router->group(
         function ($router) {
             $router->get('/', ['middleware' => ['PaginationMiddleware'], 'uses' => 'Admin\State\StateController@index']);
             $router->get('/{stateId}', ['middleware' => ['PaginationMiddleware'], 'uses' => 'Admin\State\StateController@show',
-            'middleware' => ['PaginationMiddleware']]);
+                'middleware' => ['PaginationMiddleware']]);
             $router->post('/', ['uses' => 'Admin\State\StateController@store']);
             $router->patch('/{id}', ['uses' => 'Admin\State\StateController@update']);
             $router->delete('/{id}', ['uses' => 'Admin\State\StateController@destroy']);
@@ -937,7 +1022,7 @@ $router->group(
 
     /* Routes for whitelisted Ips */
     $router->group(
-        ['prefix' => 'entities/donation-ip-whitelist', 'middleware' => 'localization|auth.tenant.admin|TenantHasSettings:donation'],
+        ['prefix' => 'entities/donation-ip-whitelist', 'middleware' => 'localization|auth.tenant.admin|TenantHasSettingsMiddleware:donation'],
         function ($router) {
             $router->get('/', ['middleware' => ['PaginationMiddleware'], 'uses' => 'Admin\DonationIp\WhitelistController@getList']);
             $router->post('/', ['uses' => 'Admin\DonationIp\WhitelistController@create']);
@@ -955,7 +1040,7 @@ $router->group(
     //             'tenant.connection',
     //             'jwt.auth',
     //             'JsonApiMiddleware',
-    //             'TenantHasSettings:donation',
+    //             'TenantHasSettingsMiddleware:donation',
     //         ]),
     //     ],
     //     function ($router) {

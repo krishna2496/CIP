@@ -1,16 +1,16 @@
 import axios from 'axios'
 import store from '../../store'
 
-export default async(page) => {
+export default async(messageId) => {
     let responseData = {};
     let defaultLanguage = '';
     if (store.state.defaultLanguage !== null) {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
-    let url = process.env.VUE_APP_API_ENDPOINT + "app/messages?page=" + page;
+    let url = `${process.env.VUE_APP_API_ENDPOINT}app/message/${messageId}`;
     await axios({
         url: url,
-        method: 'GET',
+        method: 'DELETE',
         headers: {
             'X-localization': defaultLanguage,
         }

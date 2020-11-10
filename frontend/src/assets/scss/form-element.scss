@@ -1180,6 +1180,27 @@ label {
     position: relative;
   }
   .form-group {
+    /** style for custom-field radio/checkbox group **/
+    .custom-group {
+      label {
+        cursor: pointer;
+        max-width: 100%;
+      }
+      
+      .custom-control {
+        cursor: inherit;
+
+        .custom-control-label {
+          cursor: inherit;
+          word-break: break-word;
+          word-wrap: break-word;
+          overflow-wrap: break-word;
+          white-space: normal;
+          display: inline-block;
+        }
+      }
+    }
+    /**/ 
     .is-invalid {
       .custom-control {
         .custom-control-label {
