@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
      * constants to use any where in system
      */
@@ -86,7 +85,21 @@ return [
      */
     'mission_type' => [
         'TIME' => 'TIME',
-        'GOAL' => 'GOAL'
+        'GOAL' => 'GOAL',
+        'DONATION' => 'DONATION',
+        'EAF' => 'EAF',
+        'DISASTER_RELIEF' => 'DISASTER_RELIEF'
+    ],
+
+    'volunteering_mission_types' => [
+        'TIME',
+        'GOAL'
+    ],
+
+    'donation_mission_types' => [
+        'DONATION',
+        'EAF',
+        'DISASTER_RELIEF'
     ],
 
     /*
@@ -117,7 +130,7 @@ return [
     'image_types' => [
         'PNG' => 'png',
         'JPG' => 'jpg',
-        'JPEG' => 'jpeg',
+        'JPEG' => 'jpeg'
     ],
 
     /*
@@ -126,7 +139,7 @@ return [
     'story_image_types' => [
         'PNG' => 'png',
         'JPG' => 'jpg',
-        'JPEG' => 'jpeg',
+        'JPEG' => 'jpeg'
     ],
 
     /*
@@ -135,7 +148,7 @@ return [
     'slider_image_types' => [
         'PNG' => 'png',
         'JPG' => 'jpg',
-        'JPEG' => 'jpeg',
+        'JPEG' => 'jpeg'
     ],
 
     /*
@@ -230,7 +243,7 @@ return [
 
     'ALLOW_TIMESHEET_ENTRY' => 2,
 
-    /**
+    /*
      * Export timesheet file names
      */
     'export_timesheet_file_names' => [
@@ -248,7 +261,6 @@ return [
         'UNPUBLISHED' => 'UNPUBLISHED'
     ],
 
-
     /*
      * Story status
      */
@@ -259,18 +271,18 @@ return [
         'DECLINED' => 'DECLINED'
     ],
 
-    /**
+    /*
      * Export story file names
      */
     'export_story_file_names' => [
-        'STORY_XLSX' => 'Stories.xlsx',
+        'STORY_XLSX' => 'Stories.xlsx'
     ],
 
-    /**
+    /*
      * Export mission comments file names
      */
     'export_mission_comment_file_names' => [
-        'MISSION_COMMENT_XLSX' => 'MissionComments.xlsx',
+        'MISSION_COMMENT_XLSX' => 'MissionComments.xlsx'
     ],
 
     /*
@@ -302,8 +314,8 @@ return [
         'send_message_from' => [
             'all' => 0,
             'user' => 1,
-            'admin' => 2,
-        ]
+            'admin' => 2
+        ],
     ],
 
     /*
@@ -323,7 +335,7 @@ return [
         'NEW_NEWS' => 'New News'
     ],
 
-    /**
+    /*
      * notification status
      */
     'notification' => [
@@ -335,22 +347,25 @@ return [
      * Tenant settings
      */
     'tenant_settings' => [
+        'DONATION' => 'donation',
         'EMAIL_NOTIFICATION_INVITE_COLLEAGUE' => 'email_notification_invite_colleague',
-        'MISSION_COMMENT_AUTO_APPROVED' => 'mission_comment_auto_approved',
-        'MISSION_RATING_VOLUNTEER' => 'mission_rating_volunteer',
-        'STORIES_ENABLED' => 'stories_enabled',
         'INVITE_COLLEAGUE' => 'invite_colleague',
-        'NEWS_ENABLED' => 'news_enabled',
         'MESSAGE_ENABLED' => 'message_enabled',
+        'MISSION_COMMENT_AUTO_APPROVED' => 'mission_comment_auto_approved',
         'MISSION_COMMENTS' => 'mission_comments',
-        'STATE_ENABLED' => 'state_selection',
         'MISSION_IMPACT' => 'mission_impact',
+        'MISSION_RATING_VOLUNTEER' => 'mission_rating_volunteer',
+        'NEWS_ENABLED' => 'news_enabled',
+        'STATE_ENABLED' => 'state_selection',
+        'STORIES_ENABLED' => 'stories_enabled',
         'VOLUNTEERING_GOAL_MISSION' => 'volunteering_goal_mission',
         'VOLUNTEERING_TIME_MISSION' => 'volunteering_time_mission',
+        'VOLUNTEERING' => 'volunteering',
         'DONATION_MISSION' => 'donation',
         'VOLUNTEERING_MISSION' => 'volunteering',
         'EAF' => 'eaf',
-        'DISASTER_RELIEF' => 'disaster_relief'
+        'DISASTER_RELIEF' => 'disaster_relief',
+        'IMPACT_DONATION' => 'impact_donation'
     ],
 
     'TOP_THEME' => "top_themes",
@@ -367,16 +382,16 @@ return [
     'STATE' => 'state',
     'VIRTUAL' => 'virtual-missions',
     /* sort by */
-    "NEWEST" => "newest",
-    "OLDEST" => "oldest",
-    "LOWEST_AVAILABLE_SEATS" => "lowest_available_seats",
-    "HIGHEST_AVAILABLE_SEATS" => "highest_available_seats",
-    "MY_FAVOURITE" => "my_favourite",
-    "DEADLINE" => "deadline",
+    'NEWEST' => 'newest',
+    'OLDEST' => 'oldest',
+    'LOWEST_AVAILABLE_SEATS' => 'lowest_available_seats',
+    'HIGHEST_AVAILABLE_SEATS' => 'highest_available_seats',
+    'MY_FAVOURITE' => 'my_favourite',
+    'DEADLINE' => 'deadline',
 
-    'ORGANIZATION' => "organization",
-    'EXPLORE_MISSION_LIMIT' => "5",
-    'IMAGE' => "image",
+    'ORGANIZATION' => 'organization',
+    'EXPLORE_MISSION_LIMIT' => '5',
+    'IMAGE' => 'image',
 
     'error_codes' => [
         'ERROR_FOOTER_PAGE_REQUIRED_FIELDS_EMPTY' => '300000',
@@ -499,7 +514,7 @@ return [
         'ERROR_REQUIRED_FIELDS_FOR_UPDATE_STYLING' => '800023',
         'ERROR_POLICY_PAGE_NOT_FOUND' => '300010',
         'ERROR_POLICY_PAGE_REQUIRED_FIELDS_EMPTY' => '300011',
-        'ERROR_MESSAGE_REQUIRED_FIELDS_EMPTY' =>'1100001',
+        'ERROR_MESSAGE_REQUIRED_FIELDS_EMPTY' => '1100001',
         'ERROR_MESSAGE_USER_MESSAGE_NOT_FOUND' => '1100002',
         'ERROR_ACTIVITY_LOG_REQUIRED_FIELDS_EMPTY' => '1200001',
         'ERROR_AVAILABILITY_INVALID_DATA' => '410001',
@@ -523,7 +538,7 @@ return [
         'ERROR_INVALID_SAML_IDENTITY_PROVIDER' => '800100',
         'ERROR_INVALID_SAML_ARGS_LANGUAGE' => '800101',
         'ERROR_INVALID_SAML_ARGS_TIMEZONE' => '800102',
-        'ERROR_INVALID_SAML_ARGS_COUNTRY' =>  '800103',
+        'ERROR_INVALID_SAML_ARGS_COUNTRY' => '800103',
         'ERROR_INVALID_SAML_ACCESS' => '800104',
         'ERROR_UNAUTHORIZED_LOGIN_METHOD' => '800105',
         'ERROR_SAML_ACCESS_ONLY_ACTIVE' => '800106',
@@ -532,19 +547,46 @@ return [
         'ERROR_SKILL_UNABLE_TO_DELETE' => '800041',
         'ERROR_AVAILABILITY_UNABLE_TO_DELETE' => '800042',
 
+        'IMPACT_DONATION_MISSION_NOT_FOUND' => '400051',
         'IMPACT_MISSION_NOT_FOUND' => '400060',
         'ERROR_ORGANIZATION_REQUIRED_FIELDS_EMPTY' => '800043',
         'ERROR_ORGANIZATION_NOT_FOUND' => '800044',
         'ERROR_ORGANIZATION_LINKED_TO_MISSION' => '80045',
         'MISSION_TAB_NOT_FOUND' => '80046',
-        'ERROR_RETRIEVING_TENANT_ACTIVATED_CURRENCIES' => '80047',
+        'ERROR_IMPACT_SORT_KEY_ALREADY_EXIST' => '80047',
+        'ERROR_RETRIEVING_TENANT_ACTIVATED_CURRENCIES' => '80048',
+        'ERROR_INVALID_CURRENCY' => '80049',
+        'ERROR_SORT_KEY_ALREADY_EXIST' => '80050',
+        'ERROR_VOLUNTEERING_TIME_OR_GOAL_SHOULD_BE_ACTIVE' => '80051',
+        'ERROR_VOLUNTEERING_SHOULD_BE_ENABLED' => '80052',
+        'ERROR_ORGANIZATION_UPDATE_WITHOUT_ACCOUNT' => '80053',
 
-        // Donation error codes: 900100 - 900199
+        // Donation / Payment Gateway error codes: 900100 - 900199
         'ERROR_DONATION_IP_WHITELIST_INVALID_DATA' => '900100',
         'ERROR_DONATION_IP_WHITELIST_NOT_FOUND' => '900101',
-        'ERROR_SORT_KEY_ALREADY_EXIST' => '900102',
-        'ERROR_IMPACT_SORT_KEY_ALREADY_EXIST' => '900103',
-        'ERROR_INVALID_CURRENCY' => '900104'
+        'ERROR_IP_ADDRESS_NOT_ALLOWED' => '900102',
+        'ERROR_PAYMENT_GATEWAY_ACCOUNT_INVALID' => '900103',
+
+        'ERROR_PAYMENT_GATEWAY_CARD_DECLINED' => '900104',
+        'ERROR_PAYMENT_GATEWAY_CONNECTION_FAILED' => '900105',
+        'ERROR_PAYMENT_GATEWAY_INTERNAL_FAILURE' => '900106',
+        'ERROR_PAYMENT_GATEWAY_INVALID_REQUEST' => '900107',
+        'ERROR_PAYMENT_GATEWAY_RATE_LIMITED' => '900108',
+        'ERROR_PAYMENT_GATEWAY_UNAUTHORIZED' => '900109',
+        'ERROR_PAYMENT_GATEWAY_UNKNOWN_FAILURE' => '900110',
+
+        'ERROR_PAYMENT_METHOD_NOT_FOUND' => '900111',
+        'ERROR_PAYMENT_METHOD_INVALID_DATA' => '900112',
+        'ERROR_PAYMENT_METHOD_UNKNOWN_ERROR' => '900113',
+
+        'ERROR_INVALID_PAYMENT_DATA' => '900114',
+        'ERROR_FAILED_CREATING_PAYMENT_OBJECT' =>  '900115',
+        'ERROR_FAILED_SAVING_PAYMENT_RECORD' => '900116',
+        'ERROR_PAYMENT_NOT_FOUND' => '900117',
+        'ERROR_PAYMENT_METHOD_NOT_FOUND' => '900118',
+        'ERROR_PAYMENT_ORGANIZATION_DOES_NOT_SUPPORT_DONATION' => '900119',
+        'ERROR_ORGANIZATION_PAYMENT_GATEWAY_ACCOUNT' => '900120',
+        'ERROR_PAYMENT_MISSION_NOT_ELIGIBLE_FOR_DONATION' => '900120',
     ],
 
     /**
@@ -563,7 +605,7 @@ return [
         'NEW_NEWS' => 'new_news'
     ],
 
-    /**
+    /*
      * Notification actions
      */
     'notification_actions' => [
@@ -588,7 +630,7 @@ return [
     'notification_icons' => [
         'APPROVED' => 'approve-ic.png',
         'DECLINED' => 'warning.png',
-        'NEW' => 'circle-plus.png',
+        'NEW' => 'circle-plus.png'
     ],
 
     'notification_status' => [
@@ -645,7 +687,9 @@ return [
         'ORGANIZATION' => 'ORGANIZATION',
         'MISSION_TAB' => 'MISSION_TAB',
         'DONATION_IP_WHITELIST' => 'DONATION_IP_WHITELIST',
-        'MISSION_IMPACT' => 'MISSION_IMPACT'
+        'MISSION_IMPACT' => 'MISSION_IMPACT',
+        'MISSION_IMPACT_DONATION' => 'MISSION_IMPACT_DONATION',
+        'PAYMENT_GATEWAY' => 'PAYMENT_GATEWAY'
     ],
 
     'activity_log_actions' => [
@@ -679,6 +723,9 @@ return [
         'DEACTIVATED' => 'DEACTIVATED',
         'CLEAR_ALL' => 'CLEAR_ALL',
         'PASSWORD_UPDATED' => 'PASSWORD_UPDATED',
+        'ATTACHED' => 'ATTACHED',
+        'DETACHED' => 'DETACHED',
+        'RETRIEVED' => 'RETRIEVED',
     ],
 
     'activity_log_user_types' => [
@@ -686,7 +733,7 @@ return [
         'REGULAR' => 'REGULAR'
     ],
 
-    'profile_required_fields'=> [
+    'profile_required_fields' => [
         'first_name',
         'last_name',
         'email',
@@ -699,7 +746,7 @@ return [
         'ACTIVE' => '1',
         'INACTIVE' => '0'
     ],
-    
+
     /*
      * Icon image types
      */
@@ -709,4 +756,19 @@ return [
         'image/jpg',
         'image/svg+xml'
     ],
+
+    'payment_gateway_types' => [
+        'STRIPE' => 1
+    ],
+
+    'payment_statuses' => [
+        'PENDING' => 0,
+        'SUCCESS' => 1,
+        'FAILED' => 2,
+        'CANCELED' => 3
+    ],
+
+    'payment_method_types' => [
+        'CARD' => 1
+    ]
 ];
