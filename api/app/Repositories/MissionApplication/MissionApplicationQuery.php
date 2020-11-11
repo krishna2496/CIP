@@ -233,8 +233,6 @@ class MissionApplicationQuery implements QueryableInterface
 
         $this->addCityCountryLanguageCode($applications);
 
-        $this->addCityCountryLanguageCode($applications, $tenantLanguages, $defaultLanguageId);
-
         return $applications;
     }
 

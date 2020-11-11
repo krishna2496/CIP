@@ -1,34 +1,37 @@
 <?php
+
 namespace App\Models;
 
-use Carbon\Carbon;
-use App\Models\State;
+use App\Libraries\Amount;
+use App\Models\Availability;
 use App\Models\Comment;
 use App\Models\Country;
-use App\Models\Timesheet;
+use App\Models\DonationAttribute;
+use App\Models\FavouriteMission;
 use App\Models\GoalMission;
-use App\Models\TimeMission;
-use App\Models\Availability;
 use App\Models\MissionApplication;
 use App\Models\MissionDocument;
+use App\Models\MissionImpact;
+use App\Models\MissionImpactDonation;
 use App\Models\MissionInvite;
 use App\Models\MissionLanguage;
 use App\Models\MissionMedia;
 use App\Models\MissionRating;
 use App\Models\MissionTab;
-use App\Models\Organization;
-use App\Models\FavouriteMission;
-use App\Models\VolunteeringAttribute;
-use App\Models\DonationAttribute;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Iatstuti\Database\Support\CascadeSoftDeletes;
-use App\Models\MissionImpact;
 use App\Models\MissionUnSdg;
+use App\Models\Organization;
+use App\Models\State;
+use App\Models\TimeMission;
+use App\Models\Timesheet;
+use App\Models\VolunteeringAttribute;
+use Carbon\Carbon;
+use Iatstuti\Database\Support\CascadeSoftDeletes;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Notifications\Notifiable;
 
 class Mission extends Model
 {
@@ -78,26 +81,26 @@ class Mission extends Model
     'country_id', 'start_date', 'end_date', 'available_seats',
     'publication_status', 'organisation_detail', 'mission_type',
     'missionDocument', 'missionMedia', 'missionLanguage', 'missionTheme', 'city',
-    'default_media_type','default_media_path', 'default_media_name', 'title','short_description',
-    'description','objective','set_view_detail','city_name',
-    'seats_left','user_application_count','mission_application_count','missionSkill','missionApplication',
-    'country','favouriteMission','missionInvite','missionRating', 'goalMission', 'timeMission', 'application_deadline',
+    'default_media_type', 'default_media_path', 'default_media_name', 'title', 'short_description',
+    'description', 'objective', 'set_view_detail', 'city_name',
+    'seats_left', 'user_application_count', 'mission_application_count', 'missionSkill', 'missionApplication',
+    'country', 'favouriteMission', 'missionInvite', 'missionRating', 'goalMission', 'timeMission', 'application_deadline',
     'application_start_date', 'application_end_date', 'application_start_time', 'application_end_time',
     'goal_objective', 'achieved_goal', 'mission_count', 'mission_rating_count',
-    'already_volunteered','total_available_seat', 'available_seat','deadline',
+    'already_volunteered', 'total_available_seat', 'available_seat', 'deadline',
     'favourite_mission_count', 'mission_rating', 'is_favourite', 'skill_id',
     'user_application_status', 'skill', 'rating', 'mission_rating_total_volunteers',
     'availability_id', 'availability_type', 'average_rating', 'timesheet', 'total_hours', 'time',
     'hours', 'action', 'ISO', 'total_minutes', 'custom_information', 'total_timesheet_time', 'total_timesheet_action', 'total_timesheet',
     'mission_title', 'mission_objective', 'label_goal_achieved', 'label_goal_objective', 'state', 'state_name', 'organization', 'organization_name', 'missionTabs', 'volunteeringAttribute',
-    'unSdg', 'is_virtual', 'total_seats', 'impact', 'donationAttribute'];
+    'unSdg', 'is_virtual', 'total_seats', 'impact', 'donationAttribute', 'impactDonation'];
 
     /*
      * Iatstuti\Database\Support\CascadeSoftDeletes;
      */
     protected $cascadeDeletes = ['missionDocument','missionMedia','missionLanguage',
         'favouriteMission','missionInvite','missionRating','missionApplication','missionSkill',
-        'goalMission','timeMission','comment','timesheet', 'missionTabs', 'volunteeringAttribute', 'impact', 'donationAttribute'
+        'goalMission','timeMission','comment','timesheet', 'missionTabs', 'volunteeringAttribute', 'impact', 'donationAttribute', 'impactDonation'
     ];
 
     /**
@@ -255,7 +258,8 @@ class Mission extends Model
     /**
      * Soft delete from the database.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return bool
      */
     public function deleteMission(int $id): bool
@@ -268,7 +272,7 @@ class Mission extends Model
      *
      * @return string
      */
-    public function getCityTranslationAttribute():object
+    public function getCityTranslationAttribute(): object
     {
         return $this->city->hasMany(CityLanguage::class, 'city_id', 'city_id')->get();
     }
@@ -277,7 +281,6 @@ class Mission extends Model
      * Set start date attribute on the model.
      *
      * @param $value
-     * @return void
      */
     public function setStartDateAttribute($value): void
     {
@@ -294,7 +297,7 @@ class Mission extends Model
     {
         return (isset($this->attributes['start_date']) && !empty(config('constants.TIMEZONE'))) ?
         Carbon::parse($this->attributes['start_date'])->setTimezone(config('constants.TIMEZONE'))
-            ->format(config('constants.DB_DATE_TIME_FORMAT')):
+            ->format(config('constants.DB_DATE_TIME_FORMAT')) :
             null;
     }
 
@@ -302,7 +305,6 @@ class Mission extends Model
      * Set end date attribute on the model.
      *
      * @param $value
-     * @return void
      */
     public function setEndDateAttribute($value): void
     {
@@ -313,29 +315,30 @@ class Mission extends Model
     /**
      * Get end date attribute from the model.
      *
-     * @return null|string
+     * @return string|null
      */
     public function getEndDateAttribute(): ?string
     {
         return (isset($this->attributes['end_date']) && !empty(config('constants.TIMEZONE'))) ?
              Carbon::parse($this->attributes['end_date'])->setTimezone(config('constants.TIMEZONE'))
-             ->format(config('constants.DB_DATE_TIME_FORMAT')):
+             ->format(config('constants.DB_DATE_TIME_FORMAT')) :
              null;
     }
 
     /**
-    * Check seats are available or not.
-    *
-    * @param int $missionId
-    * @return App\Models\Mission
-    */
+     * Check seats are available or not.
+     *
+     * @param int $missionId
+     *
+     * @return App\Models\Mission
+     */
     public function checkAvailableSeats(int $missionId): Mission
     {
         return $this->select('*')
         ->with(['volunteeringAttribute'])
         ->where('mission.mission_id', $missionId)
         ->withCount(['missionApplication as mission_application_count' => function ($query) use ($missionId) {
-            $query->whereIn('approval_status', [config("constants.application_status")["AUTOMATICALLY_APPROVED"]
+            $query->whereIn('approval_status', [config('constants.application_status')['AUTOMATICALLY_APPROVED'],
             ]);
         }])->first();
     }
@@ -344,7 +347,6 @@ class Mission extends Model
      * Set organisation detail in json_encode form
      *
      * @param array|null $value
-     * @return void
      */
     public function setOrganisationDetailAttribute($value)
     {
@@ -366,6 +368,7 @@ class Mission extends Model
                 return json_decode($value, true);
             }
         }
+
         return null;
     }
 
@@ -377,6 +380,16 @@ class Mission extends Model
     public function organization(): HasOne
     {
         return $this->hasOne(Organization::class, 'organization_id', 'organization_id');
+    }
+
+    /**
+     * Get mission donation impact with the mission
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function impactDonation(): HasMany
+    {
+        return $this->hasMany(MissionImpactDonation::class, 'mission_id', 'mission_id');
     }
 
     /**
@@ -398,8 +411,8 @@ class Mission extends Model
     {
         return $this->hasMany(MissionImpact::class, 'mission_id', 'mission_id')->orderBy('sort_key');
     }
-    
-    /** 
+
+    /**
      * Get mission-tab associated with the mission.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany

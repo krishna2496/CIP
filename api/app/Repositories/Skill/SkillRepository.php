@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use App\Models\Skill;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\DB;
 
 class SkillRepository implements SkillInterface
 {
@@ -27,7 +28,7 @@ class SkillRepository implements SkillInterface
     /**
      * Display a listing of the resource.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param Request $request
      * @param string $skill_id
      * @return \Illuminate\Http\Response
      */
@@ -44,23 +45,32 @@ class SkillRepository implements SkillInterface
     /**
      * Display a listing of the resource.
      *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Pagination\LengthAwarePaginator
+     * @param Request $request
+     * @return LengthAwarePaginator
      */
     public function skillDetails(Request $request): LengthAwarePaginator
     {
-        $skillQuery = $this->skill->select('skill_id', 'skill_name', 'translations', 'parent_skill');
+        $searchLanguage = $request->searchLanguage;
+        $sortBy = $request->get('sortBy');
+
+        if ($sortBy && $sortBy === 'translations' && $searchLanguage) {
+            $skillQuery = $this->skill->select('skill_id', 'skill_name', 'translations', 'parent_skill', 'created_at', 'updated_at', DB::raw("JSON_EXTRACT(translations, '$." . $searchLanguage . "') COLLATE utf8mb4_unicode_ci AS translated"));
+            $sortBy = 'translated';
+        } else {
+            $skillQuery = $this->skill->select('skill_id', 'skill_name', 'translations', 'parent_skill', 'created_at', 'updated_at');
+        }
 
         if ($request->has('id')) {
             $skillQuery = $skillQuery->whereIn('skill_id', $request->get('id'));
         }
 
-        $skillQuery->when($request->has('search'), function ($query) use ($request) {
-            $query->where('skill_name', 'like', '%'.$request->search.'%');
-            $searchLanguage = $request->searchLanguage ?? '.{0,3}';
-            $query->orWhere(
-                'translations', 'regexp', '{s:4:"lang";s:[1-3]:"'.$searchLanguage.'";s:5:"title";s:[1-9]{1,6}:"[^"]*'.$request->search.'[^"]*";}'
-            );
+        $skillQuery->when($request->has('search'), function ($query) use ($request, $searchLanguage) {
+            $query->where('skill_name', 'like', $request->search.'%');
+
+            $searchLanguage
+                ? $query->orWhere(DB::raw("lower(json_unquote(json_extract(translations, '$.".$searchLanguage."')))"), 'LIKE', '%'. strtolower( $request->search ).'%')
+                : $query->orWhere('translations', 'like', '%' . $request->search . '%');
+
         })->when($request->has('translations'), function ($query) use ($request) {
             /*
              * Filtering on translations
@@ -70,7 +80,8 @@ class SkillRepository implements SkillInterface
             $query->where(function ($query) use ($request) {
                 foreach ($request->translations as $languageCode) {
                     // Regex searches in translations column if the translation in the $languageCode exists and its length is greater than 0
-                    $query->where('translations', 'regexp', '{s:4:"lang";s:2:"'.$languageCode.'";s:5:"title";s:[1-9][0-9]{0,1}:"');
+                    $query->whereNotNull('translations->' . $languageCode)
+                        ->where('translations->' . $languageCode , '!=', '');
                 }
             });
         });
@@ -78,6 +89,9 @@ class SkillRepository implements SkillInterface
         if ($request->has('order')) {
             $orderDirection = $request->input('order', 'asc');
             $skillQuery = $skillQuery->orderBy('skill_id', $orderDirection);
+        } elseif ($request->has('sortBy') && $request->has('sortDir')) {
+            $sortDir = $request->get('sortDir');
+            $skillQuery = $skillQuery->orderBy($sortBy, $sortDir);
         }
 
         if ($request->has('limit') && $request->has('offset')) {
