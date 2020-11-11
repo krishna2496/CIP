@@ -1,4 +1,4 @@
-<template>
+    <template>
         <div class="top-header">
             <b-navbar toggleable="lg">
                 <b-container>
@@ -104,7 +104,7 @@
                                             {{languageData.label.random}}
                                         </router-link>
                                     </li>
-                                    <li class="no-dropdown">
+                                    <li v-if="isVolunteeringSettingEnabled" class="no-dropdown">
                                         <router-link :to="{ path: '/home/virtual-missions'}"
                                             @click.native="menuBarclickHandler">
                                             {{languageData.label.virtual_missions}}
@@ -373,8 +373,9 @@
                     submitNewMissionUrl: '',
                     isSubmitNewMissionSet: true,
                     hostUrl: '',
-                    getEmailNotification : 0,
-                    getEmailNotificationSelected : []
+                    getEmailNotification: 0,
+                    getEmailNotificationSelected: [],
+                    isVolunteeringSettingEnabled: false
                 };
             },
             mounted() {
@@ -674,9 +675,10 @@
                 this.languageData = JSON.parse(store.state.languageLabel);
                 this.submitNewMissionUrl = store.state.submitNewMissionUrl
                 this.isSubmitNewMissionSet = this.settingEnabled(constants.USER_CAN_SUBMIT_MISSION);
+                this.isVolunteeringSettingEnabled = this.settingEnabled(constants.SETTING_VOLUNTEERING);
                 this.hostUrl = process.env.BASE_URL;
                 this.getEmailNotification = store.state.getEmailNotification;
-                if(store.state.getEmailNotification == 1) {
+                if (store.state.getEmailNotification == 1) {
                     this.getEmailNotificationSelected.push(store.state.getEmailNotification)
                 }
                 if (!store.state.isLoggedIn) {

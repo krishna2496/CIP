@@ -29,6 +29,7 @@
                 </b-card-header>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
                     <b-card-body>
                         <div class="card-detail-column">
                             <div class="content-block">
@@ -75,6 +76,8 @@
                                 <template v-if="mission.total_seats != 0 && mission.total_seats !== null">
                                     <div class="detail-column seat-info">
 =======
+=======
+>>>>>>> ae18d57de3d85629364fbd8f417fd2e8dae08229
                 <b-card-body>
                     <div class="card-detail-column">
                         <div class="content-block">
@@ -139,8 +142,9 @@
                                                 {{ mission.end_date | formatDate }}</span>
                                         </template>
                                         <template v-else>
-                                            <span class="title-text"><em>{{ languageData.label.on }}</em>
-                                                {{mission.start_date | formatDate }}</span>
+                                            <span class="title-text">
+                                                {{mission.start_date | formatDate }}
+                                            </span>
                                         </template>
                                     </div>
                                     <div class="text-wrap" v-else>
@@ -372,6 +376,7 @@ import { favoriteMission } from '../services/service';
 
 export default {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	name: "MissionListView",
 	props: {
 		items: Array,
@@ -453,6 +458,8 @@ export default {
 			}
 			});
 =======
+=======
+>>>>>>> ae18d57de3d85629364fbd8f417fd2e8dae08229
     name: 'MissionListView',
     props: {
         items: Array
@@ -622,12 +629,16 @@ export default {
         compareDate(endDates, startDates) {
             const endDate = moment(endDates).format("YYYY-MM-DD");
             const startDate = moment(startDates).format("YYYY-MM-DD");
+<<<<<<< HEAD
 >>>>>>> 1759320c571254b05a68d2cc9171a1ab91153759
+=======
+>>>>>>> ae18d57de3d85629364fbd8f417fd2e8dae08229
 
             if (startDate == endDate) {
                 return true;
             }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 			if (filtereObj[0]) {
 				return filtereObj[0].title;
@@ -888,6 +899,8 @@ export default {
 		}
 	}
 =======
+=======
+>>>>>>> ae18d57de3d85629364fbd8f417fd2e8dae08229
             return false;
         }
     },
@@ -905,6 +918,9 @@ export default {
         this.submitNewMissionUrl = store.state.submitNewMissionUrl;
         this.isSkillDisplay = this.settingEnabled(constants.SKILLS_ENABLED);
     }
+<<<<<<< HEAD
 >>>>>>> 1759320c571254b05a68d2cc9171a1ab91153759
+=======
+>>>>>>> ae18d57de3d85629364fbd8f417fd2e8dae08229
 };
 </script>

@@ -98,6 +98,19 @@ router.beforeEach(async(to, from, next) => {
         });
         return;
     }
+
+    // check for required tenant settings
+    if (to.meta.requiredSettings && to.meta.requiredSettings.length) {
+        const settings = JSON.parse(store.state.tenantSetting);
+        if (settings) {
+            if (!to.meta.requiredSettings.every(setting => settings.indexOf(setting) !== -1)) {
+                return next({
+                    name: 'home'
+                });
+            }
+        }
+    }
+
     if ((to.path === "/" || to.path === "/forgot-password" || to.path === "/reset-password") &&
         store.state.isLoggedIn) {
         next({

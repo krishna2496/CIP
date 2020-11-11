@@ -1323,7 +1323,6 @@ export default {
                                                         {{ mission.end_date | formatDate }}
                                                     </template>
                                                     <template v-else>
-                                                        {{ languageData.label.on }}
                                                         {{ mission.start_date | formatDate }}
                                                     </template>
                                                 </template>
@@ -1817,6 +1816,9 @@ export default {
     mounted() {
         this.cardHeightAdjIntervalId = setInterval(this.cardHeightAdj, 500);
     },
+<<<<<<< HEAD
 >>>>>>> 1759320c571254b05a68d2cc9171a1ab91153759
+=======
+>>>>>>> ae18d57de3d85629364fbd8f417fd2e8dae08229
 };
 </script>

@@ -30,7 +30,6 @@ data:
 
     # enabling browser XSS filter
     Header set X-XSS-Protection "1; mode=block"
-    Header set Content-Security-Policy "reflected-xss block"
 
     # preventing browser to do MIME-type sniffing
     Header set X-Content-Type-Options "nosniff"
