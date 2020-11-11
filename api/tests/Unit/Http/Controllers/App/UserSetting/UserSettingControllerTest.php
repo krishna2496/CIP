@@ -50,11 +50,11 @@ class UserSettingControllerTest extends TestCase
 
 
         $request = new Request($payload);
-        
+
         $tenant = [
             'tenant_id' => 1
         ];
-        
+
         $userSettingController = new UserSettingController(
             $responseHelper,
             $helpers,
@@ -75,7 +75,7 @@ class UserSettingControllerTest extends TestCase
         $tenantActivatedSettingRepository->shouldReceive('checkTenantSettingStatus')
             ->once()
             ->andReturn(false);
-            
+
         $helpers->shouldReceive('getTenantIdAndSponsorIdFromRequest')
             ->once()
             ->andReturn((object)$tenant);
@@ -115,7 +115,7 @@ class UserSettingControllerTest extends TestCase
         $tenant = [
             'tenant_id' => 1
         ];
-       
+
         $userSettingController = new UserSettingController(
             $responseHelper,
             $helpers,
@@ -130,10 +130,21 @@ class UserSettingControllerTest extends TestCase
             ->once()
             ->andReturn((object)$tenant);
 
+        $errors = new Collection([
+            config('constants.error_codes.ERROR_INVALID_DETAIL')
+        ]);
+        $validator = $this->mock(\Illuminate\Validation\Validator::class);
+        $validator->shouldReceive('fails')
+            ->andReturn(true)
+            ->shouldReceive('errors')
+            ->andReturn($errors);
+        Validator::shouldReceive('make')
+            ->andReturn($validator);
+
         $tenantActivatedSettingRepository->shouldReceive('checkTenantSettingStatus')
             ->once()
             ->andReturn(true);
-            
+
         $responseHelper->shouldReceive('error')
             ->once()
             ->andReturn();
@@ -158,7 +169,7 @@ class UserSettingControllerTest extends TestCase
             ]
         ];
         $request = new Request($data);
-       
+
         $userSettingController = new UserSettingController(
             $responseHelper,
             $helpers,
@@ -196,14 +207,14 @@ class UserSettingControllerTest extends TestCase
         $responseHelper->shouldReceive('success')
             ->once()
             ->andReturn();
-        
-        
+
+
         $response = $userSettingController->index($request);
 
         $this->assertInstanceOf(JsonResponse::class, $response);
     }
 
-    public function testIsNotValidareOldPassword()
+    public function testInvalidOldPassword()
     {
         $responseHelper = $this->mock(ResponseHelper::class);
         $helpers = $this->mock(Helpers::class);
@@ -227,7 +238,7 @@ class UserSettingControllerTest extends TestCase
         $tenant = [
             'tenant_id' => 1
         ];
-       
+
         $userSettingController = new UserSettingController(
             $responseHelper,
             $helpers,
@@ -238,10 +249,16 @@ class UserSettingControllerTest extends TestCase
             $tenantActivatedSettingRepository
         );
 
+        $validator = $this->mock(\Illuminate\Validation\Validator::class);
+        $validator->shouldReceive('fails')
+            ->andReturn(false);
+        Validator::shouldReceive('make')
+            ->andReturn($validator);
+
         $tenantActivatedSettingRepository->shouldReceive('checkTenantSettingStatus')
             ->once()
             ->andReturn(false);
-            
+
         $helpers->shouldReceive('getTenantIdAndSponsorIdFromRequest')
             ->once()
             ->andReturn((object)$tenant);
@@ -289,7 +306,7 @@ class UserSettingControllerTest extends TestCase
             'timezone_id' => 1,
             'currency' => 'INR',
         ];
-       
+
         $userSettingController = new UserSettingController(
             $responseHelper,
             $helpers,
@@ -306,7 +323,7 @@ class UserSettingControllerTest extends TestCase
 
         Validator::shouldReceive('make')
             ->andReturn($validator);
-            
+
         $helpers->shouldReceive('getTenantIdAndSponsorIdFromRequest')
             ->once()
             ->andReturn((object)$tenant);
@@ -314,7 +331,7 @@ class UserSettingControllerTest extends TestCase
         $tenantActivatedSettingRepository->shouldReceive('checkTenantSettingStatus')
             ->once()
             ->andReturn(false);
-            
+
         $userRepository->shouldReceive('changePassword')
             ->once()
             ->andReturn(true);
@@ -336,8 +353,8 @@ class UserSettingControllerTest extends TestCase
 
         $responseHelper->shouldReceive('success')
             ->once()
-            ->andReturn(new JsonResponse());   
-        
+            ->andReturn(new JsonResponse());
+
         $response = $userSettingController->store($request);
 
         $this->assertInstanceOf(JsonResponse::class, $response);

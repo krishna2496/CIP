@@ -197,6 +197,7 @@ return [
         'MESSAGE_STATE_LISTING' => 'Tila listattu onnistuneesti',
         'MESSAGE_STATE_FOUND' => 'Tila löytyi onnistuneesti',
         'MESSAGE_NO_STATE_FOUND' => 'Tilaa ei löydy',
+        'MESSAGE_SETTING_UPDATE_SUCCESS' => 'Käyttäjäasetuksen päivitys onnistui.',
     ],
 
 

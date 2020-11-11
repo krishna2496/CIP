@@ -197,6 +197,7 @@ return [
         'MESSAGE_STATE_LISTING' => 'Estados listados con éxito',
         'MESSAGE_STATE_FOUND' => 'Estado encontrado con éxito',
         'MESSAGE_NO_STATE_FOUND' => 'Estado no encontrado',
+        'MESSAGE_SETTING_UPDATE_SUCCESS' => 'La configuración del usuario se ha actualizado con éxito.',
     ],
 
 

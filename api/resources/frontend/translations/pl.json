@@ -302,7 +302,14 @@
 		"and": "oraz",
 		"for": "Dla",
 		"sort_deadline": "Sortowanie według terminów",
-		"no_image_available": "Brak obrazu"
+		"no_image_available": "Brak obrazu",
+		"profile": "Profil",
+		"settings": "Ustawienia",
+		"donations": "Darowizny",
+		"personal_donation_goal": "Osobisty cel darowizny",
+		"preferences": "Preferencje",
+		"currency": "Waluta",
+		"current_password": "Aktualne hasło"
 	},
 	"placeholder": {
 		"email_address": "Wprowadź adres e-mail",
@@ -335,7 +342,9 @@
 		"video_url": "Wprowadź adres url wideo",
 		"subject": "Wprowadź swój temat",
 		"message": "Wprowadź swoją wiadomość",
-		"search_user": "Szukaj według nazwiska lub adresu e-mail"
+		"search_user": "Szukaj według nazwiska lub adresu e-mail",
+		"currency": "Wybierz swoją walutę",
+		"old_password": "Wprowadź aktualne hasło"
 	},
 	"errors": {
 		"email_required": "Adres e-mail jest wymagany",
@@ -394,7 +403,10 @@
 		"invalid_saml_setting": "Wymagane są następujące mapowania:",
 		"password_should_contain_uppercase": "Przynajmniej 1 wielka litera",
 		"password_should_contain_lowercase": "Przynajmniej 1 mała litera",
-		"password_should_contain_numbers": "Przynajmniej 1 cyfra"
+		"password_should_contain_numbers": "Przynajmniej 1 cyfra",
+		"currency_required": "Wymagana jest waluta.",
+		"donation_goal_required": "Wymagana jest kwota docelowa darowizny.",
+		"valid_donation_goal": "Proszę wpisać prawidłową kwotę bramki darowizny."
 	},
 	"export_timesheet_file_names": {
 		"PENDING_TIME_MISSION_ENTRIES_XLSX": "Pending_Time_Mission_Entries.xls",

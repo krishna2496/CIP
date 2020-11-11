@@ -302,7 +302,14 @@
 		"and": "y",
 		"for": "Para",
 		"sort_deadline": "Ordenar por fecha límite",
-		"no_image_available": "No hay imagen disponible"
+		"no_image_available": "No hay imagen disponible",
+		"profile": "Perfil",
+		"settings": "Ajustes",
+		"donations": "Donaciones",
+		"personal_donation_goal": "Objetivo de la donación personal",
+		"preferences": "Preferencias",
+		"currency": "Moneda",
+		"current_password": "Contraseña actual"
 	},
 	"placeholder": {
 		"email_address": "Introduzca la dirección de correo electrónico",
@@ -335,7 +342,9 @@
 		"video_url": "Introduzca la URL de su vídeo",
 		"subject": "Introduzca su asunto",
 		"message": "Introduzca su mensaje",
-		"search_user": "Buscar por nombre o dirección de correo electrónico"
+		"search_user": "Buscar por nombre o dirección de correo electrónico",
+		"currency": "Seleccione su moneda",
+		"old_password": "Introduzca la contraseña actual"
 	},
 	"errors": {
 		"email_required": "Se requiere una dirección de correo electrónico",
@@ -394,7 +403,10 @@
 		"invalid_saml_setting": "Se requieren las siguientes asignaciones:",
 		"password_should_contain_uppercase": "Como mínimo 1 letra en mayúsculas",
 		"password_should_contain_lowercase": "Como mínimo 1 letra en minúsculas",
-		"password_should_contain_numbers": "Como mínimo 1 número"
+		"password_should_contain_numbers": "Como mínimo 1 número",
+		"currency_required": "Currency is required.",
+		"donation_goal_required": "Donation goal amount is required.",
+		"valid_donation_goal": "Please enter a valid donation goal amount."
 	},
 	"export_timesheet_file_names": {
 		"PENDING_TIME_MISSION_ENTRIES_XLSX": "Pending_Time_Mission_Entries.xls",

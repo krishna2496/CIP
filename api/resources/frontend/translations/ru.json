@@ -302,7 +302,14 @@
 		"and": "а также",
 		"for": "За",
 		"sort_deadline": "Сортировать по сроку",
-		"no_image_available": "Изображение отсутствует"
+		"no_image_available": "Изображение отсутствует",
+		"profile": "Профиль",
+		"settings": "Настройки",
+		"donations": "Пожертвования",
+		"personal_donation_goal": "Цель личного пожертвования",
+		"preferences": "Предпочтения",
+		"currency": "Валюта",
+		"current_password": "Текущий пароль"
 	},
 	"placeholder": {
 		"email_address": "Введите e-mail",
@@ -335,7 +342,9 @@
 		"video_url": "Введите ссылку своего видео",
 		"subject": "Введите свою тему",
 		"message": "Введите своё сообщение",
-		"search_user": "Искать по адресу или e-mail"
+		"search_user": "Искать по адресу или e-mail",
+		"currency": "Выберите вашу валюту",
+		"old_password": "Введите текущий пароль"
 	},
 	"errors": {
 		"email_required": "Требуется e-mail",
@@ -394,7 +403,10 @@
 		"invalid_saml_setting": "Требуется следующее сопоставление (я):",
 		"password_should_contain_uppercase": "Как минимум 1 заглавная буква",
 		"password_should_contain_lowercase": "Как минимум 1 строчная буква",
-		"password_should_contain_numbers": "Как минимум 1 цифра"
+		"password_should_contain_numbers": "Как минимум 1 цифра",
+		"currency_required": "Требуется валюта.",
+		"donation_goal_required": "Требуется сумма пожертвований.",
+		"valid_donation_goal": "Пожалуйста, введите действительную сумму цели пожертвования."
 	},
 	"export_timesheet_file_names": {
 		"PENDING_TIME_MISSION_ENTRIES_XLSX": "Pending_Time_Mission_Entries.xls",
