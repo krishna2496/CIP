@@ -41,6 +41,101 @@ use TestCase;
 
 class MissionRepositoryTest extends TestCase
 {
+    private $mission;
+    private $timeMission;
+    private $missionLanguage;
+    private $missionDocument;
+    private $favouriteMission;
+    private $missionSkill;
+    private $missionRating;
+    private $missionApplication;
+    private $missionTab;
+    private $missionTabLanguage;
+    private $city;
+    private $languageHelper;
+    private $helpers;
+    private $s3Helper;
+    private $missionMediaRepository;
+    private $modelsService;
+    private $missionTabRepository;
+    private $collection;
+    private $countryRepository;
+    private $donationAttribute;
+    private $missionImpact;
+    private $missionUnitedNationSDGRepository;
+    private $missionImpactRepository;
+    private $missionImpactDonation;
+    private $impactDonationMissionRepository;
+    private $donationService;
+    private $organization;
+    private $tenantActivatedSettingRepository;
+    private $missionRepository;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->mission = $this->mock(Mission::class);
+        $this->timeMission = $this->mock(TimeMission::class);
+        $this->missionLanguage = $this->mock(MissionLanguage::class);
+        $this->missionDocument = $this->mock(MissionDocument::class);
+        $this->favouriteMission = $this->mock(FavouriteMission::class);
+        $this->missionSkill = $this->mock(MissionSkill::class);
+        $this->missionRating = $this->mock(MissionRating::class);
+        $this->missionApplication = $this->mock(MissionApplication::class);
+        $this->missionTab = $this->mock(MissionTab::class);
+        $this->missionTabLanguage = $this->mock(MissionTabLanguage::class);
+        $this->city = $this->mock(City::class);
+        $this->languageHelper = $this->mock(LanguageHelper::class);
+        $this->helpers = $this->mock(Helpers::class);
+        $this->s3Helper = $this->mock(S3Helper::class);
+        $this->missionMediaRepository = $this->mock(MissionMediaRepository::class);
+        $this->missionTabRepository = $this->mock(MissionTabRepository::class);
+        $this->collection = $this->mock(Collection::class);
+        $this->countryRepository = $this->mock(CountryRepository::class);
+        $this->donationAttribute = $this->mock(DonationAttribute::class);
+        $this->missionImpact = $this->mock(MissionImpact::class);
+        $this->missionUnitedNationSDGRepository = $this->mock(MissionUnitedNationSDGRepository::class);
+        $this->missionImpactRepository = $this->mock(MissionImpactRepository::class);
+        $this->missionImpactDonation = $this->mock(MissionImpactDonation::class);
+        $this->impactDonationMissionRepository = $this->mock(ImpactDonationMissionRepository::class);
+        $this->donationService = $this->mock(DonationService::class);
+        $this->organization = $this->mock(Organization::class);
+        $this->tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
+
+        $this->modelsService = new ModelsService(
+            $this->mission,
+            $this->timeMission,
+            $this->missionLanguage,
+            $this->missionDocument,
+            $this->favouriteMission,
+            $this->missionSkill,
+            $this->missionRating,
+            $this->missionApplication,
+            $this->city,
+            $this->missionImpactDonation,
+            $this->missionImpact,
+            $this->organization,
+            $this->missionTab,
+            $this->missionTabLanguage,
+            $this->donationAttribute
+        );
+
+        $this->missionRepository = new MissionRepository(
+            $this->languageHelper,
+            $this->helpers,
+            $this->s3Helper,
+            $this->countryRepository,
+            $this->missionMediaRepository,
+            $this->modelsService,
+            $this->impactDonationMissionRepository,
+            $this->missionImpactRepository,
+            $this->tenantActivatedSettingRepository,
+            $this->missionUnitedNationSDGRepository,
+            $this->missionTabRepository,
+            $this->donationService
+        );
+    }
     /**
     * @testdox Test donation attribute add success
     *
@@ -949,6 +1044,51 @@ class MissionRepositoryTest extends TestCase
         );
 
         $response = $repository->isEligibleForDonation($request, $missionId);
+    }
+
+    /**
+     * @testdox test getDonationStatistics method
+     */
+    public function testGetDonationStatistics()
+    {
+        $mission = new Mission();
+        $mission->setAttribute('mission_id', 41);
+
+        $missionIds = [
+            $mission->mission_id
+        ];
+        $this->mission
+            ->shouldReceive('selectRaw')
+            ->once()
+            ->with('
+                mission.mission_id,
+                COUNT(donation.id) as count,
+                COUNT(DISTINCT donation.user_id) as donors,
+                SUM(payment.amount) as total
+            ')
+            ->andReturnSelf()
+            ->shouldReceive('join')
+            ->once()
+            ->with('donation', 'donation.mission_id', '=', 'mission.mission_id')
+            ->andReturnSelf()
+            ->shouldReceive('join')
+            ->once()
+            ->with('payment', 'payment.id', '=', 'donation.payment_id')
+            ->andReturnSelf()
+            ->shouldReceive('whereIn')
+            ->once()
+            ->with('mission.mission_id', $missionIds)
+            ->andReturnSelf()
+            ->shouldReceive('groupBy')
+            ->once()
+            ->with('mission.mission_id')
+            ->andReturnSelf()
+            ->shouldReceive('get')
+            ->once()
+            ->andReturn($mission);
+
+        $response = $this->missionRepository->getDonationStatistics($missionIds);
+        $this->assertInstanceOf(Mission::class, $response);
     }
 
     /**

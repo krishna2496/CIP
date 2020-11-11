@@ -2297,4 +2297,28 @@ class MissionRepository implements MissionInterface
     {
         return $this->impactDonationMissionRepository->deleteMissionImpactDonation($missionImpactDonationId);
     }
+
+    /**
+     * Get missions donation statistics
+     *
+     * @param array $missionIds
+     *
+     * @return Donation
+     */
+    public function getDonationStatistics(array $missionIds = [])
+    {
+        return $this->modelsService
+            ->mission
+            ->selectRaw('
+                mission.mission_id,
+                COUNT(donation.id) as count,
+                COUNT(DISTINCT donation.user_id) as donors,
+                SUM(payment.amount) as total
+            ')
+            ->join('donation', 'donation.mission_id', '=', 'mission.mission_id')
+            ->join('payment', 'payment.id', '=', 'donation.payment_id')
+            ->whereIn('mission.mission_id', $missionIds)
+            ->groupBy('mission.mission_id')
+            ->get();
+    }
 }

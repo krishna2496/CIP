@@ -2,31 +2,32 @@
 
 namespace App\Http\Controllers\App\Mission;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use App\Repositories\Mission\MissionRepository;
-use App\Repositories\UserFilter\UserFilterRepository;
-use Illuminate\Support\Facades\Config;
-use App\Models\Mission;
-use App\Repositories\MissionTheme\MissionThemeRepository;
-use App\Repositories\Skill\SkillRepository;
-use App\Repositories\Country\CountryRepository;
-use App\Repositories\City\CityRepository;
+use App\Events\User\UserActivityLogEvent;
 use App\Helpers\Helpers;
 use App\Helpers\LanguageHelper;
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\JsonResponse;
-use App\Traits\RestExceptionHandlerTrait;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Validator;
+use App\Models\Mission;
 use App\Models\UserFilter;
-use App\Transformations\MissionTransformable;
-use App\Events\User\UserActivityLogEvent;
-use App\Repositories\User\UserRepository;
+use App\Repositories\City\CityRepository;
+use App\Repositories\Country\CountryRepository;
+use App\Repositories\Mission\MissionRepository;
+use App\Repositories\MissionTheme\MissionThemeRepository;
+use App\Repositories\Skill\SkillRepository;
 use App\Repositories\State\StateRepository;
 use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
 use App\Repositories\UnitedNationSDG\UnitedNationSDGRepository;
+use App\Repositories\User\UserRepository;
+use App\Repositories\UserFilter\UserFilterRepository;
+use App\Services\Donation\DonationService;
+use App\Traits\RestExceptionHandlerTrait;
+use App\Transformations\MissionTransformable;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Config;
+use Validator;
 
 //!  Mission controller
 /*!
@@ -214,6 +215,33 @@ class MissionController extends Controller
             ->map(function ($item) use ($languageCode, $languageId, $defaultTenantLanguageId, $timezone, $tenantLanguages) {
                 return $this->transformMission($item, $languageCode, $languageId, $defaultTenantLanguageId, $timezone, $tenantLanguages);
             })->toArray();
+
+        // Get donation statistics
+        if ($request->boolean('with_donation_statistics')) {
+            $missionIds = $missionList
+                ->getCollection()
+                ->filter(function ($mission) {
+                    return $mission->donationAttribute !== null;
+                })
+                ->pluck('mission_id');
+
+            if (!$missionIds->isEmpty()) {
+                $statistics = $this->missionRepository
+                    ->getDonationStatistics($missionIds->toArray())
+                    ->keyBy('mission_id');
+                $missionsTransformed = array_map(function ($mission) use ($statistics, $missionIds) {
+                    $missionId = $mission['mission_id'];
+                    if ($missionIds->contains($missionId)) {
+                        $mission['donation_statistics'] = [
+                            'count' => $statistics[$missionId]->count ?? null,
+                            'donors' => $statistics[$missionId]->donors ?? null,
+                            'total' => $statistics[$missionId]->total ?? null
+                        ];
+                    }
+                    return $mission;
+                }, $missionsTransformed);
+            }
+        }
 
         $requestString = $request->except(['page', 'perPage']);
         $missionsPaginated = new \Illuminate\Pagination\LengthAwarePaginator(
@@ -721,19 +749,37 @@ class MissionController extends Controller
             $defaultTenantLanguageId = $defaultTenantLanguage->language_id;
             $timezone = $this->userRepository->getUserTimezone($request->auth->user_id);
 
-            $mission = $missionData->map(
-                function (Mission $mission) use ($languageCode, $languageId, $defaultTenantLanguageId, $timezone, $tenantLanguages
-                ) {
-                    return $this->transformMission(
-                        $mission,
-                        $languageCode,
-                        $languageId,
-                        $defaultTenantLanguageId,
-                        $timezone,
-                        $tenantLanguages
-                    );
+            $payload = [
+                'languageCode' => $languageCode,
+                'languageId' => $languageId,
+                'defaultTenantLanguageId' => $defaultTenantLanguageId,
+                'timezone' => $timezone,
+                'tenantLanguages' => $tenantLanguages
+            ];
+
+            $mission = $missionData->map(function (Mission $mission) use ($request, $payload) {
+                $data = $this->transformMission(
+                    $mission,
+                    $payload['languageCode'],
+                    $payload['languageId'],
+                    $payload['defaultTenantLanguageId'],
+                    $payload['timezone'],
+                    $payload['tenantLanguages']
+                );
+                if ($request->boolean('with_donation_statistics') && $mission->donationAttribute) {
+                    // Get mission donation statistics
+                    $missionId = $mission->mission_id;
+                    $statistics = $this->missionRepository->getDonationStatistics([
+                        $missionId
+                    ])->keyBy('mission_id');
+                    $data->setAttribute('donation_statistics', [
+                        'count' => $statistics[$missionId]->count ?? null,
+                        'donors' => $statistics[$missionId]->donors ?? null,
+                        'total' => $statistics[$missionId]->total ?? null
+                    ]);
                 }
-            )->all();
+                return $data;
+            })->all();
 
             $apiData = $mission;
             $apiStatus = (empty($mission)) ? Response::HTTP_NOT_FOUND : Response::HTTP_OK;
