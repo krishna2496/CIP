@@ -26,7 +26,9 @@
             'CURRENCY_CODE_NOT_FOUND' => '2001012',
             'ERROR_SYSTEM_CURRENCY_CODE_WRONG' => '2001013',
             'ERROR_IS_ACTIVE_FIELD_MUST_BE_TRUE' => '2001014',
-            'ERROR_DEFAULT_CURRENCY_SHOULD_BE_ACTIVE' => '2001015'
+            'ERROR_DEFAULT_CURRENCY_SHOULD_BE_ACTIVE' => '2001015',
+            'ERROR_VOLUNTEERING_TIME_OR_GOAL_SHOULD_BE_ACTIVE' => '2001016',
+            'ERROR_VOLUNTEERING_SHOULD_BE_ENABLED' => '2001017'
         ],
         'background_process_status' => [
             'PENDING' => '0',
@@ -69,4 +71,14 @@
             'seeder' => 'seeder'
         ],
         'EMAIL_TEMPLATE_MIGRATION_NOTIFICATION' => 'migration-notification',
+
+        'tenant_settings' => [
+            'VOLUNTEERING' => 'volunteering',
+            'VOLUNTEERING_GOAL_MISSION' => 'volunteering_goal_mission',
+            'VOLUNTEERING_TIME_MISSION' => 'volunteering_time_mission'
+        ],
+
+        'payment_gateway_types' => [
+            'STRIPE' => 1,
+        ],
     ];

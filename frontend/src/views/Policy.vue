@@ -1,6 +1,6 @@
 <template>
     <div class="cms-page inner-pages">
-        <header @scroll="handleScroll">
+        <header>
             <ThePrimaryHeader></ThePrimaryHeader>
         </header>
 
@@ -66,6 +66,8 @@
       // left menu sticky function
       handleScroll() {
         let nav_ = document.querySelector(".cms-nav");
+        if (!nav_) return;
+        
         let navTop = nav_.offsetTop;
         let screenHeight = document.body.clientHeight;
         let headerHeight = document.querySelector("header").offsetHeight;
@@ -170,4 +172,11 @@
   };
 </script>
 <style lang="scss">
+.cms-content .accordian-title {
+  outline: none;
+
+  @media (min-width: 1025px) {
+    cursor: text;
+  }
+}
 </style>

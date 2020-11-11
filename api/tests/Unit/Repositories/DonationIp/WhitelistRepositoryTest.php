@@ -116,6 +116,63 @@ class WhitelistRepositoryTest extends TestCase
     }
 
     /**
+     * Test getList without pagination (all results)
+     *
+     * @return void
+     */
+    public function testGetListWithoutPagination()
+    {
+        $paginate = [
+            'perPage' => null
+        ];
+        $filters = [
+            'search' => 'search',
+            'order' => [
+                'pattern' => null,
+                'created_at' => 'desc'
+            ]
+        ];
+
+        $modelData = factory(DonationIpWhitelist::class, 2)->make();
+        $model = $this->mock(DonationIpWhitelist::class);
+        $model
+            ->shouldReceive('select')
+            ->once()
+            ->with(
+                'id',
+                'pattern',
+                'description',
+                'created_at'
+            )
+            ->andReturn($model);
+
+        $model
+            ->shouldReceive('when')
+            ->twice()
+            ->with(
+                Mockery::anyOf(
+                    $filters['search'],
+                    $filters['order']
+                ),
+                Mockery::any()
+            )
+            ->andReturn($model);
+
+        $model->shouldReceive('paginate')
+            ->never();
+
+        $model->shouldReceive('get')
+            ->once()
+            ->andReturn($modelData);
+
+        $response = $this->getRepository(
+            $model
+        )->getList($paginate, $filters);
+
+        $this->assertSame($modelData, $response);
+    }
+
+    /**
      * Test Store method
      *
      * @return void

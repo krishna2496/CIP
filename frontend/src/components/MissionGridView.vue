@@ -250,7 +250,7 @@
                                         </b-link>
                                     </div>
                                     <div class="social-btn">
-                                        <b-button class="icon-btn" v-if="isInviteColleagueDisplay" v-b-tooltip.hover :title="languageData.label.recommend_to_co_worker" @click="handleModal(mission.mission_id)">
+                                        <b-button class="icon-btn" v-if="isInviteCollegueDisplay" v-b-tooltip.hover :title="languageData.label.recommend_to_co_worker" @click="handleModal(mission.mission_id)">
                                             <img :src="
                             $store.state.imagePath +
                             '/assets/images/multi-user-icon.svg'
@@ -314,18 +314,21 @@
 </template>
 
 <script>
-import store from '../store';
-import constants from '../constant';
-import StarRating from 'vue-star-rating';
-import { favoriteMission } from '../services/service';
-import moment from 'moment';
-import InviteCoWorker from '@/components/InviteCoWorker';
+import store from "../store";
+import constants from "../constant";
+import StarRating from "vue-star-rating";
+import {
+    favoriteMission,
+    applyMission,
+} from "../services/service";
+import moment from "moment";
+import InviteCoWorker from "@/components/InviteCoWorker";
 
 export default {
-    name: 'MissionGridView',
+    name: "MissionGridView",
     components: {
+        StarRating,
         InviteCoWorker,
-        StarRating
     },
     props: {
         items: Array,
@@ -334,13 +337,13 @@ export default {
     data() {
         return {
             currentMissionId: 0,
-            isInviteColleagueDisplay: true,
+            isInviteCollegueDisplay: true,
             isStarRatingDisplay: true,
             isSubmitNewMissionSet: true,
             isThemeSet: true,
             languageData: [],
             message: null,
-            submitNewMissionUrl: '',
+            submitNewMissionUrl: "",
             cardHeightAdjIntervalId: null,
         };
     },
@@ -473,14 +476,20 @@ export default {
                 return "";
             }
         },
-        /*
-         * Opens Recommend to a co-worker modal
-         */
-        handleModal(missionId) {
-          this.currentMissionId = missionId;
-          this.$refs.userDetailModal.show();
+        // Apply for mission
+        applyForMission(mission) {
+            const missionData = {};
+            missionData.mission_id = mission.mission_id;
+            missionData.availability_id = mission.availability_id;
+            applyMission(missionData).then((response) => {
+                if (response.error == true) {
+                    this.makeToast("danger", response.message);
+                } else {
+                    this.makeToast("success", response.message);
+                    this.$emit("getMissions");
+                }
+            });
         },
-
         makeToast(variant = null, message) {
             this.$bvToast.toast(message, {
                 variant: variant,
@@ -494,11 +503,7 @@ export default {
             }
         },
         cardHeightAdj() {
-            if (!document.getElementById('gridView')) {
-              return;
-            }
-
-            const cardBodyList = document.querySelectorAll('.card-grid .card-body');
+            const cardBodyList = document.querySelectorAll(".card-grid .card-body");
             // check if card content is already visible in the DOM
             if (cardBodyList.length > 0) {
                 if (!cardBodyList[0].children[0].offsetHeight) {
@@ -588,7 +593,7 @@ export default {
     },
     created() {
         this.languageData = JSON.parse(store.state.languageLabel);
-        this.isInviteColleagueDisplay = this.settingEnabled(
+        this.isInviteCollegueDisplay = this.settingEnabled(
             constants.INVITE_COLLEAGUE
         );
         this.isStarRatingDisplay = this.settingEnabled(constants.MISSION_RATINGS);
@@ -597,11 +602,11 @@ export default {
         );
         this.isThemeSet = this.settingEnabled(constants.THEMES_ENABLED);
         this.submitNewMissionUrl = store.state.submitNewMissionUrl;
-        const _this = this;
-        window.addEventListener('resize', this.cardHeightAdj);
-        const pageItem = document.querySelectorAll('.pagination-block .page-item');
+        var _this = this;
+        window.addEventListener("resize", this.cardHeightAdj);
+        var pageItem = document.querySelectorAll(".pagination-block .page-item");
         pageItem.forEach(function (itemEvent) {
-            itemEvent.addEventListener('click', function () {
+            itemEvent.addEventListener("click", function () {
                 setTimeout(function () {
                     _this.cardHeightAdj();
                 }, 2000);

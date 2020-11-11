@@ -4,10 +4,12 @@
 		<div v-else-if="supportsPreview">
 			<div class="preview-container"
 				 :style="{maxWidth: previewWidth + 'px', height: previewHeight + 'px', borderRadius: radius + '%'}">
-				<img :src="prefillUrl" class="picture-preview" height="100%"
+				<div class="picture-preview"
+					 :style="`background-image: url(${prefillUrl})`"
 					 @dragstart.stop.prevent="onDragStart"
 					 @dragenter.stop.prevent="onDragStart" @dragend.stop.prevent="onDragStop"
-					 @dragleave.stop.prevent="onDragStop" @drop.stop.prevent="onFileDrop" @click.prevent="onClick" />
+					 @dragleave.stop.prevent="onDragStop" @drop.stop.prevent="onFileDrop" @click.prevent="onClick"
+				/>
 				<!--  <canvas ref="previewCanvas"
             class="picture-preview"
             :class="computedClasses"
@@ -607,6 +609,9 @@
 		z-index: 10001;
 		box-sizing: border-box;
 		background-color: rgba(200, 200, 200, .25);
+		background-repeat: no-repeat;
+		background-size: cover;
+		background-position: center;
 	}
 
 	.picture-preview.dragging-over {

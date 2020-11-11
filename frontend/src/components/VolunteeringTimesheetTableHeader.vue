@@ -4,39 +4,68 @@
 			<h2>{{languageData.label[currentMonthName]}} {{currentYearNumber}}</h2>
 			<div class="inner-wrap">
 				<div class="picker-btn-wrap table-action-btn">
-					<button class="prev-btn picker-btn"
-							v-bind:class="{disabled :previousButtonDisable}"
-							v-b-tooltip.hover :title="languageData.label.previous +' '+languageData.label.week.toLowerCase()" @click.stop="goPrevWeek">
-						<img :src="$store.state.imagePath+'/assets/images/back-arrow-black.svg'"
-							 :alt="languageData.label.previous" />
+					<button
+            class="prev-btn picker-btn"
+            v-bind:class="{disabled :previousButtonDisable}"
+            v-b-tooltip.hover
+            :title="languageData.label.previous +' '+languageData.label.week.toLowerCase()"
+            @click.stop="goPrevWeek"
+          >
+						<img
+              :src="$store.state.imagePath+'/assets/images/back-arrow-black.svg'"
+              :alt="languageData.label.previous"
+            />
 					</button>
 
-					<button class="next-btn picker-btn" v-b-tooltip.hover  :title="languageData.label.next+' '+languageData.label.week.toLowerCase()"
-							v-bind:class="{disabled :disableNextWeek}" @click.stop="goNextWeek">
-						<img :src="$store.state.imagePath+'/assets/images/next-arrow-black.svg'"
-							 :alt="languageData.label.next" />
+					<button
+            class="next-btn picker-btn"
+            v-b-tooltip.hover
+            :title="languageData.label.next+' '+languageData.label.week.toLowerCase()"
+            v-bind:class="{disabled :disableNextWeek}"
+            @click.stop="goNextWeek"
+          >
+						<img
+              :src="$store.state.imagePath+'/assets/images/next-arrow-black.svg'"
+              :alt="languageData.label.next"
+            />
 					</button>
 				</div>
 				<div class="picker-btn-wrap">
-					<button class="prev-btn picker-btn" v-b-tooltip.hover
-							v-bind:class="{disabled :previousButtonDisable}"
-							:title="languageData.label.previous+' '+languageData.label.month.toLowerCase()" @click.stop="goPrev">
-						<img :src="$store.state.imagePath+'/assets/images/back-arrow-black.svg'"
-							 :alt="languageData.label.previous" />
+					<button
+            class="prev-btn picker-btn"
+            v-b-tooltip.hover
+            v-bind:class="{disabled :previousButtonDisable}"
+            :title="languageData.label.previous+' '+languageData.label.month.toLowerCase()"
+            @click.stop="goPrev"
+          >
+						<img
+              :src="$store.state.imagePath+'/assets/images/back-arrow-black.svg'"
+              :alt="languageData.label.previous"
+            />
 					</button>
 
 					<span>{{languageData.label[currentMonthName]}}</span>
-					<button class="next-btn picker-btn" v-b-tooltip.hover :title="languageData.label.next+' '+languageData.label.month.toLowerCase()"
-							v-bind:class="{disabled :isPreviousButtonDisable}" @click.stop="goNext">
-						<img :src="$store.state.imagePath+'/assets/images/next-arrow-black.svg'"
-							 :alt="languageData.label.next" />
+					<button
+            class="next-btn picker-btn"
+            v-b-tooltip.hover
+            :title="languageData.label.next+' '+languageData.label.month.toLowerCase()"
+            v-bind:class="{disabled :isPreviousButtonDisable}"
+            @click.stop="goNext"
+          >
+						<img
+              :src="$store.state.imagePath+'/assets/images/next-arrow-black.svg'"
+             :alt="languageData.label.next"
+            />
 					</button>
 				</div>
 				<div>
-					<AppCustomDropdown :optionList="yearListing" @updateCall="changeYear" :defaultText="defaultYear"
-									   translationEnable="false" />
+					<AppCustomDropdown
+            :optionList="yearListing"
+            @updateCall="changeYear"
+            :defaultText="defaultYear"
+            translationEnable="false"
+          />
 				</div>
-
 			</div>
 		</div>
 	</div>
@@ -120,10 +149,10 @@
 			let currentYear = new Date().getFullYear();
 			let yearsList = [];
 			let yearDiff  = 5;
-			if(store.state.timesheetFromYear && store.state.timesheetFromYear != '') {
+			if (store.state.timesheetFromYear && store.state.timesheetFromYear !== '') {
 				let lastYear = store.state.timesheetFromYear;
-				if((currentYear - lastYear) +1 > 0) {
-					yearDiff = (currentYear - lastYear) +1;
+				if ((currentYear - lastYear) + 1 > 0) {
+					yearDiff = (currentYear - lastYear) + 1;
 				}
 			}
 			for (let index = currentYear; index > (currentYear - yearDiff); index--) {
@@ -131,10 +160,6 @@
 			}
 			this.yearListing = yearsList;
 			this.lastYear = parseInt(yearsList[yearsList.length -1][1]);
-		},
-		directives: {},
-		computed: {
-
 		},
 		methods: {
 			goPrevWeek() {

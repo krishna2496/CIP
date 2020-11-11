@@ -1,17 +1,17 @@
 import axios from 'axios'
 import store from '../../store'
 
-export default async() => {
+export default async(commentId) => {
     let responseData = {};
     let defaultLanguage = '';
     if (store.state.defaultLanguage !== null) {
         defaultLanguage = (store.state.defaultLanguage).toLowerCase();
     }
-    let url = process.env.VUE_APP_API_ENDPOINT + "app/dashboard/comments";
+    let url = `${process.env.VUE_APP_API_ENDPOINT}app/dashboard/comments/${commentId}`;
 
     await axios({
         url: url,
-        method: 'GET',
+        method: 'DELETE',
         headers: {
             'X-localization': defaultLanguage,
         }

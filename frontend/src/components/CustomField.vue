@@ -1,6 +1,6 @@
 <template>
     <div class="row custom-field" v-if="CustomFieldList != null && CustomFieldList.length > 0">
-        <b-col :md="getColumn(item.type)" v-for="(item,key) in optionList" :key=key>
+        <b-col md="12" v-for="(item,key) in optionList" :key=key>
             <b-form-group v-if="item.type == 'drop-down'">
                 <label>{{item.translations.name}}
                     <span v-if="item.is_mandatory == 1">*</span>
@@ -16,12 +16,31 @@
 
             <b-form-group v-if="item.type == 'radio'">
                 <label>{{item.translations.name}}
-                    <span v-if="item.is_mandatory == 1">*</span>
+                  <span v-if="item.is_mandatory == 1">*</span>
                 </label>
-                <b-form-radio-group v-model="customFeildData[item.field_id]" :id='`radio-${item.field_id}`'
-                                    :options="getRadioArrayValue(item.translations.values)"
-                                    :class="{ 'is-invalid': getErrorClass(item.field_id) }" :validstate="getErrorState(item.field_id)"
-                                    @change="updateChanges" :name="item.translations.name">
+                <b-form-radio-group
+                  class="container custom-group"
+                  :id='`radio-${item.field_id}`'
+                  v-model="customFeildData[item.field_id]"
+                  :class="{ 'is-invalid': getErrorClass(item.field_id)}"
+                  :validstate="getErrorState(item.field_id)"
+                  @change="updateChanges" :name="item.translations.name"
+                >
+                  <b-row
+                    cols="1"
+                    :cols-md="getOptionColumnCount(item.translations.values)"
+                  >
+                    <b-col
+                      v-for="(option, index) in getRadioArrayValue(item.translations.values)"
+                      :key="index"
+                    >
+                      <label class="d-inline-block p-1">
+                        <b-form-radio :value="option.value">
+                          {{ option.text }}
+                        </b-form-radio>
+                      </label>
+                    </b-col>
+                  </b-row>
                 </b-form-radio-group>
                 <div v-if="getErrorClass(item.field_id)" class="invalid-feedback">
                     {{item.translations.name}} {{ languageData.errors.field_required }}
@@ -30,12 +49,32 @@
 
             <b-form-group v-if="item.type == 'checkbox'">
                 <label>{{item.translations.name}}
-                    <span v-if="item.is_mandatory == 1">*</span>
+                  <span v-if="item.is_mandatory == 1">*</span>
                 </label>
-                <b-form-checkbox-group :id='`checkbox-id-${item.field_id}`' v-model="customFeildData[item.field_id]"
-                                       :options="getRadioArrayValue(item.translations.values)" name="checkbox-custom"
-                                       :class="{ 'is-invalid': getErrorClass(item.field_id) }" :validstate="getErrorState(item.field_id)"
-                                       @input="updateChanges">
+                <b-form-checkbox-group
+                  class="container custom-group"
+                  :id='`checkbox-id-${item.field_id}`'
+                  v-model="customFeildData[item.field_id]"
+                  name="checkbox-custom"
+                  :class="{ 'is-invalid': getErrorClass(item.field_id)}"
+                  :validstate="getErrorState(item.field_id)"
+                  @input="updateChanges"
+                >
+                  <b-row
+                    cols="1"
+                    :cols-md="getOptionColumnCount(item.translations.values)"
+                  >
+                    <b-col
+                      v-for="(option, index) in getRadioArrayValue(item.translations.values)"
+                      :key="index"
+                    >
+                      <label class="d-inline-block p-1">
+                        <b-form-checkbox :value="option.value">
+                          {{ option.text }}
+                        </b-form-checkbox>
+                      </label>
+                    </b-col>
+                  </b-row>
                 </b-form-checkbox-group>
                 <div v-if="getErrorClass(item.field_id)" class="invalid-feedback">
                     {{item.translations.name}} {{ languageData.errors.field_required }}
@@ -326,13 +365,6 @@
         });
         return selectedItems;
       },
-      getColumn(type) {
-        if (type == "radio" || type == "checkbox") {
-          return 6
-        } else {
-          return 12
-        }
-      },
       updateCustomDropDown(value) {
         this.customFeildData[value.fieldId] = value.selectedId
         this.defaultValue[value.fieldId] = value.selectedVal
@@ -428,6 +460,18 @@
       isUUID(value) {
         const pattern = /^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$/;
         return pattern.test(value);
+      },
+      getOptionColumnCount (options) {
+        if (options.length > 5) {
+          const max = 35;
+          const withLongText = options.some(option => {
+            const text = option[Object.keys(option)];
+            return text && text.length > max;
+          })
+          if (!withLongText) return 2;
+        }
+
+        return 1;
       }
     },
     updated() {},

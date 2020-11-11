@@ -64,8 +64,13 @@
                         </div>
                         <div class="group-details volunteer-progress" v-if="checkMissionTypeGoal(mission.mission_type) || checkMissionTypeTime(mission.mission_type)">
                             <div class="content-wrap">
+<<<<<<< HEAD
                                 <template v-if="mission.seats_left != 0 && mission.seats_left !== null && mission.seats_left != ''">
                                     <div class="detail-column seat-info">
+=======
+                                <template>
+                                    <div class="detail-column seat-info" v-if="mission.seats_left && mission.seats_left !=''">
+>>>>>>> 0de32dfc718e7abd394fd70360c208e43dfce580
                                         <i class="icon-wrap">
                                             <img :src="$store.state.imagePath+'/assets/images/user-icon.svg'" alt="user">
                                         </i>
@@ -75,15 +80,35 @@
                                         </div>
                                     </div>
                                 </template>
+<<<<<<< HEAD
 								<div class="detail-column calendar-col" v-if="mission.end_date !== null">
+=======
+                                <div class="detail-column calendar-col">
+>>>>>>> 0de32dfc718e7abd394fd70360c208e43dfce580
                                     <i class="icon-wrap">
                                         <img :src="$store.state.imagePath+'/assets/images/calendar.svg'" alt="user">
                                     </i>
                                     <div class="text-wrap" v-if="mission.end_date !== null">
+<<<<<<< HEAD
                                         <span class="title-text"><em>{{ languageData.label.from }}</em>
                                             {{mission.start_date | formatDate }}</span>
                                         <span class="title-text"><em>{{ languageData.label.until}}</em>
                                             {{ mission.end_date | formatDate }}</span>
+=======
+                                        <template v-if="!compareDate(mission.end_date,mission.start_date)">
+                                            <span class="title-text"><em>{{ languageData.label.from }}</em>
+                                                {{mission.start_date | formatDate }}</span>
+                                            <span class="title-text"><em>{{ languageData.label.until}}</em>
+                                                {{ mission.end_date | formatDate }}</span>
+                                        </template>
+                                        <template v-else>
+                                            <span class="title-text"><em>{{ languageData.label.on }}</em>
+                                                {{mission.start_date | formatDate }}</span>
+                                        </template>
+                                    </div>
+                                    <div class="text-wrap" v-else>
+                                        <span class="title-text">{{ languageData.label.ongoing}}</span>
+>>>>>>> 0de32dfc718e7abd394fd70360c208e43dfce580
                                     </div>
                                 </div>
                                 <template v-if="mission.application_deadline != null ||
@@ -138,6 +163,7 @@
                                     </div>
                                 </div>
                             </div>
+<<<<<<< HEAD
                         </div>
 
                         <div class="group-details progress-details" v-else>
@@ -187,6 +213,18 @@
                                 <b-button class="btn-donate btn-fillsecondary">{{ languageData.label.donate }}</b-button>
                             </b-form-group>
                         </div>
+=======
+                        </div>
+                    </div>
+                    <div class="card-action-block">
+                        <!-- <div class="donate-btn-wrap">
+                                <b-form-group>
+                                    <label for="">$</label>
+                                    <b-form-input id="" type="text" :class="form-control" value="20"></b-form-input>
+                                    <b-button class="btn-donate btn-fillsecondary">Donate</b-button>
+                                </b-form-group>
+                            </div> -->
+>>>>>>> 0de32dfc718e7abd394fd70360c208e43dfce580
                         <div class="btn-wrap">
                             <b-link :to="'/mission-detail/' + mission.mission_id" v-if="!checkMissionTypeDonation(mission.mission_type)">
                                 <b-button class="btn-bordersecondary icon-btn">
@@ -231,6 +269,7 @@
             </b-card>
 
         </div>
+<<<<<<< HEAD
 
     </div>
     <b-modal @hidden="hideModal" ref="userDetailModal" :modal-class="myclass" size="lg" hide-footer>
@@ -282,11 +321,34 @@
                 </svg>
             </i>
         </b-button>
+=======
+        <invite-co-worker ref="userDetailModal" entity-type="MISSION" :entity-id="currentMissionId"></invite-co-worker>
     </div>
-</div>
+    <div class="no-data-found" v-else>
+        <h2 class="text-center">{{noRecordFound()}}</h2>
+        <div class="btn-wrap" v-if="isSubmitNewMissionSet" @click="submitNewMission">
+            <b-button class="btn-bordersecondary icon-btn">
+                <span>{{ languageData.label.submit_new_mission }}</span>
+                <i>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 16" width="19" height="15">
+                        <g id="Main Content">
+                            <g id="1">
+                                <g id="Button">
+                                    <path id="Forma 1 copy 12" class="shp0" d="M16.49,1.22c-0.31,-0.3 -0.83,-0.3 -1.16,0c-0.31,0.29 -0.31,0.77 0,1.06l5.88,5.44h-19.39c-0.45,0 -0.81,0.33 -0.81,0.75c0,0.42 0.36,0.76 0.81,0.76h19.39l-5.88,5.43c-0.31,0.3 -0.31,0.78 0,1.07c0.32,0.3 0.85,0.3 1.16,0l7.27,-6.73c0.32,-0.29 0.32,-0.77 0,-1.06z" />
+                                </g>
+                            </g>
+                        </g>
+                        </g>
+                    </svg>
+                </i>
+            </b-button>
+        </div>
+>>>>>>> 0de32dfc718e7abd394fd70360c208e43dfce580
+    </div>
 </template>
 
 <script>
+<<<<<<< HEAD
 import store from "../store";
 import constants from "../constant";
 import StarRating from "vue-star-rating";
@@ -299,6 +361,17 @@ import {
 import {
     VueAutosuggest
 } from "vue-autosuggest";
+=======
+import store from '../store';
+import constants from '../constant';
+import InviteCoWorker from "@/components/InviteCoWorker";
+import StarRating from 'vue-star-rating';
+import moment from 'moment';
+import {
+    favoriteMission,
+    applyMission
+} from "../services/service";
+>>>>>>> 0de32dfc718e7abd394fd70360c208e43dfce580
 
 export default {
     name: "MissionListView",
@@ -307,8 +380,12 @@ export default {
         userList: Array
     },
     components: {
+<<<<<<< HEAD
         StarRating,
         VueAutosuggest
+=======
+        StarRating
+>>>>>>> 0de32dfc718e7abd394fd70360c208e43dfce580
     },
     data() {
         return {
@@ -316,6 +393,7 @@ export default {
             selected: "",
             myclass: ["userdetail-modal"],
             currentMissionId: 0,
+<<<<<<< HEAD
             invitedUserId: 0,
             showErrorDiv: false,
             message: null,
@@ -324,6 +402,11 @@ export default {
             submitDisable: true,
             languageData: [],
             isInviteCollegueDisplay: true,
+=======
+            isInviteCollegueDisplay: true,
+            isQuickAccessSet: true,
+            isThemeSet: true,
+>>>>>>> 0de32dfc718e7abd394fd70360c208e43dfce580
             isStarRatingDisplay: true,
             isQuickAccessSet: true,
             isSubmitNewMissionSet: true,
@@ -460,6 +543,7 @@ export default {
                 }
             });
         },
+<<<<<<< HEAD
         onInputChange() {
             this.submitDisable = true;
         },
@@ -495,6 +579,8 @@ export default {
                 });
             }, 100);
         },
+=======
+>>>>>>> 0de32dfc718e7abd394fd70360c208e43dfce580
         // invite collegues api call
         inviteColleagues() {
             let inviteData = {};
@@ -590,6 +676,7 @@ export default {
             }
 
             return false;
+<<<<<<< HEAD
         },
         checkMissionTypeVolunteering(missionType) {
             if (constants.MISSION_TYPE_TIME == missionType || constants.MISSION_TYPE_GOAL == missionType) {
@@ -672,6 +759,23 @@ export default {
 
             });
         }
+=======
+        }
+    },
+    created() {
+        this.languageData = JSON.parse(store.state.languageLabel);
+        this.isInviteCollegueDisplay = this.settingEnabled(
+            constants.INVITE_COLLEAGUE
+        );
+        this.isStarRatingDisplay = this.settingEnabled(constants.MISSION_RATINGS);
+        this.isQuickAccessSet = this.settingEnabled(constants.QUICK_ACCESS_FILTERS);
+        this.isSubmitNewMissionSet = this.settingEnabled(
+            constants.USER_CAN_SUBMIT_MISSION
+        );
+        this.isThemeSet = this.settingEnabled(constants.THEMES_ENABLED);
+        this.submitNewMissionUrl = store.state.submitNewMissionUrl;
+        this.isSkillDisplay = this.settingEnabled(constants.SKILLS_ENABLED);
+>>>>>>> 0de32dfc718e7abd394fd70360c208e43dfce580
     }
 };
 </script>

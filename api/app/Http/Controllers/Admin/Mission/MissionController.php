@@ -1,24 +1,29 @@
 <?php
+
 namespace App\Http\Controllers\Admin\Mission;
 
 use App\Events\Mission\MissionDeletedEvent;
 use App\Events\User\UserActivityLogEvent;
 use App\Events\User\UserNotificationEvent;
+use App\Exceptions\PaymentGateway\PaymentGatewayException;
 use App\Helpers\Helpers;
 use App\Helpers\LanguageHelper;
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
+use App\Libraries\PaymentGateway\PaymentGatewayFactory;
+use App\Models\PaymentGateway\PaymentGatewayAccount;
 use App\Repositories\Mission\MissionRepository;
 use App\Repositories\MissionMedia\MissionMediaRepository;
 use App\Repositories\Notification\NotificationRepository;
 use App\Repositories\Organization\OrganizationRepository;
 use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
 use App\Services\Mission\ModelsService;
+use App\Services\PaymentGateway\AccountService;
 use App\Traits\RestExceptionHandlerTrait;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Validation\Rule;
 use InvalidArgumentException;
@@ -82,10 +87,25 @@ class MissionController extends Controller
     private $helpers;
 
     /**
+     * @var AccountService
+     */
+    private $accountService;
+
+    /**
+     * @var APaymentGatewayFactory
+     */
+    private $paymentGatewayFactory;
+
+    /**
+     * @var array
+     */
+    private $paymentGateways;
+
+    /**
      * Create a new controller instance.
      *
-     * @param  App\Repositories\Mission\MissionRepository $missionRepository
-     * @param  App\Helpers\ResponseHelper $responseHelper
+     * @param App\Repositories\Mission\MissionRepository $missionRepository
+     * @param App\Helpers\ResponseHelper $responseHelper
      * @param Illuminate\Http\Request $request
      * @param App\Helpers\LanguageHelper $languageHelper
      * @param App\Repositories\MissionMedia\MissionMediaRepository $missionMediaRepository
@@ -106,7 +126,9 @@ class MissionController extends Controller
         NotificationRepository $notificationRepository,
         OrganizationRepository $organizationRepository,
         ModelsService $modelsService,
-        Helpers $helpers
+        Helpers $helpers,
+        AccountService $accountService,
+        PaymentGatewayFactory $paymentGatewayFactory
     ) {
         $this->missionRepository = $missionRepository;
         $this->responseHelper = $responseHelper;
@@ -118,12 +140,18 @@ class MissionController extends Controller
         $this->organizationRepository = $organizationRepository;
         $this->modelsService = $modelsService;
         $this->helpers = $helpers;
+        $this->accountService = $accountService;
+        $this->paymentGatewayFactory = $paymentGatewayFactory;
+
+        // Register all supported payment gateways
+        $this->paymentGateways = array_keys(config('constants.payment_gateway_types'));
     }
 
     /**
      * Display a listing of Mission.
      *
      * @param \Illuminate\Http\Request $request
+     *
      * @return Illuminate\Http\JsonResponse
      */
     public function index(Request $request): JsonResponse
@@ -146,6 +174,7 @@ class MissionController extends Controller
             $apiStatus = Response::HTTP_OK;
             $apiMessage = ($missions->isEmpty()) ? trans('messages.success.MESSAGE_NO_RECORD_FOUND')
              : trans('messages.success.MESSAGE_MISSION_LISTING');
+
             return $this->responseHelper->successWithPagination($apiStatus, $apiMessage, $apiData);
         } catch (InvalidArgumentException $e) {
             return $this->invalidArgument(
@@ -159,10 +188,13 @@ class MissionController extends Controller
      * Store a newly created resource in storage.
      *
      * @param \Illuminate\Http\Request $request
+     *
      * @return Illuminate\Http\JsonResponse
      */
     public function store(Request $request): JsonResponse
     {
+        $paymentGateways = implode(',', $this->paymentGateways);
+
         // Server side validataions
         $validator = Validator::make(
             $request->all(),
@@ -181,6 +213,9 @@ class MissionController extends Controller
                 "required_with:mission_detail.*.section",
                 "organization" => "required",
                 "organization.organization_id" => "required|uuid",
+                'organization.payment_gateway_account' => 'sometimes|required',
+                'organization.payment_gateway_account.payment_gateway' => "required_with:organization.payment_gateway_account.payment_gateway_account_id|in:$paymentGateways",
+                'organization.payment_gateway_account.payment_gateway_account_id' => 'required_with:organization.payment_gateway_account.payment_gateway',
                 "organization.name" => "max:255",
                 "organization.legal_number" => "max:255",
                 "organization.phone_number" => "max:120",
@@ -208,18 +243,20 @@ class MissionController extends Controller
                 "documents.*.sort_order" => "required|numeric|min:0|not_in:0",
                 "volunteering_attribute.is_virtual" => "sometimes|required|boolean",
                 "volunteering_attribute.total_seats" => "integer|min:1",
-                "volunteering_attribute.availability_id" => "integer|required|exists:availability,availability_id,deleted_at,NULL",
+                "volunteering_attribute.availability_id" => "integer|required_if:mission_type,TIME,GOAL|exists:availability,availability_id,deleted_at,NULL",
                 "mission_detail.*.label_goal_achieved" => 'sometimes|required_if:mission_type,GOAL|max:255',
                 "mission_detail.*.label_goal_objective" => 'sometimes|required_if:mission_type,GOAL|max:255',
+                'impact_donation' => 'sometimes|required|array',
+                'impact_donation.*.amount' => 'required|integer|min:1|max:999999999999',
+                'impact_donation.*.translations' => 'required',
+                'impact_donation.*.translations.*.language_code' => 'required_with:impact_donation.*.translations|max:2',
+                'impact_donation.*.translations.*.content' => 'required_with:impact_donation.*.translations|max:160',
                 "impact" => "sometimes|required|array",
                 "impact.*.icon_path" => 'valid_icon_path',
                 "impact.*.sort_key" => 'required|integer|min:0|distinct',
                 "impact.*.translations" => 'required',
                 "impact.*.translations.*.language_code" => 'required_with:impact.*.translations|max:2',
                 "impact.*.translations.*.content" => 'required_with:impact.*.translations|max:300',
-                "availability_id" => "integer|required_without:volunteering_attribute|exists:availability,availability_id,deleted_at,NULL",
-                "total_seats" => "integer|min:1",
-                "is_virtual" => "sometimes|required|in:0,1",
                 "mission_tabs" => "sometimes|required|array",
                 "mission_tabs.*.sort_key" => 'required|integer|distinct',
                 "mission_tabs.*.translations"=> 'required',
@@ -234,8 +271,8 @@ class MissionController extends Controller
                 "mission_tabs.*.translations.*.sections.*.content" =>
                 "required_with:mission_tabs.*.translations.*.sections",
                 'donation_attribute' => 'required_if:mission_type,DONATION,EAF,DISASTER_RELIEF',
-                'donation_attribute.goal_amount_currency' => 'required_with:donation_attribute.goal_amount|string|min:3|max:3',
-                'donation_attribute.goal_amount' => 'sometimes|required_if:mission_type,DISASTER_RELIEF|numeric|min:1|digits_between:1,20',
+                'donation_attribute.goal_amount_currency' => 'required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|string|min:3|max:3',
+                'donation_attribute.goal_amount' => 'sometimes|required_if:mission_type,DISASTER_RELIEF|integer|min:1|max:999999999999|nullable',
                 'donation_attribute.show_goal_amount' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean',
                 'donation_attribute.show_donation_percentage' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean',
                 'donation_attribute.show_donation_meter' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean',
@@ -283,6 +320,20 @@ class MissionController extends Controller
             );
         }
 
+        // show_donation_count and show_donors_count both can not be true at the same time
+        if ((
+            isset($request->get('donation_attribute')['show_donation_count']) &&
+            isset($request->get('donation_attribute')['show_donors_count'])) &&
+            ($request->get('donation_attribute')['show_donation_count'] == true &&
+            $request->get('donation_attribute')['show_donors_count'] == true)) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_INVALID_MISSION_DATA'),
+                trans('messages.custom_error_message.SHOW_DONATION_COUNT_AND_DONORS_COUNT_ERROR')
+            );
+        }
+
         // Update organization city,state & country id to null if it's blank
         if (isset($request->get('organization')['city_id']) && $request->get('organization')['city_id'] === '') {
             $organization = $request->get('organization');
@@ -311,6 +362,25 @@ class MissionController extends Controller
                 config('constants.error_codes.ERROR_INVALID_MISSION_DATA'),
                 trans('messages.custom_error_message.ERROR_ORGANIZATION_NAME_REQUIRED')
             );
+        }
+
+        // Update or Create organization
+        $orgSave = $this->missionRepository->saveOrganization($request);
+        if (!empty($orgSave)) {
+            $request->request->add([
+                'organization_id' => $orgSave->organization_id
+            ]);
+        }
+
+        // Check if mission is for donation save the payment gateway account if valid.
+        if ($request->has('donation_attribute') && !empty($request->get('donation_attribute'))) {
+            $processAccount = $this->processPaymentGatewayAccount(
+                $request,
+                $organizationId
+            );
+            if (!($processAccount instanceof PaymentGatewayAccount)) {
+                return $processAccount;
+            }
         }
 
         $mission = $this->missionRepository->store($request);
@@ -342,6 +412,7 @@ class MissionController extends Controller
             null,
             $mission->mission_id
         ));
+
         return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
     }
 
@@ -397,6 +468,8 @@ class MissionController extends Controller
      */
     public function update(Request $request, int $missionId): JsonResponse
     {
+        $paymentGateways = implode(',', $this->paymentGateways);
+
         try {
             $mission = $this->missionRepository->find($missionId);
 
@@ -426,11 +499,8 @@ class MissionController extends Controller
                 "end_date" => "sometimes|after:start_date|date",
                 "volunteering_attribute.is_virtual" => "sometimes|required|boolean",
                 "volunteering_attribute.total_seats" => "integer|min:1",
-                "volunteering_attribute.availability_id" => "sometimes|required|integer|exists:availability,availability_id,deleted_at,NULL",
+                "volunteering_attribute.availability_id" => "sometimes|required_if:mission_type,TIME,GOAL|integer|exists:availability,availability_id,deleted_at,NULL",
                 "skills.*.skill_id" => "integer|exists:skill,skill_id,deleted_at,NULL",
-                "is_virtual" => "sometimes|required|in:0,1",
-                "total_seats" => "integer|min:1",
-                "availability_id" => "sometimes|required|integer|exists:availability,availability_id,deleted_at,NULL",
                 "theme_id" => "sometimes|integer|exists:mission_theme,mission_theme_id,deleted_at,NULL",
                 "application_deadline" => "date",
                 "mission_detail.*.short_description" => "max:1000",
@@ -447,6 +517,11 @@ class MissionController extends Controller
                 "documents.*.sort_order" => "sometimes|required|numeric|min:0|not_in:0",
                 "mission_detail.*.label_goal_achieved" => 'sometimes|required_if:mission_type,GOAL|max:255',
                 "mission_detail.*.label_goal_objective" => 'sometimes|required_if:mission_type,GOAL|max:255',
+                'impact_donation.*.impact_donation_id' => 'sometimes|required|exists:mission_impact_donation,mission_impact_donation_id,deleted_at,NULL',
+                'impact_donation.*.amount' => 'required_without:impact_donation.*.impact_donation_id|integer|min:1|max:999999999999',
+                'impact_donation.*.translations' => 'required_without:impact_donation.*.impact_donation_id',
+                'impact_donation.*.translations.*.language_code' => 'required_with:impact_donation.*.translations|max:2',
+                'impact_donation.*.translations.*.content' => 'required_with:impact_donation.*.translations|max:160',
                 "impact.*.mission_impact_id" =>
                 "sometimes|required|exists:mission_impact,mission_impact_id,deleted_at,NULL",
                 "impact" => "sometimes|required|array",
@@ -458,6 +533,9 @@ class MissionController extends Controller
                 "un_sdg" => "sometimes|required|array",
                 "un_sdg.*" => "sometimes|required|integer|distinct|min:1|max:17",
                 "organization.organization_id" => "required_with:organization|uuid",
+                'organization.payment_gateway_account' => 'sometimes|required',
+                'organization.payment_gateway_account.payment_gateway' => "required_with:organization.payment_gateway_account.payment_gateway_account_id|in:$paymentGateways",
+                'organization.payment_gateway_account.payment_gateway_account_id' => 'required_with:organization.payment_gateway_account.payment_gateway',
                 "organization.name" => "max:255",
                 "organization.legal_number" => "max:255",
                 "organization.phone_number" => "max:120",
@@ -484,8 +562,8 @@ class MissionController extends Controller
                 "mission_tabs.*.translations.*.sections" =>
                 "required_without:mission_tabs.*.mission_tab_id",
                 'donation_attribute' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF',
-                'donation_attribute.goal_amount_currency' => 'sometimes|required_with:donation_attribute.goal_amount|string|min:3|max:3',
-                'donation_attribute.goal_amount' => 'sometimes|required_if:mission_type,DISASTER_RELIEF|numeric|min:1|digits_between:1,20',
+                'donation_attribute.goal_amount_currency' => 'sometimes|string|min:3|max:3',
+                'donation_attribute.goal_amount' => 'sometimes|required_if:mission_type,DISASTER_RELIEF|integer|min:1|max:999999999999|nullable',
                 'donation_attribute.show_goal_amount' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean',
                 'donation_attribute.show_donation_percentage' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean',
                 'donation_attribute.show_donation_meter' => 'sometimes|required_if:mission_type,DONATION,EAF,DISASTER_RELIEF|boolean',
@@ -519,12 +597,26 @@ class MissionController extends Controller
         }
 
         // Check goal amount currency  set is valid or not
-        if (isset($request->get('donation_attribute')['goal_amount_currency']) && $request->get('donation_attribute')['goal_amount_currency'] != '' && !$this->helpers->validateTenantCurrency($request, $request->get('donation_attribute')['goal_amount_currency'])) {
+        if (isset($request->get('donation_attribute')['goal_amount_currency']) && $request->get('donation_attribute')['goal_amount_currency'] != '' && !$this->helpers->isValidTenantCurrency($request, $request->get('donation_attribute')['goal_amount_currency'])) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
                 Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
                 config('constants.error_codes.ERROR_INVALID_CURRENCY'),
                 trans('messages.custom_error_message.ERROR_INVALID_TENANT_CURRENCY')
+            );
+        }
+
+        // show_donation_count and show_donors_count both can not be true at the same time
+        if ((
+            isset($request->get('donation_attribute')['show_donation_count']) &&
+            isset($request->get('donation_attribute')['show_donors_count'])) &&
+            ($request->get('donation_attribute')['show_donation_count'] == true &&
+            $request->get('donation_attribute')['show_donors_count'] == true)) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_INVALID_MISSION_DATA'),
+                trans('messages.custom_error_message.SHOW_DONATION_COUNT_AND_DONORS_COUNT_ERROR')
             );
         }
 
@@ -586,7 +678,7 @@ class MissionController extends Controller
         try {
             if (isset($request->media_images) && count($request->media_images) > 0) {
                 foreach ($request->media_images as $mediaImages) {
-                    if (isset($mediaImages['media_id']) && ($mediaImages['media_id'] !== "")) {
+                    if (isset($mediaImages['media_id']) && ($mediaImages['media_id'] !== '')) {
                         $this->missionMediaRepository->find($mediaImages['media_id']);
                         $mediaImage = $this->missionMediaRepository->isMediaLinkedToMission(
                             $mediaImages['media_id'],
@@ -606,7 +698,7 @@ class MissionController extends Controller
 
             if (isset($request->media_videos) && count($request->media_videos) > 0) {
                 foreach ($request->media_videos as $mediaVideos) {
-                    if (isset($mediaVideos['media_id']) && ($mediaVideos['media_id'] != "")) {
+                    if (isset($mediaVideos['media_id']) && ($mediaVideos['media_id'] != '')) {
                         $this->missionMediaRepository->find($mediaVideos['media_id']);
                         $mediaVideo = $this->missionMediaRepository->isMediaLinkedToMission(
                             $mediaVideos['media_id'],
@@ -633,7 +725,7 @@ class MissionController extends Controller
         try {
             if (isset($request->documents) && count($request->documents) > 0) {
                 foreach ($request->documents as $mediaDocuments) {
-                    if (isset($mediaDocuments['document_id']) && ($mediaDocuments['document_id'] !== "")) {
+                    if (isset($mediaDocuments['document_id']) && ($mediaDocuments['document_id'] !== '')) {
                         $this->missionRepository->findDocument($mediaDocuments['document_id']);
                         $mediaDocument = $this->missionRepository->isDocumentLinkedToMission(
                             $mediaDocuments['document_id'],
@@ -659,6 +751,32 @@ class MissionController extends Controller
 
         $language = $this->languageHelper->getDefaultTenantLanguage($request);
         $missionDetails = $this->missionRepository->getMissionDetailsFromId($missionId, $language->language_id);
+
+        if (isset($request->mission_type)) {
+            $volunteeringMissionTypes = config('constants.volunteering_mission_types');
+            if (in_array($missionDetails->mission_type, $volunteeringMissionTypes) &&
+                !in_array($request->mission_type, $volunteeringMissionTypes)
+            ) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_INVALID_MISSION_DATA'),
+                    trans('messages.custom_error_message.ERROR_VOLUNTEERING_MISSION_TYPE_UPDATE')
+                );
+            }
+
+            $donationMissionTypes = config('constants.donation_mission_types');
+            if (in_array($missionDetails->mission_type, $donationMissionTypes) &&
+                !in_array($request->mission_type, $donationMissionTypes)
+            ) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_INVALID_MISSION_DATA'),
+                    trans('messages.custom_error_message.ERROR_DONATION_MISSION_TYPE_UPDATE')
+                );
+            }
+        }
 
         // Check for default language delete
         if (isset($request->mission_detail)) {
@@ -698,6 +816,22 @@ class MissionController extends Controller
             );
         }
 
+        // Check for mission impact donation id is valid or not
+         try {
+            if (isset($request->impact_donation)) {
+                foreach ($request->impact_donation as $impactDonationValue) {
+                    if (isset($impactDonationValue['impact_donation_id']) && ($impactDonationValue['impact_donation_id'] !== '')) {
+                        $this->missionRepository->isMissionDonationImpactLinkedToMission($missionId, $impactDonationValue['impact_donation_id']);
+                    }
+                }
+            }
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.IMPACT_DONATION_MISSION_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_IMPACT_DONATION_MISSION_NOT_FOUND')
+            );
+        }
+
         // Check for mission tab id is valid or not
         try {
             if (isset($request->mission_tabs) && count($request->mission_tabs) > 0) {
@@ -724,6 +858,30 @@ class MissionController extends Controller
             $organization = $request->get('organization');
             $organization['country_id'] = null;
             $request->merge(['organization' => $organization]);
+        }
+
+        // Update or Create organization
+        if (isset($request->organization)) {
+            $organization = $this->missionRepository->saveOrganization($request);
+            if (!empty($organization)) {
+                $request->request->add([
+                    'organization_id' => $organization->organization_id
+                ]);
+            }
+        }
+
+        // Check if mission is for donation save the payment gateway account if valid.
+        if (($request->has('donation_attribute') && !empty($request->get('donation_attribute'))) || $mission->donationAttribute !== null) {
+            if (!isset($organizationId)) {
+                $organizationId = $mission->organization_id;
+            }
+            $processAccount = $this->processPaymentGatewayAccount(
+                $request,
+                $organizationId
+            );
+            if (!($processAccount instanceof PaymentGatewayAccount)) {
+                return $processAccount;
+            }
         }
 
         $this->missionRepository->update($request, $missionId);
@@ -757,6 +915,7 @@ class MissionController extends Controller
 
             event(new UserNotificationEvent($notificationType, $entityId, $action));
         }
+
         return $this->responseHelper->success($apiStatus, $apiMessage);
     }
 
@@ -797,6 +956,7 @@ class MissionController extends Controller
      * Remove the mission media from storage.
      *
      * @param int $mediaId
+     *
      * @return Illuminate\Http\JsonResponse
      */
     public function removeMissionMedia(int $mediaId): JsonResponse
@@ -831,6 +991,7 @@ class MissionController extends Controller
      * Remove the mission document from storage.
      *
      * @param int $documentId
+     *
      * @return Illuminate\Http\JsonResponse
      */
     public function removeMissionDocument(int $documentId): JsonResponse
@@ -941,29 +1102,187 @@ class MissionController extends Controller
         string $missionType = null
     ) : bool {
 
-        $tenantSetting = null;
+        $requiredSettings = [];
         $missionType = $missionType ?? $request->get('mission_type');
         switch ($missionType) {
             case config('constants.mission_type.GOAL'):
-                $tenantSetting = config('constants.tenant_settings.VOLUNTEERING_GOAL_MISSION');
+                $requiredSettings = [
+                    config('constants.tenant_settings.VOLUNTEERING_MISSION'),
+                    config('constants.tenant_settings.VOLUNTEERING_GOAL_MISSION')
+                ];
                 break;
             case config('constants.mission_type.TIME'):
-                $tenantSetting = config('constants.tenant_settings.VOLUNTEERING_TIME_MISSION');
+                $requiredSettings = [
+                    config('constants.tenant_settings.VOLUNTEERING_MISSION'),
+                    config('constants.tenant_settings.VOLUNTEERING_TIME_MISSION'),
+                ];
                 break;
             case config('constants.mission_type.DONATION'):
-                $tenantSetting = config('constants.tenant_settings.DONATION_MISSION');
+                $requiredSettings = [
+                    config('constants.tenant_settings.DONATION_MISSION')
+                ];
                 break;
             case config('constants.mission_type.EAF'):
-                $tenantSetting = config('constants.tenant_settings.EAF');
+                $requiredSettings = [
+                    config('constants.tenant_settings.DONATION_MISSION'),
+                    config('constants.tenant_settings.EAF')
+                ];
                 break;
             case config('constants.mission_type.DISASTER_RELIEF'):
-                $tenantSetting = config('constants.tenant_settings.DISASTER_RELIEF');
+                $requiredSettings = [
+                    config('constants.tenant_settings.DONATION_MISSION'),
+                    config('constants.tenant_settings.DISASTER_RELIEF')
+                ];
                 break;
         }
 
-        return $this->tenantActivatedSettingRepository->checkTenantSettingStatus(
-            $tenantSetting,
+        $activatedTenantSettings = $this->tenantActivatedSettingRepository
+            ->getAllTenantActivatedSetting($request);
+        foreach ($requiredSettings as $setting) {
+            if (!in_array($setting, $activatedTenantSettings)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Process organization payment gateway account
+     *
+     * @param Request $request
+     * @param string $organizationId
+     *
+     * @return PaymentGatewayAccount|JsonResponse
+     */
+    private function processPaymentGatewayAccount(Request $request, string $organizationId)
+    {
+        // Check for donation tenant setting if enabled
+        $eligible = $this->tenantActivatedSettingRepository->checkTenantSettingStatus(
+            config('constants.tenant_settings.DONATION'),
             $request
         );
+        if (!$eligible) {
+            return $this->responseHelper->error(
+                Response::HTTP_FORBIDDEN,
+                Response::$statusTexts[Response::HTTP_FORBIDDEN],
+                config('constants.error_codes.ERROR_TENANT_SETTING_DISABLED'),
+                trans('messages.custom_error_message.ERROR_TENANT_SETTING_DISABLED')
+            );
+        }
+
+        $gatewayAccount = $request->input('organization.payment_gateway_account');
+        // Check for organization payment gateway account id if exists
+        if (isset($gatewayAccount['payment_gateway_account_id'])) {
+            $account = $this->validatePaymentGatewayAccount(
+                $gatewayAccount['payment_gateway_account_id']
+            );
+            if (!$account['valid']) {
+                return $this->responseHelper->error(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
+                    Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                    config('constants.error_codes.ERROR_PAYMENT_GATEWAY_ACCOUNT_INVALID'),
+                    $account['error']
+                );
+            }
+            return $this->savePaymentGatewayAccount($organizationId, $gatewayAccount);
+        }
+
+        $account = $this->accountService->getByOrgId($organizationId);
+        if (!$account) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_ORGANIZATION_PAYMENT_GATEWAY_ACCOUNT'),
+                'Organization payment_gateway and payment_gateway_account_id is required'
+            );
+        }
+        return $account;
+    }
+
+    /**
+     * Save organization payment gateway account
+     *
+     * @param string $organizationId
+     * @param array $gatewayAccount
+     *
+     * @return PaymentGatewayAccount
+     */
+    private function savePaymentGatewayAccount(string $organizationId, array $gatewayAccount): PaymentGatewayAccount
+    {
+        $paymentGatewayAccount = new PaymentGatewayAccount();
+        $paymentGatewayAccount
+            ->setAttribute('organization_id', $organizationId)
+            ->setAttribute('payment_gateway_account_id', $gatewayAccount['payment_gateway_account_id'])
+            ->setAttribute('payment_gateway', config('constants.payment_gateway_types.'.$gatewayAccount['payment_gateway']));
+
+        // Create or Update Payment Gateway Account
+        return $this->accountService->save($paymentGatewayAccount);
+    }
+
+    /**
+     * Validates provided payment gateway account if valid or not
+     *
+     * @param string $accountId
+     * @return array
+     */
+    private function validatePaymentGatewayAccount(string $accountId): array
+    {
+        $paymentGateway = $this->paymentGatewayFactory->getPaymentGateway(
+            config('constants.payment_gateway_types.STRIPE')
+        );
+
+        try {
+            $account = $paymentGateway->getAccount($accountId);
+
+            if (!$account->getPayoutsEnabled()) {
+                return [
+                    'valid' => false,
+                    'error' => 'Account payouts is not enabled'
+                ];
+            }
+            return [
+                'valid' => true
+            ];
+        } catch (PaymentGatewayException $e) {
+            return [
+                'valid' => false,
+                'error' => 'Invalid payment gateway account id'
+            ];
+        }
+    }
+
+    /**
+     * Remove mission impact donation
+     *
+     * @param string $id
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function removeMissionImpactDonation(string $id): JsonResponse
+    {
+        try {
+            $this->missionRepository->deleteMissionImpactDonation($id);
+
+            $apiStatus = Response::HTTP_NO_CONTENT;
+            $apiMessage = trans('messages.success.MESSAGE_MISSION_IMPACT_DONATION_DELETED');
+
+            // Make activity log
+            event(new UserActivityLogEvent(
+                config('constants.activity_log_types.MISSION_IMPACT_DONATION'),
+                config('constants.activity_log_actions.DELETED'),
+                config('constants.activity_log_user_types.API'),
+                $this->userApiKey,
+                get_class($this),
+                null,
+                null,
+                $id
+            ));
+            return $this->responseHelper->success($apiStatus, $apiMessage);
+        } catch (ModelNotFoundException $e) {
+            return $this->modelNotFound(
+                config('constants.error_codes.IMPACT_DONATION_MISSION_NOT_FOUND'),
+                trans('messages.custom_error_message.ERROR_IMPACT_DONATION_MISSION_NOT_FOUND')
+            );
+        }
     }
 }

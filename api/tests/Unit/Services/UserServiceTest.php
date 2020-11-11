@@ -17,6 +17,12 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Mockery;
 use TestCase;
+use App\Helpers\Helpers;
+use App\Helpers\ResponseHelper;
+use App\Models\UserCustomFieldValue;
+use Validator;
+use Illuminate\Http\Response;
+use Illuminate\Http\JsonResponse;
 
 /**
  * @coversDefaultClass  \App\Services\UserService
@@ -370,6 +376,570 @@ class UserServiceTest extends TestCase
         $this->assertSame($userCount['active'], $res);
     }
 
+    /**
+     * Data provider for ::testStoreWithCustomFields().
+     *
+     * @return  array<string, array<int, mixed>>
+     */
+    public function storeWithCustomFieldsData(): array
+    {
+        $_this = $this;
+        $request = [
+            'custom_fields' => [
+                [
+                    'field_id' => 1,
+                    'value' => 'First Name'
+                ]
+            ]
+        ];
+        $user = new User();
+        $user->setAttribute('user_id', 1);
+        $userCustomFieldValue = new UserCustomFieldValue();
+        $getTenantOption = function ($value) {
+            $tenantOption = new TenantOption();
+            $tenantOption->option_name = TenantOption::MAXIMUM_USERS;
+            $tenantOption->option_value = $value;
+            return $tenantOption;
+        };
+
+        return [
+            [
+                function () use ($_this, $request, $user, $userCustomFieldValue) {
+                    $userRepository = $_this->mock(UserRepository::class);
+                    $userRepository->shouldReceive('store')
+                        ->once()
+                        ->with($request)
+                        ->andReturn($user);
+
+                    $userRepository->shouldReceive('updateCustomFields')
+                        ->once()
+                        ->with($request['custom_fields'], 1)
+                        ->andReturn($userCustomFieldValue);
+
+                    $tenantOptionService = $_this->mock(TenantOptionService::class);
+                    $tenantOptionService->shouldReceive('getOptionValueFromOptionName')
+                        ->once()
+                        ->with(TenantOption::MAXIMUM_USERS)
+                        ->andReturn(null);
+
+                    return $_this->getService($userRepository, $tenantOptionService);
+                },
+                $request
+            ]
+        ];
+    }
+
+    /**
+     * @param  callable
+     * @param  array
+     * @param  string|null
+     *
+     * @covers  ::store
+     *
+     * @dataProvider  storeWithCustomFieldsData
+     */
+    public function testStoreWithCustomFields(callable $getUserService, array $request): void
+    {
+        $userService = $getUserService();
+        $userService->store($request);
+    }
+
+    /**
+     * @covers  ::update
+     */
+    public function testUpdateWithCustomFields(): void
+    {
+        $request = [
+            'custom_fields' => [
+                [
+                    'field_id' => 1,
+                    'value' => 'First Name'
+                ]
+            ]
+        ];
+        $id = 1;
+
+        $user = new User();
+        $user->setAttribute('id', $id);
+
+        $userRepository = $this->mock(UserRepository::class);
+        $userRepository->shouldReceive('update')
+            ->once()
+            ->with($request, $id)
+            ->andReturn($user);
+
+        $userRepository
+            ->shouldReceive('updateCustomFields')
+            ->once()
+            ->with($request['custom_fields'], 1)
+            ->andReturn(new UserCustomFieldValue);
+
+        $tenantOptionService = $this->mock(TenantOptionService::class);
+
+        $userService = $this->getService($userRepository, $tenantOptionService);
+        $res = $userService->update($request, $id);
+
+        $this->assertSame($user, $res);
+    }
+
+    /**
+    * @testdox Test link skill
+    */
+    public function testLinkSkill()
+    {
+        $tenantOptionService = $this->mock(TenantOptionService::class);
+        $userRepository = $this->mock(UserRepository::class);
+        $data = [
+            'skills' => [
+                ['skill_id' => 3]
+            ]
+        ];
+
+        $userRepository
+            ->shouldReceive('linkSkill')
+            ->once()
+            ->with($data, 1)
+            ->andReturn([['skill_id' => 1]]);
+
+        $service = $this->getService(
+            $userRepository,
+            $tenantOptionService
+        );
+        $response = $service->linkSkill($data, 1);
+        $this->assertEquals([
+            ['skill_id' => 1]
+        ], $response);
+    }
+
+    /**
+    * @testdox Test update skill
+    */
+    public function testUpdateSkill()
+    {
+        $tenantOptionService = $this->mock(TenantOptionService::class);
+        $userRepository = $this->mock(UserRepository::class);
+        $data = [
+            'skills' => [
+                ['skill_id' => 3],
+                ['skill_id' => 4]
+            ]
+        ];
+
+        $userRepository
+            ->shouldReceive('linkSkill')
+            ->once()
+            ->with($data, 1)
+            ->andReturn([['skill_id' => 1], ['skill_id' => 2]]);
+
+        $userRepository
+            ->shouldReceive('deleteSkills')
+            ->once()
+            ->with(1)
+            ->andReturn(true);
+
+        $service = $this->getService(
+            $userRepository,
+            $tenantOptionService
+        );
+        $response = $service->updateSkill($data, 1);
+        $this->assertEquals([
+            ['skill_id' => 1],
+            ['skill_id' => 2]
+        ], $response);
+    }
+
+    /**
+    * @testdox Test update custom fields value
+    */
+    public function testUpdateCustomFieldsValue()
+    {
+        $tenantOptionService = $this->mock(TenantOptionService::class);
+        $data = [
+            'custom_fields' => [
+                [
+                    'field_id' => 1,
+                    'value' => 'First Name'
+                ]
+            ]
+        ];
+
+        $userCustomFieldValue = new UserCustomFieldValue();
+        $userCustomFieldValue->setAttribute('field_id', 1);
+        $userCustomFieldValue->setAttribute('user_id', 1);
+        $userCustomFieldValue->setAttribute('value', 'First Name');
+
+        $userRepository = $this->mock(UserRepository::class);
+        $userRepository
+            ->shouldReceive('updateCustomFields')
+            ->once()
+            ->with($data['custom_fields'], 1)
+            ->andReturn($userCustomFieldValue);
+
+        $service = $this->getService(
+            $userRepository,
+            $tenantOptionService
+        );
+        $response = $service->updateCustomFieldsValue($data['custom_fields'], 1);
+        $this->assertEquals($userCustomFieldValue, $response);
+    }
+
+    /**
+    * @testdox Test validate fields for create method
+    */
+    public function testValidateFieldsCreateMethodAPISuccess()
+    {
+        $tenantOptionService = $this->mock(TenantOptionService::class);
+        $userRepository = $this->mock(UserRepository::class);
+        $requestData = [
+            'first_name' => 'First',
+            'last_name' => 'Last',
+            'email' => 'firstlast@email.com',
+            'password' => 'Qwerty1234',
+            'skills' => [['skill_id' => 1]],
+            'custom_fields' => [['field_id' => 1, 'value' => 'test']]
+        ];
+
+        $validator = $this->mock(\Illuminate\Validation\Validator::class);
+        $validator
+            ->shouldReceive('fails')
+            ->once()
+            ->andReturn(false);
+
+        Validator::shouldReceive('make')
+            ->andReturn($validator);
+
+        $service = $this->getService($userRepository, $tenantOptionService);
+        $response = $service->validateFields($requestData);
+        $this->assertEquals(true, $response);
+    }
+
+    /**
+    * @testdox Test validate fields for create method with invalid data
+    */
+    public function testValidateFieldsCreateMethodAPIInvalid()
+    {
+        $tenantOptionService = $this->mock(TenantOptionService::class);
+        $userRepository = $this->mock(UserRepository::class);
+        $requestData = [
+            'first_name' => 'First',
+            'last_name' => 'Last',
+            'email' => 'firstlast@email.com',
+            'skills' => [['skill_id' => 1]],
+            'custom_fields' => [['field_id' => 1, 'value' => 'test']]
+        ];
+
+        $errors = new Collection([
+            'Password field is required'
+        ]);
+
+        $validator = $this->mock(\Illuminate\Validation\Validator::class);
+        $validator
+            ->shouldReceive('fails')
+            ->once()
+            ->andReturn(true);
+
+        $validator
+            ->shouldReceive('errors')
+            ->once()
+            ->andReturn($errors);
+
+        Validator::shouldReceive('make')
+            ->andReturn($validator);
+
+        $responseHelper = $this->mock(ResponseHelper::class);
+        $responseHelper
+            ->shouldReceive('error')
+            ->once()
+            ->with(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_USER_INVALID_DATA'),
+                $errors->first()
+            );
+
+        $service = $this->getService(
+            $userRepository,
+            $tenantOptionService,
+            null,
+            $responseHelper
+        );
+        $response = $service->validateFields($requestData);
+        $this->assertInstanceOf(JsonResponse::class, $response);
+    }
+
+    /**
+    * @testdox Test validate fields for update method
+    */
+    public function testValidateFieldsUpdateMethodAPISuccess()
+    {
+        $tenantOptionService = $this->mock(TenantOptionService::class);
+        $userRepository = $this->mock(UserRepository::class);
+        $requestData = [
+            'first_name' => 'First',
+            'last_name' => 'Last',
+            'email' => 'firstlast@email.com',
+            'password' => 'Qwerty1234',
+            'skills' => [['skill_id' => 1]],
+            'custom_fields' => [['field_id' => 1, 'value' => 'test']]
+        ];
+
+        $validator = $this->mock(\Illuminate\Validation\Validator::class);
+        $validator
+            ->shouldReceive('fails')
+            ->once()
+            ->andReturn(false);
+
+        Validator::shouldReceive('make')
+            ->andReturn($validator);
+
+        $service = $this->getService($userRepository, $tenantOptionService);
+        $response = $service->validateFields($requestData, 1);
+        $this->assertEquals(true, $response);
+    }
+
+    /**
+    * @testdox Test validate fields for update method with pseudonymize at field
+    */
+    public function testValidateFieldsUpdateMethodAPISuccessWithPseudonymizeAt()
+    {
+        $tenantOptionService = $this->mock(TenantOptionService::class);
+        $userRepository = $this->mock(UserRepository::class);
+        $requestData = [
+            'first_name' => 'First',
+            'last_name' => 'Last',
+            'email' => 'firstlast@email.com',
+            'password' => 'Qwerty1234',
+            'skills' => [['skill_id' => 1]],
+            'custom_fields' => [['field_id' => 1, 'value' => 'test']],
+            'pseudonymize_at' => '2020-10-02 12:32:29.0',
+            'employee_id' => ''
+        ];
+
+        $validator = $this->mock(\Illuminate\Validation\Validator::class);
+        $validator
+            ->shouldReceive('fails')
+            ->once()
+            ->andReturn(false);
+
+        Validator::shouldReceive('make')
+            ->andReturn($validator);
+
+        $helpers = $this->mock(Helpers::class);
+        $helpers
+            ->shouldReceive('getSupportedFieldsToPseudonymize')
+            ->once()
+            ->andReturn([
+                'first_name',
+                'last_name',
+                'email',
+                'employee_id',
+                'linked_in_url',
+                'position',
+                'department',
+                'profile_text',
+                'why_i_volunteer'
+            ]);
+
+        $user = new User();
+        $user->setAttribute('user_id', 1);
+        $userRepository
+            ->shouldReceive('find')
+            ->once()
+            ->with(1)
+            ->andReturn($user);
+
+        $service = $this->getService($userRepository, $tenantOptionService, $helpers);
+        $response = $service->validateFields($requestData, 1);
+        $this->assertEquals(true, $response);
+    }
+
+    /**
+    * @testdox Test validate fields for create method with invalid data
+    */
+    public function testValidateFieldsUpdateMethodAPIInvalid()
+    {
+        $tenantOptionService = $this->mock(TenantOptionService::class);
+        $userRepository = $this->mock(UserRepository::class);
+        $requestData = [
+            'last_name' => 'Last',
+            'password' => 'Qwerty1234',
+            'skills' => [['skill_id' => 1]],
+            'custom_fields' => [['field_id' => 1, 'value' => 'test']]
+        ];
+
+        $errors = new Collection([
+            'Email field is required'
+        ]);
+
+        $validator = $this->mock(\Illuminate\Validation\Validator::class);
+        $validator
+            ->shouldReceive('fails')
+            ->once()
+            ->andReturn(true);
+
+        $validator
+            ->shouldReceive('errors')
+            ->once()
+            ->andReturn($errors);
+
+        Validator::shouldReceive('make')
+            ->andReturn($validator);
+
+        $responseHelper = $this->mock(ResponseHelper::class);
+        $responseHelper
+            ->shouldReceive('error')
+            ->once()
+            ->with(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_USER_INVALID_DATA'),
+                $errors->first()
+            );
+
+        $service = $this->getService(
+            $userRepository,
+            $tenantOptionService,
+            null,
+            $responseHelper
+        );
+        $response = $service->validateFields($requestData, 1);
+        $this->assertInstanceOf(JsonResponse::class, $response);
+    }
+
+    /**
+    * @testdox Test validate fields for update method
+    */
+    public function testValidateFieldsUpdateMethodAppSuccess()
+    {
+        $tenantOptionService = $this->mock(TenantOptionService::class);
+        $userRepository = $this->mock(UserRepository::class);
+        $requestData = [
+            'first_name' => 'First',
+            'last_name' => 'Last',
+            'email' => 'firstlast@email.com',
+            'password' => 'Qwerty1234',
+            'skills' => [['skill_id' => 1]],
+            'custom_fields' => [['field_id' => 1, 'value' => 'test']]
+        ];
+
+        $validator = $this->mock(\Illuminate\Validation\Validator::class);
+        $validator
+            ->shouldReceive('fails')
+            ->once()
+            ->andReturn(false);
+
+        Validator::shouldReceive('make')
+            ->andReturn($validator);
+
+        $service = $this->getService($userRepository, $tenantOptionService);
+        $response = $service->validateFields($requestData, 1, false);
+        $this->assertEquals(true, $response);
+    }
+
+    /**
+    * @testdox Test validate fields for update method with invalid data
+    */
+    public function testValidateFieldsUpdateMethodAppInvalid()
+    {
+        $tenantOptionService = $this->mock(TenantOptionService::class);
+        $userRepository = $this->mock(UserRepository::class);
+        $requestData = [
+            'last_name' => 'Last',
+            'email' => 'firstlast@email.com',
+            'password' => 'Qwerty1234',
+            'skills' => [['skill_id' => 1]],
+            'custom_fields' => [['field_id' => 1, 'value' => 'test']]
+        ];
+
+        $errors = new Collection([
+            'First name field is required'
+        ]);
+
+        $validator = $this->mock(\Illuminate\Validation\Validator::class);
+        $validator
+            ->shouldReceive('fails')
+            ->once()
+            ->andReturn(true);
+
+        $validator
+            ->shouldReceive('errors')
+            ->once()
+            ->andReturn($errors);
+
+        Validator::shouldReceive('make')
+            ->andReturn($validator);
+
+        $responseHelper = $this->mock(ResponseHelper::class);
+        $responseHelper
+            ->shouldReceive('error')
+            ->once()
+            ->with(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_USER_INVALID_DATA'),
+                $errors->first()
+            );
+
+        $service = $this->getService(
+            $userRepository,
+            $tenantOptionService,
+            null,
+            $responseHelper
+        );
+        $response = $service->validateFields($requestData, 1, false);
+        $this->assertInstanceOf(JsonResponse::class, $response);
+    }
+
+    /**
+    * @testdox Test unset pseudonymized fields
+    */
+    public function testUnsetPseudonymizedFields()
+    {
+        $tenantOptionService = $this->mock(TenantOptionService::class);
+        $userRepository = $this->mock(UserRepository::class);
+        $helpers = $this->mock(Helpers::class);
+        $helpers
+            ->shouldReceive('getSupportedFieldsToPseudonymize')
+            ->once()
+            ->andReturn([
+                'first_name',
+                'last_name',
+                'email',
+                'employee_id',
+                'linked_in_url',
+                'position',
+                'department',
+                'profile_text',
+                'why_i_volunteer'
+            ]);
+
+        $requestData = [
+            'first_name' => 'First',
+            'last_name' => 'Last',
+            'email' => 'firstlast@email.com',
+            'password' => 'Qwerty1234',
+            'availability_id' => 1,
+            'timezone_id' => 1,
+            'language_id' => 1,
+            'city_id' => 1,
+            'country_id' => 1,
+            'profile_text' => 'text profile',
+            'department' => 'department',
+            'skills' => [['skill_id' => 1]],
+            'custom_fields' => [['field_id' => 1, 'value' => 'test']],
+            'pseudonymize_at' => '2020-10-02 12:32:29.0',
+            'employee_id' => 1
+        ];
+
+        $service = $this->getService(
+            $userRepository,
+            $tenantOptionService,
+            $helpers
+        );
+        $response = $service->unsetPseudonymizedFields($requestData);
+        $this->assertCount(8, $response);
+    }
+
     private function getMockResponse()
     {
         $user = new User();
@@ -404,11 +974,18 @@ class UserServiceTest extends TestCase
      */
     private function getService(
         UserRepository $userRepository,
-        TenantOptionService $tenantOptionService
+        TenantOptionService $tenantOptionService,
+        Helpers $helpers = null,
+        ResponseHelper $responseHelper = null
     ) {
+        $responseHelper = $responseHelper ?? $this->mock(ResponseHelper::class);
+        $helpers = $helpers ?? $this->mock(Helpers::class);
+
         return new UserService(
             $userRepository,
-            $tenantOptionService
+            $tenantOptionService,
+            $helpers,
+            $responseHelper
         );
     }
 
