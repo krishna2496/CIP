@@ -89,7 +89,6 @@ a {
     color: $primary !important;
     background: none !important;
     border-color: $primary !important;
-<<<<<<< HEAD
     i {
       svg {
         fill: $primary;
@@ -106,8 +105,6 @@ a {
     svg {
       fill: $white;
     }
-=======
->>>>>>> 1759320c571254b05a68d2cc9171a1ab91153759
   }
 }
 
@@ -536,7 +533,64 @@ label {
   }
 }
 
-<<<<<<< HEAD
+.optimy-multiselect {
+  & .multiselect__tags {
+    border-radius: 3px !important;
+    border: 1px solid $control-border;
+    cursor: pointer;
+    box-shadow: 0.966px 0.259px 3px rgba(0, 0, 0, 0.05);
+    -webkit-box-shadow: 0.966px 0.259px 3px rgba(0, 0, 0, 0.05);
+    -moz-box-shadow: 0.966px 0.259px 3px rgba(0, 0, 0, 0.05);
+    -ms-box-shadow: 0.966px 0.259px 3px rgba(0, 0, 0, 0.05);
+    -o-box-shadow: 0.966px 0.259px 3px rgba(0, 0, 0, 0.05);
+  }
+  & .multiselect__select {
+    &:before {
+      border-style: none;
+      margin-top: 0;
+      position: absolute;
+      content: "";
+      background: url($assetUrl+"/down-arrow.svg") no-repeat;
+      background-size: 11px;
+      width: 11px;
+      height: 11px;
+      right: 13px;
+      top: 50%;
+      @include transformY(-50%);
+      @include transition(all 0.3s);
+    }
+  }
+  & .multiselect__tag {
+    background: $primary;
+    margin-bottom: 0;
+  }
+  & .multiselect__input {
+    padding-top: 2px;
+  }
+  & .multiselect__placeholder {
+    color: $gray-secondary;
+    font-size: 16px;
+    margin: 0;
+    padding-left: 5px;
+    padding-top: 0;
+  }
+  & .multiselect__option--highlight {
+    background: $primary;
+    &:after {
+      background: $primary;
+    }
+  }
+  & .multiselect__tag-icon:hover {
+    background: $primary;
+  }
+  & .multiselect__tag-icon:after {
+    color: $white;
+  }
+  & .multiselect__tag-icon:hover:after {
+    color: $secondary;
+  }
+}
+
 .site-checkbox {
   .custom-checkbox {
     .custom-control-label {
@@ -605,64 +659,6 @@ label {
       }
     }
   }
-=======
-.optimy-multiselect {
-  & .multiselect__tags {
-    border-radius: 3px !important;
-    border: 1px solid $control-border;
-    cursor: pointer;
-    box-shadow: 0.966px 0.259px 3px rgba(0, 0, 0, 0.05);
-    -webkit-box-shadow: 0.966px 0.259px 3px rgba(0, 0, 0, 0.05);
-    -moz-box-shadow: 0.966px 0.259px 3px rgba(0, 0, 0, 0.05);
-    -ms-box-shadow: 0.966px 0.259px 3px rgba(0, 0, 0, 0.05);
-    -o-box-shadow: 0.966px 0.259px 3px rgba(0, 0, 0, 0.05);
-  }
-  & .multiselect__select {
-    &:before {
-      border-style: none;
-      margin-top: 0;
-      position: absolute;
-      content: "";
-      background: url($assetUrl+"/down-arrow.svg") no-repeat;
-      background-size: 11px;
-      width: 11px;
-      height: 11px;
-      right: 13px;
-      top: 50%;
-      @include transformY(-50%);
-      @include transition(all 0.3s);
-    }
-  }
-  & .multiselect__tag {
-    background: $primary;
-    margin-bottom: 0;
-  }
-  & .multiselect__input {
-    padding-top: 2px;
-  }
-  & .multiselect__placeholder {
-    color: $gray-secondary;
-    font-size: 16px;
-    margin: 0;
-    padding-left: 5px;
-    padding-top: 0;
-  }
-  & .multiselect__option--highlight {
-    background: $primary;
-    &:after {
-      background: $primary;
-    }
-  }
-  & .multiselect__tag-icon:hover {
-    background: $primary;
-  }
-  & .multiselect__tag-icon:after {
-    color: $white;
-  }
-  & .multiselect__tag-icon:hover:after {
-    color: $secondary;
-  }
->>>>>>> 1759320c571254b05a68d2cc9171a1ab91153759
 }
 
 .checkbox-select {
@@ -1351,7 +1347,9 @@ label {
       z-index: 1039;
     }
     .picture-preview {
-      background: $primary-border-color;
+      background-color: $primary-border-color;
+      height: 160px !important;
+      width: 160px;
       overflow: hidden;
       border-radius: 100%;
       z-index: 1039 !important;
@@ -1424,6 +1422,27 @@ label {
     position: relative;
   }
   .form-group {
+    /** style for custom-field radio/checkbox group **/
+    .custom-group {
+      label {
+        cursor: pointer;
+        max-width: 100%;
+      }
+      
+      .custom-control {
+        cursor: inherit;
+
+        .custom-control-label {
+          cursor: inherit;
+          word-break: break-word;
+          word-wrap: break-word;
+          overflow-wrap: break-word;
+          white-space: normal;
+          display: inline-block;
+        }
+      }
+    }
+    /**/ 
     .is-invalid {
       .custom-control {
         .custom-control-label {

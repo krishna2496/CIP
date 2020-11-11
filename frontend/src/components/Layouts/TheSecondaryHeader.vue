@@ -327,10 +327,6 @@ export default {
             // this.$router.push({
             //     name: 'home'
             // })
-<<<<<<< HEAD
-
-=======
->>>>>>> ae18d57de3d85629364fbd8f417fd2e8dae08229
             await filterList(this.selectedfilterParams).then(response => {
                 if (response) {
                     if (response.state) {

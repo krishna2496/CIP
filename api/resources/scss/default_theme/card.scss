@@ -45,22 +45,6 @@
         }
 
         /*.icon-btn {
-<<<<<<< HEAD
-          i {
-            @include transformX(4px);
-
-            svg {
-              fill: $white;
-            }
-          }
-          &:active:focus,
-          &:hover:focus {
-            svg {
-              fill: $white;
-            }
-          }
-        }*/
-=======
 			i {
 			  @include transformX(4px);
   
@@ -75,7 +59,6 @@
 			  }
 			}
 		  }*/
->>>>>>> 1759320c571254b05a68d2cc9171a1ab91153759
       }
     }
     .card-header {
@@ -849,13 +832,9 @@
       .left-btn {
         .icon-btn {
           display: inline-flex;
-<<<<<<< HEAD
-          min-width: 195px;
-=======
           min-width: 172px;
           max-width: 172px;
           flex: 0 0 172px;
->>>>>>> 1759320c571254b05a68d2cc9171a1ab91153759
           min-height: 40px;
           align-items: center;
           font-size: 18px;
@@ -863,16 +842,6 @@
           padding: 5px 20px;
           background: transparent;
           color: $primary;
-<<<<<<< HEAD
-          max-width: 195px;
-          flex: 0 0 195px;
-          font-size: 15px;
-          justify-content: space-between;
-           @include sm-max{
-            min-width:156px;
-            max-width: 156px;
-            flex: 0 0 156px; 
-=======
           @include border-radius(40px);
           // font-size: 15px;
           // justify-content: space-between;
@@ -882,7 +851,6 @@
             max-width: 156px;
             flex: 0 0 156px;
             font-size: 15px;
->>>>>>> 1759320c571254b05a68d2cc9171a1ab91153759
           }
           svg {
             path {
@@ -904,8 +872,6 @@
             min-width: 18px;
             flex: 0 0 18px;
             width: 18px;
-<<<<<<< HEAD
-=======
           }
           &.btn-lg {
             min-width: 194px;
@@ -917,7 +883,6 @@
               max-width: 156px;
               flex: 0 0 156px;
             }
->>>>>>> 1759320c571254b05a68d2cc9171a1ab91153759
           }
         }
       }
@@ -940,11 +905,7 @@
           }
           img {
             width: 100%;
-<<<<<<< HEAD
-            height:100%;
-=======
             height: 100%;
->>>>>>> 1759320c571254b05a68d2cc9171a1ab91153759
             vertical-align: top;
           }
         }
@@ -996,10 +957,7 @@
     .card {
       box-shadow: none;
       min-height: 100%;
-<<<<<<< HEAD
-=======
       z-index: 10;
->>>>>>> 1759320c571254b05a68d2cc9171a1ab91153759
       .content-inner-block {
         min-height: 90px;
       }
@@ -1011,33 +969,6 @@
       top: 16px;
       z-index: 10;
     }
-<<<<<<< HEAD
-    &.active{
-      .card{
-        .init-hidden {
-          opacity: 1;
-        }
-        .group-ratings {
-        display: block;
-      }
-      .card-text {
-        margin-top: 0;
-      }
-      .location {
-        opacity: 1;
-        visibility: visible;
-      }
-      .event-block {
-        .like-btn {
-          opacity: 0;
-        }
-        .progress-block {
-          display: none;
-        }
-      }
-      }
-    }
-=======
     &.active {
       .card {
         .init-hidden {
@@ -1073,7 +1004,6 @@
     //     }
     //   }
     // }
->>>>>>> 1759320c571254b05a68d2cc9171a1ab91153759
   }
   .card {
     @include transition(all 0.5s);
@@ -1107,10 +1037,6 @@
       margin: 0 0 9px;
       @include transition(margin-top 0.3s);
     }
-<<<<<<< HEAD
-    &:hover {
-      
-=======
     .card-body {
       @include transition(transform 0.3s);
       position: relative;
@@ -1127,7 +1053,6 @@
           }
         }
       }
->>>>>>> 1759320c571254b05a68d2cc9171a1ab91153759
     }
   }
 
@@ -1203,17 +1128,6 @@
               }
             }
             .gray-btn {
-<<<<<<< HEAD
-                background: $gray-primary;
-                color: $white;
-                border-color: $gray-primary;
-                i {
-                  svg {
-                    fill: $white;
-                  }
-                }
-              }
-=======
               background: $white;
               color: $middle-gray;
               border-color: $gray-secondary;
@@ -1223,7 +1137,6 @@
                 }
               }
             }
->>>>>>> 1759320c571254b05a68d2cc9171a1ab91153759
           }
         }
       }
@@ -1231,31 +1144,18 @@
         bottom: auto;
         top: 73px;
       }
-<<<<<<< HEAD
-      .dropdown-outer{
-        .more-btn{
-          background: transparent;
-          border: none;
-          padding: 0;
-          display: inline-block!important;
-=======
       .dropdown-outer {
         .more-btn {
           background: transparent;
           border: none;
           padding: 0;
           display: inline-block !important;
->>>>>>> 1759320c571254b05a68d2cc9171a1ab91153759
           font-size: 14px;
           line-height: 19px;
           color: $black-primary;
           border-radius: 0;
           vertical-align: text-bottom;
-<<<<<<< HEAD
-          &:hover{
-=======
           &:hover {
->>>>>>> 1759320c571254b05a68d2cc9171a1ab91153759
             color: $black-primary;
           }
         }
@@ -1303,13 +1203,8 @@
           flex: 0 0 70%;
           height: 100%;
           display: flex;
-<<<<<<< HEAD
-          flex-direction: column;
-          justify-content: space-between;
-=======
           flex-wrap: wrap;
           align-content: space-between;
->>>>>>> 1759320c571254b05a68d2cc9171a1ab91153759
         }
         .group-details {
           flex-wrap: wrap;
@@ -1393,11 +1288,7 @@
               flex: 0 0 auto;
               width: auto;
               .text-wrap {
-<<<<<<< HEAD
-                .gray-text{
-=======
                 .gray-text {
->>>>>>> 1759320c571254b05a68d2cc9171a1ab91153759
                   color: $gray-primary;
                 }
                 span {
@@ -1470,26 +1361,6 @@
               min-width: 172px;
               max-width: 172px;
               flex: 0 0 172px;
-<<<<<<< HEAD
-              font-size: 15px;
-              display: flex!important;
-              align-items: center;
-              justify-content: space-between;
-               &.gray-btn{
-                  &:focus
-                  .icon-wrap{
-                    svg{
-                      fill:$middle-gray;
-                    }
-                  }
-                }
-              @include sm-max{
-                min-width:156px;
-                max-width: 156px;
-                flex: 0 0 156px; 
-              }
-              .icon-wrap{
-=======
               font-size: 18px;
               display: flex !important;
               align-items: center;
@@ -1511,7 +1382,6 @@
                 flex: 0 0 156px;
               }
               .icon-wrap {
->>>>>>> 1759320c571254b05a68d2cc9171a1ab91153759
                 min-width: 20px;
                 flex: 0 0 20px;
               }
@@ -1916,11 +1786,7 @@
     }
   }
 }
-<<<<<<< HEAD
-.skill-popover{
-=======
 .skill-popover {
->>>>>>> 1759320c571254b05a68d2cc9171a1ab91153759
   border-color: $primary-border-color;
   padding: 5px 0;
   border-radius: 3px;
@@ -1928,24 +1794,6 @@
   overflow-y: auto;
   min-width: 160px;
   background: #fff;
-<<<<<<< HEAD
-    .arrow{
-      display: none;
-    }
-    .list-group{
-      flex-direction: column;
-      .list-group-item{
-        font-size: 14px;
-        padding:8px 15px;
-        line-height: 20px; 
-        &:active, &:hover{
-          background:$primary-border-color;
-          color: $black-primary;
-        }
-      }
-    }
-}
-=======
   .arrow {
     display: none;
   }
@@ -1963,4 +1811,3 @@
     }
   }
 }
->>>>>>> 1759320c571254b05a68d2cc9171a1ab91153759
