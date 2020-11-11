@@ -510,6 +510,13 @@
             "default": ""
           },
           {
+            "name": "with_donation_statistics",
+            "in": "path",
+            "description": "Enable to add donation statistics data on the response",
+            "required": false,
+            "type": "boolean"
+          },
+          {
             "name": "country_id",
             "in": "path",
             "description": "Country ID",
@@ -731,6 +738,13 @@
             "required": true,
             "type": "string",
             "default": ""
+          },
+          {
+            "name": "with_donation_statistics",
+            "in": "path",
+            "description": "Enable to add donation statistics data on the response",
+            "required": false,
+            "type": "boolean"
           },
           {
             "name": "missionId",
