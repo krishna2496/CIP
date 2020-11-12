@@ -184,9 +184,10 @@
                     </div>
                 </b-card-body>
             </b-card>
-            <invite-co-worker ref="userDetailModal" entity-type="MISSION" :entity-id="currentMissionId"></invite-co-worker>
         </div>
     </div>
+    <invite-co-worker ref="userDetailModal" entity-type="MISSION" :entity-id="currentMissionId"></invite-co-worker>
+
 </div>
 <div class="no-data-found" v-else>
     <h2 class="text-center">{{noRecordFound()}}</h2>
@@ -430,6 +431,13 @@ export default {
             }
 
             return false;
+        },
+        /*
+         * Opens Recommend to a co-worker modal
+         */
+        handleModal(missionId) {
+            this.currentMissionId = missionId;
+            this.$refs.userDetailModal.show();
         }
     },
     created() {

@@ -590,6 +590,14 @@ export default {
                 return true;
             }
         },
+
+        /*
+         * Opens Recommend to a co-worker modal
+         */
+        handleModal(missionId) {
+          this.currentMissionId = missionId;
+          this.$refs.userDetailModal.show();
+        },
     },
     created() {
         this.languageData = JSON.parse(store.state.languageLabel);
