@@ -2313,10 +2313,11 @@ class MissionRepository implements MissionInterface
                 mission.mission_id,
                 COUNT(donation.id) as count,
                 COUNT(DISTINCT donation.user_id) as donors,
-                SUM(payment.amount) as total
+                SUM(payment.amount) as total_amount
             ')
             ->join('donation', 'donation.mission_id', '=', 'mission.mission_id')
             ->join('payment', 'payment.id', '=', 'donation.payment_id')
+            ->where('payment.status', config('constants.payment_statuses.SUCCESS'))
             ->whereIn('mission.mission_id', $missionIds)
             ->groupBy('mission.mission_id')
             ->get();

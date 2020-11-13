@@ -233,9 +233,9 @@ class MissionController extends Controller
                     $missionId = $mission['mission_id'];
                     if ($missionIds->contains($missionId)) {
                         $mission['donation_statistics'] = [
-                            'count' => $statistics[$missionId]->count ?? null,
-                            'donors' => $statistics[$missionId]->donors ?? null,
-                            'total' => $statistics[$missionId]->total ?? null
+                            'count' => $statistics[$missionId]->count ?? 0,
+                            'donors' => $statistics[$missionId]->donors ?? 0,
+                            'total_amount' => $statistics[$missionId]->total_amount ?? 0
                         ];
                     }
                     return $mission;
@@ -773,9 +773,9 @@ class MissionController extends Controller
                         $missionId
                     ])->keyBy('mission_id');
                     $data->setAttribute('donation_statistics', [
-                        'count' => $statistics[$missionId]->count ?? null,
-                        'donors' => $statistics[$missionId]->donors ?? null,
-                        'total' => $statistics[$missionId]->total ?? null
+                        'count' => $statistics[$missionId]->count ?? 0,
+                        'donors' => $statistics[$missionId]->donors ?? 0,
+                        'total_amount' => $statistics[$missionId]->total_amount ?? 0
                     ]);
                 }
                 return $data;

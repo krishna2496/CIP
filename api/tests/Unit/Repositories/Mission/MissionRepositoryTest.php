@@ -1064,7 +1064,7 @@ class MissionRepositoryTest extends TestCase
                 mission.mission_id,
                 COUNT(donation.id) as count,
                 COUNT(DISTINCT donation.user_id) as donors,
-                SUM(payment.amount) as total
+                SUM(payment.amount) as total_amount
             ')
             ->andReturnSelf()
             ->shouldReceive('join')
@@ -1074,6 +1074,10 @@ class MissionRepositoryTest extends TestCase
             ->shouldReceive('join')
             ->once()
             ->with('payment', 'payment.id', '=', 'donation.payment_id')
+            ->andReturnSelf()
+            ->shouldReceive('where')
+            ->once()
+            ->with('payment.status', config('constants.payment_statuses.SUCCESS'))
             ->andReturnSelf()
             ->shouldReceive('whereIn')
             ->once()
