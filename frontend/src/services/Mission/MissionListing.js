@@ -58,7 +58,8 @@ export default async(data) => {
                 filterData.search = response.data.meta_data.filters.search;
                 filterData.countryId = response.data.meta_data.filters.country_id;
                 filterData.stateId = response.data.meta_data.filters.state_id;
-                filterData.cityId = response.data.meta_data.filters.city_id;
+                //todo temp fix CIP-938; redo me when filters + tags will work
+                filterData.cityId = data.cityId;
                 filterData.themeId = response.data.meta_data.filters.theme_id;
                 filterData.skillId = response.data.meta_data.filters.skill_id;
                 filterData.tags = response.data.meta_data.filters.tags;
