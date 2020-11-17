@@ -109,7 +109,7 @@
 		"language": "Language",
 		"timezone": "Time zone",
 		"address_information": "Address information",
-		"basic_information": "Personal information",
+		"basic_information": "Basic information",
 		"professional_information": "Professional information",
 		"linked_in": "LinkedIn",
 		"custom_field": "Additional information",
@@ -215,7 +215,7 @@
 		"new_line_to_enter_multiple_urls": "One item per line",
 		"start_date": "Start date",
 		"reset": "Reset",
-		"year": "year",
+		"year": "Year",
 		"publish_new_story": "Publish a new story",
 		"draft": "Draft",
 		"pending": "Pending",
@@ -303,7 +303,14 @@
 		"and": "&",
 		"for": "For",
 		"sort_deadline": "Sort by deadline",
-		"no_image_available": "No image available"
+		"no_image_available": "No image available",
+		"profile": "Profile",
+		"settings": "Settings",
+		"donations": "Donations",
+		"personal_donation_goal": "Personal donation goal",
+		"preferences": "Preferences",
+		"currency": "Currency",
+		"current_password": "Current password"
 	},
 	"placeholder": {
 		"email_address": "Enter email address",
@@ -320,7 +327,6 @@
 		"why_i_volunteer": "Reason for volunteering",
 		"city": "Select your city",
 		"country": "Select your country",
-		"old_password": "Enter old password",
 		"new_password": "Enter new password",
 		"confirm_password": "Confirm new password",
 		"availability": "Select your availability",
@@ -336,7 +342,9 @@
 		"video_url": "Enter your video url",
 		"subject": "Enter your subject",
 		"message": "Enter your message",
-		"search_user": "Search by name or email address"
+		"search_user": "Search by name or email address",
+		"currency": "Select your currency",
+		"old_password": "Enter current password"
 	},
 	"errors": {
 		"email_required": "Email address is required",
@@ -395,7 +403,10 @@
 		"invalid_saml_setting": "The following mapping(s) are required:",
 		"password_should_contain_uppercase": "At least 1 uppercase letter",
 		"password_should_contain_lowercase": "At least 1 lowercase letter",
-		"password_should_contain_numbers": "At least 1 digit"
+		"password_should_contain_numbers": "At least 1 digit",
+		"currency_required": "Currency is required.",
+		"donation_goal_required": "Donation goal amount is required.",
+		"valid_donation_goal": "Please enter a valid donation goal amount."
 	},
 	"export_timesheet_file_names": {
 		"PENDING_TIME_MISSION_ENTRIES_XLSX": "Pending_Time_Mission_Entries.xls",

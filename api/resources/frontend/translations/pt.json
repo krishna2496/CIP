@@ -302,7 +302,14 @@
 		"and": "e",
 		"for": "Para",
 		"sort_deadline": "Ordenar por prazo",
-		"no_image_available": "Nenhuma imagem disponível"
+		"no_image_available": "Nenhuma imagem disponível",
+		"profile": "Perfil",
+		"settings": "Configurações",
+		"donations": "Doações",
+		"personal_donation_goal": "Objetivo da doação pessoal",
+		"preferences": "Preferências",
+		"currency": "Moeda",
+		"current_password": "Senha atual"
 	},
 	"placeholder": {
 		"email_address": "Inserir endereço de e-mail",
@@ -335,7 +342,9 @@
 		"video_url": "Inserir URL do seu vídeo",
 		"subject": "Inserir seu assunto",
 		"message": "Inserir sua mensagem",
-		"search_user": "Pesquisar por nome ou endereço de e-mail"
+		"search_user": "Pesquisar por nome ou endereço de e-mail",
+		"currency": "Selecione sua moeda",
+		"old_password": "Digite a senha atual"
 	},
 	"errors": {
 		"email_required": "É necessário um endereço de e-mail",
@@ -394,7 +403,10 @@
 		"invalid_saml_setting": "Os seguintes mapeamentos são necessários:",
 		"password_should_contain_uppercase": "Pelo menos uma letra maiúscula",
 		"password_should_contain_lowercase": "Pelo menos uma letra minúscula",
-		"password_should_contain_numbers": "Pelo menos 1 dígito"
+		"password_should_contain_numbers": "Pelo menos 1 dígito",
+		"currency_required": "A moeda é necessária.",
+		"donation_goal_required": "O valor da meta de doação é necessário.",
+		"valid_donation_goal": "Por favor, digite um valor válido para a meta de doação."
 	},
 	"export_timesheet_file_names": {
 		"PENDING_TIME_MISSION_ENTRIES_XLSX": "Pending_Time_Mission_Entries.xls",

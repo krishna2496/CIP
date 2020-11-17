@@ -197,6 +197,7 @@ return [
         'MESSAGE_STATE_LISTING' => 'Staaten erfolgreich gelistet',
         'MESSAGE_STATE_FOUND' => 'Status erfolgreich gefunden',
         'MESSAGE_NO_STATE_FOUND' => 'Zustand nicht gefunden',
+        'MESSAGE_SETTING_UPDATE_SUCCESS' => 'Benutzereinstellung erfolgreich aktualisiert.',
     ],
 
 

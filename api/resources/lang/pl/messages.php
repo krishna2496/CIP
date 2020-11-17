@@ -197,6 +197,7 @@ return [
         'MESSAGE_STATE_LISTING' => 'Państwa wymienione z powodzeniem',
         'MESSAGE_STATE_FOUND' => 'Stan został znaleziony pomyślnie',
         'MESSAGE_NO_STATE_FOUND' => 'Państwo nie znaleziono',
+        'MESSAGE_SETTING_UPDATE_SUCCESS' => 'Ustawienia użytkownika zostały pomyślnie zaktualizowane.',
     ],
 
 

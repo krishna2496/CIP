@@ -249,11 +249,6 @@ $router->patch('/app/user', [
     'middleware' => 'localization|tenant.connection|jwt.auth|JsonApiMiddleware',
     'uses' => 'App\User\UserController@update']);
 
-/* Password change routing */
-$router->patch('/app/change-password', ['as' => 'password.change',
-    'middleware' => 'localization|tenant.connection|jwt.auth|user.profile.complete',
-    'uses' => 'App\Auth\AuthController@changePassword']);
-
 /* Create user skill */
 $router->post('/app/user/skills', ['as' => 'user.skills',
     'middleware' => 'tenant.connection|localization|jwt.auth|TenantHasSettingsMiddleware:volunteering,skills_enabled',
@@ -488,6 +483,17 @@ $router->group(['middleware' => 'localization'], function ($router) {
     $router->post('/app/message/read/{messageId}', ['as' => 'app.message.read',
         'middleware' => 'localization|tenant.connection|jwt.auth|user.profile.complete',
         'uses' => 'App\Message\MessageController@readMessage']);
+
+    /* Post user setting data */
+    $router->post('/app/setting', ['as' => 'app.setting.post',
+        'middleware' => 'localization|tenant.connection|jwt.auth|user.profile.complete',
+        'uses' => 'App\UserSetting\UserSettingController@store']);
+
+    /* Get user setting data */
+    $router->get('/app/setting', ['as' => 'app.setting.read',
+        'middleware' => 'localization|tenant.connection|jwt.auth|user.profile.complete',
+        'uses' => 'App\UserSetting\UserSettingController@index']);
+
 });
 
     /* health check */

@@ -302,7 +302,14 @@
 		"and": "ja",
 		"for": "Sillä",
 		"sort_deadline": "Lajittele määräajan mukaan",
-		"no_image_available": "Ei kuvaa saatavilla"
+		"no_image_available": "Ei kuvaa saatavilla",
+		"profile": "Profiili",
+		"settings": "Asetukset",
+		"donations": "Lahjoitukset",
+		"personal_donation_goal": "Henkilökohtainen lahjoitustavoite",
+		"preferences": "Asetukset",
+		"currency": "Valuutta",
+		"current_password": "Nykyinen salasana"
 	},
 	"placeholder": {
 		"email_address": "Anna sähköpostiosoite",
@@ -335,7 +342,9 @@
 		"video_url": "Anna videosi url-osoite",
 		"subject": "Anna aiheesi",
 		"message": "Anna viestisi",
-		"search_user": "Hae nimellä tai sähköpostiosoitteella"
+		"search_user": "Hae nimellä tai sähköpostiosoitteella",
+		"currency": "Valitse valuutta",
+		"old_password": "Kirjoita nykyinen salasana"
 	},
 	"errors": {
 		"email_required": "Sähköpostiosoite on pakollinen",
@@ -394,7 +403,10 @@
 		"invalid_saml_setting": "Seuraavat kartoitukset vaaditaan:",
 		"password_should_contain_uppercase": "Vähintään 1 iso kirjain",
 		"password_should_contain_lowercase": "Vähintään 1 pieni kirjain",
-		"password_should_contain_numbers": "Vähintään 1 numero"
+		"password_should_contain_numbers": "Vähintään 1 numero",
+		"currency_required": "Valuutta vaaditaan.",
+		"donation_goal_required": "Lahjoitustavoitteen määrä vaaditaan.",
+		"valid_donation_goal": "Anna kelvollinen lahjoitustavoitesumma."
 	},
 	"export_timesheet_file_names": {
 		"PENDING_TIME_MISSION_ENTRIES_XLSX": "Pending_Time_Mission_Entries.xls",

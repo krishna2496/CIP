@@ -1070,7 +1070,7 @@ label {
   border-radius: 100%;
   overflow: hidden;
   width: 160px;
-  margin: 0 auto;
+  margin: 0 auto 10px;
   .content-loader-wrap {
     z-index: 1040;
   }
@@ -1106,7 +1106,7 @@ label {
       z-index: 1039;
     }
     .picture-preview {
-      background: $primary-border-color;
+      background-color: $primary-border-color;
       height: 160px !important;
       width: 160px;
       overflow: hidden;

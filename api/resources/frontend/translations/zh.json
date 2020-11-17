@@ -302,7 +302,14 @@
 		"and": "和",
 		"for": "对于",
 		"sort_deadline": "按截止日期排序",
-		"no_image_available": "没有图像"
+		"no_image_available": "没有图像",
+		"profile": "简介",
+		"settings": "设置",
+		"donations": "捐赠",
+		"personal_donation_goal": "个人捐赠目标",
+		"preferences": "首选项",
+		"currency": "币种",
+		"current_password": "当前密码"
 	},
 	"placeholder": {
 		"email_address": "输入电子邮件地址",
@@ -335,7 +342,9 @@
 		"video_url": "输入您的视频 URL",
 		"subject": "输入您的主题",
 		"message": "输入您的消息",
-		"search_user": "按姓名或电子邮件地址搜索"
+		"search_user": "按姓名或电子邮件地址搜索",
+		"currency": "选择您的货币",
+		"old_password": "输入当前密码"
 	},
 	"errors": {
 		"email_required": "必须输入电子邮件地址",
@@ -394,7 +403,10 @@
 		"invalid_saml_setting": "需要以下映射：",
 		"password_should_contain_uppercase": "至少 1 个大写字母",
 		"password_should_contain_lowercase": "至少 1 个小写字母",
-		"password_should_contain_numbers": "至少 1 个数字"
+		"password_should_contain_numbers": "至少 1 个数字",
+		"currency_required": "货币是必须的。",
+		"donation_goal_required": "捐款目标金额是必需的。",
+		"valid_donation_goal": "请输入有效的捐款目标金额。"
 	},
 	"export_timesheet_file_names": {
 		"PENDING_TIME_MISSION_ENTRIES_XLSX": "Pending_Time_Mission_Entries.xls",

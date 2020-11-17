@@ -63,5 +63,6 @@ export default Object.freeze({
     STATE_ENABLED: 'state_selection',
     VOLUNTEERING_GOAL_MISSION: 'volunteering_goal_mission',
     VOLUNTEERING_TIME_MISSION: 'volunteering_time_mission',
-    SETTING_VOLUNTEERING: 'volunteering'
+    SETTING_VOLUNTEERING: 'volunteering',
+    DONATION : "donation"
 });

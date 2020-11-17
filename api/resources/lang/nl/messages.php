@@ -197,6 +197,7 @@ return [
         'MESSAGE_STATE_LISTING' => 'Staten die met succes op de lijst staan',
         'MESSAGE_STATE_FOUND' => 'Staat met succes gevonden',
         'MESSAGE_NO_STATE_FOUND' => 'Staat niet gevonden',
+        'MESSAGE_SETTING_UPDATE_SUCCESS' => 'Gebruikersinstelling succesvol bijgewerkt.',
     ],
 
 

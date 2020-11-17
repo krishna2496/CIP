@@ -197,6 +197,7 @@ return [
         'MESSAGE_STATE_LISTING' => 'Государства, перечисленные успешно',
         'MESSAGE_STATE_FOUND' => 'Государство найдено успешно',
         'MESSAGE_NO_STATE_FOUND' => 'Состояние не найдено',
+        'MESSAGE_SETTING_UPDATE_SUCCESS' => 'Успешно обновлены пользовательские настройки.',
     ],
 
 

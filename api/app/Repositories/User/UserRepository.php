@@ -17,6 +17,7 @@ use App\Models\Mission;
 use App\Helpers\LanguageHelper;
 use App\Repositories\UserCustomField\UserCustomFieldRepository;
 use Illuminate\Database\Eloquent\Builder;
+use App\Models\UserDonationGoal;
 
 class UserRepository implements UserInterface
 {
@@ -45,7 +46,7 @@ class UserRepository implements UserInterface
      */
     private $helpers;
 
-	/**
+    /**
      * @var App\Repositories\UserCustomField\UserCustomFieldRepository
      */
     private $userCustomFieldRepository;
@@ -61,6 +62,11 @@ class UserRepository implements UserInterface
     private $languageHelper;
 
     /**
+     * @var App\Models\UserDonationGoal
+     */
+    private $userDonationGoal;
+
+    /**
      * Create a new User repository instance.
      *
      * @param  App\User $user
@@ -70,6 +76,7 @@ class UserRepository implements UserInterface
      * @param  App\Helpers\LanguageHelper $languageHelper
      * @param  App\Models\Mission $mission
      * @param  App\Helpers\Helpers $helpers
+     * @param  App\Models\UserDonationGoal
      * @return void
      */
     public function __construct(
@@ -80,7 +87,8 @@ class UserRepository implements UserInterface
         LanguageHelper $languageHelper,
         Mission $mission,
         Helpers $helpers,
-        UserCustomFieldRepository $userCustomFieldRepository
+        UserCustomFieldRepository $userCustomFieldRepository,
+        UserDonationGoal $userDonationGoal
     ) {
         $this->user = $user;
         $this->userSkill = $userSkill;
@@ -90,6 +98,7 @@ class UserRepository implements UserInterface
         $this->mission = $mission;
         $this->helpers = $helpers;
         $this->userCustomFieldRepository = $userCustomFieldRepository;
+        $this->userDonationGoal = $userDonationGoal;
     }
 
     /**
@@ -98,7 +107,7 @@ class UserRepository implements UserInterface
      * @param Array $request
      * @return App\User
      */
-    public function store(Array $request): User
+    public function store(array $request): User
     {
         $user = $this->user->create($request);
         return $user;
@@ -501,7 +510,6 @@ class UserRepository implements UserInterface
         }
 
         return $timesheet->get();
-
     }
 
     /**
@@ -564,7 +572,6 @@ class UserRepository implements UserInterface
         }
 
         return $timesheet->get();
-
     }
 
     /**
@@ -586,11 +593,11 @@ class UserRepository implements UserInterface
             }
         }
 
-		$customFields = $this->userCustomFieldRepository->getUserCustomFields($request);
+        $customFields = $this->userCustomFieldRepository->getUserCustomFields($request);
 
         if (in_array(1, array_column($customFields->toArray(), 'is_mandatory')) && $request->isMethod('post')) {
-			$profileStatus = false;
-		}
+            $profileStatus = false;
+        }
 
         $profileComplete = '0';
         if ($profileStatus) {
@@ -742,6 +749,37 @@ class UserRepository implements UserInterface
         return $requestData;
     }
 
+    /**
+     * Update user donation goal
+     *
+     * @param Request $request
+     */
+    public function updateDonationGoal(Request $request)
+    {
+        $userId = $request->auth->user_id;
+        $this->userDonationGoal->updateOrCreate(
+            [
+                'user_id' => $userId,
+                'donation_goal_year' => $request->get('donation_goal_year')
+            ],
+            [
+                'donation_goal' => $request->get('donation_goal'),
+                'donation_goal_year' => $request->get('donation_goal_year'),
+                'user_id' => $userId
+            ]
+        );
+    }
+
+    /**
+     * Get user donation goal
+     *
+     * @param int $userId
+     */
+    public function getUserDonationGoal(int $userId)
+    {
+        return $this->userDonationGoal->where('user_id', $userId)->get();
+    }
+    
     /**
      * @param  bool
      *
