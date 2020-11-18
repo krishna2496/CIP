@@ -11,10 +11,8 @@ class Event extends StripeEvent
     /**
      * Stripe events
      */
-    const TYPES = [
-        'PAYMENT_FAILED' => 'payment_intent.payment_failed',
-        'PAYMENT_SUCCESS' => 'payment_intent.succeeded'
-    ];
+    const PAYMENT_FAILED = self::PAYMENT_INTENT_PAYMENT_FAILED;
+    const PAYMENT_SUCCESS = self::PAYMENT_INTENT_SUCCEEDED;
 
     /**
      * Connect to stripe payment gateway
@@ -38,6 +36,16 @@ class Event extends StripeEvent
         if ($this->connect) {
             $this->stripeGateway();
         }
+    }
+
+    /**
+     * Get event api version
+     *
+     * @return string
+     */
+    public function getApiVersion(): string
+    {
+        return $this->api_version;
     }
 
     /**

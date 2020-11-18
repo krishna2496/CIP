@@ -17,6 +17,7 @@ use App\Repositories\MissionMedia\MissionMediaRepository;
 use App\Repositories\Notification\NotificationRepository;
 use App\Repositories\Organization\OrganizationRepository;
 use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
+use App\Services\Donation\DonationService;
 use App\Services\Mission\ModelsService;
 use App\Services\PaymentGateway\AccountService;
 use App\Traits\RestExceptionHandlerTrait;
@@ -102,6 +103,11 @@ class MissionController extends Controller
     private $paymentGateways;
 
     /**
+     * @var DonationService
+     */
+    private $donationService;
+
+    /**
      * Create a new controller instance.
      *
      * @param App\Repositories\Mission\MissionRepository $missionRepository
@@ -128,7 +134,8 @@ class MissionController extends Controller
         ModelsService $modelsService,
         Helpers $helpers,
         AccountService $accountService,
-        PaymentGatewayFactory $paymentGatewayFactory
+        PaymentGatewayFactory $paymentGatewayFactory,
+        DonationService $donationService
     ) {
         $this->missionRepository = $missionRepository;
         $this->responseHelper = $responseHelper;
@@ -142,6 +149,7 @@ class MissionController extends Controller
         $this->helpers = $helpers;
         $this->accountService = $accountService;
         $this->paymentGatewayFactory = $paymentGatewayFactory;
+        $this->donationService = $donationService;
 
         // Register all supported payment gateways
         $this->paymentGateways = array_keys(config('constants.payment_gateway_types'));
@@ -443,12 +451,18 @@ class MissionController extends Controller
                 throw new ModelNotFoundException();
             }
 
+            $data = $mission->toArray();
+            if ($request->boolean('with_donation_statistics') && $mission->donationAttribute) {
+                // Get mission donation statistics
+                $data['donation_statistics'] = $this->donationService->getMissionDonationStatistics($missionId);
+            }
+
             $apiStatus = Response::HTTP_OK;
             $apiMessage = trans('messages.success.MESSAGE_MISSION_FOUND');
             return $this->responseHelper->success(
                 $apiStatus,
                 $apiMessage,
-                $mission->toArray(),
+                $data,
                 false
             );
         } catch (ModelNotFoundException $e) {

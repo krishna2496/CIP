@@ -8,8 +8,10 @@ use App\Libraries\PaymentGateway\PaymentGatewayDetailedTransfer;
 use App\Libraries\PaymentGateway\PaymentGatewayFactory;
 use App\Libraries\PaymentGateway\Stripe\Events\PaymentEvent;
 use App\Libraries\PaymentGateway\Stripe\StripePaymentGateway;
+use Faker\Factory as FakerFactory;
 use Illuminate\Support\Collection;
 use Mockery;
+use Stripe\ErrorObject;
 use TestCase;
 
 /**
@@ -18,6 +20,11 @@ use TestCase;
  */
 class PaymentEventTest extends TestCase
 {
+    /**
+     * @var Faker
+     */
+    private $faker;
+
     /*
      * @var Event
      */
@@ -30,6 +37,9 @@ class PaymentEventTest extends TestCase
 
     public function setUp(): void
     {
+        parent::setUp();
+
+        $this->faker = FakerFactory::create();
         $this->stripePayment = $this->mock(StripePaymentGateway::class);
 
         $payment = $this->mock('overload:App\Libraries\PaymentGateway\PaymentGatewayFactory');
@@ -43,9 +53,9 @@ class PaymentEventTest extends TestCase
     }
 
     /**
-     * @testdox Test data and charge method on PaymentEvent Class
+     * @testdox Test get data and charge method on PaymentEvent Class
      */
-    public function testDataCharge()
+    public function testGetDataCharge()
     {
         $data = $this->flattenArrayKeys($this->eventData());
 
@@ -65,9 +75,9 @@ class PaymentEventTest extends TestCase
     }
 
     /**
-     * @testdox Test transaction method on PaymentEvent Class
+     * @testdox Test get transaction method on PaymentEvent Class
      */
-    public function testTransaction()
+    public function testGetTransaction()
     {
         $transactionId = $this->eventData()['data']['object']['charges']['data'][0]['balance_transaction'];
         $transaction = new PaymentGatewayDetailedTransaction;
@@ -84,9 +94,9 @@ class PaymentEventTest extends TestCase
     }
 
     /**
-     * @testdox Test transfer method on PaymentEvent Class
+     * @testdox Test get transfer method on PaymentEvent Class
      */
-    public function testTransfer()
+    public function testGetTransfer()
     {
         $transferId = $this->eventData()['data']['object']['charges']['data'][0]['transfer'];
         $transfer = new PaymentGatewayDetailedTransfer;
@@ -103,9 +113,9 @@ class PaymentEventTest extends TestCase
     }
 
     /**
-     * @testdox Test status method on PaymentEvent Class
+     * @testdox Test get status method on PaymentEvent Class
      */
-    public function testStatus()
+    public function testGetStatus()
     {
         $type = config('constants.payment_statuses');
 
@@ -123,13 +133,12 @@ class PaymentEventTest extends TestCase
             $this->event->data->object->status = $status;
             $this->assertSame($type, $this->event->getStatus());
         }
-
     }
 
     /**
-     * @testdox Test method method on PaymentEvent Class
+     * @testdox Test get method method on PaymentEvent Class
      */
-    public function testMethod()
+    public function testGetMethod()
     {
         $methodId = $this->eventData()['data']['object']['charges']['data'][0]['payment_method'];
         $method = $this->eventData()['data']['object']['charges']['data'][0]['payment_method_details']['card'];
@@ -140,6 +149,232 @@ class PaymentEventTest extends TestCase
 
         $result = $this->event->getMethod();
         $this->assertEquals($result, $expected);
+    }
+
+    /**
+     * @testdox Test is payment successful method on PaymentEvent Class
+     */
+    public function testIsPaymentSuccessful()
+    {
+        $paymentEvent = new PaymentEvent;
+
+        $paymentEvent->type = PaymentEvent::PAYMENT_SUCCESS;
+        $result = $paymentEvent->isPaymentSuccessful();
+        $this->assertIsBool($result);
+        $this->assertTrue($result);
+
+        $paymentEvent->type = PaymentEvent::PAYMENT_FAILED;
+        $result = $paymentEvent->isPaymentSuccessful();
+        $this->assertIsBool($result);
+        $this->assertFalse($result);
+    }
+
+    /**
+     * @testdox Test get failure data method on PaymentEvent Class
+     */
+    public function testGetFailureData()
+    {
+        $event = $this->eventFailureData();
+        $eventData = $event['data']['object'];
+        $chargesData = $eventData['charges']['data']['0'];
+        unset($eventData['last_payment_error']['payment_method']);
+        $failureData = [
+            'api_version' => $event['api_version'],
+            'status' => $eventData['status'],
+            'failure_code' => $chargesData['failure_code'],
+            'failure_message' => $chargesData['failure_message'],
+            'outcome' => $chargesData['outcome'],
+            'last_payment_error' => $eventData['last_payment_error'],
+        ];
+
+        $paymentEvent = PaymentEvent::constructFrom($event);
+        $result = $paymentEvent->getFailureData();
+        $this->assertEquals($result, $failureData);
+    }
+
+    /**
+     * @testdox Test get failure data method on PaymentEvent Class for 3D Secure auth failure
+     */
+    public function testGetFailureDataFor3dSecure()
+    {
+        $event = $this->eventFailureData();
+        // override event data for 3D secure failure
+        $event['data']['object']['charges']['data'] = [];
+        $event['data']['object']['status'] = 'requires_payment_method';
+        unset($event['data']['object']['last_payment_error']['charge']);
+        unset($event['data']['object']['last_payment_error']['decline_code']);
+        $event['data']['object']['last_payment_error']['code'] = ErrorObject::CODE_PAYMENT_INTENT_AUTHENTICATION_FAILURE;
+        $event['data']['object']['last_payment_error']['message'] = 'The provided PaymentMethod has failed authentication. You can provide payment_method_data or a new PaymentMethod to attempt to fulfill this PaymentIntent again.';
+
+        $eventData = $event['data']['object'];
+
+        unset($eventData['last_payment_error']['payment_method']);
+        $failureData = [
+            'api_version' => $event['api_version'],
+            'status' => $eventData['status'],
+            'failure_code' => null,
+            'failure_message' => null,
+            'outcome' => null,
+            'last_payment_error' => $eventData['last_payment_error'],
+        ];
+
+        $paymentEvent = PaymentEvent::constructFrom($event);
+        $result = $paymentEvent->getFailureData();
+        $this->assertEquals($result, $failureData);
+    }
+
+    /**
+     * Sample failure event data.
+     *
+     * @return array
+     */
+    private function eventFailureData(): array
+    {
+        return [
+            'id' => 'evt_xxxxxxxxxxxxxxxx',
+            'api_version' => '2020-01-01',
+            'type' => 'payment_intent.payment_failed',
+            'data' => [
+                'object' => [
+                    'id' => 'pi_xxxxxxxxxxxxxxxx',
+                    'object' => 'payment_intent',
+                    'charges' => [
+                        'object' => 'list',
+                        'data' => [
+                            [
+                                'id' => 'ch_xxxxxxxxxxxxxxxx',
+                                'object' => 'charge',
+                                'amount' => $this->faker->randomNumber(),
+                                'balance_transaction' => 'txn_xxxxxxxxxxxxxxxx',
+                                'billing_details' => [
+                                    'address' => [
+                                        'city' => $this->faker->city(),
+                                        'country' => $this->faker->country(),
+                                        'line1' => $this->faker->streetAddress(),
+                                        'line2' => $this->faker->secondaryAddress(),
+                                        'postal_code' => $this->faker->postcode(),
+                                        'state' => $this->faker->state(),
+                                    ],
+                                    'email' => $this->faker->email(),
+                                    'name' => $this->faker->name(),
+                                    'phone' => $this->faker->e164PhoneNumber(),
+                                ],
+                                'payment_method' => 'pm_xxxxxxxxxxxxxxxx',
+                                'payment_method_details' => [
+                                    'card' => [
+                                        'brand' => 'visa',
+                                        'checks' => [
+                                            'address_line1_check' => 'pass',
+                                            'address_postal_code_check' => 'pass',
+                                            'cvc_check' => null,
+                                        ],
+                                        'country' => 'US',
+                                        'exp_month' => 12,
+                                        'exp_year' => 2030,
+                                        'fingerprint' => 'xxxxxxxxxxxxxxxx',
+                                        'funding' => 'credit',
+                                        'installments' => null,
+                                        'last4' => '2222',
+                                        'network' => 'visa',
+                                        'three_d_secure' => [
+                                            'authenticated' => false,
+                                            'authentication_flow' => null,
+                                            'result' => 'attempt_acknowledged',
+                                            'result_reason' => null,
+                                            'succeeded' => true,
+                                            'version' => '1.0.2',
+                                        ],
+                                        'wallet' => null,
+                                    ],
+                                    'type' => 'card',
+                                ],
+                                'status' => 'succeeded',
+                                'transfer' => 'tr_xxxxxxxxxxxxxxxx',
+                                'transfer_data' => [
+                                    'amount' => $this->faker->randomNumber(),
+                                    'destination' => 'acct_xxxxxxxxxxxxxxxx',
+                                ],
+                                'failure_code' => 'card_declined',
+                                'failure_message' => 'Your card was declined.',
+                                'outcome' => [
+                                    'network_status' => 'declined_by_network',
+                                    'reason' => 'generic_decline',
+                                    'risk_level' => 'normal',
+                                    'risk_score' => 46,
+                                    'seller_message' => 'The bank did not return any further details with this decline.',
+                                    'type' => 'issuer_declined',
+                                ],
+                            ],
+                        ],
+                        'has_more' => false,
+                        'url' => '/v1/charges?payment_intent=xxxxxxxxxxxxxxxx'
+                    ],
+                    'metadata' => [
+                        'tenant_id' => $this->faker->numberBetween(1000, 9999),
+                        'mission_id' => $this->faker->numberBetween(1000, 9999),
+                        'organization_id' => $this->faker->uuid(),
+                    ],
+                    'last_payment_error' => [
+                        'charge' => 'ch_xxxxxxxxxxxxxxxx',
+                        'code' => 'card_declined',
+                        'decline_code' => 'generic_decline',
+                        'doc_url' => 'https://www.stripe.com/docs/error-codes/card-declined',
+                        'message' => 'Your card was declined.',
+                        'payment_method' => [
+                            'id' => 'pm_xxxxxxxxxxxxxxxx',
+                            'billing_details' => [
+                                'address' => [
+                                    'city' => $this->faker->city(),
+                                    'country' => $this->faker->country(),
+                                    'line1' => $this->faker->streetAddress(),
+                                    'line2' => $this->faker->secondaryAddress(),
+                                    'postal_code' => $this->faker->postcode(),
+                                    'state' => $this->faker->state(),
+                                ],
+                                'email' => $this->faker->email(),
+                                'name' => $this->faker->name(),
+                                'phone' => $this->faker->e164PhoneNumber(),
+                            ],
+                            'card' => [
+                                'brand' => 'visa',
+                                'checks' => [
+                                    'address_line1_check' => null,
+                                    'address_postal_code_check' => null,
+                                    'cvc_check' => null,
+                                ],
+                                'country' => 'US',
+                                'exp_month' => 12,
+                                'exp_year' => 2030,
+                                'fingerprint' => 'xxxxxxxxxxxxxxxx',
+                                'funding' => 'credit',
+                                'last4' => '2222',
+                                'networks' => [
+                                    'available' => [
+                                        'visa',
+                                    ],
+                                ],
+                                'three_d_secure_usage' => [
+                                    'supported' => true,
+                                ],
+                                'wallet' => null,
+                            ],
+                            'created' => $this->faker->unixTime(),
+                            'customer' => null,
+                            'metadata' => [
+                                'tenant_id' => $this->faker->numberBetween(1000, 9999),
+                                'mission_id' => $this->faker->numberBetween(1000, 9999),
+                                'organization_id' => $this->faker->uuid(),
+                            ],
+                            'type' => 'card',
+                        ],
+                        'type' => 'card_error'
+                    ],
+                    'status' => 'requires_payment_method',
+                    'transfer_data' => null,
+                    'transfer_group' => null
+                ]
+            ]
+        ];
     }
 
     /**
@@ -170,13 +405,13 @@ class PaymentEventTest extends TestCase
      *
      * @return array
      */
-    private function eventData()
+    private function eventData(): array
     {
         return [
             'id' => 'evt_00000000000000',
             'type' => 'payment_intent.payment_failed',
             'data' => [
-              	'object' => [
+                'object' => [
                     'id' => 'pi_00000000000000',
                     'object' => 'payment_intent',
                     'charges' => [
@@ -241,9 +476,9 @@ class PaymentEventTest extends TestCase
                         'url' => '/v1/charges?payment_intent=0000000000000000'
                     ],
                     'metadata' => [
-                      'tenant_id' => '34',
-                      'mission_id' => '10',
-                      'organization_id' => '9012929-ASDASD9AA-ASDASD-ASDASD-ASD'
+                        'tenant_id' => '34',
+                        'mission_id' => '10',
+                        'organization_id' => '9012929-ASDASD9AA-ASDASD-ASDASD-ASD'
                     ],
                     'status' => 'requires_payment_method',
                     'transfer_data' => null,
@@ -264,5 +499,4 @@ class PaymentEventTest extends TestCase
     {
         return Mockery::mock($class);
     }
-
 }

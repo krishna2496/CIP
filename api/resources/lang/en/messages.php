@@ -224,6 +224,7 @@ return [
         'MESSAGE_PAYMENT_SUCCESSFULLY_CREATED' => 'Payment successfully created',
         'MISSION_ELIGIBLE_FOR_DONATION' => 'Mission is eligible for donation',
         'MISSION_NOT_ELIGIBLE_FOR_DONATION' => 'Mission is not eligible for donation',
+        'MESSAGE_DONATION_STATISTICS_RETRIEVED' => 'Donation statistics retrieved successfully'
     ],
 
 

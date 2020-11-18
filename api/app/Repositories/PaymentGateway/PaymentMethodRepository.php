@@ -75,17 +75,20 @@ class PaymentMethodRepository
 
     /**
      * @param App\Libraries\PaymentGateway\PaymentGatewayDetailedPaymentMethod
-     * @return void
+     * @return PaymentGatewayPaymentMethod
      */
-    public function create(PaymentGatewayDetailedPaymentMethod $detailedPaymentMethod): void
+    public function create(PaymentGatewayDetailedPaymentMethod $detailedPaymentMethod): PaymentGatewayPaymentMethod
     {
         $paymentMethod = new PaymentGatewayPaymentMethod;
         $paymentMethod->user_id = $detailedPaymentMethod->getUserId();
         $paymentMethod->payment_gateway_payment_method_id = $detailedPaymentMethod->getPaymentGatewayPaymentMethodId();
+
         $type = $detailedPaymentMethod->getPaymentGatewayPaymentMethodType();
         $paymentMethod->payment_gateway_payment_method_type = $type ?: 'card';
         $paymentMethod->payment_gateway = $detailedPaymentMethod->getPaymentGateway();
         $paymentMethod->save();
+
+        return $paymentMethod;
     }
 
     /**
