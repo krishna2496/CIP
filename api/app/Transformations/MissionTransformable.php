@@ -165,7 +165,7 @@ trait MissionTransformable
 
         $mission['mission_rating_count'] = $mission['mission_rating_count'] ?
         round(2* $mission['mission_rating_count'])/2 : 0;
-              
+
         if (!empty($mission['missionSkill']) && (isset($mission['missionSkill']))) {
             $returnData = [];
             foreach ($mission['missionSkill'] as $key => $value) {

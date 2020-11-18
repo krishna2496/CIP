@@ -55,7 +55,11 @@
     "scripts": {
         "post-root-package-install": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
-        ]
+        ],
+        "test": "phpunit"
+    },
+    "scripts-descriptions": {
+        "test": "Run phpunit tests. Just add '--' for phpunit arguments."
     },
     "config": {
         "preferred-install": "dist",
