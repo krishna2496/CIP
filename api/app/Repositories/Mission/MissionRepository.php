@@ -2212,7 +2212,7 @@ class MissionRepository implements MissionInterface
 
         // mission is closed.
         $now = Carbon::now()->toDateTimeString();
-        if ($mission->start_date >= $now || ($mission->end_date && $mission->end_date < $now)) {
+        if ($mission->start_date > $now || ($mission->end_date && $mission->end_date < $now)) {
             return false;
         }
 
