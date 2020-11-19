@@ -183,5 +183,4 @@ class OrganizationRepositoryTest extends TestCase
     {
         return Mockery::mock($class);
     }
-
 }

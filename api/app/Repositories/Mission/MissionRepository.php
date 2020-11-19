@@ -15,14 +15,14 @@ use App\Models\MissionImpactDonation;
 use App\Models\MissionRating;
 use App\Models\MissionTab;
 use App\Repositories\Country\CountryRepository;
+use App\Repositories\Donation\DonationRepository;
+use App\Repositories\ImpactDonationMission\ImpactDonationMissionRepository;
 use App\Repositories\MissionImpact\MissionImpactRepository;
 use App\Repositories\MissionMedia\MissionMediaRepository;
 use App\Repositories\MissionTab\MissionTabRepository;
 use App\Repositories\MissionUnitedNationSDG\MissionUnitedNationSDGRepository;
 use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
-use App\Services\Donation\DonationService;
 use App\Services\Mission\ModelsService;
-use App\Repositories\ImpactDonationMission\ImpactDonationMissionRepository;
 use App\Transformations\AdminMissionTransformable;
 use Carbon\Carbon;
 use DB;
@@ -93,9 +93,9 @@ class MissionRepository implements MissionInterface
     private $missionTabRepository;
 
     /**
-     * @var App\Services\Donation\DonationService
+     * @var App\Repositories\Donation\DonationRepository
      */
-    private $donationService;
+    private $donationRepository;
 
     /**
      * Create a new Mission repository instance.
@@ -125,7 +125,7 @@ class MissionRepository implements MissionInterface
         TenantActivatedSettingRepository $tenantActivatedSettingRepository,
         MissionUnitedNationSDGRepository $missionUnitedNationSDGRepository,
         MissionTabRepository $missionTabRepository,
-        DonationService $donationService
+        DonationRepository $donationRepository
     ) {
         $this->languageHelper = $languageHelper;
         $this->helpers = $helpers;
@@ -138,7 +138,7 @@ class MissionRepository implements MissionInterface
         $this->tenantActivatedSettingRepository = $tenantActivatedSettingRepository;
         $this->missionUnitedNationSDGRepository = $missionUnitedNationSDGRepository;
         $this->missionTabRepository = $missionTabRepository;
-        $this->donationService = $donationService;
+        $this->donationRepository = $donationRepository;
     }
 
     /**
@@ -2212,7 +2212,7 @@ class MissionRepository implements MissionInterface
 
         // mission is closed.
         $now = Carbon::now()->toDateTimeString();
-        if ($mission->start_date >= $now || $mission->end_date < $now) {
+        if ($mission->start_date > $now || ($mission->end_date && $mission->end_date < $now)) {
             return false;
         }
 
@@ -2224,7 +2224,7 @@ class MissionRepository implements MissionInterface
 
         if ($donationAttribute->disable_when_funded) {
             $donationGoalAmount = new Amount($donationAttribute->goal_amount);
-            $totalDonations = $this->donationService->getMissionTotalDonationAmount(
+            $totalDonations = $this->donationRepository->getMissionTotalDonationAmount(
                 $missionId
             );
 

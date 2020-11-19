@@ -13,7 +13,6 @@ use App\Repositories\Organization\OrganizationRepository;
 use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
 use App\Services\PaymentGateway\AccountService;
 use App\Traits\RestExceptionHandlerTrait;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;

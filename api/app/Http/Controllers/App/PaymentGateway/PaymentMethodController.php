@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\App\PaymentGateway;
 
+use App\Events\User\UserActivityLogEvent;
 use App\Exceptions\PaymentGateway\PaymentGatewayException;
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
@@ -187,6 +188,16 @@ class PaymentMethodController extends Controller
                 $paymentMethodId
             );
             $paymentMethod = $this->paymentMethodService->create($detailedPaymentMethod);
+
+            $this->logActions($request, [
+                'id' => $paymentMethod->id,
+                'actions' => config('constants.activity_log_actions.CREATED'),
+                'data' => [
+                    'payment_gateway_payment_method_id' => $request->get('payment_gateway_payment_method_id'),
+                    'payment_gateway' => $request->get('payment_gateway')
+                ]
+            ]);
+
             return $this->responseHelper->success(
                 Response::HTTP_OK,
                 trans('messages.success.MESSAGE_PAYMENT_METHOD_CREATED')
@@ -288,6 +299,29 @@ class PaymentMethodController extends Controller
                     'expire_year' => $request->input('card.expire_year'),
                 ]);
             $paymentMethod = $this->paymentMethodService->update($detailedPaymentMethod);
+
+            $this->logActions($request, [
+                'id' => $id,
+                'actions' => config('constants.activity_log_actions.UPDATED'),
+                'data' => [
+                    'billing' => [
+                        'address_line1' => $request->input('billing.address_line1'),
+                        'address_line2' => $request->input('billing.address_line2'),
+                        'city' => $request->input('billing.city'),
+                        'state' => $request->input('billing.state'),
+                        'postal_code' => $request->input('billing.postal_code'),
+                        'country' => $request->input('billing.country')
+                    ],
+                    'card' => [
+                        'name' => $request->input('card.name'),
+                        'email' => $request->input('card.email'),
+                        'phone' => $request->input('card.phone'),
+                        'expire_month' => $request->input('card.expire_month'),
+                        'expire_year' => $request->input('card.expire_year')
+                    ]
+                ]
+            ]);
+
             return $this->responseHelper->success(
                 Response::HTTP_OK,
                 trans('messages.success.MESSAGE_PAYMENT_METHOD_UPDATED')
@@ -309,6 +343,13 @@ class PaymentMethodController extends Controller
         try {
             $userId = $request->auth->user_id;
             $this->paymentMethodService->delete($userId, $id);
+
+            $this->logActions($request, [
+                'id' => $id,
+                'actions' => config('constants.activity_log_actions.DELETED'),
+                'data' => null
+            ]);
+
             return $this->responseHelper->success(
                 Response::HTTP_OK,
                 trans('messages.success.MESSAGE_PAYMENT_METHOD_DELETED')
@@ -354,5 +395,31 @@ class PaymentMethodController extends Controller
             config('constants.error_codes.ERROR_PAYMENT_METHOD_UNKNOWN_ERROR'),
             $exception->getMessage()
         );
+    }
+
+    /**
+     * Add event user logs
+     *
+     * @param Request $request
+     * @param array $payload
+     *              $payload['actions'] method actions. Ex. (CREATE, UPDATE, DELETE)
+     *              $payload['id'] Object ID processed payment method
+     *              $payload['data'] All endpoint request data (The required data only)
+     *
+     * @return Illuminate\Http\JsonResponse
+     */
+    private function logActions(Request $request, $payload)
+    {
+        // Make activity log
+        event(new UserActivityLogEvent(
+            config('constants.activity_log_types.PAYMENT_METHOD'),
+            $payload['actions'] ?? null,
+            config('constants.activity_log_user_types.REGULAR'),
+            $request->auth->email ?? null,
+            get_class($this),
+            $payload['data'] ?? null,
+            $request->auth->user_id ?? null,
+            $payload['id'] ?? null
+        ));
     }
 }

@@ -164,10 +164,21 @@ class CustomValidationRules
         Validator::extend('max_html_stripped', function($attribute, $value, $params) {
             return strlen(strip_tags($value)) <= $params[0];
         });
+
         Validator::replacer('max_html_stripped',
             function($message, $attribute, $rule, $params) {
                 return str_replace(':max', $params[0], $message);
             }
         );
+
+        Validator::extend('date_range', function ($attribute, $value) {
+            list($from, $to) = explode(':', $value);
+            $startDate = strtotime($from);
+            $endDate = strtotime($to);
+            if ($startDate === false || $endDate === false || $endDate < $startDate) {
+                return false;
+            }
+            return true;
+        });
     }
 }

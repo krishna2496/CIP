@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Http\Controllers\App\PaymentGateway;
 
+use App\Events\User\UserActivityLogEvent;
 use App\Exceptions\PaymentGateway\PaymentGatewayException;
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\App\PaymentGateway\PaymentMethodController;
@@ -234,6 +235,8 @@ class PaymentMethodControllerTest extends TestCase
 
     public function testCreateNoCustomerYetSuccess()
     {
+        $this->expectsEvents(UserActivityLogEvent::class);
+
         $userId = rand(10, 99);
         $paymentMethodId = 'pm_'.base_convert(rand(1e12, 1e14), 10, 36);
 
@@ -296,6 +299,8 @@ class PaymentMethodControllerTest extends TestCase
 
     public function testCreateWithExistingCustomerSuccess()
     {
+        $this->expectsEvents(UserActivityLogEvent::class);
+
         $userId = rand(10, 99);
         $paymentMethodId = 'pm_'.base_convert(rand(1e12, 1e14), 10, 36);
 
@@ -493,6 +498,8 @@ class PaymentMethodControllerTest extends TestCase
 
     public function testUpdateSuccess()
     {
+        $this->expectsEvents(UserActivityLogEvent::class);
+
         $userId = rand(10, 99);
         $id = $this->faker->uuid();
 
@@ -732,6 +739,8 @@ class PaymentMethodControllerTest extends TestCase
 
     public function testDeleteSuccess()
     {
+        $this->expectsEvents(UserActivityLogEvent::class);
+
         $userId = rand(10, 99);
         $id = $this->faker->uuid();
         $this->request->auth->user_id = $userId;

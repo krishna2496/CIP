@@ -11,9 +11,9 @@ use App\Models\DonationAttribute;
 use App\Models\FavouriteMission;
 use App\Models\Mission;
 use App\Models\MissionApplication;
-use App\Models\MissionImpactDonation;
 use App\Models\MissionDocument;
 use App\Models\MissionImpact;
+use App\Models\MissionImpactDonation;
 use App\Models\MissionLanguage;
 use App\Models\MissionRating;
 use App\Models\MissionSkill;
@@ -22,6 +22,7 @@ use App\Models\MissionTabLanguage;
 use App\Models\Organization;
 use App\Models\TimeMission;
 use App\Repositories\Country\CountryRepository;
+use App\Repositories\Donation\DonationRepository;
 use App\Repositories\ImpactDonationMission\ImpactDonationMissionRepository;
 use App\Repositories\Mission\MissionRepository;
 use App\Repositories\MissionImpact\MissionImpactRepository;
@@ -29,7 +30,6 @@ use App\Repositories\MissionMedia\MissionMediaRepository;
 use App\Repositories\MissionTab\MissionTabRepository;
 use App\Repositories\MissionUnitedNationSDG\MissionUnitedNationSDGRepository;
 use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
-use App\Services\Donation\DonationService;
 use App\Services\Mission\ModelsService;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
@@ -246,7 +246,7 @@ class MissionRepositoryTest extends TestCase
         $missionImpactRepository = $this->mock(MissionImpactRepository::class);
         $missionImpactDonation = $this->mock(MissionImpactDonation::class);
         $impactDonationMissionRepository = $this->mock(ImpactDonationMissionRepository::class);
-        $donationService = $this->mock(DonationService::class);
+        $donationRepository = $this->mock(DonationRepository::class);
 
         $organizationObject = factory(Organization::class)->make([
             'organization_id' => $request->organization['organization_id'],
@@ -336,7 +336,7 @@ class MissionRepositoryTest extends TestCase
             $tenantActivatedSettingRepository,
             $missionUnitedNationSDGRepository,
             $missionTabRepository,
-            $donationService
+            $donationRepository
         );
 
         $response = $repository->store($request);
@@ -422,7 +422,7 @@ class MissionRepositoryTest extends TestCase
         $missionImpactDonation = $this->mock(MissionImpactDonation::class);
         $impactDonationMissionRepository = $this->mock(ImpactDonationMissionRepository::class);
         $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
-        $donationService = $this->mock(DonationService::class);
+        $donationRepository = $this->mock(DonationRepository::class);
 
         $modelsService = $this->modelService(
             $mission,
@@ -500,7 +500,7 @@ class MissionRepositoryTest extends TestCase
             $tenantActivatedSettingRepository,
             $missionUnitedNationSDGRepository,
             $missionTabRepository,
-            $donationService
+            $donationRepository
         );
 
         $response = $repository->update($request, $missionId);
@@ -544,7 +544,7 @@ class MissionRepositoryTest extends TestCase
         $missionImpact = $this->mock(MissionImpact::class);
         $missionImpactDonation = $this->mock(MissionImpactDonation::class);
         $impactDonationMissionRepository = $this->mock(ImpactDonationMissionRepository::class);
-        $donationService = $this->mock(DonationService::class);
+        $donationRepository = $this->mock(DonationRepository::class);
 
         $modelService = $this->modelService(
             $mission,
@@ -581,7 +581,7 @@ class MissionRepositoryTest extends TestCase
             $tenantActivatedSettingRepository,
             $missionUnitedNationSDGRepository,
             $missionTabRepository,
-            $donationService
+            $donationRepository
         );
 
         $response = $repository->deleteMissionTabByMissionTabId($missionTabId);
@@ -745,7 +745,7 @@ class MissionRepositoryTest extends TestCase
         $donationAttribute = $this->mock(DonationAttribute::class);
         $missionImpactDonation = $this->mock(MissionImpactDonation::class);
         $impactDonationMissionRepository = $this->mock(ImpactDonationMissionRepository::class);
-        $donationService = $this->mock(DonationService::class);
+        $donationRepository = $this->mock(DonationRepository::class);
 
         $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
         $tenantActivatedSettingRepository->shouldReceive('getAllTenantActivatedSetting')
@@ -783,7 +783,7 @@ class MissionRepositoryTest extends TestCase
             $tenantActivatedSettingRepository,
             $missionUnitedNationSDGRepository,
             $missionTabRepository,
-            $donationService
+            $donationRepository
         )->store($request);
     }
 
@@ -903,7 +903,7 @@ class MissionRepositoryTest extends TestCase
         $donationAttribute = $this->mock(DonationAttribute::class);
         $missionImpactDonation = $this->mock(MissionImpactDonation::class);
         $impactDonationMissionRepository = $this->mock(ImpactDonationMissionRepository::class);
-        $donationService = $this->mock(DonationService::class);
+        $donationRepository = $this->mock(DonationRepository::class);
 
         $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
         $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
@@ -942,7 +942,7 @@ class MissionRepositoryTest extends TestCase
             $tenantActivatedSettingRepository,
             $missionUnitedNationSDGRepository,
             $missionTabRepository,
-            $donationService
+            $donationRepository
         )->update($request, $missionId);
     }
 
@@ -978,7 +978,7 @@ class MissionRepositoryTest extends TestCase
         $missionImpactRepository = $this->mock(MissionImpactRepository::class);
         $impactDonationMissionRepository = $this->mock(ImpactDonationMissionRepository::class);
         $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
-        $donationService = $this->mock(DonationService::class);
+        $donationRepository = $this->mock(DonationRepository::class);
 
         $donationAttribute = (new DonationAttribute)
             ->setAttribute('is_disabled', false)
@@ -1022,7 +1022,7 @@ class MissionRepositoryTest extends TestCase
             ->with($missionId)
             ->andReturn($missionModel);
 
-        $donationService
+        $donationRepository
             ->shouldReceive('getMissionTotalDonationAmount')
             ->once()
             ->with($missionId)
@@ -1040,7 +1040,7 @@ class MissionRepositoryTest extends TestCase
             $tenantActivatedSettingRepository,
             $missionUnitedNationSDGRepository,
             $missionTabRepository,
-            $donationService
+            $donationRepository
         );
 
         $response = $repository->isEligibleForDonation($request, $missionId);
@@ -1109,7 +1109,7 @@ class MissionRepositoryTest extends TestCase
      * @param  App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository $tenantActivatedSettingRepository
      * @param  App\Repositories\MissionMedia\MissionTabRepository $missionTabRepository
      * @param  App\Repositories\MissionMedia\MissionUnitedNationSDGRepository $missionUnitedNationSDGRepository
-     * @param  App\Services\Donation\DonationService $donationService
+     * @param  App\Repositories\Donation\DonationRepository $donationRepository
      * @return void
      */
     private function getRepository(
@@ -1124,7 +1124,7 @@ class MissionRepositoryTest extends TestCase
         TenantActivatedSettingRepository $tenantActivatedSettingRepository,
         MissionUnitedNationSDGRepository $missionUnitedNationSDGRepository,
         MissionTabRepository $missionTabRepository,
-        DonationService $donationService
+        DonationRepository $donationRepository
     ) {
 
         return new MissionRepository(
@@ -1139,7 +1139,7 @@ class MissionRepositoryTest extends TestCase
             $tenantActivatedSettingRepository,
             $missionUnitedNationSDGRepository,
             $missionTabRepository,
-            $donationService
+            $donationRepository
         );
     }
 

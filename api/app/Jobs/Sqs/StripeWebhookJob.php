@@ -7,11 +7,13 @@ use App\Jobs\Job;
 use App\Libraries\PaymentGateway\Stripe\Events\Event;
 use App\Libraries\PaymentGateway\Stripe\Events\PaymentEvent;
 use App\Models\PaymentGateway\Payment;
+use App\Models\PaymentGateway\PaymentFailure;
+use App\Services\PaymentGateway\PaymentFailureService;
 use App\Services\PaymentGateway\PaymentService;
+use DB;
+use Exception;
 use Illuminate\Contracts\Queue\Job as QueueJob;
 use Illuminate\Support\Facades\Log;
-use Exception;
-use DB;
 
 class StripeWebhookJob extends Job
 {
@@ -19,6 +21,11 @@ class StripeWebhookJob extends Job
      * App\Services\PaymentGateway\PaymentService
      */
     private $paymentService;
+
+    /**
+     * App\Services\PaymentGateway\PaymentFailureService
+     */
+    private $paymentFailureService;
 
     /**
      * App\Helpers\Helpers
@@ -29,15 +36,18 @@ class StripeWebhookJob extends Job
      * Create a new job instance.
      *
      * @param App\Services\PaymentGateway\PaymentService $paymentService
+     * @param App\Services\PaymentGateway\PaymentFailureService $paymentFailureService
      * @param App\Helpers\Helpers $helpers
      *
      * @return void
      */
     public function __construct(
         PaymentService $paymentService,
+        PaymentFailureService $paymentFailureService,
         Helpers $helpers
     ) {
         $this->paymentService = $paymentService;
+        $this->paymentFailureService = $paymentFailureService;
         $this->helpers = $helpers;
     }
 
@@ -64,9 +74,10 @@ class StripeWebhookJob extends Job
         $this->helpers->createConnection((int) $tenantId);
 
         switch ($event->type) {
-            case Event::TYPES['PAYMENT_FAILED']:
-            case Event::TYPES['PAYMENT_SUCCESS']:
-                return $this->processPayment($event);
+            case Event::PAYMENT_FAILED:
+                $this->processPaymentFailure($event);
+            case Event::PAYMENT_SUCCESS:
+                $this->processPayment($event);
             break;
             default:
                 throw new Exception('Unsupported event type.');
@@ -82,12 +93,9 @@ class StripeWebhookJob extends Job
      */
     private function processPayment(Event $event)
     {
-        $payment = PaymentEvent::constructFrom(
-            $event->toArray()
-        );
+        $payment = PaymentEvent::constructFrom($event->toArray());
 
-        $paymentMethodDetails = $payment->getCharge('payment_method_details.card');
-        $paymentModel = new Payment();
+        $paymentModel = new Payment;
         $paymentModel
             ->setAttribute('payment_gateway_payment_id', $payment->getData('id'))
             ->setAttribute('status', $payment->getStatus())
@@ -99,7 +107,7 @@ class StripeWebhookJob extends Job
             ->setAttribute('payment_gateway_fee', $payment->getTransaction('fee'));
 
         // Only update billing data when payment success
-        if ($payment->type === Event::TYPES['PAYMENT_SUCCESS']) {
+        if ($payment->isPaymentSuccessful()) {
             $paymentModel
                 ->setAttribute('billing_phone', $payment->getCharge('billing_details.phone'))
                 ->setAttribute('billing_address_line_1', $payment->getCharge('billing_details.address.line1'))
@@ -110,5 +118,23 @@ class StripeWebhookJob extends Job
         };
 
         return $this->paymentService->update($paymentModel);
+    }
+
+    /**
+     * Handles failed stripe payment gateway events
+     *
+     * @param App\Libraries\PaymentGateway\Stripe\Events\Event $event
+     *
+     * @return bool
+     */
+    private function processPaymentFailure(Event $event)
+    {
+        $paymentEvent = PaymentEvent::constructFrom($event->toArray());
+
+        $paymentFailure = (new PaymentFailure)
+            ->setAttribute('payment_gateway_payment_id', $paymentEvent->getData('id'))
+            ->setAttribute('failure_data', $paymentEvent->getFailureData());
+
+        return $this->paymentFailureService->create($paymentFailure);
     }
 }

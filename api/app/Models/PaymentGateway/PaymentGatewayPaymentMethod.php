@@ -27,6 +27,13 @@ class PaymentGatewayPaymentMethod extends Model
     protected $keyType = 'string';
 
     /**
+     * Indicates if the primary key are auto-incrementing.
+     *
+     * @var bool
+     */
+    public $incrementing = false;
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array

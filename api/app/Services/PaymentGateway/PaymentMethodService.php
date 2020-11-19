@@ -8,6 +8,7 @@ use App\Libraries\PaymentGateway\PaymentGatewayInterface;
 use App\Models\PaymentGateway\PaymentGatewayPaymentMethod;
 use App\Repositories\PaymentGateway\PaymentMethodRepository;
 use App\Services\PaymentGateway\CustomerService;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Collection;
 
 class PaymentMethodService
@@ -67,6 +68,11 @@ class PaymentMethodService
         if ($id) {
             // if requested with an id then it will always be a single object
             $paymentMethod = $paymentMethods->first();
+
+            if (!$paymentMethod) {
+                throw new ModelNotFoundException();
+            }
+
             $paymentMethodId = $paymentMethod->getPaymentGatewayPaymentMethodId();
             $externalPaymentMethod = $this->paymentGateway->getPaymentMethod($paymentMethodId);
             $collection->push(
@@ -107,11 +113,11 @@ class PaymentMethodService
 
     /**
      * @param App\Libraries\PaymentGateway\PaymentGatewayDetailedPaymentMethod
-     * @return void
+     * @return PaymentGatewayPaymentMethod
      */
-    public function create(PaymentGatewayDetailedPaymentMethod $detailedPaymentMethod): void
+    public function create(PaymentGatewayDetailedPaymentMethod $detailedPaymentMethod): PaymentGatewayPaymentMethod
     {
-        $this->paymentMethodRepository->create($detailedPaymentMethod);
+        return $this->paymentMethodRepository->create($detailedPaymentMethod);
     }
 
     /**
@@ -126,6 +132,9 @@ class PaymentMethodService
         );
         // inject the payment method id to the DTO
         $paymentMethod = $paymentMethods->first();
+        if (!$paymentMethod) {
+            throw new ModelNotFoundException();
+        }
         $detailedPaymentMethod
             ->setPaymentGatewayPaymentMethodId($paymentMethod->getPaymentGatewayPaymentMethodId())
             ->setPaymentGatewayPaymentMethodType($paymentMethod->getPaymentGatewayPaymentMethodType())
@@ -143,6 +152,9 @@ class PaymentMethodService
     {
         $paymentMethods = $this->paymentMethodRepository->get($userId, $id);
         $paymentMethod = $paymentMethods->first();
+        if (!$paymentMethod) {
+            throw new ModelNotFoundException();
+        }
         $this->paymentGateway->detachCustomerPaymentMethod($paymentMethod->getPaymentGatewayPaymentMethodId());
         $this->paymentMethodRepository->delete($userId, $id);
     }
