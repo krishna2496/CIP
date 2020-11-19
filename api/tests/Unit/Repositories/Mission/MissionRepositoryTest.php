@@ -66,7 +66,7 @@ class MissionRepositoryTest extends TestCase
     private $missionImpactRepository;
     private $missionImpactDonation;
     private $impactDonationMissionRepository;
-    private $donationService;
+    private $donationRepository;
     private $organization;
     private $tenantActivatedSettingRepository;
     private $missionRepository;
@@ -99,7 +99,7 @@ class MissionRepositoryTest extends TestCase
         $this->missionImpactRepository = $this->mock(MissionImpactRepository::class);
         $this->missionImpactDonation = $this->mock(MissionImpactDonation::class);
         $this->impactDonationMissionRepository = $this->mock(ImpactDonationMissionRepository::class);
-        $this->donationService = $this->mock(DonationService::class);
+        $this->donationRepository = $this->mock(DonationRepository::class);
         $this->organization = $this->mock(Organization::class);
         $this->tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
 
@@ -133,7 +133,7 @@ class MissionRepositoryTest extends TestCase
             $this->tenantActivatedSettingRepository,
             $this->missionUnitedNationSDGRepository,
             $this->missionTabRepository,
-            $this->donationService
+            $this->donationRepository
         );
     }
     /**
