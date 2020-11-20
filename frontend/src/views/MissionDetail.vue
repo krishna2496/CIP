@@ -397,7 +397,7 @@
                                                     v-if="missionDetail.description && missionDetail.description.length > 0">
                                                 <div v-for="(section, index) in missionDetail.description" :key=index>
                                                     <h2>{{section.title}}</h2>
-                                                    <p class="mission-description-content" v-html="section.description"></p>
+                                                    <p class="mission-description-content text-break" v-html="section.description"></p>
                                                 </div>
                                             </div>
                                             <div
@@ -453,7 +453,7 @@
                                         </div>
                                         <b-collapse id="organization" accordion="my-accordion" role="tabpanel"
                                                     class="tab-content">
-                                            <div class="organization-detail" v-html="missionDetail.organisation_detail"></div>
+                                            <div class="organization-detail text-break" v-html="missionDetail.organisation_detail"></div>
                                         </b-collapse>
                                     </div>
                                     <div class="tabs" v-if="isCommentDisplay">
