@@ -12,9 +12,11 @@ interface TenantHasSettingInterface
      * Get Settings lists
      *
      * @param int $tenantId
+     * @param array $filters
+     *
      * @return Illuminate\Database\Eloquent\Collection
      */
-    public function getSettingsList(int $tenantId): Collection;
+    public function getSettingsList(int $tenantId, $filters = []): Collection;
 
     /**
      * Create new setting

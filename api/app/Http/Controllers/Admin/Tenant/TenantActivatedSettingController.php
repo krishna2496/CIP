@@ -64,10 +64,6 @@ class TenantActivatedSettingController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $request->merge([
-            'keys' => array_filter($request->get('keys', []))
-        ]);
-
         // Fetch all tenant settings details from super admin
         $tenantSettings = $this->helpers->getAllTenantSetting($request)->keyBy('tenant_setting_id');
         $keys = $tenantSettings
@@ -129,7 +125,7 @@ class TenantActivatedSettingController extends Controller
                 trans('messages.custom_error_message.ERROR_VOLUNTEERING_SHOULD_BE_ENABLED')
             );
         }
-        
+
         try {
             // Store settings
             $response = $this->tenantActivatedSettingRepository->store($request->toArray());
