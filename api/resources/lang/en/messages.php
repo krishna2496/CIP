@@ -23,6 +23,7 @@ return [
         'MESSAGE_USER_LOGGED_IN' => 'You are successfully logged in',
         'MESSAGE_PASSWORD_RESET_LINK_SEND_SUCCESS' => 'Reset password link is sent to your email account. Link will expire in ' . config('constants.FORGOT_PASSWORD_EXPIRY_TIME') . ' hours.',
         'MESSAGE_USER_INVITE_LINK_SEND_SUCCESS' => 'Invite link is sent to the email account.',
+        'MESSAGE_PASSWORD_CHANGE_SUCCESS' => 'Your password has been changed successfully.',
         'MESSAGE_CUSTOM_FIELD_ADDED' => 'User custom field added successfully',
         'MESSAGE_CUSTOM_FIELD_UPDATED' => 'User custom field updated successfully',
         'MESSAGE_CUSTOM_FIELD_FOUND' => 'User custom field found successfully',
