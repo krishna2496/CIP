@@ -350,6 +350,10 @@ class UserControllerTest extends TestCase
         $user->setAttribute('user_id', 1);
         $user->setAttribute('is_profile_complete', 1);
 
+        $tenantActivatedSettingRepository->shouldReceive('checkTenantSettingStatus')
+            ->once()
+            ->andReturn(true);
+
         $errors = new Collection([
             'sample-error message'
         ]);
@@ -439,6 +443,10 @@ class UserControllerTest extends TestCase
         $user->setAttribute('pseudonymize_at', null);
         $user->setAttribute('user_id', 1);
         $user->setAttribute('is_profile_complete', 1);
+
+        $tenantActivatedSettingRepository->shouldReceive('checkTenantSettingStatus')
+            ->once()
+            ->andReturn(false);
 
         $validator = $this->mock(\Illuminate\Validation\Validator::class);
         $validator->shouldReceive('fails')
@@ -548,6 +556,10 @@ class UserControllerTest extends TestCase
         $user->setAttribute('pseudonymize_at', null);
         $user->setAttribute('user_id', 1);
         $user->setAttribute('is_profile_complete', 1);
+
+        $tenantActivatedSettingRepository->shouldReceive('checkTenantSettingStatus')
+            ->once()
+            ->andReturn(false);
 
         $validator = $this->mock(\Illuminate\Validation\Validator::class);
         $validator->shouldReceive('fails')
