@@ -226,7 +226,8 @@ import CustomFieldDropdown from "../components/CustomFieldDropdown";
 import MultiSelect from "../components/MultiSelect";
 import CustomField from "../components/CustomField";
 import store from "../store";
-import PictureInput from '../components/vue-picture-input'
+import PictureInput from '../components/vue-picture-input';
+import { isEmpty } from 'lodash';
 import {
     ModelSelect
 } from 'vue-search-select'
@@ -686,7 +687,11 @@ export default {
             this.saveProfileData.why_i_volunteer = this.profile.whyiVolunteer;
             this.saveProfileData.employee_id = this.profile.employeeId;
             this.saveProfileData.department = this.profile.department;
-            this.saveProfileData.city_id = this.profile.city;
+            if (!isEmpty(this.profile.city_id)) {
+                this.saveProfileData.city_id = this.profile.city;
+            } else {
+                delete this.saveProfileData.city_id;
+            }
             this.saveProfileData.country_id = this.profile.country;
             this.saveProfileData.profile_text = this.profile.profileText;
             this.saveProfileData.linked_in_url = this.profile.linkedInUrl;
