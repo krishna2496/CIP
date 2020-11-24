@@ -313,31 +313,43 @@ class UserController extends Controller
     public function update(Request $request): JsonResponse
     {
         $id = $request->auth->user_id;
-        // Server side validataions
+
+        $rules = [
+            'first_name' => 'required|max:60',
+            'last_name' => 'required|max:60',
+            'employee_id' => [
+                'max:60',
+                'nullable',
+                Rule::unique('user')->ignore($id, 'user_id,deleted_at,NULL')
+            ],
+            'department' => 'max:60',
+            'linked_in_url' => 'url|valid_linkedin_url',
+            'availability_id' => 'integer|exists:availability,availability_id,deleted_at,NULL',
+            'city_id' => 'sometimes|integer|exists:city,city_id,deleted_at,NULL',
+            'country_id' => 'required|integer|exists:country,country_id,deleted_at,NULL',
+            'custom_fields.*.field_id' => 'sometimes|required|exists:user_custom_field,field_id,deleted_at,NULL',
+            'skills' => 'array',
+            'skills.*.skill_id' => 'required_with:skills|integer|exists:skill,skill_id,deleted_at,NULL',
+            'title' => 'max:60',
+            'language_id' => 'sometimes|required',
+            'timezone_id' => 'sometimes|required|exists:timezone,timezone_id,deleted_at,NULL'
+        ];
+
+        $isDonationSettingEnabled = $this->tenantActivatedSettingRepository
+            ->checkTenantSettingStatus(
+                config('constants.tenant_settings.DONATION_MISSION'),
+                $request
+            );
+        if ($isDonationSettingEnabled) {
+            $rules['donation_goal'] = 'required_with:donation_goal_year|integer|min:1|max:99999999';
+            $rules['donation_goal_year'] = 'required_with:donation_goal|integer|digits:4';
+        }
+
         $validator = Validator::make(
             $request->all(),
-            [
-                'first_name' => 'required|max:60',
-                'last_name' => 'required|max:60',
-                'employee_id' => [
-                    'max:60',
-                    'nullable',
-                    Rule::unique('user')->ignore($id, 'user_id,deleted_at,NULL')
-                ],
-                'department' => 'max:60',
-                'linked_in_url' => 'url|valid_linkedin_url',
-                'availability_id' => 'integer|exists:availability,availability_id,deleted_at,NULL',
-                'city_id' => 'sometimes|integer|exists:city,city_id,deleted_at,NULL',
-                'country_id' => 'required|integer|exists:country,country_id,deleted_at,NULL',
-                'custom_fields.*.field_id' => 'sometimes|required|exists:user_custom_field,field_id,deleted_at,NULL',
-                'skills' => 'array',
-                'skills.*.skill_id' => 'required_with:skills|integer|exists:skill,skill_id,deleted_at,NULL',
-                'donation_goal' => 'required_with:donation_goal_year|integer|min:1|max:99999999',
-                'donation_goal_year' => 'required_with:donation_goal|integer|digits:4',
-                'title' => 'max:60'
-            ]
+            $rules
         );
-        
+
         if ($validator->fails()) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
@@ -387,12 +399,6 @@ class UserController extends Controller
         // Update user
         $user = $this->userService->update($data, $id);
         $userData = $this->userRepository->checkProfileCompleteStatus($user->user_id, $request);
-
-        $isDonationSettingEnabled = $this->tenantActivatedSettingRepository
-            ->checkTenantSettingStatus(
-                config('constants.tenant_settings.DONATION_MISSION'),
-                $request
-            );
 
         // Update user skills
         if (!empty($request->skills)) {

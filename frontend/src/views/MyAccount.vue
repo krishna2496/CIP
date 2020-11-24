@@ -346,34 +346,40 @@ export default {
             isDonationSettingEnable: false
         };
     },
-    validations: {
-        profile: {
-            firstName: {
-                required
-            },
-            lastName: {
-                required
-            },
-            linkedInUrl: {
-                validLinkedInUrl(linkedInUrl) {
-                    if (linkedInUrl == '') {
-                        return true
+    validations() {
+        const rules = {
+            profile: {
+                firstName: {
+                    required
+                },
+                lastName: {
+                    required
+                },
+                linkedInUrl: {
+                    validLinkedInUrl(linkedInUrl) {
+                        if (linkedInUrl == '') {
+                            return true
+                        }
+                        // Be sure to match this with the validation in the PHP class CustomValidationRules
+                        const regexp = /^https:\/\/(|[a-z]{2,3}\.)linkedin\.com\/(in|company)\/[-a-z0-9]+(|[\/#\?][^\n]*)$/s;
+                        return (regexp.test(linkedInUrl));
                     }
-                    // Be sure to match this with the validation in the PHP class CustomValidationRules
-                    const regexp = /^https:\/\/(|[a-z]{2,3}\.)linkedin\.com\/(in|company)\/[-a-z0-9]+(|[\/#\?][^\n]*)$/s;
-                    return (regexp.test(linkedInUrl));
+                },
+                country: {
+                    required
                 }
-            },
-            country: {
-                required
-            },
-            amount: {
+            }
+        }
+
+        if (this.isDonationSettingEnable) {
+            rules.profile.amount = {
                 required,
                 numeric
             }
         }
+
+        return rules;
     },
-    updated() {},
     methods: {
         updateCity(value) {
             this.cityDefault = value.selectedVal;
@@ -686,8 +692,12 @@ export default {
             this.saveProfileData.linked_in_url = this.profile.linkedInUrl;
             this.saveProfileData.custom_fields = [];
             this.saveProfileData.skills = [];
-            this.saveProfileData.donation_goal = this.profile.amount,
-                this.saveProfileData.donation_goal_year = this.profile.year
+
+            if (this.isDonationSettingEnable) {
+                this.saveProfileData.donation_goal = this.profile.amount;
+                this.saveProfileData.donation_goal_year = this.profile.year;
+            }
+
             Object.keys(this.returnCustomFeildData).map((key) => {
                 let customValue = this.returnCustomFeildData[key];
                 if (Array.isArray(customValue)) {
