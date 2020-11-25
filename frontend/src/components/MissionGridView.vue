@@ -64,7 +64,6 @@
               <b-card-body>
                 <b-link target="_self" :to="getRedirectUrl(mission.mission_id, mission.mission_type)"
                   class="content-block">
-                  <div class="content-inner-block">
                     <div class="mission-label-wrap">
                       <div class="mission-label volunteer-label" v-if="isDisplayMissionLabel && checkMissionTypeVolunteering(mission.mission_type)">
                         <span :style="{backgroundColor:volunteeringMissionTypeLabels.backgroundColor,}">
@@ -87,322 +86,325 @@
                               alt="donation icon" /></i>{{ donationMissionTypeLabels.label }}</span>
                       </div>
                     </div>
-                    <div class="card-title mb-2" v-if="checkMissionTypeVolunteering(mission.mission_type)">
-                      {{ mission.title | substring(60) }}
-                    </div>
-                    <div class="group-ratings" v-if="
-                        checkMissionTypeTime(mission.mission_type) ||
-                        checkMissionTypeGoal(mission.mission_type)
-                      ">
-                      <star-rating v-if="isStarRatingDisplay" v-bind:increment="0.5" v-bind:max-rating="5"
-                        inactive-color="#dddddd" active-color="#F7D341" v-bind:star-size="18"
-                        :rating="mission.mission_rating_count" :read-only="true">
-                      </star-rating>
-                    </div>
-                    <div class="group-ratings" v-if="checkMissionTypeDonation(mission.mission_type)">
-                      <star-rating v-if="isDonationMissionRatingEnabled" v-bind:increment="0.5" v-bind:max-rating="5"
-                        inactive-color="#dddddd" active-color="#F7D341" v-bind:star-size="18"
-                        :rating="mission.mission_rating_count" :read-only="true">
-                      </star-rating>
-                    </div>
-                    <b-card-text>
-                      {{ mission.short_description | substring(105) }}
-                    </b-card-text>
-                  </div>
-                  <div class="event-block has-progress">
-                    <p class="event-name">
-                      {{ languageData.label.for }}
-                      <span>{{ mission.organisation_name }}</span>
-                    </p>
-
-                    <!-- donation -->
-                    <div class="progress-block detail-column" v-if="
-                        checkMissionTypeDonation(mission.mission_type) &&
-                        mission.donation_attribute &&
-                        mission.donation_attribute.show_donation_meter
-                      ">
-                      <div class="text-wrap">
-                        <b-progress :value="
-                            mission.donation_attribute.donation_amount_raised
-                          " :max="mission.donation_attribute.goal_amount"></b-progress>
-                        <div class="progress-info">
-                          <span class="subtitle-text">
-                            <em>
-                              {{
-                                countDonationPercentage(
-                                  mission.donation_attribute
-                                    .donation_amount_raised,
-                                  mission.donation_attribute.goal_amount
-                                )
-                              }}%
-                            </em>
-                            <em>{{ languageData.label.achieved }}</em>
-                          </span>
-                          <span class="subtitle-text">
-                            <em><b>${{
-                                  mission.donation_attribute.goal_amount
-                                }}</b></em>
-                            <em>{{ languageData.label.goal }}</em>
-                          </span>
+                    <div class="content-inner-block">
+                        <div class="card-title mb-2" v-if="checkMissionTypeVolunteering(mission.mission_type)">
+                        {{ mission.title | substring(60) }}
                         </div>
-                      </div>
+                        <div class="group-ratings" v-if="
+                            checkMissionTypeTime(mission.mission_type) ||
+                            checkMissionTypeGoal(mission.mission_type)
+                        ">
+                        <star-rating v-if="isStarRatingDisplay" v-bind:increment="0.5" v-bind:max-rating="5"
+                            inactive-color="#dddddd" active-color="#F7D341" v-bind:star-size="18"
+                            :rating="mission.mission_rating_count" :read-only="true">
+                        </star-rating>
+                        </div>
+                        <div class="group-ratings" v-if="checkMissionTypeDonation(mission.mission_type)">
+                        <star-rating v-if="isDonationMissionRatingEnabled" v-bind:increment="0.5" v-bind:max-rating="5"
+                            inactive-color="#dddddd" active-color="#F7D341" v-bind:star-size="18"
+                            :rating="mission.mission_rating_count" :read-only="true">
+                        </star-rating>
+                        </div>
+                        <b-card-text>
+                        {{ mission.short_description | substring(105) }}
+                        </b-card-text>
                     </div>
-
-                    <div class="progress-block detail-column success-donate" v-if="
-                        checkMissionTypeDonation(mission.mission_type) &&
-                        mission.donation_attribute &&
-                        !mission.donation_attribute.show_donation_meter
-                      ">
-                      <div class="text-wrap">
-                        <p>
-                          <b class="donate-success" v-if="
-                              mission.donation_attribute.show_donation_count
-                            ">${{
-                              mission.donation_attribute
-                                .donation_amount_raised
-                            }}</b>
-                          <span v-if="
-                              mission.donation_attribute.show_donation_count
-                            ">
-                            {{ languageData.label.raised_by }}</span>
-                          <span v-if="
-                              mission.donation_attribute.show_donors_count &&
-                              mission.donation_attribute.show_donation_count
-                            ">
-                            {{ languageData.label.by }}
-                          </span>
-                          <span v-if="
-                              mission.donation_attribute.show_donors_count
-                            ">{{ mission.donation_attribute.donor_count }}
-                            {{ languageData.label.donors }}</span>
+                    <div class="event-block has-progress">
+                        <p class="event-name">
+                        {{ languageData.label.for }}
+                        <span>{{ mission.organisation_name }}</span>
                         </p>
-                      </div>
-                    </div>
 
-                    <b-button class="like-btn">
-                      <img v-if="mission.is_favourite == 1" :src="
-                          $store.state.imagePath +
-                          '/assets/images/heart-fill-icon.svg'
-                        " alt="Heart Icon" />
-                    </b-button>
-                  </div>
+                        <!-- donation -->
+                        <div class="progress-block detail-column" v-if="
+                            checkMissionTypeDonation(mission.mission_type) &&
+                            mission.donation_attribute &&
+                            mission.donation_attribute.show_donation_meter
+                        ">
+                        <div class="text-wrap">
+                            <b-progress :value="
+                                mission.donation_attribute.donation_amount_raised
+                            " :max="mission.donation_attribute.goal_amount"></b-progress>
+                            <div class="progress-info">
+                            <span class="subtitle-text">
+                                <em>
+                                {{
+                                    countDonationPercentage(
+                                    mission.donation_attribute
+                                        .donation_amount_raised,
+                                    mission.donation_attribute.goal_amount
+                                    )
+                                }}%
+                                </em>
+                                <em>{{ languageData.label.achieved }}</em>
+                            </span>
+                            <span class="subtitle-text">
+                                <em><b>${{
+                                    mission.donation_attribute.goal_amount
+                                    }}</b></em>
+                                <em>{{ languageData.label.goal }}</em>
+                            </span>
+                            </div>
+                        </div>
+                        </div>
+
+                        <div class="progress-block detail-column success-donate" v-if="
+                            checkMissionTypeDonation(mission.mission_type) &&
+                            mission.donation_attribute &&
+                            !mission.donation_attribute.show_donation_meter
+                        ">
+                        <div class="text-wrap">
+                            <p>
+                            <b class="donate-success" v-if="
+                                mission.donation_attribute.show_donation_count
+                                ">${{
+                                mission.donation_attribute
+                                    .donation_amount_raised
+                                }}</b>
+                            <span v-if="
+                                mission.donation_attribute.show_donation_count
+                                ">
+                                {{ languageData.label.raised_by }}</span>
+                            <span v-if="
+                                mission.donation_attribute.show_donors_count &&
+                                mission.donation_attribute.show_donation_count
+                                ">
+                                {{ languageData.label.by }}
+                            </span>
+                            <span v-if="
+                                mission.donation_attribute.show_donors_count
+                                ">{{ mission.donation_attribute.donor_count }}
+                                {{ languageData.label.donors }}</span>
+                            </p>
+                        </div>
+                        </div>
+
+                        <b-button class="like-btn">
+                        <img v-if="mission.is_favourite == 1" :src="
+                            $store.state.imagePath +
+                            '/assets/images/heart-fill-icon.svg'
+                            " alt="Heart Icon" />
+                        </b-button>
+                    </div>
                 </b-link>
                 <div class="init-hidden">
                   <div class="group-details">
-                    <div class="top-strip">
-                      <span>
-                        <!-- Mission type time -->
-                        <template v-if="
-                            checkMissionTypeTime(mission.mission_type) ||
-                            checkMissionTypeDonation(mission.mission_type)
-                          ">
-                          <template v-if="mission.end_date !== null">
-                            {{ languageData.label.from }}
-                            {{ mission.start_date | formatDate }}
-                            {{ languageData.label.until }}
-                            {{ mission.end_date | formatDate }}
-                          </template>
-                          <template v-else>
-                            {{ languageData.label.on_going_opportunities }}
-                          </template>
+                    <div class="content-wrap">
+                        <div class="top-strip">
+                        <span>
+                            <!-- Mission type time -->
+                            <template v-if="
+                                checkMissionTypeTime(mission.mission_type) ||
+                                checkMissionTypeDonation(mission.mission_type)
+                            ">
+                            <template v-if="mission.end_date !== null">
+                                {{ languageData.label.from }}
+                                {{ mission.start_date | formatDate }}
+                                {{ languageData.label.until }}
+                                {{ mission.end_date | formatDate }}
+                            </template>
+                            <template v-else>
+                                {{ languageData.label.on_going_opportunities }}
+                            </template>
+                            </template>
+                            <!-- Mission type goal -->
+                            <template v-else>
+                            <template v-if="mission.objective != ''">
+                                {{ mission.objective }}
+                            </template>
+                            </template>
+                        </span>
+                        </div>
+                        <template v-if="checkMissionTypeTime(mission.mission_type)">
+                        <div class="group-details-inner">
+                            <template v-if="
+                                mission.total_seats != 0 &&
+                                mission.total_seats !== null
+                            ">
+                            <div class="detail-column info-block">
+                                <i class="icon-wrap">
+                                <img :src="
+                                    $store.state.imagePath +
+                                    '/assets/images/user-icon.svg'
+                                    " alt="user" />
+                                </i>
+                                <div class="text-wrap">
+                                <span class="title-text mb-1">{{
+                                    mission.seats_left
+                                }}</span>
+                                <span class="subtitle-text">{{
+                                    languageData.label.seats_left
+                                }}</span>
+                                </div>
+                            </div>
+                            </template>
+
+                            <template v-if="mission.application_deadline != null">
+                            <div class="detail-column info-block">
+                                <i class="icon-wrap">
+                                <img :src="
+                                    $store.state.imagePath +
+                                    '/assets/images/clock.svg'
+                                    " alt="user" />
+                                </i>
+                                <div class="text-wrap">
+                                <span class="title-text mb-1">{{
+                                    mission.application_deadline | formatDate
+                                }}</span>
+                                <span class="subtitle-text">{{
+                                    languageData.label.deadline
+                                }}</span>
+                                </div>
+                            </div>
+                            </template>
+                        </div>
                         </template>
-                        <!-- Mission type goal -->
-                        <template v-else>
-                          <template v-if="mission.objective != ''">
-                            {{ mission.objective }}
-                          </template>
-                        </template>
-                      </span>
-                    </div>
-                    <template v-if="checkMissionTypeTime(mission.mission_type)">
-                      <div class="group-details-inner">
-                        <template v-if="
-                            mission.total_seats != 0 &&
-                            mission.total_seats !== null
-                          ">
-                          <div class="detail-column info-block">
+                        <template v-if="checkMissionTypeGoal(mission.mission_type)">
+                        <div class="group-details-inner volunteer-progress">
+                            <div class="detail-column info-block">
                             <i class="icon-wrap">
-                              <img :src="
-                                  $store.state.imagePath +
-                                  '/assets/images/user-icon.svg'
+                                <img :src="
+                                    $store.state.imagePath +
+                                    '/assets/images/user-icon.svg'
                                 " alt="user" />
                             </i>
                             <div class="text-wrap">
-                              <span class="title-text mb-1">{{
+                                <span class="title-text mb-1">{{
                                 mission.seats_left
-                              }}</span>
-                              <span class="subtitle-text">{{
+                                }}</span>
+                                <span class="subtitle-text">{{
                                 languageData.label.seats_left
-                              }}</span>
+                                }}</span>
                             </div>
-                          </div>
-                        </template>
-
-                        <template v-if="mission.application_deadline != null">
-                          <div class="detail-column info-block">
+                            </div>
+                            <div v-bind:class="{
+                                'progress-bar-block':
+                                mission.total_seats == 0 ||
+                                mission.total_seats === null,
+                                'detail-column': true,
+                                'progress-block': true,
+                            }">
                             <i class="icon-wrap">
-                              <img :src="
-                                  $store.state.imagePath +
-                                  '/assets/images/clock.svg'
+                                <img :src="
+                                    $store.state.imagePath +
+                                    '/assets/images/target-ic.svg'
                                 " alt="user" />
                             </i>
                             <div class="text-wrap">
-                              <span class="title-text mb-1">{{
-                                mission.application_deadline | formatDate
-                              }}</span>
-                              <span class="subtitle-text">{{
-                                languageData.label.deadline
-                              }}</span>
+                                <b-progress :value="mission.achieved_goal | filterGoal" :max="mission.goal_objective">
+                                </b-progress>
+                                <span class="subtitle-text">
+                                {{ mission.achieved_goal }}
+                                <em v-if="mission.label_goal_achieved != ''">
+                                    {{ mission.label_goal_achieved }}
+                                </em>
+                                <em v-else>{{ languageData.label.achieved }}</em>
+                                </span>
                             </div>
-                          </div>
+                            </div>
+                        </div>
                         </template>
-                      </div>
-                    </template>
-                    <template v-if="checkMissionTypeGoal(mission.mission_type)">
-                      <div class="group-details-inner volunteer-progress">
-                        <div class="detail-column info-block">
-                          <i class="icon-wrap">
-                            <img :src="
-                                $store.state.imagePath +
-                                '/assets/images/user-icon.svg'
-                              " alt="user" />
-                          </i>
-                          <div class="text-wrap">
-                            <span class="title-text mb-1">{{
-                              mission.seats_left
-                            }}</span>
-                            <span class="subtitle-text">{{
-                              languageData.label.seats_left
-                            }}</span>
-                          </div>
-                        </div>
-                        <div v-bind:class="{
-                            'progress-bar-block':
-                              mission.total_seats == 0 ||
-                              mission.total_seats === null,
-                            'detail-column': true,
-                            'progress-block': true,
-                          }">
-                          <i class="icon-wrap">
-                            <img :src="
-                                $store.state.imagePath +
-                                '/assets/images/target-ic.svg'
-                              " alt="user" />
-                          </i>
-                          <div class="text-wrap">
-                            <b-progress :value="mission.achieved_goal | filterGoal" :max="mission.goal_objective">
-                            </b-progress>
-                            <span class="subtitle-text">
-                              {{ mission.achieved_goal }}
-                              <em v-if="mission.label_goal_achieved != ''">
-                                {{ mission.label_goal_achieved }}
-                              </em>
-                              <em v-else>{{ languageData.label.achieved }}</em>
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </template>
-                    <template v-if="checkMissionTypeDonation(mission.mission_type)">
-                      <div class="group-details-inner has-progress" v-if="
-                          mission.donation_attribute &&
-                          mission.donation_attribute.show_donation_meter
-                        ">
-                        <div class="detail-column progress-block">
-                          <div class="text-wrap">
-                            <p>
-                              <b v-if="
-                                  mission.donation_attribute.show_donation_count
-                                ">€
-                                {{
-                                  mission.donation_attribute
-                                    .donation_amount_raised
-                                }}</b>
-                              <span v-if="
-                                  mission.donation_attribute.show_donation_count
-                                ">
-                                {{ languageData.label.raised_by }}</span>
-                              <span v-if="
-                                  mission.donation_attribute
-                                    .show_donors_count &&
-                                  mission.donation_attribute.show_donation_count
-                                ">
-                                {{ languageData.label.by }}
-                              </span>
-                              <span v-if="
-                                  mission.donation_attribute.show_donors_count
-                                ">
-                                <b>{{ mission.donation_attribute.donor_count }}
-                                  {{ languageData.label.donors }}</b>
-                              </span>
-                            </p>
-                            <b-progress :value="
-                                mission.donation_attribute
-                                  .donation_amount_raised
-                              " :max="mission.donation_attribute.goal_amount"></b-progress>
-                            <div class="progress-info">
-                              <span class="subtitle-text" v-if="
-                                  mission.donation_attribute
-                                    .show_donation_percentage
-                                ">
-                                {{
-                                  countDonationPercentage(
-                                    mission.donation_attribute
-                                      .donation_amount_raised,
-                                    mission.donation_attribute.goal_amount
-                                  )
-                                }}%
-                                <em>{{ languageData.label.achieved }}</em>
-                              </span>
-                              <span class="subtitle-text" v-if="
-                                  mission.donation_attribute.show_goal_amount
-                                ">
-                                <em>${{
-                                    mission.donation_attribute.goal_amount
-                                  }}</em>
-                                <em>{{ languageData.label.goal }}</em>
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="group-details-inner" v-if="
-                          mission.donation_attribute &&
-                          !mission.donation_attribute.show_donation_meter
-                        ">
-                        <div class="detail-column progress-block donate-success-detail">
-                          <div class="text-wrap">
-                            <p>
-                              <b v-if="
-                                  mission.donation_attribute.show_donation_count
-                                ">€
-                                {{
-                                  mission.donation_attribute
-                                    .donation_amount_raised
-                                }}</b>
-                              <span v-if="
-                                  mission.donation_attribute.show_donation_count
-                                ">
-                                {{ languageData.label.raised_by }}</span>
-                              <span v-if="
-                                  mission.donation_attribute.show_donors_count
-                                ">
-                                {{ languageData.label.by }}
-                              </span>
-                              <span v-if="
-                                  mission.donation_attribute.show_donors_count
-                                ">
+                        <template v-if="checkMissionTypeDonation(mission.mission_type)">
+                        <div class="group-details-inner has-progress" v-if="
+                            mission.donation_attribute &&
+                            mission.donation_attribute.show_donation_meter
+                            ">
+                            <div class="detail-column progress-block">
+                            <div class="text-wrap">
+                                <p>
                                 <b v-if="
+                                    mission.donation_attribute.show_donation_count
+                                    ">€
+                                    {{
+                                    mission.donation_attribute
+                                        .donation_amount_raised
+                                    }}</b>
+                                <span v-if="
+                                    mission.donation_attribute.show_donation_count
+                                    ">
+                                    {{ languageData.label.raised_by }}</span>
+                                <span v-if="
+                                    mission.donation_attribute
+                                        .show_donors_count &&
+                                    mission.donation_attribute.show_donation_count
+                                    ">
+                                    {{ languageData.label.by }}
+                                </span>
+                                <span v-if="
                                     mission.donation_attribute.show_donors_count
-                                  ">{{ mission.donation_attribute.donor_count }}
-                                  {{ languageData.label.donors }}</b>
-                              </span>
-                            </p>
-                          </div>
+                                    ">
+                                    <b>{{ mission.donation_attribute.donor_count }}
+                                    {{ languageData.label.donors }}</b>
+                                </span>
+                                </p>
+                                <b-progress :value="
+                                    mission.donation_attribute
+                                    .donation_amount_raised
+                                " :max="mission.donation_attribute.goal_amount"></b-progress>
+                                <div class="progress-info">
+                                <span class="subtitle-text" v-if="
+                                    mission.donation_attribute
+                                        .show_donation_percentage
+                                    ">
+                                    {{
+                                    countDonationPercentage(
+                                        mission.donation_attribute
+                                        .donation_amount_raised,
+                                        mission.donation_attribute.goal_amount
+                                    )
+                                    }}%
+                                    <em>{{ languageData.label.achieved }}</em>
+                                </span>
+                                <span class="subtitle-text" v-if="
+                                    mission.donation_attribute.show_goal_amount
+                                    ">
+                                    <em>${{
+                                        mission.donation_attribute.goal_amount
+                                    }}</em>
+                                    <em>{{ languageData.label.goal }}</em>
+                                </span>
+                                </div>
+                            </div>
+                            </div>
                         </div>
-                      </div>
-                    </template>
+
+                        <div class="group-details-inner" v-if="
+                            mission.donation_attribute &&
+                            !mission.donation_attribute.show_donation_meter
+                            ">
+                            <div class="detail-column progress-block donate-success-detail">
+                            <div class="text-wrap">
+                                <p>
+                                <b v-if="
+                                    mission.donation_attribute.show_donation_count
+                                    ">€
+                                    {{
+                                    mission.donation_attribute
+                                        .donation_amount_raised
+                                    }}</b>
+                                <span v-if="
+                                    mission.donation_attribute.show_donation_count
+                                    ">
+                                    {{ languageData.label.raised_by }}</span>
+                                <span v-if="
+                                    mission.donation_attribute.show_donors_count
+                                    ">
+                                    {{ languageData.label.by }}
+                                </span>
+                                <span v-if="
+                                    mission.donation_attribute.show_donors_count
+                                    ">
+                                    <b v-if="
+                                        mission.donation_attribute.show_donors_count
+                                    ">{{ mission.donation_attribute.donor_count }}
+                                    {{ languageData.label.donors }}</b>
+                                </span>
+                                </p>
+                            </div>
+                            </div>
+                        </div>
+                        </template>
+                    </div>
                   </div>
                   <div class="card-action-block">
                     <div class="left-btn">
