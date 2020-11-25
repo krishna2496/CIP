@@ -31,9 +31,9 @@ class UpdateUserLanguageId
                     $userIds = $users->pluck('user_id')->toArray();
                     $updated = $this->updateUsersLanguage($userIds, $tenant->language_id);
                     if ($updated) {
-                        $processed['success'][$tenant->language_id] = $userIds;
+                        $processed['success'][$tenant->tenant_id] = $userIds;
                     } else {
-                        $processed['failed'][$tenant->language_id] = $userIds;
+                        $processed['failed'][$tenant->tenant_id] = $userIds;
                     }
                 }
             }
