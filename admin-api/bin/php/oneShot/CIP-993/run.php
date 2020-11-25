@@ -48,10 +48,8 @@ class UpdateUserLanguageId extends OneShot
         $this->writeLn();
         foreach ($processed as $status => $items) {
             $this->writeLn('%s items:', ucfirst($status));
-            $this->writeLn();
             foreach ($items as $tenantId => $userIds) {
-                $this->writeLn('Tenant ID: %s', $tenantId);
-                $this->writeLn('User IDs: %s', implode(', ', $userIds));
+                $this->writeLn('From TenantID %d: %d users processed.', $tenantId, count($userIds));
             }
         }
     }
