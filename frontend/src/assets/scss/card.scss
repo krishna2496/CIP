@@ -45,20 +45,20 @@
         }
 
         /*.icon-btn {
-			i {
-			  @include transformX(4px);
+            i {
+              @include transformX(4px);
   
-			  svg {
-				fill: $white;
-			  }
-			}
-			&:active:focus,
-			&:hover:focus {
-			  svg {
-				fill: $white;
-			  }
-			}
-		  }*/
+              svg {
+                fill: $white;
+              }
+            }
+            &:active:focus,
+            &:hover:focus {
+              svg {
+                fill: $white;
+              }
+            }
+          }*/
       }
     }
     .card-header {
@@ -1112,7 +1112,7 @@
       &:hover {
         .card-action-block {
           .btn-wrap {
-            .icon-btn {
+            .icon-btn:not(.gray-btn) {
               background: $white;
               color: $primary;
               border-color: $primary;
