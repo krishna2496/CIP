@@ -897,7 +897,11 @@
 
       getMissionDetail() {
         if (this.$route.params.misisonId) {
-          missionDetail(this.$route.params.misisonId).then(response => {
+          const requestParams = {
+            'mission_id': this.$route.params.misisonId,
+            'donation_mission': false
+          }
+          missionDetail(requestParams).then(response => {
             this.isShownMediaComponent = true;
             if (response.error == false) {
               if (response.data[0]) {
