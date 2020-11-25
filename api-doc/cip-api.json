@@ -30,6 +30,9 @@
       "name": "User skills"
     },
     {
+      "name": "User setting"
+    },
+    {
       "name": "Theme management"
     },
     {
@@ -2814,61 +2817,6 @@
           },
           "401": {
             "description": "Unauthorized - Invalid token"
-          }
-        }
-      }
-    },
-    "/app/change-password": {
-      "patch": {
-        "operationId": "PUT_team4-cip-api-change-password",
-        "summary": "App - Change password (Milestone - 3)",
-        "description": "User can change password from user profile edit page from platform",
-        "tags": [
-          "User"
-        ],
-        "consumes": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "token",
-            "in": "header",
-            "required": true,
-            "type": "string",
-            "default": ""
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "old_password": {
-                  "type": "string"
-                },
-                "password": {
-                  "type": "string"
-                },
-                "confirm_password": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized - Invalid token"
-          },
-          "422": {
-            "description": "Invalid input"
-          },
-          "502": {
-            "description": "Bad Gateway - Database operational error"
           }
         }
       }
@@ -9044,9 +8992,9 @@
       "post": {
         "operationId": "POST-cip-api-user-setting",
         "summary": "App - Post user settings",
-        "description": "Logged in user can save user privacy and preference settings",
+        "description": "Logged in users can change password and update their profile settings",
         "tags": [
-          "Setting"
+          "User setting"
         ],
         "consumes": [
           "application/json"
@@ -9054,7 +9002,7 @@
         "parameters": [
           {
             "name": "token",
-            "in": "header",
+            "in": "cookie",
             "required": true,
             "type": "string",
             "default": ""
@@ -9089,6 +9037,9 @@
           }
         ],
         "responses": {
+          "200": {
+            "description": "User profile settings updated successfully"
+          },
           "400": {
             "description": "Bad request"
           },
@@ -9100,9 +9051,9 @@
       "get": {
         "operationId": "GET-cip-api-user-setting",
         "summary": "App - Get user settings",
-        "description": "Logged in user can get user privacy and preference settings",
+        "description": "Logged in users can retrieve their profile settings",
         "tags": [
-          "Setting"
+          "User setting"
         ],
         "consumes": [
           "application/json"
@@ -9110,13 +9061,16 @@
         "parameters": [
           {
             "name": "token",
-            "in": "header",
+            "in": "cookie",
             "required": true,
             "type": "string",
             "default": ""
           }
         ],
         "responses": {
+          "200": {
+            "description": "User profile settings retrieved successfully"
+          },
           "400": {
             "description": "Bad request"
           },
