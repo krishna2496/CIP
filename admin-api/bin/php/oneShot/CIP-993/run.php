@@ -1,31 +1,24 @@
 <?php
 
-require_once('bootstrap/app.php');
+require_once(__DIR__.'/../OneShot.php');
 
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
+use optimy\console\OneShot;
 
-class UpdateUserLanguageId
+class UpdateUserLanguageId extends OneShot
 {
-    private $db;
-
-    public function __construct()
-    {
-        $this->db = app()->make('db');
-    }
-
     /**
-     * Run on shot script
+     * Start on shot script
      */
-    public function run()
+    public function start()
     {
         $tenants = $this->getTenantsDefaultLanguages();
         DB::transaction(function () use ($tenants) {
             $processed = [];
             foreach ($tenants as $tenant) {
                 // Set connection for the tenant
-                $this->createConnection($tenant->tenant_id);
+                $this->connectTenantDb($tenant->tenant_id);
                 $users = $this->getTenantUsersWithoutLanguage();
                 if (!$users->isEmpty()) {
                     $userIds = $users->pluck('user_id')->toArray();
@@ -50,12 +43,15 @@ class UpdateUserLanguageId
      */
     private function logProcess(array $processed)
     {
-        echo "\nDone updating tenants users with empty language id.\n";
+        $this->writeLn();
+        $this->writeLn('Done updating tenants users with empty language id.');
+        $this->writeLn();
         foreach ($processed as $status => $items) {
-            echo "\n".ucfirst($status)." items:\n";
+            $this->writeLn('%s items:', ucfirst($status));
+            $this->writeLn();
             foreach ($items as $tenantId => $userIds) {
-                echo "\nTenant ID: $tenantId\n";
-                echo "User IDs: ".implode(', ', $userIds)."\n\n";
+                $this->writeLn('Tenant ID: %s', $tenantId);
+                $this->writeLn('User IDs: %s', implode(', ', $userIds));
             }
         }
     }
@@ -70,7 +66,7 @@ class UpdateUserLanguageId
      */
     private function updateUsersLanguage(array $ids, $languageId): bool
     {
-        return DB::table('user AS u')
+        return $this->getDbTable('user AS u')
             ->whereIn('u.user_id', $ids)
             ->update([
                 'language_id' => $languageId
@@ -84,11 +80,12 @@ class UpdateUserLanguageId
      */
     private function getTenantUsersWithoutLanguage(): Collection
     {
-        return DB::table('user AS u')
+        return $this->getDbTable('user AS u')
             ->selectRaw('
                 u.user_id
             ')
             ->whereNull('u.language_id')
+            ->whereNull('u.deleted_at')
             ->get();
     }
 
@@ -99,36 +96,20 @@ class UpdateUserLanguageId
      */
     private function getTenantsDefaultLanguages(): Collection
     {
-        return DB::table('tenant AS t')
+        return $this->getDbTable('tenant AS t')
             ->selectRaw('
                 t.tenant_id,
                 tl.language_id
             ')
             ->join('tenant_language AS tl', function ($join) {
                 $join->on('tl.tenant_id', '=', 't.tenant_id')
-                    ->where('tl.default', '1');
+                    ->where('tl.default', '1')
+                    ->whereNull('tl.deleted_at');
             })
+            ->whereNull('t.deleted_at')
             ->get();
-    }
-
-    /**
-     * Create database connection runtime
-     *
-     * @param int $tenantId
-     */
-    private function createConnection(int $tenantId)
-    {
-        $this->db->purge('tenant');
-        Config::set('database.connections.tenant', array(
-            'driver' => 'mysql',
-            'host' => env('DB_HOST'),
-            'database' => 'ci_tenant_' . $tenantId,
-            'username' => env('DB_USERNAME'),
-            'password' => env('DB_PASSWORD'),
-        ));
-        // Set default database
-        Config::set('database.default', 'tenant');
     }
 }
 
-return (new UpdateUserLanguageId())->run();
+$cli = $app->make(UpdateUserLanguageId::class);
+$cli->start();
