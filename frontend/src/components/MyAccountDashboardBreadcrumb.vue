@@ -105,9 +105,7 @@ export default {
     if (this.$route.path == '/setting') {
       this.isSettingActive = true
     }
-    if (store.state.isProfileComplete != 1) {
-      this.isUserProfileComplete = 0;
-    }
+    this.isUserProfileComplete = store.state.isProfileComplete;
   }
 };
 </script>
