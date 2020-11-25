@@ -1090,6 +1090,15 @@ class UserControllerTest extends TestCase
             ->with('Europe/Paris')
             ->andReturn($timezone);
 
+        $languageHelper = $this->mock(LanguageHelper::class);
+        $languageHelper
+            ->shouldReceive('getDefaultTenantLanguage')
+            ->once()
+            ->with($request)
+            ->andReturn((object) [
+                'language_id' => $exceptData['language_id']
+            ]);
+
         $validator = $this->mock(\Illuminate\Validation\Validator::class);
         $validator->shouldReceive('fails')
             ->andReturn(false);
@@ -1134,7 +1143,6 @@ class UserControllerTest extends TestCase
             ->andReturn($jsonResponse);
         $notificationRepository = $this->mock(NotificationRepository::class);
 
-        $languageHelper = $this->mock(LanguageHelper::class);
         $userRepository = $this->mock(UserRepository::class);
         $userRepository
             ->shouldReceive('checkProfileCompleteStatus')

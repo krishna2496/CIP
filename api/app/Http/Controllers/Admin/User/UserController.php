@@ -253,7 +253,7 @@ class UserController extends Controller
         if ($validation !== true) {
             return $validation;
         }
-        
+
         if (isset($request->language_id) && !$this->languageHelper->validateLanguageId($request)) {
             return $this->responseHelper->error(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
@@ -267,6 +267,12 @@ class UserController extends Controller
             $defaultTimezone = env('DEFAULT_TIMEZONE', 'Europe/Paris');
             $timezone = $this->timezoneRepository->getTenantTimezoneByCode($defaultTimezone);
             $request->merge(['timezone_id' => $timezone->timezone_id]);
+        }
+
+        // If language is not on the request data set the tenant default language
+        if (!isset($request->language_id)) {
+            $defaultLanguage = $this->languageHelper->getDefaultTenantLanguage($request);
+            $request->merge(['language_id' => $defaultLanguage->language_id]);
         }
 
         $request->merge([
