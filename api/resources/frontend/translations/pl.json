@@ -408,6 +408,9 @@
 		"donation_goal_required": "Wymagana jest kwota docelowa darowizny.",
 		"valid_donation_goal": "Proszę wpisać prawidłową kwotę bramki darowizny."
 	},
+	"messages": {
+		"setting_update_success": "Ustawienia użytkownika zostały pomyślnie zaktualizowane."
+	},
 	"export_timesheet_file_names": {
 		"PENDING_TIME_MISSION_ENTRIES_XLSX": "Pending_Time_Mission_Entries.xls",
 		"PENTIND_GOAL_MISSION_ENTRIES_XLSX": "Pending_Goal_Mission_Entries.xls",

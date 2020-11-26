@@ -408,6 +408,9 @@
 		"donation_goal_required": "O valor da meta de doação é necessário.",
 		"valid_donation_goal": "Por favor, digite um valor válido para a meta de doação."
 	},
+	"messages": {
+		"setting_update_success": "Configuração do usuário atualizada com sucesso."
+	},
 	"export_timesheet_file_names": {
 		"PENDING_TIME_MISSION_ENTRIES_XLSX": "Pending_Time_Mission_Entries.xls",
 		"PENTIND_GOAL_MISSION_ENTRIES_XLSX": "Pending_Time_Mission_Entries.xls",

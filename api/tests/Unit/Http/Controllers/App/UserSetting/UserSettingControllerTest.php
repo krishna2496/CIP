@@ -74,7 +74,7 @@ class UserSettingControllerTest extends TestCase
 
         $tenantActivatedSettingRepository->shouldReceive('checkTenantSettingStatus')
             ->once()
-            ->andReturn(false);
+            ->andReturn(true);
 
         $helpers->shouldReceive('getTenantIdAndSponsorIdFromRequest')
             ->once()
@@ -301,10 +301,10 @@ class UserSettingControllerTest extends TestCase
             'tenant_id' => 1
         ];
 
+        // should not update user's currency if donation tenant setting is disabled
         $usersData = [
             'language_id' => 1,
             'timezone_id' => 1,
-            'currency' => 'INR',
         ];
 
         $userSettingController = new UserSettingController(

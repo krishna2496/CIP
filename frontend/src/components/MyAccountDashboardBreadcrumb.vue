@@ -1,6 +1,6 @@
 <template>
 <div>
-    <ul class="profile-navs">
+    <ul class="profile-navs" v-if="isUserProfileComplete">
         <li v-bind:class="{ active: isProfileActive }">
             <b-link href="#" :title="languageData.label.profile" @click="redirectToPage('my-account')">
                 <i class="profile-icon">
@@ -43,6 +43,7 @@ export default {
   name: 'Breadcrumb',
   data() {
     return {
+      isUserProfileComplete: 1,
       languageData: [],
       timeList: [],
       selectTimeZone: '',
@@ -104,6 +105,7 @@ export default {
     if (this.$route.path == '/setting') {
       this.isSettingActive = true
     }
+    this.isUserProfileComplete = store.state.isProfileComplete;
   }
 };
 </script>

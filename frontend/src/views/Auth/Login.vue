@@ -218,7 +218,7 @@
             }
             this.$router.replace({
               name: 'home'
-            });
+            }).catch(() => {});
           }
         });
       },
