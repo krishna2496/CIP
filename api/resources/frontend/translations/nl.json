@@ -408,6 +408,9 @@
 		"donation_goal_required": "Donatiedoelbedrag is vereist.",
 		"valid_donation_goal": "Voer een geldig donatiedoelbedrag in."
 	},
+	"messages": {
+		"setting_update_success": "Gebruikersinstelling succesvol bijgewerkt."
+	},
 	"export_timesheet_file_names": {
 		"PENDING_TIME_MISSION_ENTRIES_XLSX": "Pending_Time_Mission_Entries.xls",
 		"PENTIND_GOAL_MISSION_ENTRIES_XLSX": "Pending_Goal_Mission_Entries.xls",

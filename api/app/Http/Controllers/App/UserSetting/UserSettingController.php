@@ -118,8 +118,13 @@ class UserSettingController extends Controller
         if ($isDonationSettingEnabled) {
             $validatorArray['currency'] = 'required|regex:/^[A-Z]{3}$/';
         }
-        $validator = Validator::make($request->toArray(), $validatorArray, 
-        ['password.regex' => trans('messages.custom_error_message.ERROR_PASSWORD_VALIDATION_MESSAGE')]);
+        $validator = Validator::make(
+            $request->toArray(),
+            $validatorArray,
+            [
+                'password.regex' => trans('messages.custom_error_message.ERROR_PASSWORD_VALIDATION_MESSAGE')
+            ]
+        );
 
         if ($validator->fails()) {
             return $this->responseHelper->error(
@@ -129,7 +134,7 @@ class UserSettingController extends Controller
                 $validator->errors()->first()
             );
         }
-        
+
         $apiData = [];
         if (!empty($request->old_password) && !empty($request->auth->password)) {
             $isValidOldPassword = Hash::check($request->old_password, $request->auth->password);
@@ -148,7 +153,7 @@ class UserSettingController extends Controller
             // Get new token
             $tenantName = $this->helpers->getSubDomainFromRequest($request);
             $newToken = ($passwordChange) ? $this->helpers->getJwtToken($request->auth->user_id, $tenantName) : '';
-            
+
             // As we don't use HTTPS on the local stack, it's not possible to use secured cookies on this environment
             $isSecuredCookie = config('app.env') !== 'local';
 
@@ -169,9 +174,12 @@ class UserSettingController extends Controller
 
         $userData = [
             'language_id' => $request->get('language_id'),
-            'timezone_id' => $request->get('timezone_id'),
-            'currency' => $request->get('currency'),
+            'timezone_id' => $request->get('timezone_id')
         ];
+
+        if ($isDonationSettingEnabled) {
+            $userData['currency'] = $request->get('currency');
+        }
 
         // Update language, timezone and currency data
         $this->userSettingRepository->saveUserData($request->auth->user_id, $userData);
@@ -216,7 +224,7 @@ class UserSettingController extends Controller
         $apiData['currencies'] = $getTenantCurrency->toArray();
         $userData = $this->userRepository->findUserDetail($userId);
         $apiData['linked_in_url'] = $userData['linked_in_url'];
-        
+
         // Send response
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_SETTING_LISTING');

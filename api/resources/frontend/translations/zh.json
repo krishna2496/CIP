@@ -408,6 +408,9 @@
 		"donation_goal_required": "捐款目标金额是必需的。",
 		"valid_donation_goal": "请输入有效的捐款目标金额。"
 	},
+	"messages": {
+		"setting_update_success": "用户设置更新成功。"
+	},
 	"export_timesheet_file_names": {
 		"PENDING_TIME_MISSION_ENTRIES_XLSX": "Pending_Time_Mission_Entries.xls",
 		"PENTIND_GOAL_MISSION_ENTRIES_XLSX": "Pending_Goal_Mission_Entries.xls",

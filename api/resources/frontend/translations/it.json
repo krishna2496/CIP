@@ -408,6 +408,9 @@
 		"donation_goal_required": "È richiesto l'importo dell'obiettivo della donazione.",
 		"valid_donation_goal": "Inserire un obiettivo di donazione valido."
 	},
+	"messages": {
+		"setting_update_success": "L'impostazione dell'utente è stata aggiornata con successo."
+	},
 	"export_timesheet_file_names": {
 		"PENDING_TIME_MISSION_ENTRIES_XLSX": "Pending_Time_Mission_Entries.xls",
 		"PENTIND_GOAL_MISSION_ENTRIES_XLSX": "Pending_Goal_Mission_Entries.xls",

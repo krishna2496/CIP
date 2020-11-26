@@ -48,26 +48,6 @@
                 </b-col>
                 <b-col xl="9" lg="8" md="12" class="profile-form-wrap">
                     <b-form class="profile-form">
-                        <!-- <b-row class="row-form">
-                            <b-col cols="12">
-                                <h2 class="title-with-border">
-                                    <span>{{languageData.label.privacy}}</span>
-                                </h2>
-                            </b-col>
-                            <b-col cols="12">
-                                <b-form-group class="checkbox-group-wrap">
-                                    <div class="site-checkbox">
-                                        <b-form-checkbox class="custom-control-input" v-model="is_profile_visible">{{languageData.label.allow_all_my}} <strong>{{languageData.label.co_workers}} </strong>{{languageData.label.to_see_my_profile}}
-                                        </b-form-checkbox>
-                                    </div>
-                                    <div class="site-checkbox">
-                                        <b-form-checkbox class="custom-control-input" v-model="public_avatar_and_linkedin">{{languageData.label.allow}} <strong>{{languageData.label.public}} </strong>
-                                            {{languageData.label.fundraisers_and_funds_to_view_avatar_and_my_linkedin}}
-                                        </b-form-checkbox>
-                                    </div>
-                                </b-form-group>
-                            </b-col>
-                        </b-row> -->
                         <b-row class="row-form">
                             <b-col cols="12">
                                 <h2 class="title-with-border">
@@ -80,7 +60,16 @@
                             <b-col md="6">
                                 <b-form-group>
                                     <label for>{{languageData.label.current_password}}</label>
-                                    <b-form-input id type="password" ref="oldPassword" v-model.trim="oldPassword"  :placeholder="languageData.placeholder.old_password"></b-form-input>
+                                    <b-form-input id
+                                        type="password"
+                                        ref="oldPassword"
+                                        :class="{ 'is-invalid': $v.oldPassword.$error }"
+                                        v-model.trim="oldPassword"
+                                        :placeholder="languageData.placeholder.old_password">
+                                    </b-form-input>
+                                    <div v-if="!$v.oldPassword.required" class="invalid-feedback">
+                                        {{ languageData.errors.field_is_required }}
+                                    </div>
                                 </b-form-group>
                             </b-col>
                             <b-col md="6"></b-col>
@@ -88,11 +77,29 @@
                                 <b-form-group>
                                     <label for>{{languageData.label.new_password}}
                                     </label>
-                                    <b-form-input id type="password" v-model.trim="newPassword" :class="{ 'is-invalid': $v.newPassword.$error }" :placeholder="languageData.placeholder.new_password"></b-form-input>
-                                    <div v-if="!$v.newPassword.required" class="invalid-feedback">
-                                        {{ languageData.errors.field_is_required }}</div>
-                                    <div v-if="!$v.newPassword.minLength" class="invalid-feedback">
-                                        {{ languageData.errors.invalid_password }}</div>
+                                    <b-form-input id
+                                        type="password"
+                                        v-model.trim="newPassword"
+                                        :class="{ 'is-invalid': $v.newPassword.$error }"
+                                        :placeholder="languageData.placeholder.new_password">
+                                    </b-form-input>
+                                    <div v-if="$v.newPassword.$error" class="invalid-feedback">
+                                        <template v-if="!$v.newPassword.required">
+                                            {{ languageData.errors.field_is_required }}
+                                        </template>
+                                        <template v-else-if="!$v.newPassword.minLength">
+                                            {{ languageData.errors.invalid_password }}
+                                        </template>
+                                        <template v-else-if="!$v.newPassword.containsUpperCase">
+                                            {{ languageData.errors.password_should_contain_uppercase }}
+                                        </template>
+                                        <template v-else-if="!$v.newPassword.containsLowerCase">
+                                            {{ languageData.errors.password_should_contain_lowercase }}
+                                        </template>
+                                        <template v-else-if="!$v.newPassword.containsNumber">
+                                            {{ languageData.errors.password_should_contain_numbers }}
+                                        </template>
+                                    </div>
                                 </b-form-group>
                             </b-col>
                             <b-col md="6"></b-col>
@@ -274,32 +281,46 @@ export default {
             isDonationSettingEnable : false
         };
     },
-    validations: {
-        newPassword: {
-            required : requiredIf(function(model) {
-                if(model.oldPassword != '') {
-                    return true
-                } else {
-                    return false
+    validations() {
+        const rules = {
+            oldPassword: {
+                required : requiredIf(function(model) {
+                    return model.newPassword != ''
+                }),
+            },
+            newPassword: {
+                required : requiredIf(function(model) {
+                    return model.oldPassword != ''
+                }),
+                minLength: minLength(constants.PASSWORD_MIN_LENGTH),
+                containsUpperCase: function(value) {
+                    return value === '' || /(?=.*[A-Z])/.test(value);
+                },
+                containsLowerCase: function(value) {
+                    return value === '' || /(?=.*[a-z])/.test(value);
+                },
+                containsNumber: function(value) {
+                    return value === '' || /(?=.*[0-9])/.test(value);
                 }
-            }),
-            minLength: minLength(constants.PASSWORD_MIN_LENGTH)
-        },
-        confirmPassword: {
-            sameAsPassword: sameAs('newPassword')
-        },
-        language: {
-            required
-        },
-        time: {
-            required
-        },
-        currency: {
-            required
-        }
-    },
-    updated() {
+            },
+            confirmPassword: {
+                sameAsPassword: sameAs('newPassword')
+            },
+            language: {
+                required
+            },
+            time: {
+                required
+            },
+        };
 
+        if (this.isDonationSettingEnable) {
+            rules.currency = {
+                required
+            };
+        }
+
+        return rules;
     },
     methods: {
         updateLang(value) {
@@ -361,23 +382,33 @@ export default {
             this.saveProfileData.public_avatar_and_linkedin = this.public_avatar_and_linkedin;
             this.saveProfileData.language_id = this.language;
             this.saveProfileData.timezone_id = this.time;
-            this.saveProfileData.currency = this.currency;
+
+            if (this.isDonationSettingEnable) {
+                this.saveProfileData.currency = this.currency;
+            } else {
+                delete this.saveProfileData.currency;
+            }
 
             // Call to save profile service
             submitSetting(this.saveProfileData).then(response => {
                 if (response.error == true) {
-                    this.makeToast("danger", response.message);
+                    this.makeToast('danger', response.message);
                 } else {
                     store.commit('setDefaultLanguageCode', this.languageCode)
                     this.showPage = false;
                     this.getSettingListing().then(() => {
                         this.showPage = true;
-                        this.oldPassword = "",
-                        this.newPassword = "",
-                        this.confirmPassword = "",
+                        this.oldPassword = '';
+                        this.newPassword = '';
+                        this.confirmPassword = '';
+                        this.saveProfileData.password = '';
+                        this.saveProfileData.confirm_password = '';
+                        this.saveProfileData.old_password = '';
+                        this.$v.$reset();
+
                         loadLocaleMessages(this.languageCode).then(() => {
                             this.languageData = JSON.parse(store.state.languageLabel);
-                            this.makeToast("success", response.message);
+                            this.makeToast('success', this.languageData.messages.setting_update_success);
                             this.componentKey += 1;
                             this.isShownComponent = true;
                         });
