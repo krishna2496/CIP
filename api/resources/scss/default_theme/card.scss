@@ -570,7 +570,7 @@
       }
       .group-details-inner {
         display: flex;
-        flex: 1;
+        flex: 0 0 100%;
         -ms-flex: 1;
         .detail-column {
           &.donate-success-detail {
