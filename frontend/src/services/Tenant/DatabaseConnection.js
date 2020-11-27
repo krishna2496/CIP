@@ -179,6 +179,12 @@ export default async (langList, defautLang) => {
                 store.commit('customLoginText', JSON.stringify(false));
             }
 
+            if (response.data.data.mission_type_labels) {
+                store.commit('missionTypeLabels', response.data.data.mission_type_labels);
+            } else {
+                store.commit('missionTypeLabels', '');
+            }
+
         })
         .catch(function () {
 

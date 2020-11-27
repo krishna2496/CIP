@@ -61,6 +61,7 @@ export default Object.freeze({
     MAX_FILE_NUMBER: 20,
     MISSION_RATING_VOLUNTEER :"mission_rating_volunteer",
     DONATION_ENABLED : "donation",
+    VOLUNTERRING_ENABLED : "volunteering",
     MISSION_TYPE_GOAL : "GOAL",
     MISSION_TYPE_DONATION : "DONATION",
     RECENT_DONORS : "recent_donors",
