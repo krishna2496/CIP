@@ -154,7 +154,7 @@ donationMissionTypeLabels.backgroundColor,
                                     <!-- added -->
                                     <!-- donation -->
                                     <div class="progress-block detail-column " v-if="
-
+mission.donation_attribute && 
 checkMissionTypeDonation(mission.mission_type) &&
 
 mission.donation_attribute.show_donation_meter
@@ -200,7 +200,7 @@ mission.donation_attribute.goal_amount
                                     <div class="progress-block detail-column success-donate" v-if="
 
 checkMissionTypeDonation(mission.mission_type) &&
-
+mission.donation_attribute && 
 !mission.donation_attribute.show_donation_meter
 
 ">
@@ -384,7 +384,7 @@ $store.state.imagePath +
                                         </template>
                                         <div class="group-details-inner has-progress">
                                             <div class="progress-block detail-column progress-bar-block" v-if="
-                          checkMissionTypeDonation(mission.mission_type) &&
+                          checkMissionTypeDonation(mission.mission_type) && mission.donation_attribute &&
                             mission.donation_attribute && mission.donation_attribute.show_donation_meter
                         ">
                                                 <div class="text-wrap">
@@ -875,8 +875,7 @@ export default {
 		}
 		
 		this.missionTypeLabels = JSON.parse(store.state.missionTypeLabels);
-		console.log(store.state.missionTypeLabels);
-        if (JSON.parse(store.state.missionTypeLabels) != "") {
+		if (JSON.parse(store.state.missionTypeLabels) != "") {
             let defaultLang = store.state.defaultLanguage.toLowerCase();
             this.missionTypeLabels.filter((item, i) => {
                 // volunteering mission label
