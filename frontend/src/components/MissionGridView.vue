@@ -5,7 +5,7 @@
             <b-col lg="4" sm="6" class="card-outer" :id="`gridview-${key}`" data-aos="fade-up" v-for="(mission, key) in items" :key="key">
                 <div class="card-inner">
                     <b-card no-body>
-                        <b-link target="_self" :to="'/mission-detail/' + mission.mission_id" class="location">
+                        <b-link target="_self" :to="getRedirectUrl(mission.mission_id)" class="location">
                             <i>
                                 <img :src="
                       $store.state.imagePath + '/assets/images/location.svg'
@@ -14,7 +14,7 @@
                             {{ mission.city_name }}
                         </b-link>
                         <b-card-header>
-                            <b-link target="_self" :to="'/mission-detail/' + mission.mission_id">
+                            <b-link target="_self" :to="getRedirectUrl(mission.mission_id)">
                                 <div class="header-img-block" v-bind:class="{
 
 'grayed-out': getClosedStatus(mission),
@@ -445,9 +445,7 @@ $store.state.imagePath +
                                 </div>
                                 <div class="card-action-block">
                                     <div class="left-btn">
-                                        <b-link :to="'/mission-detail/' + mission.mission_id" v-if="
-                          checkMissionTypeVolunteering(mission.mission_type)
-                        " class="btn-bordersecondary icon-btn" v-bind:class="{
+                                        <b-link :to="getRedirectUrl(mission.mission_id)" class="btn-bordersecondary icon-btn" v-bind:class="{
                           'btn-lg': languageData.label.view_detail.length > 12,
                         }">
                                             <span>{{
