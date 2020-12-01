@@ -302,7 +302,14 @@
 		"and": "und",
 		"for": "Für",
 		"sort_deadline": "Nach Frist sortieren",
-		"no_image_available": "Kein Bild verfügbar"
+		"no_image_available": "Kein Bild verfügbar",
+		"profile": "Profil",
+		"settings": "Einstellungen",
+		"donations": "Spenden",
+		"personal_donation_goal": "Persönliches Spendenziel",
+		"preferences": "Präferenzen",
+		"currency": "Währung",
+		"current_password": "Aktuelles Passwort"
 	},
 	"placeholder": {
 		"email_address": "E-Mail-Adresse eingeben",
@@ -335,7 +342,9 @@
 		"video_url": "Video-URL eingeben",
 		"subject": "Betreff eingeben",
 		"message": "Mitteilung eingeben",
-		"search_user": "Nach Name oder E-Mail-Adresse suchen"
+		"search_user": "Nach Name oder E-Mail-Adresse suchen",
+		"currency": "Wählen Sie Ihre Währung",
+		"old_password": "Aktuelles Passwort eingeben"
 	},
 	"errors": {
 		"email_required": "Eine E-Mail-Adresse ist erforderlich",
@@ -394,7 +403,13 @@
 		"invalid_saml_setting": "Die folgenden Zuordnungen sind erforderlich:",
 		"password_should_contain_uppercase": "Mindestens ein Großbuchstabe",
 		"password_should_contain_lowercase": "Mindestens ein Kleinbuchstabe",
-		"password_should_contain_numbers": "Mindestens eine Zahl"
+		"password_should_contain_numbers": "Mindestens eine Zahl",
+		"currency_required": "Eine Währung ist erforderlich.",
+		"donation_goal_required": "Der Spendenzielbetrag ist erforderlich.",
+		"valid_donation_goal": "Bitte geben Sie einen gültigen Spendenzielbetrag ein."
+	},
+	"messages": {
+		"setting_update_success": "Benutzereinstellung erfolgreich aktualisiert."
 	},
 	"export_timesheet_file_names": {
 		"PENDING_TIME_MISSION_ENTRIES_XLSX": "Pending_Time_Mission_Entries.xls",

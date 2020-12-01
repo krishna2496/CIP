@@ -302,7 +302,14 @@
 		"and": "e",
 		"for": "Per",
 		"sort_deadline": "Ordina per scadenza",
-		"no_image_available": "Nessuna immagine disponibile"
+		"no_image_available": "Nessuna immagine disponibile",
+		"profile": "Profilo",
+		"settings": "Impostazioni",
+		"donations": "Donazioni",
+		"personal_donation_goal": "Obiettivo della donazione personale",
+		"preferences": "Preferenze",
+		"currency": "Valuta",
+		"current_password": "Password attuale"
 	},
 	"placeholder": {
 		"email_address": "Inserisci un indirizzo di posta elettronica",
@@ -335,7 +342,9 @@
 		"video_url": "Inserisci l’url del tuo video",
 		"subject": "Inserisci l’oggetto",
 		"message": "Inserisci il messaggio",
-		"search_user": "Cerca per nome o per indirizzo e-mail"
+		"search_user": "Cerca per nome o per indirizzo e-mail",
+		"currency": "Seleziona la tua valuta",
+		"old_password": "Inserisci la password attuale"
 	},
 	"errors": {
 		"email_required": "L’indirizzo di posta elettronica è obbligatorio",
@@ -394,7 +403,13 @@
 		"invalid_saml_setting": "Sono richiesti i seguenti mapping:",
 		"password_should_contain_uppercase": "Almeno 1 lettera maiuscola",
 		"password_should_contain_lowercase": "Almeno 1 lettera minuscola",
-		"password_should_contain_numbers": "Almeno 1 numero"
+		"password_should_contain_numbers": "Almeno 1 numero",
+		"currency_required": "È richiesta la valuta.",
+		"donation_goal_required": "È richiesto l'importo dell'obiettivo della donazione.",
+		"valid_donation_goal": "Inserire un obiettivo di donazione valido."
+	},
+	"messages": {
+		"setting_update_success": "L'impostazione dell'utente è stata aggiornata con successo."
 	},
 	"export_timesheet_file_names": {
 		"PENDING_TIME_MISSION_ENTRIES_XLSX": "Pending_Time_Mission_Entries.xls",

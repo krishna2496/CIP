@@ -25,7 +25,7 @@ class TenantSettingRepository implements TenantSettingInterface
     {
         $this->tenantSetting = $tenantSetting;
     }
-    
+
     /**
      * Update setting value
      *
@@ -43,10 +43,12 @@ class TenantSettingRepository implements TenantSettingInterface
     /**
      * Get all tenant's settings data.
      *
+     * @param array $ids
+     *
      * @return Illuminate\Database\Eloquent\Collection
      */
-    public function fetchAllTenantSettings(): Collection
+    public function fetchAllTenantSettings(array $ids = []): Collection
     {
-        return $this->tenantSetting->getAllTenantSettings();
+        return $this->tenantSetting->getAllTenantSettings($ids);
     }
 }

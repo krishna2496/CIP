@@ -24,6 +24,8 @@ use TestCase;
 use App\Models\UserFilter;
 use App\Events\User\UserActivityLogEvent;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
+use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
+use Validator;
 
 class UserControllerTest extends TestCase
 {
@@ -86,7 +88,7 @@ class UserControllerTest extends TestCase
             ->andReturn($tenantOption);
 
         $userService = $this->mock(UserService::class);
-
+        $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
         $userController = new UserController(
             $userRepository,
             $userCustomFieldRepository,
@@ -97,7 +99,8 @@ class UserControllerTest extends TestCase
             $helpers,
             $s3Helper,
             $tenantOptionRepository,
-            $userService
+            $userService,
+            $tenantActivatedSettingRepository
         );
 
         $this->withoutEvents();
@@ -144,7 +147,7 @@ class UserControllerTest extends TestCase
         $tenantOptionRepository = $this->mock(TenantOptionRepository::class);
 
         $userService = $this->mock(UserService::class);
-
+        $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
         $userController = new UserController(
             $userRepository,
             $userCustomFieldRepository,
@@ -155,7 +158,8 @@ class UserControllerTest extends TestCase
             $helpers,
             $s3Helper,
             $tenantOptionRepository,
-            $userService
+            $userService,
+            $tenantActivatedSettingRepository
         );
 
         $this->withoutEvents();
@@ -209,17 +213,22 @@ class UserControllerTest extends TestCase
         $languageHelper = $this->mock(LanguageHelper::class);
         $helpers = $this->mock(Helpers::class);
         $userService = $this->mock(UserService::class);
-
+        $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
         $user = new User();
         $user->setAttribute('pseudonymize_at', null);
         $user->setAttribute('user_id', 1);
         $user->setAttribute('is_profile_complete', 1);
 
-        $userService
-            ->shouldReceive('validateFields')
+        $validator = $this->mock(\Illuminate\Validation\Validator::class);
+        $validator->shouldReceive('fails')
+            ->andReturn(false);
+
+        Validator::shouldReceive('make')
+            ->andReturn($validator);
+
+        $tenantActivatedSettingRepository->shouldReceive('checkTenantSettingStatus')
             ->once()
-            ->with($request->all(), 1, false)
-            ->andReturn(true);
+            ->andReturn(false);
 
         $languageHelper
             ->shouldReceive('validateLanguageId')
@@ -284,7 +293,8 @@ class UserControllerTest extends TestCase
             $helpers,
             null,
             null,
-            $userService
+            $userService,
+            $tenantActivatedSettingRepository
         );
 
         $response = $controller->update($request);
@@ -334,17 +344,37 @@ class UserControllerTest extends TestCase
         $languageHelper = $this->mock(LanguageHelper::class);
         $helpers = $this->mock(Helpers::class);
         $userService = $this->mock(UserService::class);
-
+        $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
         $user = new User();
         $user->setAttribute('pseudonymize_at', null);
         $user->setAttribute('user_id', 1);
         $user->setAttribute('is_profile_complete', 1);
 
-        $userService
-            ->shouldReceive('validateFields')
+        $tenantActivatedSettingRepository->shouldReceive('checkTenantSettingStatus')
             ->once()
-            ->with($request->all(), 1, false)
-            ->andReturn(new JsonResponse);
+            ->andReturn(true);
+
+        $errors = new Collection([
+            'sample-error message'
+        ]);
+        $validator = $this->mock(\Illuminate\Validation\Validator::class);
+        $validator->shouldReceive('fails')
+            ->andReturn(true)
+            ->shouldReceive('errors')
+            ->andReturn($errors);
+
+        $responseHelper->shouldReceive('error')
+            ->once()
+            ->with(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_USER_INVALID_DATA'),
+                $errors->first()
+            );
+
+        Validator::shouldReceive('make')
+            ->andReturn($validator);
+
 
         $this->withoutEvents();
         $controller = $this->getController(
@@ -357,7 +387,8 @@ class UserControllerTest extends TestCase
             $helpers,
             null,
             null,
-            $userService
+            $userService,
+            $tenantActivatedSettingRepository
         );
 
         $response = $controller->update($request);
@@ -407,17 +438,22 @@ class UserControllerTest extends TestCase
         $languageHelper = $this->mock(LanguageHelper::class);
         $helpers = $this->mock(Helpers::class);
         $userService = $this->mock(UserService::class);
-
+        $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
         $user = new User();
         $user->setAttribute('pseudonymize_at', null);
         $user->setAttribute('user_id', 1);
         $user->setAttribute('is_profile_complete', 1);
 
-        $userService
-            ->shouldReceive('validateFields')
+        $tenantActivatedSettingRepository->shouldReceive('checkTenantSettingStatus')
             ->once()
-            ->with($request->all(), 1, false)
-            ->andReturn(true);
+            ->andReturn(false);
+
+        $validator = $this->mock(\Illuminate\Validation\Validator::class);
+        $validator->shouldReceive('fails')
+            ->andReturn(false);
+
+        Validator::shouldReceive('make')
+            ->andReturn($validator);
 
         $languageHelper
             ->shouldReceive('validateLanguageId')
@@ -447,7 +483,8 @@ class UserControllerTest extends TestCase
             $helpers,
             null,
             null,
-            $userService
+            $userService,
+            $tenantActivatedSettingRepository
         );
 
         $response = $controller->update($request);
@@ -514,17 +551,22 @@ class UserControllerTest extends TestCase
         $languageHelper = $this->mock(LanguageHelper::class);
         $helpers = $this->mock(Helpers::class);
         $userService = $this->mock(UserService::class);
-
+        $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
         $user = new User();
         $user->setAttribute('pseudonymize_at', null);
         $user->setAttribute('user_id', 1);
         $user->setAttribute('is_profile_complete', 1);
 
-        $userService
-            ->shouldReceive('validateFields')
+        $tenantActivatedSettingRepository->shouldReceive('checkTenantSettingStatus')
             ->once()
-            ->with($request->all(), 1, false)
-            ->andReturn(true);
+            ->andReturn(false);
+
+        $validator = $this->mock(\Illuminate\Validation\Validator::class);
+        $validator->shouldReceive('fails')
+            ->andReturn(false);
+
+        Validator::shouldReceive('make')
+            ->andReturn($validator);
 
         $languageHelper
             ->shouldReceive('validateLanguageId')
@@ -554,7 +596,8 @@ class UserControllerTest extends TestCase
             $helpers,
             null,
             null,
-            $userService
+            $userService,
+            $tenantActivatedSettingRepository
         );
 
         $response = $controller->update($request);
@@ -614,17 +657,22 @@ class UserControllerTest extends TestCase
         $languageHelper = $this->mock(LanguageHelper::class);
         $helpers = $this->mock(Helpers::class);
         $userService = $this->mock(UserService::class);
-
+        $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
         $user = new User();
         $user->setAttribute('pseudonymize_at', '2020-10-02 12:32:29.0');
         $user->setAttribute('user_id', 1);
         $user->setAttribute('is_profile_complete', 1);
 
-        $userService
-            ->shouldReceive('validateFields')
+        $validator = $this->mock(\Illuminate\Validation\Validator::class);
+        $validator->shouldReceive('fails')
+            ->andReturn(false);
+
+        Validator::shouldReceive('make')
+            ->andReturn($validator);
+
+        $tenantActivatedSettingRepository->shouldReceive('checkTenantSettingStatus')
             ->once()
-            ->with($request->all(), 1, false)
-            ->andReturn(true);
+            ->andReturn(false);
 
         $userService
             ->shouldReceive('unsetPseudonymizedFields')
@@ -695,7 +743,8 @@ class UserControllerTest extends TestCase
             $helpers,
             null,
             null,
-            $userService
+            $userService,
+            $tenantActivatedSettingRepository
         );
 
         $response = $controller->update($request);
@@ -749,17 +798,22 @@ class UserControllerTest extends TestCase
         $languageHelper = $this->mock(LanguageHelper::class);
         $helpers = $this->mock(Helpers::class);
         $userService = $this->mock(UserService::class);
-
+        $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
         $user = new User();
         $user->setAttribute('pseudonymize_at', '0000-00-00 00:00:00');
         $user->setAttribute('user_id', 1);
         $user->setAttribute('is_profile_complete', 1);
 
-        $userService
-            ->shouldReceive('validateFields')
+        $validator = $this->mock(\Illuminate\Validation\Validator::class);
+        $validator->shouldReceive('fails')
+            ->andReturn(false);
+
+        Validator::shouldReceive('make')
+            ->andReturn($validator);
+
+        $tenantActivatedSettingRepository->shouldReceive('checkTenantSettingStatus')
             ->once()
-            ->with($request->all(), 1, false)
-            ->andReturn(true);
+            ->andReturn(false);
 
         $languageHelper
             ->shouldReceive('validateLanguageId')
@@ -824,7 +878,8 @@ class UserControllerTest extends TestCase
             $helpers,
             null,
             null,
-            $userService
+            $userService,
+            $tenantActivatedSettingRepository
         );
 
         $response = $controller->update($request);
@@ -841,7 +896,8 @@ class UserControllerTest extends TestCase
         Helpers $helpers = null,
         S3Helper $s3Helper = null,
         TenantOptionRepository $tenantOptionRepository = null,
-        UserService $userService = null
+        UserService $userService = null,
+        TenantActivatedSettingRepository $tenantActivatedSettingRepository = null
     ) {
         $userRepository = $userRepository ?? $this->mock(UserRepository::class);
         $userCustomFieldRepository = $userCustomFieldRepository ?? $this->mock(UserCustomFieldRepository::class);
@@ -853,6 +909,7 @@ class UserControllerTest extends TestCase
         $s3Helper = $s3Helper ?? $this->mock(S3Helper::class);
         $tenantOptionRepository = $tenantOptionRepository ?? $this->mock(TenantOptionRepository::class);
         $userService = $userService ??$this->mock(UserService::class);
+        $tenantActivatedSettingRepository = $tenantActivatedSettingRepository ?? $this->mock(TenantActivatedSettingRepository::class);
 
         return new UserController(
             $userRepository,
@@ -864,7 +921,8 @@ class UserControllerTest extends TestCase
             $helpers,
             $s3Helper,
             $tenantOptionRepository,
-            $userService
+            $userService,
+            $tenantActivatedSettingRepository
         );
     }
 
@@ -879,7 +937,7 @@ class UserControllerTest extends TestCase
         $userFilterRepository = $this->createMock(UserFilterRepository::class);
         $tenantOptionRepository = $this->createMock(TenantOptionRepository::class);
         $cityRepository = $this->createMock(CityRepository::class);
-
+        $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
         $controller = new UserController(
             $userRepository,
             $userCustomFieldRepository,
@@ -890,7 +948,8 @@ class UserControllerTest extends TestCase
             $helpers,
             $s3helper,
             $tenantOptionRepository,
-            $this->createMock(UserService::class)
+            $this->createMock(UserService::class),
+            $tenantActivatedSettingRepository
         );
 
         $request = new Request(['search' => 'jeannot']);
@@ -949,7 +1008,7 @@ class UserControllerTest extends TestCase
         $tenantOptionRepository = $this->createMock(TenantOptionRepository::class);
         $cityRepository = $this->createMock(CityRepository::class);
         $userService = $this->createMock(UserService::class);
-
+        $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
         $controller = new UserController(
             $userRepository,
             $userCustomFieldRepository,
@@ -960,7 +1019,8 @@ class UserControllerTest extends TestCase
             $helpers,
             $s3helper,
             $tenantOptionRepository,
-            $userService
+            $userService,
+            $tenantActivatedSettingRepository
         );
 
         $request = new Request();
@@ -1074,7 +1134,7 @@ class UserControllerTest extends TestCase
         $tenantOptionRepository = $this->mock(TenantOptionRepository::class);
 
         $userService = $this->mock(UserService::class);
-
+        $tenantActivatedSettingRepository = $this->mock(TenantActivatedSettingRepository::class);
         $userController = new UserController(
             $userRepository,
             $userCustomFieldRepository,
@@ -1085,7 +1145,8 @@ class UserControllerTest extends TestCase
             $helpers,
             $s3Helper,
             $tenantOptionRepository,
-            $userService
+            $userService,
+            $tenantActivatedSettingRepository
         );
 
         $this->withoutEvents();

@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Casts\Amount;
+use App\Models\PaymentGateway\Payment;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
-use App\Models\PaymentGateway\Payment;
 
 class Donation extends Model
 {
@@ -55,6 +56,19 @@ class Donation extends Model
         'note',
         'created_at',
         'updated_at'
+    ];
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'total' => Amount::class,
+        'lowest' => Amount::class,
+        'median' => Amount::class,
+        'highest' => Amount::class,
+        'average' => Amount::class
     ];
 
     /**

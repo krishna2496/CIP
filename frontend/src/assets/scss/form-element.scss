@@ -1307,6 +1307,7 @@ label {
   background: $primary-border-color;
   border-radius: 100%;
   overflow: hidden;
+<<<<<<< HEAD
   width: 180px;
   margin: 0 auto 13px;
 
@@ -1315,6 +1316,10 @@ label {
     width: 160px;
   }
 
+=======
+  width: 160px;
+  margin: 0 auto 10px;
+>>>>>>> 331d0101b09e4a5fbda9248cb22d53ae9b26097f
   .content-loader-wrap {
     z-index: 1040;
   }

@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Libraries\Amount;
 use App\Models\Availability;
 use App\Models\Comment;
 use App\Models\Country;
@@ -93,7 +92,7 @@ class Mission extends Model
     'availability_id', 'availability_type', 'average_rating', 'timesheet', 'total_hours', 'time',
     'hours', 'action', 'ISO', 'total_minutes', 'custom_information', 'total_timesheet_time', 'total_timesheet_action', 'total_timesheet',
     'mission_title', 'mission_objective', 'label_goal_achieved', 'label_goal_objective', 'state', 'state_name', 'organization', 'organization_name', 'missionTabs', 'volunteeringAttribute',
-    'unSdg', 'is_virtual', 'total_seats', 'impact', 'donationAttribute', 'impactDonation'];
+    'unSdg', 'is_virtual', 'total_seats', 'impact', 'donationAttribute', 'impactDonation', 'donation_statistics'];
 
     /*
      * Iatstuti\Database\Support\CascadeSoftDeletes;
@@ -440,5 +439,29 @@ class Mission extends Model
     public function unSdg(): HasMany
     {
         return $this->hasMany(MissionUnSdg::class, 'mission_id', 'mission_id')->orderBy('un_sdg_number');
+    }
+
+    /**
+     * Query all the approved mission
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeIsApproved($query)
+    {
+        return $query->whereIn('publication_status', [
+            config('constants.publication_status.APPROVED')
+        ]);
+    }
+
+    /**
+     * Query all the donation types mission
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeIsDonationTypes($query)
+    {
+        return $query->whereIn('mission_type', config('constants.donation_mission_types'));
     }
 }

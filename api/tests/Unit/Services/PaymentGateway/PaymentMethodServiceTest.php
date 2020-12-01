@@ -11,6 +11,7 @@ use App\Repositories\PaymentGateway\PaymentMethodRepository;
 use App\Services\PaymentGateway\CustomerService;
 use App\Services\PaymentGateway\PaymentMethodService;
 use Faker\Factory as FakerFactory;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Collection;
 use StdClass;
 use TestCase;
@@ -88,6 +89,36 @@ class PaymentMethodServiceTest extends TestCase
         $detailedPaymentMethod = $paymentMethods->first();
         $this->assertInstanceOf(PaymentGatewayDetailedPaymentMethod::class, $detailedPaymentMethod);
         $this->assertSame($paymentMethodId, $detailedPaymentMethod->getPaymentGatewayPaymentMethodId());
+    }
+
+    public function testGetWithIdNonExistingData()
+    {
+        $this->expectException(ModelNotFoundException::class);
+        $userId = rand(10, 99);
+        $id = $this->faker->uuid();
+        $paymentMethodId = 'non_existing';
+
+
+        $customerCollection = Collection::make([ new PaymentGatewayDetailedCustomer ]);
+        $this->customerServiceMock
+            ->expects($this->once())
+            ->method('get')
+            ->with($userId)
+            ->willReturn($customerCollection);
+
+        $paymentMethodCollection = Collection::make([]);
+        $this->paymentMethodRepositoryMock
+            ->expects($this->once())
+            ->method('get')
+            ->with($userId, $id)
+            ->willReturn($paymentMethodCollection);
+
+        $this->paymentGatewayMock
+            ->expects($this->never())
+            ->method('getPaymentMethod');
+
+        $paymentMethodService = $this->getPaymentMethodService();
+        $paymentMethodService->get($userId, $id);
     }
 
     public function testGetWithoutId()
@@ -225,6 +256,31 @@ class PaymentMethodServiceTest extends TestCase
         $paymentMethods = $paymentMethodService->update($detailedPaymentMethod);
     }
 
+    public function testUpdateWithNonExistingData()
+    {
+        $this->expectException(ModelNotFoundException::class);
+        $userId = rand(10, 99);
+        $id = 'non_existing';
+
+        $detailedPaymentMethod = (new PaymentGatewayDetailedPaymentMethod)
+            ->setId($id)
+            ->setUserId($userId);
+        $collection = Collection::make([]);
+
+        $this->paymentMethodRepositoryMock
+            ->expects($this->once())
+            ->method('get')
+            ->with($userId, $id)
+            ->willReturn($collection);
+
+        $this->paymentGatewayMock
+            ->expects($this->never())
+            ->method('updateCustomerPaymentMethod');
+
+        $paymentMethodService = $this->getPaymentMethodService();
+        $paymentMethodService->update($detailedPaymentMethod);
+    }
+
     public function testDelete()
     {
         $userId = rand(10, 99);
@@ -253,6 +309,31 @@ class PaymentMethodServiceTest extends TestCase
 
         $paymentMethodService = $this->getPaymentMethodService();
         $paymentMethods = $paymentMethodService->delete($userId, $id);
+    }
+
+    public function testDeleteWithNonExistingData()
+    {
+        $this->expectException(ModelNotFoundException::class);
+        $userId = rand(10, 99);
+        $id = $this->faker->uuid();
+        $paymentMethodId = 'non_existing';
+
+        $assertedResult = (new PaymentGatewayDetailedPaymentMethod)
+            ->setPaymentGatewayPaymentMethodId($paymentMethodId);
+        $collection = Collection::make([]);
+
+        $this->paymentMethodRepositoryMock
+            ->expects($this->once())
+            ->method('get')
+            ->with($userId, $id)
+            ->willReturn($collection);
+
+        $this->paymentGatewayMock
+            ->expects($this->never())
+            ->method('detachCustomerPaymentMethod');
+
+        $paymentMethodService = $this->getPaymentMethodService();
+        $paymentMethodService->delete($userId, $id);
     }
 
     public function getPaymentMethodService()

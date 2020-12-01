@@ -2764,226 +2764,356 @@ main {
 
 .profile-page {
 	label {
-		margin-bottom: 3px;
+	  margin-bottom: 5px;
 	}
 	.is-profile-complete {
-		padding-top: 20px;
+	  padding-top: 20px;
 	}
 	main {
-		.container {
-			max-width: 1170px;
-
-			@include lg-max {
-				max-width: 100%;
-			}
+	  .container {
+		@include lg-max {
+		  max-width: 100%;
 		}
+	  }
+	}
+	&.donation-profile {
+	  main {
+		.container {
+		  max-width: 1470px;
+		  width: 100%;
+		}
+	  }
 	}
 
 	.profile-content {
-		padding: 50px 0 100px;
+	  padding: 50px 0 100px;
 
-		@include xl-max {
-			padding: 50px 0 60px;
+	  @include xl-max {
+		padding: 50px 0 60px;
+	  }
+
+	  @include md-max {
+		padding-bottom: 50px;
+	  }
+
+	  .profile-left-col {
+		@include lg-max {
+		  padding-right: 30px;
 		}
 
 		@include md-max {
-			padding-bottom: 50px;
+		  padding-right: 15px;
+		  margin-bottom: 30px;
 		}
-
-		.profile-left-col {
-			@include lg-max {
-				padding-right: 40px;
-			}
-
-			@include md-max {
-				padding-right: 15px;
-			}
-		}
+	  }
 	}
 
 	.row-form {
-		margin-bottom: 40px;
+	  margin-bottom: 40px;
 
-		@include lg-max {
-			margin-bottom: 30px;
-		}
+	  @include lg-max {
+		margin-bottom: 30px;
+	  }
 
-		@include md-max {
-			margin-bottom: 15px;
-		}
+	  @include md-max {
+		margin-bottom: 15px;
+	  }
 
-		&:last-child {
-			margin-bottom: 0;
-		}
+	  &:last-child {
+		margin-bottom: 0;
+	  }
 	}
 
 	.profile-form-wrap {
-		padding-left: 30px;
-		margin-top: -7px;
+	  padding-left: 20px;
+	  margin-top: -7px;
 
-		@include lg-max {
-			padding-left: 0;
+	  @include lg-max {
+		padding-left: 0;
+	  }
+
+	  @include md-max {
+		padding-left: 15px;
+		padding-top: 40px;
+		margin-top: 0;
+	  }
+
+	  @include sm-max {
+		padding-top: 30px;
+	  }
+
+	  .title-with-border {
+		margin-bottom: 18px;
+		span {
+		  min-width: 185px;
+		  @include lg-max {
+			min-width: 168px;
+		  }
+		}
+	  }
+
+	  .checkbox-group-wrap {
+		.site-checkbox {
+		  .custom-control-input {
+			line-height: 0;
+		  }
+		}
+	  }
+	  .form-group {
+		margin-bottom: 23px;
+
+		@include sm-max {
+		  margin-bottom: 18px;
+		}
+
+		textarea {
+		  &.form-control {
+			height: 120px;
+			padding: 8px 12px;
+		  }
+		}
+	  }
+	  label {
+		&.has-help-text {
+		  position: relative;
+		  width: 100%;
+		  .help-text {
+			font-size: 12px;
+			line-height: 16px;
+			text-decoration: underline;
+			position: absolute;
+			top: 3px;
+			right: 0;
+			cursor: pointer;
+			display: inline-block;
+			color: $link-color;
+			background: transparent;
+			padding: 0;
+			border: none;
+		  }
+		}
+	  }
+	  .btn-wrapper {
+		display: flex;
+		width: 100%;
+		padding: 0;
+		justify-content: flex-end;
+		margin-top: 70px;
+
+		@include xl-max {
+		  margin-top: 50px;
 		}
 
 		@include md-max {
-			padding-left: 15px;
-			padding-top: 40px;
-			margin-top: 0;
+		  margin-top: 30px;
 		}
 
-		@include sm-max {
-			padding-top: 30px;
+		.btn {
+		  min-width: 108px;
+		  display: inline-block !important;
 		}
-
-		.title-with-border {
-			margin-bottom: 20px;
-		}
-
-		.form-group {
-			margin-bottom: 24px;
-
-			@include sm-max {
-				margin-bottom: 18px;
-			}
-
-			textarea {
-				&.form-control {
-					height: 120px;
-					padding: 8px 12px;
-				}
-			}
-		}
-
-		.btn-wrapper {
-			display: flex;
-			width: 100%;
-			padding: 0;
-			justify-content: flex-end;
-			margin-top: 70px;
-
-			@include xl-max {
-				margin-top: 50px;
-			}
-
-			@include md-max {
-				margin-top: 30px;
-			}
-
-			.btn {
-				min-width: 108px;
-				display: inline-block !important;
-			}
-		}
+	  }
 	}
 
 	.custom-dropdown {
-		line-height: 24px;
+	  line-height: 24px;
 
-		span {
-			height: 38px;
-		}
+	  span {
+		height: 38px;
+	  }
 	}
 
 	.link-wrap {
-		a {
-			font-size: 14px;
-		}
+	  a {
+		font-size: 14px;
+	  }
 	}
-}
+  }
 
-.profile-details {
-	padding: 20px 20px 30px;
+  .profile-details {
+	padding: 30px;
 	border: 1px solid $primary-border-color;
 
+	@include border-radius(10px);
+	margin-bottom: 30px;
+	margin-right: 8px;
+
+	@include lg-max {
+	  padding: 20px;
+	  margin-right: 0;
+	}
 	.user-icon-wrap {
-		height: 160px;
-		width: 160px;
-		border-radius: 100%;
-		margin: 0 auto 15px;
-		display: block;
-		background-size: cover;
-		background-repeat: no-repeat;
-		background-position: center;
+	  height: 160px;
+	  width: 160px;
+	  border-radius: 100%;
+	  margin: 0 auto 15px;
+	  display: block;
+	  background-size: cover;
+	  background-repeat: no-repeat;
+	  background-position: center;
 	}
 
 	.link-wrap {
-		text-align: center;
-		margin-bottom: 38px;
+	  text-align: center;
+	  margin-bottom: 38px;
 
-		@include sm-max {
-			margin-bottom: 20px;
-		}
+	  @include sm-max {
+		margin-bottom: 20px;
+	  }
 	}
 
 	h4 {
-		text-align: center;
-		display: block;
-		font-size: 22px;
-		line-height: 28px;
+	  text-align: center;
+	  display: block;
+	  font-size: 22px;
+	  line-height: 28px;
 
-		@include sm-max {
-			font-size: 20px;
-			line-height: 26px;
-		}
+	  @include sm-max {
+		font-size: 20px;
+		line-height: 26px;
+	  }
 	}
 
 	.location {
-		text-align: center;
-		display: block;
-		margin-bottom: 40px;
+	  text-align: center;
+	  display: block;
+	  margin-bottom: 40px;
 
-		i {
-			margin-right: 5px;
-			vertical-align: middle;
-		}
+	  i {
+		margin-right: 5px;
+		vertical-align: middle;
+	  }
 	}
 
 	.form-group {
-		margin-bottom: 27px;
+	  margin-bottom: 27px;
+
+	  @include sm-max {
+		margin-bottom: 15px;
+	  }
+
+	  &:last-child {
+		margin-bottom: 0;
+	  }
+	}
+  }
+
+  .profile-navs {
+	border: 1px solid $primary-border-color;
+	margin-right: 8px;
+	@include border-radius(10px);
+	@include lg-max {
+	  margin-right: 0;
+	}
+	li {
+	  a {
+		display: flex;
+		align-items: center;
+		position: relative;
+		padding: 19px 29px 20px;
+		border-bottom: 1px solid $control-border;
+
+		@include lg-max {
+		  padding: 14px 20px 15px;
+		}
+		i {
+		  display: inline-block;
+		  line-height: 0;
+		  width: 30px;
+		  flex: 0 0 30px;
+		  max-width: 30px;
+		  margin-right: 15px;
+
+		  @include lg-max {
+			width: 24px;
+			flex: 0 0 24px;
+			max-width: 24px;
+			margin-right: 10px;
+		  }
+		  svg {
+			height: 100%;
+			width: 100%;
+			fill: $gray-primary;
+		  }
+		  &.profile-icon {
+			height: 30px;
+
+			@include lg-max {
+			  height: 24px;
+			}
+		  }
+		  &.settings-icon {
+			height: 30px;
+			@include lg-max {
+			  height: 24px;
+			}
+		  }
+		}
+	  }
+	  &:first-child {
+		a {
+		  border-radius: 10px 10px 0 0;
+		}
+	  }
+	  &:last-child {
+		a {
+		  border: none;
+		  border-radius: 0 0 10px 10px;
+		}
+	  }
+	  &.active,
+	  &:hover {
+		a {
+		  background: $primary;
+		  color: $white;
+		  box-shadow: 0.966px 0.259px 1.5px rgba($black, 0.05);
+		  -webkit-box-shadow: 0.966px 0.259px 1.5px rgba($black, 0.05);
+		  -moz-box-shadow: 0.966px 0.259px 1.5px rgba($black, 0.05);
+		  -o-box-shadow: 0.966px 0.259px 1.5px rgba($black, 0.05);
+		  -ms-box-shadow: 0.966px 0.259px 1.5px rgba($black, 0.05);
+		  i {
+			svg {
+			  fill: $white;
+			}
+		  }
+		}
+	  }
+	}
+  }
+
+  .profile-form-wrap {
+	.btn-wrap {
+	  .btn {
+		display: inline-block !important;
+		margin-right: 20px;
 
 		@include sm-max {
-			margin-bottom: 15px;
+		  margin-right: 10px;
 		}
-
-		&:last-child {
-			margin-bottom: 0;
-		}
+	  }
 	}
-}
+  }
 
-.profile-form-wrap {
-	.btn-wrap {
-		.btn {
-			display: inline-block !important;
-			margin-right: 20px;
-
-			@include sm-max {
-				margin-right: 10px;
-			}
-		}
-	}
-}
-
-.skill-list-wrapper {
+  .skill-list-wrapper {
 	border: 1px solid $primary-border-color;
 	padding: 3px 0;
 	margin-bottom: 21px;
 
 	li {
-		font-size: 14px;
-		line-height: 18px;
-		padding: 6px 12px;
+	  font-size: 14px;
+	  line-height: 18px;
+	  padding: 6px 12px;
 	}
-}
+  }
 
-.skillset-wrap {
+  .skillset-wrap {
 	.add-skill-btn {
-		border-width: 1px;
-		border-radius: 20px;
-		min-height: 40px;
-		font-size: 16px;
+	  border-width: 1px;
+	  border-radius: 20px;
+	  min-height: 40px;
+	  font-size: 16px;
 	}
-}
+  }
 
 
 /** Dashboard **/

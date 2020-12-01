@@ -26,6 +26,7 @@ use App\Models\TenantOption;
 use App\Notifications\InviteUser;
 use Carbon\Carbon;
 use App\Services\UserService;
+use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
 
 
 class UserController extends Controller
@@ -85,6 +86,11 @@ class UserController extends Controller
     private $userService;
 
     /**
+     * @var App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository
+     */
+    private $tenantActivatedSettingRepository;
+
+    /**
      * Create a new controller instance.
      *
      * @param App\Repositories\User\UserRepository $userRepository
@@ -97,6 +103,7 @@ class UserController extends Controller
      * @param App\Helpers\S3Helper $s3helper
      * @param App\Repositories\TenantOption\TenantOptionRepository $tenantOptionRepository
      * @param App\Services\UserService $userService
+     * @param App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository $tenantActivatedSettingRepository
      * @return void
      */
     public function __construct(
@@ -109,7 +116,8 @@ class UserController extends Controller
         Helpers $helpers,
         S3Helper $s3helper,
         TenantOptionRepository $tenantOptionRepository,
-        UserService $userService
+        UserService $userService,
+        TenantActivatedSettingRepository $tenantActivatedSettingRepository
     ) {
         $this->userRepository = $userRepository;
         $this->userCustomFieldRepository = $userCustomFieldRepository;
@@ -121,6 +129,7 @@ class UserController extends Controller
         $this->s3helper = $s3helper;
         $this->tenantOptionRepository = $tenantOptionRepository;
         $this->userService = $userService;
+        $this->tenantActivatedSettingRepository = $tenantActivatedSettingRepository;
     }
 
     /**
@@ -275,6 +284,8 @@ class UserController extends Controller
             $cityList = $this->cityTransform($cityList->toArray(), $languageId, $defaultTenantLanguage->language_id);
         }
 
+        $userDonationGoal = $this->userRepository->getUserDonationGoal($userId);
+
         $apiData = $userDetail->toArray();
         $apiData['language_code'] = $userLanguageCode;
         $apiData['avatar'] = ((isset($apiData['avatar'])) && $apiData['avatar'] !="") ? $apiData['avatar'] :
@@ -285,6 +296,7 @@ class UserController extends Controller
         $apiData['language_list'] = $tenantLanguages;
         $apiData['language_code_list'] = $tenantLanguageCodes;
         $apiData['availability_list'] = $availabilityList;
+        $apiData['user_donation_goal'] = $userDonationGoal;
 
         $apiStatus = Response::HTTP_OK;
         $apiMessage = trans('messages.success.MESSAGE_USER_FOUND');
@@ -301,9 +313,50 @@ class UserController extends Controller
     public function update(Request $request): JsonResponse
     {
         $id = $request->auth->user_id;
-        $validation = $this->userService->validateFields($request->all(), $id, false);
-        if ($validation !== true) {
-            return $validation;
+
+        $rules = [
+            'first_name' => 'required|max:60',
+            'last_name' => 'required|max:60',
+            'employee_id' => [
+                'max:60',
+                'nullable',
+                Rule::unique('user')->ignore($id, 'user_id,deleted_at,NULL')
+            ],
+            'department' => 'max:60',
+            'linked_in_url' => 'url|valid_linkedin_url',
+            'availability_id' => 'integer|exists:availability,availability_id,deleted_at,NULL',
+            'city_id' => 'sometimes|integer|exists:city,city_id,deleted_at,NULL',
+            'country_id' => 'required|integer|exists:country,country_id,deleted_at,NULL',
+            'custom_fields.*.field_id' => 'sometimes|required|exists:user_custom_field,field_id,deleted_at,NULL',
+            'skills' => 'array',
+            'skills.*.skill_id' => 'required_with:skills|integer|exists:skill,skill_id,deleted_at,NULL',
+            'title' => 'max:60',
+            'language_id' => 'sometimes|required',
+            'timezone_id' => 'sometimes|required|exists:timezone,timezone_id,deleted_at,NULL'
+        ];
+
+        $isDonationSettingEnabled = $this->tenantActivatedSettingRepository
+            ->checkTenantSettingStatus(
+                config('constants.tenant_settings.DONATION_MISSION'),
+                $request
+            );
+        if ($isDonationSettingEnabled) {
+            $rules['donation_goal'] = 'required_with:donation_goal_year|integer|min:1|max:99999999';
+            $rules['donation_goal_year'] = 'required_with:donation_goal|integer|digits:4';
+        }
+
+        $validator = Validator::make(
+            $request->all(),
+            $rules
+        );
+
+        if ($validator->fails()) {
+            return $this->responseHelper->error(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                Response::$statusTexts[Response::HTTP_UNPROCESSABLE_ENTITY],
+                config('constants.error_codes.ERROR_USER_INVALID_DATA'),
+                $validator->errors()->first()
+            );
         }
 
         if (isset($request->language_id) && !$this->languageHelper->validateLanguageId($request)) {
@@ -351,6 +404,11 @@ class UserController extends Controller
         if (!empty($request->skills)) {
             $this->userService->updateSkill($data, $id);
         }
+
+        if ($isDonationSettingEnabled && $request->has('donation_goal') && $request->has('donation_goal_year')) {
+            $this->userRepository->updateDonationGoal($request);
+        }
+
         $this->helpers->syncUserData($request, $user);
 
         // Store Activity log

@@ -29,7 +29,7 @@ class TenantSetting extends Model
      * @var array
      */
     protected $fillable = ['setting_id'];
-    
+
     /**
      * The attributes that should be visible in arrays.
      *
@@ -40,10 +40,20 @@ class TenantSetting extends Model
     /**
      * Fetch all tenant settings.
      *
+     * @param array $ids
+     *
      * @return Illuminate\Support\Collection
      */
-    public function getAllTenantSettings(): Collection
+    public function getAllTenantSettings(array $ids = []): Collection
     {
-        return $this->select('tenant_setting_id', 'setting_id')->orderBy('setting_id')->get();
+        return $this->select(
+                'tenant_setting_id',
+                'setting_id'
+            )
+            ->orderBy('setting_id')
+            ->when(!empty($ids), function ($query) use ($ids) {
+                return $query->whereIn('setting_id', $ids);
+            })
+            ->get();
     }
 }

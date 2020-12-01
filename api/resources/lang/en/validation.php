@@ -81,6 +81,7 @@ return [
     'within_range'         => 'The :attribute field must have a value between :minvalue and :maxvalue.',
     'prefix_with'        => 'The :attribute field must start with ":prefix_with".',
     'max_html_stripped'    => 'The :attribute may not be greater than :max characters.',
+    'date_range'    => 'The :attribute data format is invalid. Example: YYYY-MM-DD:2020-12-20',
 
     /*
     |--------------------------------------------------------------------------

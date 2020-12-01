@@ -302,7 +302,14 @@
 		"and": "en",
 		"for": "Voor",
 		"sort_deadline": "Sorteer op termijn",
-		"no_image_available": "Geen afbeelding beschikbaar"
+		"no_image_available": "Geen afbeelding beschikbaar",
+		"profile": "Profiel",
+		"settings": "Instellingen",
+		"donations": "Donaties",
+		"personal_donation_goal": "Persoonlijk donatiedoel",
+		"preferences": "Voorkeuren",
+		"currency": "Valuta",
+		"current_password": "Huidig wachtwoord"
 	},
 	"placeholder": {
 		"email_address": "Vul e-mailadres in",
@@ -335,7 +342,9 @@
 		"video_url": "Voer uw video-URL in",
 		"subject": "Voer uw onderwerp in",
 		"message": "Voer uw bericht in",
-		"search_user": "Zoeken op naam of e-mailadres"
+		"search_user": "Zoeken op naam of e-mailadres",
+		"currency": "Selecteer uw valuta",
+		"old_password": "Voer het huidige wachtwoord in"
 	},
 	"errors": {
 		"email_required": "E-mailadres is verplicht",
@@ -394,7 +403,13 @@
 		"invalid_saml_setting": "De volgende toewijzing(en) zijn vereist:",
 		"password_should_contain_uppercase": "Minstens 1 hoofdletter",
 		"password_should_contain_lowercase": "Minstens 1 kleine letter",
-		"password_should_contain_numbers": "Minstens 1 cijfer"
+		"password_should_contain_numbers": "Minstens 1 cijfer",
+		"currency_required": "Munteenheid is vereist.",
+		"donation_goal_required": "Donatiedoelbedrag is vereist.",
+		"valid_donation_goal": "Voer een geldig donatiedoelbedrag in."
+	},
+	"messages": {
+		"setting_update_success": "Gebruikersinstelling succesvol bijgewerkt."
 	},
 	"export_timesheet_file_names": {
 		"PENDING_TIME_MISSION_ENTRIES_XLSX": "Pending_Time_Mission_Entries.xls",

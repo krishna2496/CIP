@@ -168,6 +168,10 @@ export default new Vuex.Store({
         },
         // User filter data
         userFilter(state, filters) {
+            //todo temp fix CIP-938; remove me when filters + tags will work
+            if (filters.cityId === "") {
+                delete filters.tags.city;
+            }
             localStorage.setItem('search', filters.search)
             localStorage.setItem('countryId', filters.countryId)
             if (filters.stateId) {
@@ -259,11 +263,7 @@ export default new Vuex.Store({
             let langaugeCode = data.languageCode;
             localStorage.setItem('firstName', data.firstName)
             localStorage.setItem('lastName', data.lastName)
-            localStorage.setItem('defaultLanguage', langaugeCode.toUpperCase())
-            localStorage.setItem('defaultLanguageId', data.language);
             localStorage.setItem('countryId', data.country)
-            state.defaultLanguage = langaugeCode.toUpperCase()
-            state.defaultLanguageId = data.language;
             state.firstName = data.firstName;
             state.lastName = data.lastName;
             state.countryId = data.country

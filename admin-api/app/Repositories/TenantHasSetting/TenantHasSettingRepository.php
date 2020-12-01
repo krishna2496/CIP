@@ -33,27 +33,35 @@ class TenantHasSettingRepository implements TenantHasSettingInterface
      * Get Settings lists
      *
      * @param int $tenantId
+     * @param array $filters
+     *
      * @return Illuminate\Database\Eloquent\Collection
      */
-    public function getSettingsList(int $tenantId): Collection
+    public function getSettingsList(int $tenantId, $filters = []): Collection
     {
-        $tenantSettings = $this->tenantSetting
-        ->select(
-            'tenant_setting.title',
-            'tenant_setting.tenant_setting_id',
-            'tenant_setting.description',
-            'tenant_setting.key',
-            DB::raw("CASE WHEN tenant_has_setting.tenant_setting_id  IS NULL THEN '0' ELSE '1' END AS is_active ")
-        )
-        ->leftJoin('tenant_has_setting', function ($join) use ($tenantId) {
-            $join->on('tenant_setting.tenant_setting_id', '=', 'tenant_has_setting.tenant_setting_id')
-            ->whereNull('tenant_has_setting.deleted_at')
-            ->where('tenant_has_setting.tenant_id', $tenantId);
-        })
-        ->get();
-        return $tenantSettings;
+        return $this->tenantSetting
+            ->selectRaw('
+                tenant_setting.title,
+                tenant_setting.tenant_setting_id,
+                tenant_setting.description,
+                tenant_setting.key,
+                CASE
+                    WHEN tenant_has_setting.tenant_setting_id IS NULL THEN "0"
+                    ELSE "1"
+                END AS is_active
+            ')
+            ->leftJoin('tenant_has_setting', function ($join) use ($tenantId) {
+                $join->on('tenant_setting.tenant_setting_id', '=', 'tenant_has_setting.tenant_setting_id')
+                    ->whereNull('tenant_has_setting.deleted_at')
+                    ->where('tenant_has_setting.tenant_id', $tenantId);
+            })
+            ->when(!empty($filters['keys'] ?? null), function ($query) use ($filters) {
+                $keys = $filters['keys'];
+                $query->whereIn('tenant_setting.key', $keys);
+            })
+            ->get();
     }
-    
+
     /**
      * Create new setting
      *
@@ -87,7 +95,7 @@ class TenantHasSettingRepository implements TenantHasSettingInterface
         if ($volunteeringSetting) {
             foreach ($data['settings'] as $value) {
                 $tenantSetting = $this->tenantSetting->where('tenant_setting_id', $value['tenant_setting_id'])->first();
-                
+
                 // Check volunteering goal should be active if we disable volunteering time mission
                 if ($tenantSetting->key == config('constants.tenant_settings.VOLUNTEERING_TIME_MISSION') && !$value['value']) {
                     $volunteeringGoal = $this->tenantSetting->where('key', config('constants.tenant_settings.VOLUNTEERING_GOAL_MISSION'))->first();
@@ -101,7 +109,7 @@ class TenantHasSettingRepository implements TenantHasSettingInterface
                 if ($tenantSetting->key == config('constants.tenant_settings.VOLUNTEERING_GOAL_MISSION') && !$value['value']) {
                     $volunteeringTime = $this->tenantSetting->where('key', config('constants.tenant_settings.VOLUNTEERING_TIME_MISSION'))->first();
                     $volunteeringTimeSetting = $this->tenantHasSetting->where(['tenant_setting_id' => $volunteeringTime->tenant_setting_id, 'tenant_id' => $tenantId])->first();
-                    
+
                     if (!$volunteeringTimeSetting) {
                         return false;
                     }

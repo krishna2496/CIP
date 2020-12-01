@@ -30,6 +30,9 @@
       "name": "User skills"
     },
     {
+      "name": "User setting"
+    },
+    {
       "name": "Theme management"
     },
     {
@@ -85,6 +88,9 @@
     },
     {
       "name": "Translations"
+    },
+    {
+      "name": "Statistics"
     }
   ],
   "paths": {
@@ -510,6 +516,13 @@
             "default": ""
           },
           {
+            "name": "with_donation_statistics",
+            "in": "path",
+            "description": "Enable to add donation statistics data on the response",
+            "required": false,
+            "type": "boolean"
+          },
+          {
             "name": "country_id",
             "in": "path",
             "description": "Country ID",
@@ -731,6 +744,13 @@
             "required": true,
             "type": "string",
             "default": ""
+          },
+          {
+            "name": "with_donation_statistics",
+            "in": "path",
+            "description": "Enable to add donation statistics data on the response",
+            "required": false,
+            "type": "boolean"
           },
           {
             "name": "missionId",
@@ -2801,61 +2821,6 @@
         }
       }
     },
-    "/app/change-password": {
-      "patch": {
-        "operationId": "PUT_team4-cip-api-change-password",
-        "summary": "App - Change password (Milestone - 3)",
-        "description": "User can change password from user profile edit page from platform",
-        "tags": [
-          "User"
-        ],
-        "consumes": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "token",
-            "in": "header",
-            "required": true,
-            "type": "string",
-            "default": ""
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "old_password": {
-                  "type": "string"
-                },
-                "password": {
-                  "type": "string"
-                },
-                "confirm_password": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized - Invalid token"
-          },
-          "422": {
-            "description": "Invalid input"
-          },
-          "502": {
-            "description": "Bad Gateway - Database operational error"
-          }
-        }
-      }
-    },
     "/app/user/upload-profile-image": {
       "patch": {
         "operationId": "PUT_team4-cip-api-change-profile-image",
@@ -4318,6 +4283,16 @@
             "required": true,
             "type": "string",
             "default": ""
+          },
+          {
+            "name": "keys[]",
+            "in": "path",
+            "description": "List of all tenant setting keys",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -9012,6 +8987,152 @@
           }
         }
       }
+    },
+    "/app/setting": {
+      "post": {
+        "operationId": "POST-cip-api-user-setting",
+        "summary": "App - Post user settings",
+        "description": "Logged in users can change password and update their profile settings",
+        "tags": [
+          "User setting"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "cookie",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "password": {
+                  "type": "string"
+                },
+                "confirm_password": {
+                  "type": "string"
+                },
+                "old_password": {
+                  "type": "string"
+                },
+                "language_id": {
+                  "type": "integer"
+                },
+                "timezone_id": {
+                  "type": "integer"
+                },
+                "currency": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User profile settings updated successfully"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid token"
+          }
+        }
+      },
+      "get": {
+        "operationId": "GET-cip-api-user-setting",
+        "summary": "App - Get user settings",
+        "description": "Logged in users can retrieve their profile settings",
+        "tags": [
+          "User setting"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "cookie",
+            "required": true,
+            "type": "string",
+            "default": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User profile settings retrieved successfully"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid token"
+          }
+        }
+      }
+    },
+    "/statistics/donations": {
+      "get": {
+        "operationId": "GET_cip-api-get-donation-statisics",
+        "summary": "Admin - Get Donation Statistics",
+        "tags": [
+          "Statistics"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "Body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "date_ranges"
+              ],
+              "properties": {
+                "date_ranges": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "description": "Format: ['Y-M-D:Y-M-D','Y-M-D:Y-M-D']"
+                  }
+                }
+              }
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key or secret key"
+          },
+          "422": {
+            "description": "Unprocessable entity - Invalid input"
+          },
+          "502": {
+            "description": "Bad Gateway - Database operational error"
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -10248,6 +10369,12 @@
               }
             }
           }
+        },
+        "donation_goal": {
+          "type": "integer"
+        },
+        "donation_goal_year": {
+          "type": "integer"
         }
       }
     },

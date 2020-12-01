@@ -38,6 +38,19 @@ class EventTest extends TestCase
     }
 
     /**
+     * @testdox Test get api version method on Event Class
+     */
+    public function testGetApiVersion()
+    {
+        $event = $this->eventData();
+        $expected = $event['api_version'];
+
+        $event = Event::constructFrom($event);
+        $result = $event->getApiVersion();
+        $this->assertEquals($result, $expected);
+    }
+
+    /**
      * Flatten array keys with values
      *
      * @param array $event
@@ -67,7 +80,7 @@ class EventTest extends TestCase
      */
     private function eventData()
     {
-    	return [
+        return [
             'created' => 1326853478,
             'livemode' => false,
             'id' => 'evt_00000000000000',
@@ -132,5 +145,4 @@ class EventTest extends TestCase
             ]
         ];
     }
-
 }

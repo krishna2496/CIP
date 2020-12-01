@@ -30,6 +30,7 @@ use App\Repositories\MissionMedia\MissionMediaRepository;
 use App\Repositories\Notification\NotificationRepository;
 use App\Repositories\Organization\OrganizationRepository;
 use App\Repositories\TenantActivatedSetting\TenantActivatedSettingRepository;
+use App\Services\Donation\DonationService;
 use App\Services\Mission\ModelsService;
 use App\Services\PaymentGateway\AccountService;
 use Illuminate\Database\Eloquent\Collection;
@@ -58,6 +59,7 @@ class MissionControllerTest extends TestCase
     private $organizationRepository;
     private $helpers;
     private $stripePaymentGateway;
+    private $donationService;
 
     public function setUp(): void
     {
@@ -76,6 +78,7 @@ class MissionControllerTest extends TestCase
         $this->accountService = $this->mock(AccountService::class);
         $this->paymentGatewayFactory = $this->mock(PaymentGatewayFactory::class);
         $this->stripePaymentGateway = $this->mock(StripePaymentGateway::class);
+        $this->donationService = $this->mock(DonationService::class);
 
         $this->missionController = new MissionController(
             $this->missionRepository,
@@ -89,7 +92,8 @@ class MissionControllerTest extends TestCase
             $this->modelService,
             $this->helpers,
             $this->accountService,
-            $this->paymentGatewayFactory
+            $this->paymentGatewayFactory,
+            $this->donationService
         );
     }
 
@@ -3116,6 +3120,75 @@ class MissionControllerTest extends TestCase
     }
 
     /**
+    * @testdox Test show method on mission controller
+    *
+    * @return void
+    */
+    public function testShow()
+    {
+        $data = [
+            'with_donation_statistics' => true
+        ];
+        $request = new Request($data);
+        $missionId = rand(50000, 70000);
+
+        $this->tenantActivatedSettingRepository
+            ->shouldReceive('checkTenantSettingStatus')
+            ->once()
+            ->with(
+                config('constants.tenant_settings.MISSION_IMPACT'),
+                $request
+            )
+            ->andReturn(true);
+
+        $mission = new Mission();
+        $mission->id = $missionId;
+        $mission->mission_type = config('constants.mission_type.DONATION');
+        $mission->donationAttribute = true;
+
+        $this->missionRepository
+            ->shouldReceive('find')
+            ->once()
+            ->with($missionId, true)
+            ->andReturn($mission);
+
+        $this->tenantActivatedSettingRepository
+            ->shouldReceive('getAllTenantActivatedSetting')
+            ->once()
+            ->with($request)
+            ->andReturn([
+                config('constants.tenant_settings.DONATION_MISSION')
+            ]);
+
+        $data = $mission->toArray();
+        $data['donation_statistics'] = [
+            'content' => 'value'
+        ];
+
+        $this->donationService
+            ->shouldReceive('getMissionDonationStatistics')
+            ->once()
+            ->with($missionId)
+            ->andReturn($data['donation_statistics']);
+
+        $this->responseHelper->shouldReceive('success')
+            ->once()
+            ->with(
+                Response::HTTP_OK,
+                trans('messages.success.MESSAGE_MISSION_FOUND'),
+                $data,
+                false
+            )
+            ->andReturn(new JsonResponse());
+
+        $response = $this->missionController->show(
+            $request,
+            $missionId
+        );
+        $this->assertInstanceOf(JsonResponse::class, $response);
+    }
+
+    /**
      * Create a new service instance.
      *
      * @param  App\Repositories\Mission\MissionRepository $missionRepository
@@ -3154,7 +3227,8 @@ class MissionControllerTest extends TestCase
             $modelService,
             $helpers ?? $this->mock(Helpers::class),
             $this->accountService,
-            $this->paymentGatewayFactory
+            $this->paymentGatewayFactory,
+            $this->donationService
         );
     }
 

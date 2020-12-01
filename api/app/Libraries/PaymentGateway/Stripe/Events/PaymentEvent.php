@@ -137,4 +137,36 @@ class PaymentEvent extends Event
         ];
     }
 
+    /**
+     * Get event type
+     *
+     * @return bool
+     */
+    public function isPaymentSuccessful(): bool
+    {
+        return $this->type === self::PAYMENT_SUCCESS;
+    }
+
+    /**
+     * Get all event failure information
+     *
+     * @return array
+     */
+    public function getFailureData(): array
+    {
+        $outcome = $this->getCharge('outcome');
+        $lastPaymentError = $this->getData('last_payment_error')
+            ->toArray();
+        unset($lastPaymentError['payment_method']);
+
+        return [
+            'api_version' => $this->getApiVersion(),
+            'status' => $this->getData('status'),
+            'failure_code' => $this->getCharge('failure_code'),
+            'failure_message' => $this->getCharge('failure_message'),
+            // check first if outcome has value as some cases doesn't provide this value e.g invalid 3D auth
+            'outcome' => $outcome ? $outcome->toArray() : null,
+            'last_payment_error' => $lastPaymentError,
+        ];
+    }
 }

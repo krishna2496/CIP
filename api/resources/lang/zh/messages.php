@@ -197,6 +197,7 @@ return [
         'MESSAGE_STATE_LISTING' => '成功列出的国家',
         'MESSAGE_STATE_FOUND' => '成功找到状态',
         'MESSAGE_NO_STATE_FOUND' => '未找到状态',
+        'MESSAGE_SETTING_UPDATE_SUCCESS' => '用户设置更新成功。',
     ],
 
 

@@ -393,15 +393,13 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div
-                                                    v-if="missionDetail.description && missionDetail.description.length > 0">
+                                            <div v-if="missionDetail.description && missionDetail.description.length > 0">
                                                 <div v-for="(section, index) in missionDetail.description" :key=index>
                                                     <h2>{{section.title}}</h2>
-                                                    <p class="mission-description-content" v-html="section.description"></p>
+                                                    <p class="mission-description-content text-break" v-html="section.description"></p>
                                                 </div>
                                             </div>
-                                            <div
-                                                    v-if="missionDetail.mission_document && missionDetail.mission_document.length > 0">
+                                            <div v-if="missionDetail.mission_document && missionDetail.mission_document.length > 0">
                                                 <h2>{{ languageData.label.documents }}</h2>
                                                 <div class="document-list-wrap">
                                                     <div class="document-list-block"
@@ -453,7 +451,7 @@
                                         </div>
                                         <b-collapse id="organization" accordion="my-accordion" role="tabpanel"
                                                     class="tab-content">
-                                            <div class="organization-detail" v-html="missionDetail.organisation_detail"></div>
+                                            <div class="organization-detail text-break" v-html="missionDetail.organisation_detail"></div>
                                         </b-collapse>
                                     </div>
                                     <div class="tabs" v-if="isCommentDisplay">
@@ -973,6 +971,7 @@
              * Otherwise this.missionDetail.organisation_detail is an array if the details are empty.
              */
             this.isOrganizationDisplay = typeof this.missionDetail.organisation_detail === 'string';
+            this.formatDescription();
           })
         } else {
           this.$router.push('/404');
@@ -1108,6 +1107,18 @@
           tabLinks[i].className = tabLinks[i].className.replace("active", "");
         }
         tabsEvent.currentTarget.className += " active";
+      },
+
+      formatDescription() {
+        if (this.missionDetail.description && this.missionDetail.description.length > 0) {
+            this.missionDetail.description.map(detail => {
+                detail.description = detail.description.replaceAll('&nbsp;', ' ');
+            });
+        }
+
+        if (this.isOrganizationDisplay) {
+            this.missionDetail.organisation_detail = this.missionDetail.organisation_detail.replaceAll('&nbsp;', ' ');
+        }
       }
     },
     created() {

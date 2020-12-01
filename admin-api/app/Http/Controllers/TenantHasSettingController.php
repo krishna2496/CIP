@@ -2,20 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ActivityLogEvent;
+use App\Helpers\DatabaseHelper;
+use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
+use App\Models\Tenant;
+use App\Models\TenantHasSetting;
+use App\Repositories\Tenant\TenantRepository;
+use App\Repositories\TenantHasSetting\TenantHasSettingRepository;
+use App\Traits\RestExceptionHandlerTrait;
+use DB;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Http\JsonResponse;
-use App\Repositories\TenantHasSetting\TenantHasSettingRepository;
-use App\Helpers\ResponseHelper;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use App\Traits\RestExceptionHandlerTrait;
-use App\Repositories\Tenant\TenantRepository;
-use App\Models\TenantHasSetting;
 use Validator;
-use App\Helpers\DatabaseHelper;
-use DB;
-use App\Events\ActivityLogEvent;
 
 //!  Tenanthassetting controller
 /*!
@@ -29,7 +30,7 @@ class TenantHasSettingController extends Controller
      * @var App\Repositories\TenantHasSetting\TenantHasSettingRepository
      */
     private $tenantHasSettingRepository;
-    
+
     /**
      * @var App\Helpers\ResponseHelper
      */
@@ -44,7 +45,7 @@ class TenantHasSettingController extends Controller
      * @var App\Helpers\DatabaseHelper
      */
     private $databaseHelper;
-    
+
     /**
      * Create a new Tenant has setting controller instance.
      *
@@ -65,24 +66,27 @@ class TenantHasSettingController extends Controller
         $this->responseHelper = $responseHelper;
         $this->databaseHelper = $databaseHelper;
     }
-    
+
     /**
      * Show tenant Setting details
      *
      * @param int $tenantId
      * @return \Illuminate\Http\JsonResponse;
      */
-    public function show(int $tenantId): JsonResponse
+    public function show(Request $request, int $tenantId): JsonResponse
     {
         try {
             $tenant = $this->tenantRepository->find($tenantId);
-            $tenantSettingsData = $this->tenantHasSettingRepository->getSettingsList($tenantId);
-            
+            $tenantSettingsData = $this->tenantHasSettingRepository->getSettingsList($tenantId, [
+                'keys' => $request->get('keys', [])
+            ]);
+
             // Set response message
             $apiStatus = Response::HTTP_OK;
             $apiData = $tenantSettingsData->toArray();
             $apiMessage = (!empty($apiData)) ? trans('messages.success.MESSAGE_TENANT_SETTING_LISTING') :
             trans('messages.success.MESSAGE_NO_RECORD_FOUND');
+
             return $this->responseHelper->success($apiStatus, $apiMessage, $apiData);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(
@@ -91,7 +95,7 @@ class TenantHasSettingController extends Controller
             );
         }
     }
-    
+
     /**
      * Store a newly created tenant settings into database
      *
@@ -159,12 +163,12 @@ class TenantHasSettingController extends Controller
                     $activityLogStatus = config('constants.activity_log_actions.DISABLED');
                 }
             }
-            
+
             // Disconnect tenant database and reconnect with default database
             DB::disconnect('tenant');
             DB::reconnect('mysql');
             DB::setDefaultConnection('mysql');
-            
+
             // Set response data
             $apiStatus = Response::HTTP_OK;
             $apiMessage =  trans('messages.success.MESSAGE_TENANT_SETTINGS_UPDATED');
@@ -177,7 +181,7 @@ class TenantHasSettingController extends Controller
                 $request->toArray(),
                 $tenantSettingId
             ));
-            
+
             return $this->responseHelper->success($apiStatus, $apiMessage);
         } catch (ModelNotFoundException $e) {
             return $this->modelNotFound(

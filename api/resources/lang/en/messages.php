@@ -205,6 +205,8 @@ return [
         'MESSAGE_ORGANIZATION_LISTING' => 'Organization listed successfully',
         'MESSAGE_TENANT_USER_CONTENT_STATISTICS_SUCCESS' => 'User content statistics retrieved successfully',
         'MESSAGE_TENANT_USER_VOLUNTEER_SUMMARY_SUCCESS' => 'Volunteer summary retrieved successfully',
+        'MESSAGE_SETTING_UPDATE_SUCCESS' => 'User setting updated successfully.',
+        'MESSAGE_SETTING_LISTING' => 'User setting listed successfully',
         'MESSAGE_TENANT_CURRENCY_LISTING' => 'Currencies listed successfully',
         'MESSAGE_MISSION_TAB_DELETED' => 'Mission tab deleted successfully',
         'MESSAGE_NO_DONATION_IP_WHITELIST_FOUND' => 'No whitelisted IP found',
@@ -223,6 +225,7 @@ return [
         'MESSAGE_PAYMENT_SUCCESSFULLY_CREATED' => 'Payment successfully created',
         'MISSION_ELIGIBLE_FOR_DONATION' => 'Mission is eligible for donation',
         'MISSION_NOT_ELIGIBLE_FOR_DONATION' => 'Mission is not eligible for donation',
+        'MESSAGE_DONATION_STATISTICS_RETRIEVED' => 'Donation statistics retrieved successfully'
     ],
 
 

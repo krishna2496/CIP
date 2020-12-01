@@ -157,7 +157,7 @@ class TenantActivatedSettingRepository implements TenantActivatedSettingInterfac
 
         if ($volunteeringSetting) {
             $this->helpers->switchDatabaseConnection('tenant');
-           
+
             $tenantSetting = \DB::table('tenant_setting')->where('tenant_setting_id', $value['tenant_setting_id'])->first();
             $this->helpers->switchDatabaseConnection('mysql');
             $masterSetting = \DB::table('tenant_setting')->where('tenant_setting_id', $tenantSetting->setting_id)->first();
@@ -169,7 +169,7 @@ class TenantActivatedSettingRepository implements TenantActivatedSettingInterfac
                 $this->helpers->switchDatabaseConnection('tenant');
                 $volunteeringGoalSetting = \DB::table('tenant_setting')->where('setting_id', $volunteeringGoal->tenant_setting_id)->first();
                 $volunteeringGoalSetting = $this->tenantActivatedSetting->where(['tenant_setting_id' => $volunteeringGoalSetting->tenant_setting_id])->first();
-                    
+
                 if (!$volunteeringGoalSetting) {
                     return false;
                 }
@@ -181,7 +181,7 @@ class TenantActivatedSettingRepository implements TenantActivatedSettingInterfac
                 $this->helpers->switchDatabaseConnection('tenant');
                 $volunteeringTimeSetting = \DB::table('tenant_setting')->where('setting_id', $volunteeringTime->tenant_setting_id)->first();
                 $volunteeringTimeSetting = $this->tenantActivatedSetting->where(['tenant_setting_id' => $volunteeringTimeSetting->tenant_setting_id])->first();
-                    
+
                 if (!$volunteeringTimeSetting) {
                     return false;
                 }
@@ -215,7 +215,7 @@ class TenantActivatedSettingRepository implements TenantActivatedSettingInterfac
                 $tenantSetting = \DB::table('tenant_setting')->where('tenant_setting_id', $value['tenant_setting_id'])->first();
                 $this->helpers->switchDatabaseConnection('mysql');
                 $masterSetting = \DB::table('tenant_setting')->where('tenant_setting_id', $tenantSetting->setting_id)->first();
-                
+
                 if ($masterSetting->key == config('constants.tenant_settings.VOLUNTEERING_TIME_MISSION')
                     || $masterSetting->key == config('constants.tenant_settings.VOLUNTEERING_GOAL_MISSION')) {
                     return false;

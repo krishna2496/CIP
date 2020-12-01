@@ -302,7 +302,14 @@
 		"and": "et",
 		"for": "Pour",
 		"sort_deadline": "Trier par date limite",
-		"no_image_available": "Aucune image disponible"
+		"no_image_available": "Aucune image disponible",
+		"profile": "Profil",
+		"settings": "Paramètres",
+		"donations": "Dons",
+		"personal_donation_goal": "Objectif de don personnel",
+		"preferences": "Préférences",
+		"currency": "Monnaie",
+		"current_password": "Mot de passe actuel"
 	},
 	"placeholder": {
 		"email_address": "Entrez l’e-mail",
@@ -335,7 +342,9 @@
 		"video_url": "Saisir l’URL de votre vidéo",
 		"subject": "Saisir votre sujet",
 		"message": "Saisir votre message",
-		"search_user": "Recherche par nom ou par adresse e-mail"
+		"search_user": "Recherche par nom ou par adresse e-mail",
+		"currency": "Sélectionnez votre devise",
+		"old_password": "Entrez le mot de passe actuel"
 	},
 	"errors": {
 		"email_required": "L’adresse e-mail est obligatoire.",
@@ -394,7 +403,13 @@
 		"invalid_saml_setting": "Les mappages suivants sont requis:",
 		"password_should_contain_uppercase": "Au moins 1 lettre majuscule",
 		"password_should_contain_lowercase": "Au moins 1 lettre minuscule",
-		"password_should_contain_numbers": "Au moins 1 chiffre"
+		"password_should_contain_numbers": "Au moins 1 chiffre",
+		"currency_required": "La monnaie est obligatoire.",
+		"donation_goal_required": "Le montant cible du don est requis.",
+		"valid_donation_goal": "Veuillez entrer un montant de don valide."
+	},
+	"messages": {
+		"setting_update_success": "Les paramètres de l'utilisateur ont été mis à jour avec succès."
 	},
 	"export_timesheet_file_names": {
 		"PENDING_TIME_MISSION_ENTRIES_XLSX": "Pending_Time_Mission_Entries.xls",
