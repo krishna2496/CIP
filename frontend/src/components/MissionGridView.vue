@@ -6,7 +6,7 @@
                     v-for="(mission, key) in items" :key="key">
                     <div class="card-inner">
                         <b-card no-body>
-                            <b-link target="_self" :to="getRedirectUrl(mission.mission_id)" class="location">
+                            <b-link target="_self" :to="getRedirectUrl(mission.mission_id, mission.mission_type)" class="location">
                                 <i>
                                     <img :src="
                       $store.state.imagePath + '/assets/images/location.svg'
@@ -15,7 +15,7 @@
                                 {{ mission.city_name }}
                             </b-link>
                             <b-card-header>
-                                <b-link target="_self" :to="getRedirectUrl(mission.mission_id)">
+                                <b-link target="_self" :to="getRedirectUrl(mission.mission_id, mission.mission_type)">
                                     <div class="header-img-block" v-bind:class="{
 
 'grayed-out': getClosedStatus(mission),
@@ -464,7 +464,7 @@ $store.state.imagePath +
                                     </div>
                                     <div class="card-action-block">
                                         <div class="left-btn">
-                                            <b-link :to="getRedirectUrl(mission.mission_id)"
+                                            <b-link :to="getRedirectUrl(mission.mission_id, mission.mission_type)"
                                                 class="btn-bordersecondary icon-btn" v-bind:class="{
                                                 'btn-lg': languageData.label.view_detail.length > 12,
                                                 }">
