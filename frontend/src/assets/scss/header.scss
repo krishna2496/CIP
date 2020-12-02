@@ -1309,52 +1309,8 @@ header {
         @include md-max {
           border-right: none;
         }
-<<<<<<< HEAD
-        .list-group-item {
-            display: inline-flex;
-            align-items: center;
-            max-width: 20%;
-            flex: 0 0 20%;
-            height: 100%;
-            padding: 0;
-            border: none;
-            border-left: 1px solid $primary-border-color;
-            border-radius: 0;
-            @include md-max {
-                width: 100%;
-                height: auto;
-                border: none;
-                margin: 0 0 16px;
-                max-width: 100%!important;
-                flex: 0 0 100%!important;
-            }
-            &:last-child {
-                border-right: 1px solid $primary-border-color;
-                @include md-max {
-                    border-right: none;
-                }
-            }
-            .custom-select {
-                height: 100%;
-                padding: 6px 33px 6px 15px;
-                color: $black-primary;
-                font-size: 16px;
-                font-weight: 300;
-                background: url($assetUrl + "/down-arrow.svg") no-repeat right 12px center/13px 11px;
-                border: none;
-                &:focus {
-                    box-shadow: none;
-                    border: none;
-                    outline: none;
-                }
-            }
-        }
-    }
-    .custom-dropdown {
-=======
       }
       .custom-select {
->>>>>>> 331d0101b09e4a5fbda9248cb22d53ae9b26097f
         height: 100%;
         padding: 6px 33px 6px 15px;
         color: $black-primary;
@@ -1395,33 +1351,6 @@ header {
         font-size: 18px;
         padding-left: 19px;
         line-height: normal;
-<<<<<<< HEAD
-        box-shadow: none;
-        span {
-            border: none;
-            border-radius: 0;
-            box-shadow: none;
-            min-height: 100%;
-            display: block;
-            align-items: center;
-            font-size: 16px;
-            text-overflow: ellipsis;
-            max-width: 100%;
-            overflow: hidden;
-            line-height: 66px;
-             @include xl-max{
-                font-size: 14px;
-                padding: 6px 35px 6px 15px;  
-            }
-            @include md-max {
-                height: auto;
-                position: relative;
-                z-index: 5;
-                font-size: 18px;
-                padding-left: 19px;
-                line-height: normal;
-            }
-=======
       }
     }
     .option-list-wrap {
@@ -1443,7 +1372,6 @@ header {
           display: block;
           justify-content: space-between;
           align-items: center;
->>>>>>> 331d0101b09e4a5fbda9248cb22d53ae9b26097f
         }
       }
     }
