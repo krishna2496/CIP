@@ -771,9 +771,6 @@ $store.state.imagePath +
                             ) {
                                 this.children[2].children[1].style.display = "block";
                                 if (!this.parentNode.classList.contains("active")) {
-                                    // console.log(this.children[2].children[1].offsetHeight +
-                                    // this.children[2].children[0].offsetHeight +
-                                    // // this.children[1].offsetHeight , this.offsetHeight );
                                     const eventProgessBlock = this.querySelector(".event-block .progress-block");
                                     const eventProgessBlockH = eventProgessBlock ? eventProgessBlock.offsetHeight : 0;
                                     const cardBodyH =
@@ -784,7 +781,6 @@ $store.state.imagePath +
                                     this.parentNode.classList.add("active");
                                     const ratingBlock = this.querySelector(".group-ratings");
                                     const ratingBlockH = ratingBlock ? 18 : 0;
-                                    console.log(cardTotalHeight + ratingBlockH);
                                     this.children[1].style.transform = `translateY(-${cardTotalHeight + ratingBlockH - eventProgessBlockH}px)`;
                                     this.children[2].style.transform = `translateY(-${cardTotalHeight + ratingBlockH - eventProgessBlockH}px)`;
                                 }
