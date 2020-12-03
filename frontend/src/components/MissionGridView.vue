@@ -202,7 +202,7 @@ mission.donation_attribute.goal_amount
                                                         <em>{{ languageData.label.achieved }}</em>
                                                     </span>
                                                     <span class="subtitle-text">
-                                                        <em><b>${{
+                                                        <em><b v-if="mission.user_currency">{{mission.user_currency.symbol}}{{
 
 mission.donation_attribute.goal_amount
 
@@ -226,7 +226,7 @@ mission.donation_attribute &&
 
 mission.donation_attribute.show_donation_count
 
-">${{
+"><template v-if="mission.user_currency">{{mission.user_currency.symbol}}</template>{{
 
 mission.donation_attribute.donation_amount_raised
 
@@ -423,7 +423,7 @@ $store.state.imagePath +
                                                                 <em>{{ languageData.label.achieved }}</em>
                                                             </span>
                                                             <span class="subtitle-text">
-                                                                <em><b>${{
+                                                                <em><b v-if="mission.user_currency">{{mission.user_currency.symbol}}{{
                                     mission.donation_attribute.goal_amount
                                   }}</b></em>
                                                                 <em>{{ languageData.label.goal }}</em>

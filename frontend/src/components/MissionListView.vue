@@ -154,10 +154,10 @@
                                 <div class="detail-column progress-info-column">
                                     <div class="text-wrap">
                                         <p v-if="mission.donation_attribute">
-                                            <b class="donate-success" v-if="mission.donation_attribute.show_donation_count">${{mission.donation_attribute.donation_amount_raised}}</b>
+                                            <b class="donate-success" v-if="mission.donation_attribute.show_donation_count"><template v-if="mission.user_currency">{{mission.user_currency.symbol}}</template>{{mission.donation_attribute.donation_amount_raised}}</b>
                                             <span v-if="mission.donation_attribute.show_donation_count"> {{ languageData.label.raised_by}} </span>
                                             <span v-if="mission.donation_attribute.show_goal_amount && mission.donation_attribute.show_donation_count"> {{ languageData.label.of}} </span>
-                                            <span v-if="mission.donation_attribute.show_goal_amount">${{mission.donation_attribute.goal_amount}} {{ languageData.label.goal}}</span>
+                                            <span v-if="mission.donation_attribute.show_goal_amount"><template v-if="mission.user_currency">{{mission.user_currency.symbol}}</template>{{mission.donation_attribute.goal_amount}} {{ languageData.label.goal}}</span>
                                         </p>
                                     </div>
                                 </div>
@@ -187,7 +187,7 @@
                     <div class="card-action-block">
                         <div class="donate-btn-wrap" v-if="checkMissionTypeDonation(mission.mission_type)">
                             <b-form-group>
-                                <label for="">$</label>
+                                <label for="" v-if="mission.user_currency">{{mission.user_currency.symbol}}</label>
                                 <b-form-input id="" type="text" class="form-control" value="20"></b-form-input>
                                 <b-button class="btn-donate btn-fillsecondary">Donate</b-button>
                             </b-form-group>
