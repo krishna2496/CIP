@@ -149,12 +149,12 @@
                         <div class="group-details progress-details" v-else>
                             <div class="content-wrap">
                                 <div class="detail-column progress-block">
-                                    <b-progress v-if="mission.donation_attribute && mission.donation_attribute.show_donation_meter" :value="mission.donation_attribute.donation_amount_raised" :max="mission.donation_attribute.goal_amount"></b-progress>
+                                    <b-progress v-if="mission.donation_attribute && mission.donation_attribute.show_donation_meter" :value="mission.donation_statistics.total_amount"  :max="mission.donation_attribute.goal_amount"></b-progress>
                                 </div>
                                 <div class="detail-column progress-info-column">
                                     <div class="text-wrap">
                                         <p v-if="mission.donation_attribute">
-                                            <b class="donate-success" v-if="mission.donation_attribute.show_donation_count"><template v-if="mission.user_currency">{{mission.user_currency.symbol}}</template>{{mission.donation_attribute.donation_amount_raised}}</b>
+                                            <b class="donate-success" v-if="mission.donation_attribute.show_donation_count"><template v-if="mission.user_currency">{{mission.user_currency.symbol}}</template>{{mission.donation_statistics.total_amount}}</b>
                                             <span v-if="mission.donation_attribute.show_donation_count"> {{ languageData.label.raised_by}} </span>
                                             <span v-if="mission.donation_attribute.show_goal_amount && mission.donation_attribute.show_donation_count"> {{ languageData.label.of}} </span>
                                             <span v-if="mission.donation_attribute.show_goal_amount"><template v-if="mission.user_currency">{{mission.user_currency.symbol}}</template>{{mission.donation_attribute.goal_amount}} {{ languageData.label.goal}}</span>
@@ -166,7 +166,7 @@
                                         <img :src="$store.state.imagePath+'/assets/images/target-ic.svg'" alt="target icon">
                                     </i>
                                     <div class="text-wrap" v-if="mission.donation_attribute.show_donation_percentage">
-                                        <span class="title-text">{{countDonationPercentage(mission.donation_attribute.donation_amount_raised,mission.donation_attribute.goal_amount)}}%
+                                        <span class="title-text">{{countDonationPercentage(mission.donation_statistics.total_amount, mission.donation_attribute.goal_amount)}}%
                                         </span>
                                         <span class="subtitle-text">{{ languageData.label.achieved}}</span>
                                     </div>
@@ -189,7 +189,7 @@
                             <b-form-group>
                                 <label for="" v-if="mission.user_currency">{{mission.user_currency.symbol}}</label>
                                 <b-form-input id="" type="text" class="form-control" value="20"></b-form-input>
-                                <b-button class="btn-donate btn-fillsecondary">Donate</b-button>
+                                <b-button class="btn-donate btn-fillsecondary">{{ languageData.label.donate }}</b-button>
                             </b-form-group>
                         </div>
                         <div class="btn-wrap">
@@ -221,12 +221,11 @@
                             </b-button>
 
                             <b-button v-bind:class="{
+                                'icon-btn' : true,
 
-'icon-btn' : true,
+                                'fill-heart-btn' : mission.is_favourite == 1
 
-'fill-heart-btn' : mission.is_favourite == 1
-
-}" v-b-tooltip.hover :title="mission.is_favourite == 1 ?  languageData.label.remove_from_favourite :languageData.label.add_to_favourite" @click="favoriteMission(mission.mission_id)">
+                                }" v-b-tooltip.hover :title="mission.is_favourite == 1 ?  languageData.label.remove_from_favourite :languageData.label.add_to_favourite" @click="favoriteMission(mission.mission_id)">
                                 <img v-if="mission.is_favourite == 0" :src="$store.state.imagePath+'/assets/images/heart-icon.svg'" alt="heart icon">
                                 <img v-if="mission.is_favourite == 1" :src="$store.state.imagePath+'/assets/images/heart-fill-icon.svg'" alt="heart icon">
                             </b-button>

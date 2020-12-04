@@ -159,7 +159,7 @@
                                             <div class="text-wrap">
                                                 <b-progress :value="
 
-                                                mission.donation_attribute.donation_amount_raised
+                                                mission.donation_statistics.total_amount
 
                                                 " :max="mission.donation_attribute.goal_amount"></b-progress>
                                                 <div class="progress-info">
@@ -169,9 +169,9 @@
 
                                                                 countDonationPercentage(
 
-                                                                mission.donation_attribute
+                                                                mission.donation_statistics
 
-                                                                .donation_amount_raised,
+                                                                .total_amount,
 
                                                                 mission.donation_attribute.goal_amount
 
@@ -182,7 +182,7 @@
                                                         <em>{{ languageData.label.achieved }}</em>
                                                     </span>
                                                     <span class="subtitle-text">
-                                                        <em><b v-if="mission.user_currency">{{mission.user_currency.symbol}}{{
+                                                        <em v-if="mission.user_currency"><b>{{mission.user_currency.symbol}}{{
 
                                                         mission.donation_attribute.goal_amount
 
@@ -195,40 +195,33 @@
 
                                         <div class="progress-block detail-column success-donate" v-if="
 
-checkMissionTypeDonation(mission.mission_type) &&
-mission.donation_attribute && 
-!mission.donation_attribute.show_donation_meter
+                                            checkMissionTypeDonation(mission.mission_type) &&
+                                            mission.donation_attribute && 
+                                            !mission.donation_attribute.show_donation_meter
 
-">
+                                            ">
                                             <div class="text-wrap">
                                                 <p>
                                                     <b class="donate-success" v-if="
-
-mission.donation_attribute.show_donation_count
-
-"><template v-if="mission.user_currency">{{mission.user_currency.symbol}}</template>{{
-
-mission.donation_attribute.donation_amount_raised
-
-}}</b>
+                                                    mission.donation_attribute.show_donation_count
+                                                    ">
+                                                    <template v-if="mission.user_currency">{{mission.user_currency.symbol}}</template>{{
+                                                    mission.donation_statistics.total_amount
+                                                    }}</b>
                                                     <span v-if="
-
-mission.donation_attribute.show_donation_count
-
-">
+                                                        mission.donation_attribute.show_donation_count
+                                                    ">
                                                         {{ languageData.label.raised_by }}</span>
                                                     <span v-if="
-
-mission.donation_attribute.show_donors_count &&
-
-mission.donation_attribute.show_donation_count
-
-">
+                                                        mission.donation_statistics.donors &&
+                                                        mission.donation_attribute.show_donation_count
+                                                        ">
                                                         {{ languageData.label.by }}
                                                     </span>
                                                     <span
-                                                        v-if="mission.donation_attribute.show_donors_count">{{ mission.donation_attribute.donor_count }}
-                                                        {{ languageData.label.donors }}</span>
+                                                        v-if="mission.donation_statistics.donors">{{ mission.donation_attribute.donor_count }}
+                                                        {{ languageData.label.donors }}
+                                                    </span>
                                                 </p>
                                             </div>
                                         </div>
@@ -236,30 +229,30 @@ mission.donation_attribute.show_donation_count
                                         <b-button class="like-btn">
                                             <img v-if="mission.is_favourite == 1" :src="
 
-$store.state.imagePath +
+                                            $store.state.imagePath +
 
-'/assets/images/heart-fill-icon.svg'
+                                            '/assets/images/heart-fill-icon.svg'
 
-" alt="Heart Icon" />
+                                            " alt="Heart Icon" />
                                         </b-button>
                                         <!-- added end -->
                                     </div>
                                 </b-link>
                                 <div class="init-hidden">
                                     <div class="group-details" v-bind:class="{
-                      'mb-3': !isContentBlockDisplay(mission),
-                    }">
+                                        'mb-3': !isContentBlockDisplay(mission),
+                                        }">
                                         <div class="top-strip">
                                             <span>
                                                 <!-- Mission type time -->
                                                 <template v-if="checkMissionTypeTime(mission.mission_type)">
                                                     <template v-if="mission.end_date !== null">
                                                         <template v-if="
-                                !compareDate(
-                                  mission.end_date,
-                                  mission.start_date
-                                )
-                              ">
+                                                                !compareDate(
+                                                                mission.end_date,
+                                                                mission.start_date
+                                                                )
+                                                            ">
                                                             {{ languageData.label.from }}
                                                             {{ mission.start_date | formatDate }}
                                                             {{ languageData.label.until }}
@@ -286,24 +279,24 @@ $store.state.imagePath +
                                             <template v-if="checkMissionTypeTime(mission.mission_type)">
                                                 <div class="group-details-inner">
                                                     <template v-if="
-                              mission.seats_left &&
-                              mission.seats_left != 0 &&
-                              mission.seats_left !== null
-                            ">
+                                                        mission.seats_left &&
+                                                        mission.seats_left != 0 &&
+                                                        mission.seats_left !== null
+                                                        ">
                                                         <div class="detail-column info-block">
                                                             <i class="icon-wrap">
                                                                 <img :src="
-                                    $store.state.imagePath +
-                                    '/assets/images/user-icon.svg'
-                                  " alt="user" />
+                                                                    $store.state.imagePath +
+                                                                    '/assets/images/user-icon.svg'
+                                                                " alt="user" />
                                                             </i>
                                                             <div class="text-wrap">
                                                                 <span class="title-text mb-1">{{
-                                  mission.seats_left
-                                }}</span>
+                                                                mission.seats_left
+                                                                }}</span>
                                                                 <span class="subtitle-text">{{
-                                  languageData.label.seats_left
-                                }}</span>
+                                                                languageData.label.seats_left
+                                                                }}</span>
                                                             </div>
                                                         </div>
                                                     </template>
@@ -312,9 +305,9 @@ $store.state.imagePath +
                                                         <div class="detail-column info-block">
                                                             <i class="icon-wrap">
                                                                 <img :src="
-                                    $store.state.imagePath +
-                                    '/assets/images/clock.svg'
-                                  " alt="user" />
+                                                                    $store.state.imagePath +
+                                                                    '/assets/images/clock.svg'
+                                                                " alt="user" />
                                                             </i>
                                                             <div class="text-wrap">
                                                                 <span class="title-text mb-1">{{
@@ -387,15 +380,15 @@ $store.state.imagePath +
                         ">
                                                     <div class="text-wrap">
                                                         <b-progress :value="
-                              mission.donation_attribute.donation_amount_raised
+                              mission.donation_statistics.total_amount
                             " :max="mission.donation_attribute.goal_amount"></b-progress>
                                                         <div class="progress-info">
                                                             <span class="subtitle-text">
                                                                 <em>
                                                                     {{
                                   countDonationPercentage(
-                                    mission.donation_attribute
-                                      .donation_amount_raised,
+                                    mission.donation_statistics
+                                      .total_amount,
                                     mission.donation_attribute.goal_amount
                                   )
                                 }}%
@@ -421,20 +414,20 @@ $store.state.imagePath +
                                                             <b class="donate-success" v-if="
                                 mission.donation_attribute.show_donation_count
                               ">${{
-                                mission.donation_attribute.donation_amount_raised
+                                mission.donation_statistics.total_amount
                               }}</b>
                                                             <span v-if="
                                 mission.donation_attribute.show_donation_count
                               ">
                                                                 {{ languageData.label.raised_by }}</span>
                                                             <span v-if="
-                                mission.donation_attribute.show_donors_count &&
+                                mission.donation_statistics.donors &&
                                   mission.donation_attribute.show_donation_count
                               ">
                                                                 {{ languageData.label.by }}
                                                             </span>
                                                             <span
-                                                                v-if="mission.donation_attribute.show_donors_count">{{ mission.donation_attribute.donor_count }}
+                                                                v-if="mission.donation_statistics.donors">{{ mission.donation_attribute.donor_count }}
                                                                 {{ languageData.label.donors }}</span>
                                                         </p>
                                                     </div>
