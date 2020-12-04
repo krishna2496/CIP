@@ -9,8 +9,8 @@
                             <b-link target="_self" :to="getRedirectUrl(mission.mission_id, mission.mission_type)" class="location">
                                 <i>
                                     <img :src="
-                      $store.state.imagePath + '/assets/images/location.svg'
-                    " :alt="languageData.label.location" />
+                                    $store.state.imagePath + '/assets/images/location.svg'
+                                    " :alt="languageData.label.location" />
                                 </i>
                                 {{ mission.city_name }}
                             </b-link>
@@ -18,15 +18,15 @@
                                 <b-link target="_self" :to="getRedirectUrl(mission.mission_id, mission.mission_type)">
                                     <div class="header-img-block" v-bind:class="{
 
-'grayed-out': getClosedStatus(mission),
+                                        'grayed-out': getClosedStatus(mission),
 
-'no-img':
+                                        'no-img':
 
-checkDefaultMediaFormat(mission.default_media_type) &&
+                                        checkDefaultMediaFormat(mission.default_media_type) &&
 
-getMediaPath(mission.default_media_path) == '',
+                                        getMediaPath(mission.default_media_path) == '',
 
-}">
+                                        }">
                                         <b-alert show class="alert card-alert alert-success"
                                             v-if="getAppliedStatus(mission)">
                                             {{ languageData.label.applied }}</b-alert>
@@ -36,44 +36,36 @@ getMediaPath(mission.default_media_path) == '',
                                         <div v-if="checkDefaultMediaFormat(mission.default_media_type)"
                                             class="group-img" v-bind:class="{
 
-'d-none':
+                                            'd-none':
 
-checkDefaultMediaFormat(mission.default_media_type) &&
+                                            checkDefaultMediaFormat(mission.default_media_type) &&
 
-getMediaPath(mission.default_media_path) == '',
+                                            getMediaPath(mission.default_media_path) == '',
 
-}" :style="{
+                                            }" :style="{
 
-backgroundImage:
+                                            backgroundImage:
 
-'url(' +
+                                            'url(' +
 
-getMediaPath(mission.default_media_path) +
+                                            getMediaPath(mission.default_media_path) +
 
-')',
+                                            ')',
 
-}">
+                                            }">
                                             <img :src="getMediaPath(mission.default_media_path)"
                                                 alt="mission.default_media_path" />
                                         </div>
                                         <div v-else class="group-img" :style="{
-
-backgroundImage:
-
-'url(' +
-
-youtubeThumbImage(mission.default_media_path) +
-
-')',
-
-}"></div>
-                                        <template v-if="
-
-checkDefaultMediaFormat(mission.default_media_type) &&
-
-getMediaPath(mission.default_media_path) == ''
-
-">
+                                            backgroundImage:
+                                            'url(' +
+                                            youtubeThumbImage(mission.default_media_path) +
+                                            ')',
+                                            }"></div>
+                                            <template v-if="
+                                            checkDefaultMediaFormat(mission.default_media_type) &&
+                                            getMediaPath(mission.default_media_path) == ''
+                                            ">
                                             <i class="camera-icon">
                                                 <img src="../assets/images/camera-ic.svg" />
                                             </i>
@@ -81,14 +73,14 @@ getMediaPath(mission.default_media_path) == ''
                                         </template>
                                     </div>
                                     <div class="group-category" v-if="
-                      mission.mission_theme != null &&
-                      isThemeSet &&
-                      getThemeTitle(mission.mission_theme.translations) != ''
-                    ">
+                                        mission.mission_theme != null &&
+                                        isThemeSet &&
+                                        getThemeTitle(mission.mission_theme.translations) != ''
+                                        ">
                                         <span class="category-text">{{
-                      getThemeTitle(mission.mission_theme.translations)
-                    }}</span>
-                                    </div>
+                                        getThemeTitle(mission.mission_theme.translations)
+                                        }}</span>
+                                        </div>
                                 </b-link>
                             </b-card-header>
 
@@ -98,19 +90,13 @@ getMediaPath(mission.default_media_path) == ''
                                     <div class="content-inner-block">
                                         <div class="mission-label-wrap">
                                             <div class="mission-label volunteer-label" v-if="
-
-isDisplayMissionLabel &&
-
-checkMissionTypeVolunteering(mission.mission_type)
-
-">
+                                                isDisplayMissionLabel &&
+                                                checkMissionTypeVolunteering(mission.mission_type)
+                                                ">
                                                 <span :style="{
-
-backgroundColor:
-
-volunteeringMissionTypeLabels.backgroundColor,
-
-}">
+                                                    backgroundColor:
+                                                    volunteeringMissionTypeLabels.backgroundColor,
+                                                    }">
                                                     <i class="icon-wrap"><img :src="volunteeringMissionTypeLabels.icon"
                                                             alt="volunteer icon" /></i>{{ volunteeringMissionTypeLabels.label }}</span>
                                             </div>
@@ -118,20 +104,14 @@ volunteeringMissionTypeLabels.backgroundColor,
                                                 <span>{{ languageData.label.virtual_mission }}</span>
                                             </div>
                                             <div class="mission-label donation-label" v-if="
-
-isDisplayMissionLabel &&
-
-checkMissionTypeDonation(mission.mission_type)
-
-">
+                                                isDisplayMissionLabel &&
+                                                checkMissionTypeDonation(mission.mission_type)
+                                                ">
                                                 <span :style="{
-
-backgroundColor:
-
-donationMissionTypeLabels.backgroundColor,
-
-}"><i class="icon-wrap"><img :src="donationMissionTypeLabels.icon"
-                                                            alt="donation icon" /></i>{{ donationMissionTypeLabels.label }}</span>
+                                                    backgroundColor:
+                                                    donationMissionTypeLabels.backgroundColor,
+                                                    }"><i class="icon-wrap"><img :src="donationMissionTypeLabels.icon"
+                                                    alt="donation icon" /></i>{{ donationMissionTypeLabels.label }}</span>
                                             </div>
                                         </div>
                                         <div class="card-title mb-2"
@@ -140,9 +120,9 @@ donationMissionTypeLabels.backgroundColor,
                                         </div>
 
                                         <div class="group-ratings" v-if="
-                        checkMissionTypeTime(mission.mission_type) ||
-                          checkMissionTypeGoal(mission.mission_type)
-                      ">
+                                            checkMissionTypeTime(mission.mission_type) ||
+                                            checkMissionTypeGoal(mission.mission_type)
+                                        ">
                                             <star-rating v-if="isStarRatingDisplay" v-bind:increment="0.5"
                                                 v-bind:max-rating="5" inactive-color="#dddddd" active-color="#F7D341"
                                                 v-bind:star-size="18" :rating="mission.mission_rating_count"
@@ -170,43 +150,43 @@ donationMissionTypeLabels.backgroundColor,
                                         <!-- added -->
                                         <!-- donation -->
                                         <div class="progress-block detail-column " v-if="
-mission.donation_attribute && 
-checkMissionTypeDonation(mission.mission_type) &&
+                                            mission.donation_attribute && 
+                                            checkMissionTypeDonation(mission.mission_type) &&
 
-mission.donation_attribute.show_donation_meter
+                                            mission.donation_attribute.show_donation_meter
 
-">
+                                            ">
                                             <div class="text-wrap">
                                                 <b-progress :value="
 
-mission.donation_attribute.donation_amount_raised
+                                                mission.donation_attribute.donation_amount_raised
 
-" :max="mission.donation_attribute.goal_amount"></b-progress>
+                                                " :max="mission.donation_attribute.goal_amount"></b-progress>
                                                 <div class="progress-info">
                                                     <span class="subtitle-text">
                                                         <em>
                                                             {{
 
-countDonationPercentage(
+                                                                countDonationPercentage(
 
-mission.donation_attribute
+                                                                mission.donation_attribute
 
-.donation_amount_raised,
+                                                                .donation_amount_raised,
 
-mission.donation_attribute.goal_amount
+                                                                mission.donation_attribute.goal_amount
 
-)
+                                                                )
 
-}}%
+                                                                }}%
                                                         </em>
                                                         <em>{{ languageData.label.achieved }}</em>
                                                     </span>
                                                     <span class="subtitle-text">
                                                         <em><b v-if="mission.user_currency">{{mission.user_currency.symbol}}{{
 
-mission.donation_attribute.goal_amount
+                                                        mission.donation_attribute.goal_amount
 
-}}</b></em>
+                                                        }}</b></em>
                                                         <em>{{ languageData.label.goal }}</em>
                                                     </span>
                                                 </div>
