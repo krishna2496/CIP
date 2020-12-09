@@ -20,9 +20,6 @@ export default {
     },
     mounted() {
         document.addEventListener("click", this.onClick);
-          window.addEventListener("resize", 
-            this.heightAdjIntervalId = setInterval(this.headerHeight, 10)
-        );
     },
     methods: {
         onClick() {
@@ -64,16 +61,6 @@ export default {
                     document.querySelector(".signin-form-wrapper").style.minHeight = contentH + "px";
                 }
             }, 1000);
-        },
-
-         headerHeight() {
-            let header = document.querySelector("header");
-            let header_height = `${header.offsetHeight}px`;
-            let main = document.querySelector("main");
-                main.style.paddingTop  = header_height;
-            if (this.heightAdjIntervalId) {
-                clearInterval(this.heightAdjIntervalId);
-            }
         },
         handleScroll() {
             if (document.querySelector(".inner-pages > header") != null) {
@@ -126,10 +113,6 @@ export default {
         window.addEventListener("scroll", this.handleScroll);
         window.scrollTo(0, 0);
         setSiteTitle();
-        window.addEventListener("load", 
-        this.heightAdjIntervalId = setInterval(this.headerHeight, 3000)
-        );
-        this.headerHeight();
     },
     updated() {
         window.scrollTo(0, 0);

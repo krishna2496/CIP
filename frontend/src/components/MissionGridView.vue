@@ -456,7 +456,7 @@
                                             </b-link>
                                         </div>
                                         <div class="social-btn">
-                                            <b-button class="icon-btn" v-if="isInviteCollegueDisplay" v-b-tooltip.hover
+                                            <b-button class="icon-btn" v-if="isInviteColleagueDisplay" v-b-tooltip.hover
                                                 :title="languageData.label.recommend_to_co_worker"
                                                 @click="handleModal(mission.mission_id)">
                                                 <img :src="
@@ -517,9 +517,9 @@
 </template>
 
 <script>
-    import store from "../store";
-    import constants from "../constant";
-    import StarRating from "vue-star-rating";
+    import store from '../store';
+    import constants from '../constant';
+    import StarRating from 'vue-star-rating';
     import {
         favoriteMission,
         applyMission,
@@ -540,7 +540,7 @@
         data() {
             return {
                 currentMissionId: 0,
-                isInviteCollegueDisplay: true,
+                isInviteColleagueDisplay: true,
                 isStarRatingDisplay: true,
                 isSubmitNewMissionSet: true,
                 isThemeSet: true,
@@ -695,20 +695,7 @@
                     return "";
                 }
             },
-            // Apply for mission
-            applyForMission(mission) {
-                const missionData = {};
-                missionData.mission_id = mission.mission_id;
-                missionData.availability_id = mission.availability_id;
-                applyMission(missionData).then((response) => {
-                    if (response.error == true) {
-                        this.makeToast("danger", response.message);
-                    } else {
-                        this.makeToast("success", response.message);
-                        this.$emit("getMissions");
-                    }
-                });
-            },
+            
             makeToast(variant = null, message) {
                 this.$bvToast.toast(message, {
                     variant: variant,
@@ -722,7 +709,7 @@
                 }
             },
             cardHeightAdj() {
-                const cardBodyList = document.querySelectorAll(".card-grid .card-body");
+                const cardBodyList = document.querySelectorAll('.card-grid .card-body');
                 // check if card content is already visible in the DOM
                 if (cardBodyList.length > 0) {
                     if (!cardBodyList[0].children[0].offsetHeight) {
@@ -850,7 +837,7 @@
         },
         created() {
             this.languageData = JSON.parse(store.state.languageLabel);
-            this.isInviteCollegueDisplay = this.settingEnabled(
+            this.isInviteColleagueDisplay = this.settingEnabled(
                 constants.INVITE_COLLEAGUE
             );
             this.isStarRatingDisplay = this.settingEnabled(constants.MISSION_RATINGS);

@@ -195,7 +195,7 @@
                         <div class="btn-wrap">
                                 <b-link :to="'/mission-detail/' + mission.mission_id" v-if="checkMissionTypeVolunteering(mission.mission_type)">
                                     <b-button class="btn-bordersecondary icon-btn">
-                                        <span>{{ languageData.label.view_detail | substring(33) }}</span>
+                                        <span>{{ languageData.label.view_detail | substringWithOutDot(36) }}</span>
                                         <i class="icon-wrap">
 											<svg width="18" height="9" viewBox="0 0 18 9" fill="none" xmlns="http://www.w3.org/2000/svg">
 												<path d="M17.3571 4.54129C17.3571 4.63504 17.3237 4.7154 17.2567 4.78237L13.3996 8.33817C13.2924 8.43192 13.1752 8.45201 13.048 8.39844C12.9208 8.33817 12.8571 8.24107 12.8571 8.10714V5.85714H0.321429C0.227679 5.85714 0.15067 5.82701 0.0904018 5.76674C0.0301339 5.70647 0 5.62946 0 5.53571V3.60714C0 3.51339 0.0301339 3.43638 0.0904018 3.37612C0.15067 3.31585 0.227679 3.28571 0.321429 3.28571H12.8571V1.03571C12.8571 0.895089 12.9208 0.797991 13.048 0.744419C13.1752 0.690848 13.2924 0.707589 13.3996 0.794642L17.2567 4.31027C17.3237 4.37723 17.3571 4.45424 17.3571 4.54129Z"/>
@@ -206,7 +206,7 @@
 
 								<b-link :to="'/donation-mission-detail/' + mission.mission_id" v-if="checkMissionTypeDonation(mission.mission_type)">
                                     <b-button class="btn-bordersecondary icon-btn gray-btn">
-                                        <span>{{ languageData.label.view_detail | substring(33) }}</span>
+                                        <span>{{ languageData.label.view_detail | substringWithOutDot(36) }}</span>
                                         <i class="icon-wrap">
 											<svg width="18" height="9" viewBox="0 0 18 9" fill="none" xmlns="http://www.w3.org/2000/svg">
 												<path d="M17.3571 4.54129C17.3571 4.63504 17.3237 4.7154 17.2567 4.78237L13.3996 8.33817C13.2924 8.43192 13.1752 8.45201 13.048 8.39844C12.9208 8.33817 12.8571 8.24107 12.8571 8.10714V5.85714H0.321429C0.227679 5.85714 0.15067 5.82701 0.0904018 5.76674C0.0301339 5.70647 0 5.62946 0 5.53571V3.60714C0 3.51339 0.0301339 3.43638 0.0904018 3.37612C0.15067 3.31585 0.227679 3.28571 0.321429 3.28571H12.8571V1.03571C12.8571 0.895089 12.9208 0.797991 13.048 0.744419C13.1752 0.690848 13.2924 0.707589 13.3996 0.794642L17.2567 4.31027C17.3237 4.37723 17.3571 4.45424 17.3571 4.54129Z"/>
@@ -216,7 +216,7 @@
                                 </b-link>
                             </div>
                         <div class="social-btn">
-                            <b-button class="icon-btn" v-if="isInviteCollegueDisplay" v-b-tooltip.hover :title="languageData.label.recommend_to_co_worker" @click="handleModal(mission.mission_id)">
+                            <b-button class="icon-btn" v-if="isInviteColleagueDisplay" v-b-tooltip.hover :title="languageData.label.recommend_to_co_worker" @click="handleModal(mission.mission_id)">
                                 <img :src="$store.state.imagePath+'/assets/images/multi-user-icon.svg'" alt="multi user icon">
                             </b-button>
 
@@ -264,7 +264,7 @@
 <script>
 import store from '../store';
 import constants from '../constant';
-import InviteCoWorker from "@/components/InviteCoWorker";
+import InviteCoWorker from '@/components/InviteCoWorker';
 import StarRating from 'vue-star-rating';
 import moment from 'moment';
 import {
@@ -284,7 +284,7 @@ export default {
     data() {
         return {
             currentMissionId: 0,
-            isInviteCollegueDisplay: true,
+            isInviteColleagueDisplay: true,
             isQuickAccessSet: true,
             isThemeSet: true,
             isStarRatingDisplay: true,
@@ -402,46 +402,7 @@ export default {
                 }
             });
         },
-        // invite collegues api call
-        inviteColleagues() {
-            let inviteData = {};
-            inviteData.mission_id = this.currentMission;
-            inviteData.to_user_id = this.invitedUserId;
-            inviteColleague(inviteData).then(response => {
-                this.submitDisable = true;
-                if (response.error == true) {
-                    this.classVariant = "danger";
-                    this.message = response.message;
-                    this.$refs.autosuggest.$data.currentIndex = null;
-                    this.$refs.autosuggest.$data.internalValue = "";
-                    this.showErrorDiv = true;
-                } else {
-                    this.query = "";
-                    this.selected = "";
-                    this.currentMissionId = 0;
-                    this.invitedUserId = 0;
-                    this.$refs.autosuggest.$data.currentIndex = null;
-                    this.$refs.autosuggest.$data.internalValue = "";
-                    this.classVariant = "success";
-                    this.message = response.message;
-                    this.showErrorDiv = true;
-                }
-            });
-        },
-        // Apply for mission
-        applyForMission(missionId) {
-            let missionData = {};
-            missionData.mission_id = missionId;
-            missionData.availability_id = 1;
-            applyMission(missionData).then(response => {
-                if (response.error == true) {
-                    this.makeToast("danger", response.message);
-                } else {
-                    this.makeToast("success", response.message);
-                    this.$emit("getMissions");
-                }
-            });
-        },
+        
         makeToast(variant = null, message) {
             this.$bvToast.toast(message, {
                 variant: variant,
@@ -526,18 +487,12 @@ export default {
             return 0;
         },
         checkMissionTypeVolunteering(missionType) {
-            if (
-                missionType == constants.MISSION_TYPE_TIME ||
-                missionType == constants.MISSION_TYPE_GOAL
-            ) {
-                return true;
-            }
-            return false;
+            return [constants.MISSION_TYPE_TIME, constants.MISSION_TYPE_GOAL].includes(missionType);
         }
     },
     created() {
         this.languageData = JSON.parse(store.state.languageLabel);
-        this.isInviteCollegueDisplay = this.settingEnabled(
+        this.isInviteColleagueDisplay = this.settingEnabled(
             constants.INVITE_COLLEAGUE
         );
         this.isStarRatingDisplay = this.settingEnabled(constants.MISSION_RATINGS);

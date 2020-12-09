@@ -235,12 +235,6 @@ let routes = [
           import ('./views/MissionDetail.vue')
     },
     {
-        path: '/donation-mission-detail/:misisonId',
-        name: 'donationMissionDetail',
-        component: () =>
-          import ('./views/DonationMissionDetail.vue')
-    },
-    {
         path: '/policy/:policyPage',
         name: 'policy',
         meta: {

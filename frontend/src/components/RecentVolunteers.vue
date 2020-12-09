@@ -50,7 +50,7 @@
 				rows: 0,
 				volunteerList: [],
 				recentVolunterLoader: true,
-				perPage: 12,
+				perPage: 9,
 				noVolunteerFound: false,
 				hidePagination: true,
 				languageData: [],

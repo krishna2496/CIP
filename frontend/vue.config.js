@@ -31,7 +31,7 @@ module.exports = {
     devServer: {
         host: host,
         port: port,
-        https: true,
+        https: false,
         disableHostCheck: true,
     },
 
